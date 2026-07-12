@@ -1,0 +1,56 @@
+{
+  "generated_at": "2026-05-27T23:44:30.010Z",
+  "source": "showcase/results/*.json",
+  "artifacts": [
+    {
+      "filename": "checkpoint_metrics.json",
+      "phase": "2.3",
+      "run_id": "20260527T233135Z-0b65b846",
+      "git_sha": "ce084a517395",
+      "started_at": "2026-05-27T23:29:38Z",
+      "finished_at": "2026-05-27T23:31:35Z",
+      "command": "make ckpt-metrics",
+      "logs": "showcase/logs/phase-2.3-checkpoint-metrics.log"
+    },
+    {
+      "filename": "eo_reconciliation.json",
+      "phase": "2.1",
+      "run_id": "20260527T151754Z-ef73a5a5",
+      "git_sha": "b2434d1a9e31",
+      "started_at": "2026-05-27T15:08:11Z",
+      "finished_at": "2026-05-27T15:17:54Z",
+      "command": "make eo-verify ARGS=\"--failure task-crash,checkpoint-restore,jobmanager-restart,savepoint-restore,sink-commit-fault\"",
+      "logs": "showcase/logs/phase-2.1-eo-verify.log"
+    },
+    {
+      "filename": "iceberg_small_file_rewrite.json",
+      "phase": "2.2",
+      "run_id": "20260527T155713Z-a88e18f6",
+      "git_sha": "ad7ad52a0ff8",
+      "started_at": "2026-05-27T15:55:18Z",
+      "finished_at": "2026-05-27T15:57:13Z",
+      "command": "make small-file-rewrite",
+      "logs": "showcase/logs/phase-2.2-small-file-rewrite.log"
+    },
+    {
+      "filename": "phase-1.1-smoke.json",
+      "phase": "1.1",
+      "run_id": "20260527T093100Z-phase-1-1-smoke",
+      "git_sha": "b5668d908a31a083358b9b80a6f96c12bfe2d4b5",
+      "started_at": "2026-05-27T09:21:00Z",
+      "finished_at": "2026-05-27T09:31:00Z",
+      "command": "make doctor && make up-core && make ps && make gen ARGS=\"--events 10000 --seed 1\"",
+      "logs": "showcase/logs/phase-1.1-smoke.log"
+    },
+    {
+      "filename": "phase-1.2-cdc-smoke.json",
+      "phase": "1.2",
+      "run_id": "20260527T133945Z-58e25cd1",
+      "git_sha": "b2434d1a9e31",
+      "started_at": "2026-05-27T13:37:45Z",
+      "finished_at": "2026-05-27T13:39:45Z",
+      "command": "make test-cdc",
+      "logs": "showcase/logs/phase-1.2-cdc-smoke.log"
+    }
+  ]
+}

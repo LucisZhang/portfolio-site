@@ -1,0 +1,51 @@
+{
+  "entities": [
+    {
+      "action": "replace",
+      "confidence": 0.98,
+      "end": 62,
+      "id": "ent_0001",
+      "profile_rule_id": null,
+      "reason": "Matched a standard email address pattern.",
+      "replacement": "[EMAIL]",
+      "source": "regex:email",
+      "start": 47,
+      "text": "ada@example.com",
+      "type": "EMAIL"
+    },
+    {
+      "action": "replace",
+      "confidence": 0.86,
+      "end": 78,
+      "id": "ent_0002",
+      "profile_rule_id": null,
+      "reason": "Matched a phone-number-like pattern with 10 to 15 digits.",
+      "replacement": "[PHONE]",
+      "source": "regex:phone",
+      "start": 66,
+      "text": "415-555-0188",
+      "type": "PHONE"
+    },
+    {
+      "action": "replace",
+      "confidence": 0.9,
+      "end": 116,
+      "id": "ent_0003",
+      "profile_rule_id": null,
+      "reason": "Matched a local filesystem path, including macOS-style locations.",
+      "replacement": "[LOCAL_PATH]",
+      "source": "regex:local_path",
+      "start": 87,
+      "text": "/Users/demo/Private/brief.txt",
+      "type": "LOCAL_PATH"
+    }
+  ],
+  "fixture": "fictional_identity_only",
+  "input": "Synthetic demo record for Ada Example. Contact ada@example.com or 415-555-0188. Draft: /Users/demo/Private/brief.txt",
+  "redacted_text": "Synthetic demo record for Ada Example. Contact [EMAIL] or [PHONE]. Draft: [LOCAL_PATH]",
+  "summary": {
+    "EMAIL": 1,
+    "LOCAL_PATH": 1,
+    "PHONE": 1
+  }
+}

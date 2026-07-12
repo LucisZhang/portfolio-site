@@ -1,0 +1,224 @@
+{
+  "fixture": "fictional_identity_only",
+  "image_height": 700,
+  "image_width": 1200,
+  "input_format": "PNG",
+  "media_type": "image/png",
+  "mode": "precise",
+  "ocr_boxes": [
+    {
+      "confidence": 1.0,
+      "height": 26.0,
+      "id": "ocr_0001",
+      "source": "vision",
+      "text": "PRIVACY PREFLIGHT / SYNTHETIC FIXTURE",
+      "width": 640.0,
+      "x": 64.00000399999993,
+      "y": 37.99999991249998
+    },
+    {
+      "confidence": 1.0,
+      "height": 50.00000000000006,
+      "id": "ocr_0002",
+      "source": "vision",
+      "text": "Review before external sharing",
+      "width": 505.0,
+      "x": 60.00000494999995,
+      "y": 150.00000049999994
+    },
+    {
+      "confidence": 1.0,
+      "height": 16.46301269531253,
+      "id": "ocr_0003",
+      "source": "vision",
+      "text": "NAME",
+      "width": 54.135372161865234,
+      "x": 61.932313379774115,
+      "y": 253.7684937369768
+    },
+    {
+      "confidence": 1.0,
+      "height": 31.464988708496122,
+      "id": "ocr_0004",
+      "source": "vision",
+      "text": "Ada Example",
+      "width": 166.2584991455078,
+      "x": 297.8707487664276,
+      "y": 243.2675057310864
+    },
+    {
+      "confidence": 1.0,
+      "height": 16.54561424255371,
+      "id": "ocr_0005",
+      "source": "vision",
+      "text": "EMAIL",
+      "width": 58.148136138916016,
+      "x": 61.925931349814164,
+      "y": 339.72719295325635
+    },
+    {
+      "confidence": 1.0,
+      "height": 18.0,
+      "id": "ocr_0006",
+      "source": "vision",
+      "text": "PHONE",
+      "width": 65.99999999999999,
+      "x": 61.999999528571436,
+      "y": 424.00000009999997
+    },
+    {
+      "confidence": 1.0,
+      "height": 16.000000000000057,
+      "id": "ocr_0007",
+      "source": "vision",
+      "text": "DRAFT PATH",
+      "width": 113.99999999999997,
+      "x": 64.0000008142857,
+      "y": 511.99999991428564
+    },
+    {
+      "confidence": 1.0,
+      "height": 29.999999999999943,
+      "id": "ocr_0008",
+      "source": "vision",
+      "text": "ada@example.com",
+      "width": 236.00000000000006,
+      "x": 297.99999913333335,
+      "y": 332.00000025
+    },
+    {
+      "confidence": 1.0,
+      "height": 40.0,
+      "id": "ocr_0009",
+      "source": "vision",
+      "text": "415-555-0188",
+      "width": 180.00000000000006,
+      "x": 295.0000012857143,
+      "y": 409.9999997857143
+    },
+    {
+      "confidence": 1.0,
+      "height": 40.00000000000006,
+      "id": "ocr_0010",
+      "source": "vision",
+      "text": "/Users/demo/Private/brief.txtJ",
+      "width": 364.99999999999994,
+      "x": 290.0000036499999,
+      "y": 499.99999969999993
+    },
+    {
+      "confidence": 1.0,
+      "height": 25.0,
+      "id": "ocr_0011",
+      "source": "vision",
+      "text": "All details above are fictional and reserved for local QA.",
+      "width": 499.99996948242193,
+      "x": 60.000006925456034,
+      "y": 620.0000002500001
+    }
+  ],
+  "ocr_provider": "vision",
+  "output_format": "PNG",
+  "redacted_boxes": [
+    {
+      "confidence": 1.0,
+      "entity_types": [
+        "EMAIL"
+      ],
+      "height": 29.999999999999943,
+      "id": "red_0001",
+      "ocr_box_id": "ocr_0008",
+      "reason": "Detected sensitive text: EMAIL.",
+      "source": "text_pipeline",
+      "text": "ada@example.com",
+      "text_sources": [
+        "regex:email"
+      ],
+      "width": 236.00000000000006,
+      "x": 297.99999913333335,
+      "y": 332.00000025
+    },
+    {
+      "confidence": 1.0,
+      "entity_types": [
+        "PHONE"
+      ],
+      "height": 40.0,
+      "id": "red_0002",
+      "ocr_box_id": "ocr_0009",
+      "reason": "Detected sensitive text: PHONE.",
+      "source": "text_pipeline",
+      "text": "415-555-0188",
+      "text_sources": [
+        "regex:phone"
+      ],
+      "width": 180.00000000000006,
+      "x": 295.0000012857143,
+      "y": 409.9999997857143
+    },
+    {
+      "confidence": 1.0,
+      "entity_types": [
+        "LOCAL_PATH"
+      ],
+      "height": 40.00000000000006,
+      "id": "red_0003",
+      "ocr_box_id": "ocr_0010",
+      "reason": "Detected sensitive text: LOCAL_PATH.",
+      "source": "text_pipeline",
+      "text": "/Users/demo/Private/brief.txtJ",
+      "text_sources": [
+        "regex:local_path"
+      ],
+      "width": 364.99999999999994,
+      "x": 290.0000036499999,
+      "y": 499.99999969999993
+    },
+    {
+      "confidence": null,
+      "entity_types": [],
+      "height": 48.0,
+      "id": "red_0004",
+      "ocr_box_id": null,
+      "reason": "Manual rectangle redaction.",
+      "source": "manual",
+      "text": null,
+      "text_sources": [],
+      "width": 285.0,
+      "x": 292.0,
+      "y": 318.0
+    },
+    {
+      "confidence": null,
+      "entity_types": [],
+      "height": 48.0,
+      "id": "red_0005",
+      "ocr_box_id": null,
+      "reason": "Manual rectangle redaction.",
+      "source": "manual",
+      "text": null,
+      "text_sources": [],
+      "width": 250.0,
+      "x": 292.0,
+      "y": 404.0
+    },
+    {
+      "confidence": null,
+      "entity_types": [],
+      "height": 48.0,
+      "id": "red_0006",
+      "ocr_box_id": null,
+      "reason": "Manual rectangle redaction.",
+      "source": "manual",
+      "text": null,
+      "text_sources": [],
+      "width": 520.0,
+      "x": 292.0,
+      "y": 490.0
+    }
+  ],
+  "summary": {
+    "manual": 3,
+    "text_pipeline": 3
+  }
+}

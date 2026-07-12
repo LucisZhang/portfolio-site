@@ -1,0 +1,29 @@
+{
+  "run_id": "20260711T034018Z-local-mac",
+  "source_evidence_commit": "7eab9c3fcdf73865b0ed6dd1266de1bfaccefcce",
+  "baseline_commit": "05738dd80038ada6862dcdb8fee1ffc8f8c1e018",
+  "environment_boundary": "Apple Silicon macOS, 16 GiB RAM; Docker Desktop VM reported 10 CPUs and about 7.65 GiB memory.",
+  "result": {
+    "failure_classes": [
+      "task-crash",
+      "checkpoint-restore",
+      "jobmanager-restart",
+      "savepoint-restore",
+      "sink-commit-fault"
+    ],
+    "passed": true,
+    "all_snapshot_diffs_zero": true,
+    "all_event_id_audits_consistent": true,
+    "errors": []
+  },
+  "assets": [
+    {
+      "path": "SUMMARY.md",
+      "sha256": "dd0760e06e2197d614be94ec93ef8ff8bbd6d546c85e211ecaf31c85cdd2f770"
+    },
+    {
+      "path": "eo_reconciliation-all.json",
+      "sha256": "e6c613bc1dc0be55f88c1a10cdd199cbc2d9ca6ec74cc30e5e1a361dc93bb91a"
+    }
+  ]
+}

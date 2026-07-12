@@ -1,0 +1,91 @@
+{
+  "analysis": {
+    "document_type": "text",
+    "page_count": 1,
+    "region_count": 3
+  },
+  "document_type": "text",
+  "fixture": "fictional_identity_only",
+  "media_type": "application/pdf",
+  "page_count": 1,
+  "pages": [
+    {
+      "height": 396.0,
+      "image_height": 396,
+      "image_width": 612,
+      "media_type": "image/png",
+      "page_index": 0,
+      "width": 612.0
+    }
+  ],
+  "post_export_text_layer_empty": true,
+  "redaction_regions": [
+    {
+      "confidence": 0.98,
+      "entity_types": [
+        "EMAIL"
+      ],
+      "height": 17.86199951171875,
+      "id": "pdf_reg_0001",
+      "page_index": 0,
+      "reason": "Detected extractable PDF text: EMAIL.",
+      "source": "text_pdf",
+      "text": "ada@example.com",
+      "text_sources": [
+        "regex:email"
+      ],
+      "width": 112.17697143554688,
+      "x": 87.72799682617188,
+      "y": 136.02499389648438
+    },
+    {
+      "confidence": 0.86,
+      "entity_types": [
+        "PHONE"
+      ],
+      "height": 17.86199951171875,
+      "id": "pdf_reg_0002",
+      "page_index": 0,
+      "reason": "Detected extractable PDF text: PHONE.",
+      "source": "text_pdf",
+      "text": "415-555-0188",
+      "text_sources": [
+        "regex:phone"
+      ],
+      "width": 80.93797302246094,
+      "x": 92.81098937988281,
+      "y": 174.02499389648438
+    },
+    {
+      "confidence": 0.9,
+      "entity_types": [
+        "LOCAL_PATH"
+      ],
+      "height": 17.86199951171875,
+      "id": "pdf_reg_0003",
+      "page_index": 0,
+      "reason": "Detected extractable PDF text: LOCAL_PATH.",
+      "source": "text_pdf",
+      "text": "/Users/demo/Private/brief.txt",
+      "text_sources": [
+        "regex:local_path"
+      ],
+      "width": 163.9949722290039,
+      "x": 83.39899444580078,
+      "y": 212.02499389648438
+    }
+  ],
+  "summary": {
+    "text_pdf": 3
+  },
+  "validation": {
+    "checked_terms_count": 3,
+    "message": "Validation passed: known redacted strings were not extractable, no text layer remained, and no redaction annotations were left unapplied.",
+    "redacted_text_absent": true,
+    "safe": true,
+    "status": "passed",
+    "unapplied_redaction_annotations": false,
+    "warnings": []
+  },
+  "warnings": []
+}

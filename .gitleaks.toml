@@ -1,0 +1,10 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Synthetic p1 reliability-lab business keys"
+regexTarget = "secret"
+regexes = [
+  '''phase-2-1-jm-carry''',
+  '''phase-2-1-savepoint-carry''',
+]

@@ -1,0 +1,27 @@
+{
+  "checked_at": "2026-07-12",
+  "claim_policy": "Qualitative workflow descriptions only; no dashboard or model metric is published in v1.",
+  "projects": [
+    {
+      "name": "E-commerce RFM and funnel analysis",
+      "artifact": "Tableau Public dashboard",
+      "url": "https://public.tableau.com/app/profile/lucis.zhang/viz/Ecommerce_RFM_and_Funnel_Analysis/Dashboard1",
+      "reachable": true,
+      "safe_description": "Funnel and RFM segmentation views connect customer behavior to operational marketing questions."
+    },
+    {
+      "name": "Risk Control Portfolio",
+      "artifact": "Bilingual Streamlit demo",
+      "url": "https://huggingface.co/spaces/Luciss007/Risk-Control-Portfolio",
+      "reachable": true,
+      "safe_description": "Visitors can switch between two serialized model paths, generate synthetic normal or anomalous inputs, and inspect approve or block decisions."
+    },
+    {
+      "name": "Risk Control Portfolio",
+      "artifact": "Public source repository",
+      "url": "https://github.com/LucisZhang/Risk-Control-Portfolio",
+      "reachable": true,
+      "safe_description": "Public Streamlit application source for the interactive demo; it is not a model-validation artifact."
+    }
+  ]
+}

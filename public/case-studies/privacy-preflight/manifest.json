@@ -1,0 +1,51 @@
+{
+  "assets": [
+    {
+      "path": "text-redaction-result.json",
+      "sha256": "4433e6c6f96449973b9418c1327a79d48c3f639043e08f866ddcffca766b1b71"
+    },
+    {
+      "path": "image-synthetic-input.png",
+      "sha256": "7a28d214833ce57eb34aa45e1de28511834d71d0746f9f33130c24e2731741e8"
+    },
+    {
+      "path": "image-synthetic-redacted.png",
+      "sha256": "40c98dd74d1df3c1395086dbf056bee79d166165cd874e21924403b6a744fc2b"
+    },
+    {
+      "path": "image-redaction-result.json",
+      "sha256": "f41b7eb7e148bbfc6aa4ed61d9c6287e97bba950f68ca83df65cb091146c6817"
+    },
+    {
+      "path": "pdf-synthetic-input-preview.png",
+      "sha256": "3dc652d8480c39c299c91e2fe1d672ee4b41599579766c15b3133dd3672c022e"
+    },
+    {
+      "path": "pdf-synthetic-redacted-preview.png",
+      "sha256": "2af0e6dce0a3a48f6b7c50e2a081a6a8510215ad66c7ac9402c274a6a2f332a6"
+    },
+    {
+      "path": "pdf-synthetic-redacted.pdf",
+      "sha256": "d5e79411135030933fd5910f8f5361ad736dae68ed8c66f2472c82e10ac68e19"
+    },
+    {
+      "path": "pdf-redaction-result.json",
+      "sha256": "bd873ee9de9a24f069887654283efff13fe7c3f7c4f183ed9940de33e75bf2ae"
+    },
+    {
+      "path": "swiftui-app.png",
+      "sha256": "93ce48de007b1528d62290271e8e81f640534e75401e9b5f70a5232ba2395548"
+    }
+  ],
+  "fixture_policy": "All names and contact details are explicitly fictional.",
+  "generated_at": "2026-07-12",
+  "source_commit": "78f13d5",
+  "verification": {
+    "image_export": "fresh PNG with no copied source metadata",
+    "swiftui_app_capture": "development app running against local worker on 127.0.0.1:8891",
+    "pdf_export": "image-only; extractable text layer empty",
+    "swift_build": "passed",
+    "worker_tests": "95 passed"
+  },
+  "worker_endpoint": "127.0.0.1:8891"
+}
