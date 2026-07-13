@@ -1,0 +1,299 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-13T08:57:22.262Z",
+  "fixedFixtureSet": true,
+  "scope": "Synthetic local OCR fixtures only. These results are not a general OCR performance claim.",
+  "preprocessing": [
+    "orientation candidates",
+    "resize",
+    "grayscale",
+    "contrast normalization",
+    "threshold",
+    "multi-pass union"
+  ],
+  "languages": [
+    "eng",
+    "chi_sim"
+  ],
+  "summary": {
+    "fixtures": 7,
+    "expectedCount": 19,
+    "hitCount": 18,
+    "detectedCount": 18,
+    "falsePositiveCount": 0,
+    "recall": 0.9473684210526315,
+    "precision": 1
+  },
+  "fixtures": [
+    {
+      "id": "english-image",
+      "source": "image-example-english.png",
+      "expected": [
+        "ada@example.com",
+        "415-555-0188",
+        "/Users/demo/Private/brief.txt"
+      ],
+      "detected": [
+        "ada@example.com",
+        "415-555-0188",
+        "/Users/demo/Private/brief.txt"
+      ],
+      "hits": [
+        "ada@example.com",
+        "415-555-0188",
+        "/Users/demo/Private/brief.txt"
+      ],
+      "misses": [],
+      "falsePositives": [],
+      "recall": 1,
+      "precision": 1,
+      "passes": [
+        {
+          "rotation": 0,
+          "mode": "normalized",
+          "detected": [
+            "ada@example.com",
+            "415-555-0188",
+            "/Users/demo/Private/brief.txt"
+          ],
+          "recognizedText": "PRIVACY PREFLIGHT /SYNTHETIC FIXTURE\nReview before external sharing\n\nEMAIL ada@example.com\n\nPHONE 415-555-0188\n\nDRAFT PATH /Users/demo/Private/brief.txt\n\nAll details are fictional and reserved for local QA."
+        }
+      ],
+      "boundary": null
+    },
+    {
+      "id": "chinese-image",
+      "source": "image-example-chinese.png",
+      "expected": [
+        "zhang@example.com",
+        "138-0013-8000",
+        "/Users/demo/Private/中文草稿.txt"
+      ],
+      "detected": [
+        "zhang@example.com",
+        "/Users/demo/Private/"
+      ],
+      "hits": [
+        "zhang@example.com",
+        "/Users/demo/Private/中文草稿.txt"
+      ],
+      "misses": [
+        "138-0013-8000"
+      ],
+      "falsePositives": [],
+      "recall": 0.6666666666666666,
+      "precision": 1,
+      "passes": [
+        {
+          "rotation": 0,
+          "mode": "normalized",
+          "detected": [
+            "zhang@example.com",
+            "/Users/demo/Private/"
+          ],
+          "recognizedText": "PRIVACY PREFLIGHT /SYNTHETIC FIXTURE\n分 享 前 检查\n\n邮箱 zhang@example.com\n\n电话 138-0013-8000\n\n本 地 路 径 /Users/demo/Private/ 中 文 草稿 .txt\nAll details are fictional and reserved for local QA."
+        },
+        {
+          "rotation": 0,
+          "mode": "threshold",
+          "detected": [
+            "zhang@example.com",
+            "/Users/demo/Private/"
+          ],
+          "recognizedText": "PRIVACY PREFLIGHT / SYNTHETIC FIXTURE\n分 享 前 检查\n\n邮箱 zhang@example.com\n\n电话 138-0013-8000\n\n本 地 路 径 /Users/demo/Private/ 中 文 草稿 .txt\nAll details are fictional and reserved for local QA."
+        }
+      ],
+      "boundary": null
+    },
+    {
+      "id": "small-font",
+      "source": "ocr-fixture-small-font.png",
+      "expected": [
+        "small@example.com",
+        "212-555-0199"
+      ],
+      "detected": [
+        "small@example.com",
+        "212-555-0199"
+      ],
+      "hits": [
+        "small@example.com",
+        "212-555-0199"
+      ],
+      "misses": [],
+      "falsePositives": [],
+      "recall": 1,
+      "precision": 1,
+      "passes": [
+        {
+          "rotation": 0,
+          "mode": "normalized",
+          "detected": [
+            "small@example.com",
+            "212-555-0199"
+          ],
+          "recognizedText": "PRIVACY PREFLIGHT / SYNTHETIC FIXTURE\nSmall text\n\nEMAIL small@example.com\n\nPHONE 212-555-0199\n\nAll details are fictional and reserved for local QA."
+        }
+      ],
+      "boundary": null
+    },
+    {
+      "id": "low-contrast",
+      "source": "ocr-fixture-low-contrast.png",
+      "expected": [
+        "contrast@example.com",
+        "646-555-0177"
+      ],
+      "detected": [
+        "contrast@example.com",
+        "646-555-0177"
+      ],
+      "hits": [
+        "contrast@example.com",
+        "646-555-0177"
+      ],
+      "misses": [],
+      "falsePositives": [],
+      "recall": 1,
+      "precision": 1,
+      "passes": [
+        {
+          "rotation": 0,
+          "mode": "normalized",
+          "detected": [],
+          "recognizedText": "PRIVACY PREFLIGHT / SYNTHETIC FIXTURE\nLow contrast\n\nEMAIL\n\nPHONE\n\nAll details are fictional and reserved for local QA."
+        },
+        {
+          "rotation": 0,
+          "mode": "threshold",
+          "detected": [
+            "contrast@example.com",
+            "646-555-0177"
+          ],
+          "recognizedText": "PRIVACY PREFLIGHT / SYNTHETIC FIXTURE\nLow contrast\n\nEMAIL contrast@example.com\n\nPHONE 646-555-0177\n\nAll details are fictional and reserved for local QA."
+        }
+      ],
+      "boundary": null
+    },
+    {
+      "id": "multiline",
+      "source": "ocr-fixture-multiline.png",
+      "expected": [
+        "multi@example.com",
+        "202-555-0144",
+        "/Users/demo/Private/multiline.txt"
+      ],
+      "detected": [
+        "multi@example.com",
+        "202-555-0144",
+        "/Users/demo/Private/multiline.txt"
+      ],
+      "hits": [
+        "multi@example.com",
+        "202-555-0144",
+        "/Users/demo/Private/multiline.txt"
+      ],
+      "misses": [],
+      "falsePositives": [],
+      "recall": 1,
+      "precision": 1,
+      "passes": [
+        {
+          "rotation": 0,
+          "mode": "normalized",
+          "detected": [
+            "multi@example.com",
+            "202-555-0144",
+            "/Users/demo/Private/multiline.txt"
+          ],
+          "recognizedText": "PRIVACY PREFLIGHT /SYNTHETIC FIXTURE\nMultiple lines\n\nEMAIL multi@example.com\n\nPHONE 202-555-0144\n\nPATH /Users/demo/Private/multiline.txt\nAll details are fictional and reserved for local QA."
+        }
+      ],
+      "boundary": null
+    },
+    {
+      "id": "rotated",
+      "source": "ocr-fixture-rotated.png",
+      "expected": [
+        "multi@example.com",
+        "202-555-0144",
+        "/Users/demo/Private/multiline.txt"
+      ],
+      "detected": [
+        "multi@example.com",
+        "202-555-0144",
+        "/Users/demo/Private/multiline.txt"
+      ],
+      "hits": [
+        "multi@example.com",
+        "202-555-0144",
+        "/Users/demo/Private/multiline.txt"
+      ],
+      "misses": [],
+      "falsePositives": [],
+      "recall": 1,
+      "precision": 1,
+      "passes": [
+        {
+          "rotation": 0,
+          "mode": "normalized",
+          "detected": [],
+          "recognizedText": "= RY 卫 m = 中\n3 = 5 E 三 A\n2 nT = <\n® OT >\n° 0) Q\nS > a.\n> ® py\na 0 m\nu\n3 一 NO —\n2 - oO = 口\n2 [7] NO =\n于 ® on = IT\n5 2 On ®) —\n8 o CD 刀 ®\n8 = :\n5 3 = 2 到\n改 3 二\n3 人 =2 —\n=. ® T\n< (@) m\n2 = —\n@ 3 o\n3\nc iL\n= >\n= =H\n® 万\nx m"
+        },
+        {
+          "rotation": 0,
+          "mode": "threshold",
+          "detected": [],
+          "recognizedText": "> RY) 了 m ne)\n= >\n3 J 5 3 = ny\n2 fr = = 一\n8 i=l 3\n5 OO\n5 一 <\n2 5 T\n5 ® py)\na (In 四\n名 =~ N 3\n2 C J\n3 和 S&S 三 ©\ng @ Hh = 工\non a © =\n: gs 2 >\nQo CD\n> 3 = 5 <\nQ = 5 Z\nRY 可 工\n< O 〇 四\n= S —\nCC 3 —\n= O\n3 m\n= ><\n=: -\na -\n一 - A\nx Mm"
+        },
+        {
+          "rotation": 270,
+          "mode": "normalized",
+          "detected": [
+            "multi@example.com",
+            "202-555-0144",
+            "/Users/demo/Private/multiline.txt"
+          ],
+          "recognizedText": "PRIVACY PREFLIGHT /SYNTHETIC FIXTURE\nMultiple lines\n\nEMAIL multi@example.com\n\nPHONE 202-555-0144\n\nPATH /Users/demo/Private/multiline.txt\nAll details are fictional and reserved for local QA."
+        }
+      ],
+      "boundary": null
+    },
+    {
+      "id": "scanned-pdf-page",
+      "source": "image-example-english.png",
+      "expected": [
+        "ada@example.com",
+        "415-555-0188",
+        "/Users/demo/Private/brief.txt"
+      ],
+      "detected": [
+        "ada@example.com",
+        "415-555-0188",
+        "/Users/demo/Private/brief.txt"
+      ],
+      "hits": [
+        "ada@example.com",
+        "415-555-0188",
+        "/Users/demo/Private/brief.txt"
+      ],
+      "misses": [],
+      "falsePositives": [],
+      "recall": 1,
+      "precision": 1,
+      "passes": [
+        {
+          "rotation": 0,
+          "mode": "normalized",
+          "detected": [
+            "ada@example.com",
+            "415-555-0188",
+            "/Users/demo/Private/brief.txt"
+          ],
+          "recognizedText": "PRIVACY PREFLIGHT /SYNTHETIC FIXTURE\nReview before external sharing\n\nEMAIL ada@example.com\n\nPHONE 415-555-0188\n\nDRAFT PATH /Users/demo/Private/brief.txt\n\nAll details are fictional and reserved for local QA."
+        }
+      ],
+      "boundary": "The scanned-PDF fixture embeds this exact page image; browser tests exercise the PDF renderer and OCR path."
+    }
+  ]
+}

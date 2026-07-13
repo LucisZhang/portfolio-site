@@ -2,9 +2,37 @@ import type { NextConfig } from "next";
 import createMDX from "@next/mdx";
 
 const nextConfig: NextConfig = {
-  // Content pages are static MDX per the design spec; only the 3 live AI demos
-  // may use /api routes (Phase 2+).
   pageExtensions: ["ts", "tsx", "md", "mdx"],
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              "base-uri 'self'",
+              "connect-src 'self'",
+              "font-src 'self' data:",
+              "form-action 'self'",
+              "frame-ancestors 'none'",
+              "img-src 'self' data: blob:",
+              "object-src 'none'",
+              "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'",
+              "style-src 'self' 'unsafe-inline'",
+              "worker-src 'self' blob:",
+              "upgrade-insecure-requests",
+            ].join("; "),
+          },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+        ],
+      },
+    ];
+  },
 };
 
 const withMDX = createMDX({});

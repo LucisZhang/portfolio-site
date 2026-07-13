@@ -1,0 +1,64 @@
+import { expect, test } from "@playwright/test";
+import { mkdir } from "node:fs/promises";
+import { resolve } from "node:path";
+
+const screenshotRoot = resolve("docs/phase2-public-review-artifacts/local-analytics");
+
+test.beforeAll(async () => {
+  await mkdir(screenshotRoot, { recursive: true });
+});
+
+test("Margin Control Tower uses the expanded dataset for linked diagnosis and scenario recomputation", async ({ page }, testInfo) => {
+  await page.goto("/analytics/margin-control-tower", { waitUntil: "networkidle" });
+  await expect(page.locator(".analytics-dataset-context dd").filter({ hasText: "9,360 rows" }).first()).toBeVisible();
+  await expect(page.locator(".analytics-dataset-context dd").filter({ hasText: "52 weeks" }).first()).toBeVisible();
+  await expect(page.getByText("fixed-seed injected anomaly")).toBeVisible();
+
+  await page.getByRole("tab", { name: "Schema and dictionary" }).click();
+  await expect(page.locator(".analytics-field-grid")).toContainText("product_id");
+  await page.getByRole("tab", { name: "Quality checks" }).click();
+  await expect(page.locator(".analytics-quality-list .pass")).toHaveCount(10);
+
+  await page.locator(".margin-heatmap-grid button", { hasText: "Beauty" }).filter({ hasText: "North" }).click();
+  await expect(page.locator(".analytics-controlbar select").nth(1)).toHaveValue("Beauty");
+  await expect(page.locator(".analytics-controlbar select").nth(2)).toHaveValue("North");
+
+  await page.getByRole("button", { name: "Guided scenario" }).click();
+  const actionBefore = await page.locator(".margin-action code").textContent();
+  await page.getByRole("slider", { name: "Promotion depth" }).fill("8");
+  await expect(page.locator(".margin-action code")).not.toHaveText(actionBefore ?? "");
+  await expect(page.locator(".margin-before-after")).toContainText("Delta");
+  await expect(page.getByRole("link", { name: "Download full CSV" })).toHaveAttribute("href", /synthetic-margin-data\.csv$/);
+  await expect(page.getByRole("link", { name: "Download Parquet" })).toHaveAttribute("href", /synthetic-margin-data\.parquet$/);
+
+  if (testInfo.project.name !== "tablet") {
+    await page.screenshot({ path: resolve(screenshotRoot, `margin-${testInfo.project.name}.png`), fullPage: true });
+  }
+});
+
+test("Credit Policy Lab recomputes model, thresholds, capacity, queue, and audit record", async ({ page }, testInfo) => {
+  await page.goto("/analytics/credit-policy-lab", { waitUntil: "networkidle" });
+  await expect(page.locator(".analytics-dataset-context dd").filter({ hasText: "12,000 applications" }).first()).toBeVisible();
+  await expect(page.locator(".credit-decision-boundary")).toContainText("Model probability is not the final business decision");
+
+  await page.getByRole("tab", { name: "Quality checks" }).click();
+  await expect(page.locator(".analytics-quality-list .pass")).toHaveCount(10);
+  const baselineScore = await page.locator(".credit-score-chain > div").nth(1).locator("strong").textContent();
+  await page.getByRole("tab", { name: "Challenger synthetic PD" }).click();
+  await expect(page.locator(".credit-score-chain > div").nth(1).locator("strong")).not.toHaveText(baselineScore ?? "");
+  await page.getByRole("tab", { name: "Baseline calibrated PD" }).click();
+
+  await expect(page.getByRole("button", { name: "Resolve queue overflow" })).toBeDisabled();
+  await page.getByRole("slider", { name: "Review capacity" }).fill("360");
+  await expect(page.getByRole("button", { name: "Record policy decision" })).toBeEnabled();
+  await page.getByRole("button", { name: "Record policy decision" }).click();
+  await expect(page.locator(".credit-audit-record")).toContainText("SYN-POLICY-2030-06-baseline-12-28-360");
+  await expect(page.locator(".credit-calibration")).toContainText("backtest");
+  await expect(page.locator(".credit-queue-grid section").first()).toContainText("Manual review queue");
+  await expect(page.getByRole("link", { name: "Download full CSV" })).toHaveAttribute("href", /synthetic-credit-data\.csv$/);
+  await expect(page.getByRole("link", { name: "Download Parquet" })).toHaveAttribute("href", /synthetic-credit-data\.parquet$/);
+
+  if (testInfo.project.name !== "tablet") {
+    await page.screenshot({ path: resolve(screenshotRoot, `credit-${testInfo.project.name}.png`), fullPage: true });
+  }
+});

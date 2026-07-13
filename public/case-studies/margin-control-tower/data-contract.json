@@ -1,0 +1,47 @@
+{
+  "schema_version": 2,
+  "dataset": "synthetic-margin-data.json",
+  "grain": [
+    "week",
+    "product_id",
+    "region",
+    "channel"
+  ],
+  "required_fields": [
+    "week",
+    "period_split",
+    "category",
+    "product_id",
+    "product_name",
+    "region",
+    "channel",
+    "order_count",
+    "units",
+    "unit_price",
+    "gross_revenue",
+    "promo_depth",
+    "discounts",
+    "return_rate",
+    "returns",
+    "net_revenue",
+    "cogs",
+    "fulfillment",
+    "contribution_margin",
+    "provenance",
+    "injected_anomaly",
+    "anomaly_reason"
+  ],
+  "checks": [
+    "schema fields present",
+    "week-product-region-channel grain unique",
+    "dimension keys are non-null",
+    "numeric costs and revenue non-negative",
+    "promotion and return rates bounded",
+    "gross revenue equals units times unit price",
+    "net revenue equals gross minus discounts and returns",
+    "contribution margin equals net revenue minus COGS and fulfillment",
+    "analysis and holdout periods are disjoint",
+    "provenance equals synthetic"
+  ],
+  "failure_policy": "The workspace fails closed and does not produce a decision output if a contract check fails."
+}

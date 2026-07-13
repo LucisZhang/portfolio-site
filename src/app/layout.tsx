@@ -1,18 +1,16 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import Link from "next/link";
 import CommandPalette from "@/components/CommandPalette";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import LocaleLink from "@/components/LocaleLink";
 import { LanguageProvider, LocalizedText, type LocalizedString } from "@/lib/i18n";
 import { featuredProjects, tracks } from "@/lib/projects";
+import "@xyflow/react/dist/style.css";
 import "./globals.css";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Hsiang Kuo Chang | Systems portfolio",
-  description: "Evidence-backed data engineering, analytics, and AI application case studies.",
+  description: "Data engineering, decision analytics, and applied-AI projects with interactive demos and clear test boundaries.",
 };
 
 const navItems: { href: string; label: LocalizedString }[] = [
@@ -22,19 +20,19 @@ const navItems: { href: string; label: LocalizedString }[] = [
 ];
 
 function FooterCopy() {
-  return <LocalizedText text={{ en: "Public v1 portfolio. Evidence is scoped to the artifacts named on each project page.", zh: "公开 v1 作品集。每个项目的证据范围以页面所列产物为准。" }} />;
+  return <LocalizedText text={{ en: "Public v1 portfolio. Every project explains what ran and what the result does not establish.", zh: "公开 v1 作品集。每个项目的证据范围以页面所列产物为准。" }} />;
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en">
       <body>
         <LanguageProvider>
           <header className="site-header">
             <div className="page-shell header-inner">
-              <Link href="/" className="brand" aria-label="HKC - Hsiang Kuo Chang portfolio home"><span className="brand-mark">HKC</span><LocalizedText className="brand-name" text={{ en: "Hsiang Kuo Chang", zh: "章向国" }} /></Link>
+              <LocaleLink href="/" className="brand"><span className="brand-mark">HKC</span><LocalizedText className="brand-name" text={{ en: "Hsiang Kuo Chang", zh: "章向国" }} /></LocaleLink>
               <nav aria-label="Primary navigation">
-                {navItems.map((item) => <Link key={item.href} href={item.href}><LocalizedText text={item.label} /></Link>)}
+                {navItems.map((item) => <LocaleLink key={item.href} href={item.href}><LocalizedText text={item.label} /></LocaleLink>)}
               </nav>
               <div className="header-tools">
                 <CommandPalette tracks={tracks} projects={featuredProjects} />

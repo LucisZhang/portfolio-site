@@ -1,0 +1,68 @@
+{
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "Bash(codex:*)",
+      "mcp__codex__*",
+      "mcp__exa__*",
+      "Bash(npm run:*)",
+      "Bash(npm install:*)",
+      "Bash(npx:*)",
+      "Bash(node:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(mkdir:*)",
+      "Bash(echo:*)",
+      "Bash(gh repo view:*)",
+      "Bash(gh repo list:*)",
+      "Bash(gh api:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Read(./.env*)",
+      "Read(**/*token*)",
+      "Read(**/*.pem)",
+      "Bash(gh repo delete:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '## PORTFOLIO DASHBOARD'; awk '/^## Global history/{exit} {print}' STATE.md 2>/dev/null; echo; if [ -n \"$PORTFOLIO_LANE\" ]; then lane_file=\"docs/project-state/$PORTFOLIO_LANE.md\"; echo \"## ACTIVE LANE - $PORTFOLIO_LANE\"; if [ -f \"$lane_file\" ]; then cat \"$lane_file\"; echo; echo '## lane state commits'; git log --oneline -8 -- \"$lane_file\" 2>/dev/null; else echo \"ERROR: unknown lane state file: $lane_file\"; fi; else echo '## ACTIVE LANE - NOT SELECTED'; echo 'Set PORTFOLIO_LANE to a filename from docs/project-state/ before doing project work.'; echo; echo '## recent integration commits'; git log --oneline -8 2>/dev/null; fi"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "async": true,
+            "command": "mkdir -p .claude/backups && cp \"$CLAUDE_TRANSCRIPT_PATH\" \".claude/backups/transcript-$(date +%Y%m%d-%H%M%S).jsonl\" 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"session ended $(date)\" >> .claude/logs/sessions.log"
+          }
+        ]
+      }
+    ]
+  }
+}

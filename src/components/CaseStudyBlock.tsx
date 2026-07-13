@@ -1,6 +1,8 @@
 "use client";
 
 import { ExternalLink } from "lucide-react";
+import ArtifactLink from "@/components/ArtifactLink";
+import { isArtifactPath } from "@/lib/artifacts";
 import { LocalizedText, useI18n } from "@/lib/i18n";
 import type { Project } from "@/lib/projects";
 
@@ -34,8 +36,19 @@ export default function CaseStudyBlock({ project }: { project: Project }) {
         <div>
           <dt>{dict.links}</dt>
           <dd className="link-list">
-            {project.links.length ? project.links.map((link) => {
+            {project.links.length ? project.links.map((link, index) => {
+              if (!link.href) return (
+                <span className="source-pending" key={`pending-${index}`} aria-disabled="true">
+                  <LocalizedText text={link.label} />
+                  {link.pending ? <small><LocalizedText text={link.pending} /></small> : null}
+                </span>
+              );
               const external = link.href.startsWith("http");
+              if (isArtifactPath(link.href)) return (
+                <ArtifactLink key={link.href} href={link.href}>
+                  <LocalizedText text={link.label} />
+                </ArtifactLink>
+              );
               return (
                 <a key={link.href} href={link.href} target={external ? "_blank" : undefined} rel={external ? "noreferrer" : undefined}>
                   <LocalizedText text={link.label} />

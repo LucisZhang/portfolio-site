@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "status": "presentation_layer_implementation",
+  "evidence_modes": [
+    "synthetic_sandbox",
+    "deterministic_verifier"
+  ],
+  "source_evidence": false,
+  "fixture_policy": "All bundled examples are fixed and fictional. User files are never committed.",
+  "processing_boundary": {
+    "server_upload": false,
+    "third_party_ocr": false,
+    "content_web_storage": false,
+    "runtime_assets": "same_origin_get_only"
+  },
+  "limits": {
+    "image_bytes": 15728640,
+    "image_max_edge_pixels": 8000,
+    "pdf_bytes": 20971520,
+    "pdf_pages": 20,
+    "pdf_page_render_pixels": 18000000
+  },
+  "pdf_export": {
+    "format": "image_only",
+    "requires_all_pages_reviewed": true,
+    "checks": [
+      "page_count",
+      "page_dimensions",
+      "extractable_text_empty",
+      "annotations_empty",
+      "known_terms_absent",
+      "original_metadata_absent",
+      "burn_in_pixels"
+    ],
+    "fail_closed": true
+  },
+  "runtime_packages": {
+    "tesseract.js": "7.0.0",
+    "pdfjs-dist": "6.1.200",
+    "pdf-lib": "1.17.1",
+    "@tesseract.js-data/eng": "1.0.0",
+    "@tesseract.js-data/chi_sim": "1.0.0"
+  }
+}

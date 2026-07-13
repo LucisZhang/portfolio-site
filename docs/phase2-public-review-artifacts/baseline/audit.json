@@ -1,0 +1,2799 @@
+{
+  "generatedAt": "2026-07-13T05:39:58.233Z",
+  "baseUrl": "https://portfolio-site-gpt-review.vercel.app/",
+  "label": "baseline",
+  "browser": "Google Chrome via Playwright, fresh contexts, service workers blocked",
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "name": "tablet",
+      "width": 1024,
+      "height": 900
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "locales": [
+    "en",
+    "zh"
+  ],
+  "routes": [
+    "/",
+    "/ai",
+    "/ai/privacy-preflight-mac",
+    "/ai/rag-quality-lab",
+    "/ai/release-guardian",
+    "/analytics",
+    "/analytics/analytics-tandem",
+    "/analytics/credit-policy-lab",
+    "/analytics/margin-control-tower",
+    "/engineering",
+    "/engineering/p1-reliability-lab"
+  ],
+  "pages": [
+    {
+      "route": "/",
+      "locale": "en",
+      "viewport": "desktop",
+      "status": 200,
+      "durationMs": 5780,
+      "overflow": 0,
+      "title": "Hsiang Kuo Chang | Systems portfolio",
+      "h1": "Hsiang Kuo Chang",
+      "bodyCharacters": 2295,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-desktop-home-initial.png"
+    },
+    {
+      "route": "/ai",
+      "locale": "en",
+      "viewport": "desktop",
+      "status": 200,
+      "durationMs": 3478,
+      "overflow": 0,
+      "title": "AI applications | Hsiang Kuo Chang",
+      "h1": "AI applications",
+      "bodyCharacters": 984,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-desktop-ai-initial.png"
+    },
+    {
+      "route": "/ai/privacy-preflight-mac",
+      "locale": "en",
+      "viewport": "desktop",
+      "status": 200,
+      "durationMs": 2535,
+      "overflow": 0,
+      "title": "Privacy Preflight Web + Mac | Hsiang Kuo Chang",
+      "h1": "Privacy Preflight Web + Mac",
+      "bodyCharacters": 4393,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中",
+        "Text",
+        "Image",
+        "PDF",
+        "Load synthetic example",
+        "Balanced",
+        "Strict",
+        "Scan",
+        "Undo",
+        "Reset",
+        "Add selected text",
+        "Mask",
+        "Replace",
+        "Remove",
+        "Copy",
+        "Download .txt"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-desktop-ai-privacy-preflight-mac-initial.png"
+    },
+    {
+      "route": "/ai/rag-quality-lab",
+      "locale": "en",
+      "viewport": "desktop",
+      "status": 200,
+      "durationMs": 2243,
+      "overflow": 0,
+      "title": "RAG Quality Lab | Hsiang Kuo Chang",
+      "h1": "RAG Quality Lab",
+      "bodyCharacters": 5630,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中",
+        "Aligned",
+        "Corpus drift",
+        "Metric leak",
+        "Sync overclaim",
+        "Verify",
+        "Reset",
+        "Edit one character",
+        "Change document ID",
+        "Delete title field",
+        "Change backend contract",
+        "Normalize + verify"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-desktop-ai-rag-quality-lab-initial.png"
+    },
+    {
+      "route": "/ai/release-guardian",
+      "locale": "en",
+      "viewport": "desktop",
+      "status": 200,
+      "durationMs": 2628,
+      "overflow": 0,
+      "title": "Release Guardian | Hsiang Kuo Chang",
+      "h1": "Release Guardian",
+      "bodyCharacters": 6067,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中",
+        "authentication configurationSYN-AUTH-01",
+        "database schema changeSYN-SCHEMA-02",
+        "API field removalSYN-API-03",
+        "dependency upgradeSYN-DEP-04",
+        "Previous stage",
+        "Play replay",
+        "Next stage",
+        "Reset replay"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-desktop-ai-release-guardian-initial.png"
+    },
+    {
+      "route": "/analytics",
+      "locale": "en",
+      "viewport": "desktop",
+      "status": 200,
+      "durationMs": 3271,
+      "overflow": 0,
+      "title": "Data analytics | Hsiang Kuo Chang",
+      "h1": "Data analytics",
+      "bodyCharacters": 742,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-desktop-analytics-initial.png"
+    },
+    {
+      "route": "/analytics/analytics-tandem",
+      "locale": "en",
+      "viewport": "desktop",
+      "status": 200,
+      "durationMs": 2472,
+      "overflow": 0,
+      "title": "Analytics Tandem | Hsiang Kuo Chang",
+      "h1": "Analytics Tandem",
+      "bodyCharacters": 2675,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-desktop-analytics-analytics-tandem-initial.png"
+    },
+    {
+      "route": "/analytics/credit-policy-lab",
+      "locale": "en",
+      "viewport": "desktop",
+      "status": 200,
+      "durationMs": 2475,
+      "overflow": 0,
+      "title": "Credit Policy Lab | Hsiang Kuo Chang",
+      "h1": "Credit Policy Lab",
+      "bodyCharacters": 4348,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中",
+        "Reset",
+        "Record policy decision"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-desktop-analytics-credit-policy-lab-initial.png"
+    },
+    {
+      "route": "/analytics/margin-control-tower",
+      "locale": "en",
+      "viewport": "desktop",
+      "status": 200,
+      "durationMs": 3090,
+      "overflow": 0,
+      "title": "Margin Control Tower | Hsiang Kuo Chang",
+      "h1": "Margin Control Tower",
+      "bodyCharacters": 3731,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中",
+        "Reset",
+        "01-07",
+        "01-14",
+        "01-21",
+        "01-28",
+        "02-04",
+        "02-11",
+        "02-18",
+        "02-25"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-desktop-analytics-margin-control-tower-initial.png"
+    },
+    {
+      "route": "/engineering",
+      "locale": "en",
+      "viewport": "desktop",
+      "status": 200,
+      "durationMs": 2819,
+      "overflow": 0,
+      "title": "Data engineering | Hsiang Kuo Chang",
+      "h1": "Data engineering",
+      "bodyCharacters": 486,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-desktop-engineering-initial.png"
+    },
+    {
+      "route": "/engineering/p1-reliability-lab",
+      "locale": "en",
+      "viewport": "desktop",
+      "status": 200,
+      "durationMs": 2347,
+      "overflow": 0,
+      "title": "p1-reliability-lab | Hsiang Kuo Chang",
+      "h1": "p1-reliability-lab",
+      "bodyCharacters": 4465,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中",
+        "Task crashtask-crash",
+        "Checkpoint restorecheckpoint-restore",
+        "JobManager restartjobmanager-restart",
+        "Savepoint restoresavepoint-restore",
+        "Sink commit faultsink-commit-fault",
+        "Previous stage",
+        "Play replay",
+        "Next stage",
+        "Reset replay"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-desktop-engineering-p1-reliability-lab-initial.png"
+    },
+    {
+      "route": "/",
+      "locale": "zh",
+      "viewport": "desktop",
+      "status": 200,
+      "durationMs": 5264,
+      "overflow": 0,
+      "title": "Hsiang Kuo Chang | Systems portfolio",
+      "h1": "章向国",
+      "bodyCharacters": 916,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-home-initial.png"
+    },
+    {
+      "route": "/ai",
+      "locale": "zh",
+      "viewport": "desktop",
+      "status": 200,
+      "durationMs": 3803,
+      "overflow": 0,
+      "title": "AI applications | Hsiang Kuo Chang",
+      "h1": "AI 应用",
+      "bodyCharacters": 380,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-ai-initial.png"
+    },
+    {
+      "route": "/ai/privacy-preflight-mac",
+      "locale": "zh",
+      "viewport": "desktop",
+      "status": 200,
+      "durationMs": 2360,
+      "overflow": 0,
+      "title": "Privacy Preflight Web + Mac | Hsiang Kuo Chang",
+      "h1": "Privacy Preflight Web + Mac",
+      "bodyCharacters": 1838,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中",
+        "文本",
+        "图片",
+        "PDF",
+        "载入合成示例",
+        "平衡",
+        "严格",
+        "重新扫描",
+        "撤销",
+        "重置",
+        "新增所选文本",
+        "遮罩",
+        "替换",
+        "移除",
+        "复制",
+        "下载 .txt"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-ai-privacy-preflight-mac-initial.png"
+    },
+    {
+      "route": "/ai/rag-quality-lab",
+      "locale": "zh",
+      "viewport": "desktop",
+      "status": 200,
+      "durationMs": 2489,
+      "overflow": 0,
+      "title": "RAG Quality Lab | Hsiang Kuo Chang",
+      "h1": "RAG Quality Lab",
+      "bodyCharacters": 3255,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中",
+        "一致",
+        "语料漂移",
+        "指标泄漏",
+        "同步过度声明",
+        "校验",
+        "Reset",
+        "修改一个字符",
+        "修改文档 ID",
+        "删除 title 字段",
+        "修改 backend 契约",
+        "规范化 + 校验"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-ai-rag-quality-lab-initial.png"
+    },
+    {
+      "route": "/ai/release-guardian",
+      "locale": "zh",
+      "viewport": "desktop",
+      "status": 200,
+      "durationMs": 2448,
+      "overflow": 0,
+      "title": "Release Guardian | Hsiang Kuo Chang",
+      "h1": "Release Guardian",
+      "bodyCharacters": 3037,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中",
+        "authentication configurationSYN-AUTH-01",
+        "database schema changeSYN-SCHEMA-02",
+        "API field removalSYN-API-03",
+        "dependency upgradeSYN-DEP-04",
+        "上一步",
+        "Play replay",
+        "下一步",
+        "重置回放"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-ai-release-guardian-initial.png"
+    },
+    {
+      "route": "/analytics",
+      "locale": "zh",
+      "viewport": "desktop",
+      "status": 200,
+      "durationMs": 3242,
+      "overflow": 0,
+      "title": "Data analytics | Hsiang Kuo Chang",
+      "h1": "数据分析",
+      "bodyCharacters": 303,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-analytics-initial.png"
+    },
+    {
+      "route": "/analytics/analytics-tandem",
+      "locale": "zh",
+      "viewport": "desktop",
+      "status": 200,
+      "durationMs": 3628,
+      "overflow": 0,
+      "title": "Analytics Tandem | Hsiang Kuo Chang",
+      "h1": "分析双项目",
+      "bodyCharacters": 993,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-analytics-analytics-tandem-initial.png"
+    },
+    {
+      "route": "/analytics/credit-policy-lab",
+      "locale": "zh",
+      "viewport": "desktop",
+      "status": 200,
+      "durationMs": 2495,
+      "overflow": 0,
+      "title": "Credit Policy Lab | Hsiang Kuo Chang",
+      "h1": "Credit Policy Lab",
+      "bodyCharacters": 2542,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中",
+        "重置",
+        "记录策略决策"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-analytics-credit-policy-lab-initial.png"
+    },
+    {
+      "route": "/analytics/margin-control-tower",
+      "locale": "zh",
+      "viewport": "desktop",
+      "status": 200,
+      "durationMs": 2410,
+      "overflow": 0,
+      "title": "Margin Control Tower | Hsiang Kuo Chang",
+      "h1": "Margin Control Tower",
+      "bodyCharacters": 1971,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中",
+        "重置",
+        "01-07",
+        "01-14",
+        "01-21",
+        "01-28",
+        "02-04",
+        "02-11",
+        "02-18",
+        "02-25"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-analytics-margin-control-tower-initial.png"
+    },
+    {
+      "route": "/engineering",
+      "locale": "zh",
+      "viewport": "desktop",
+      "status": 200,
+      "durationMs": 3185,
+      "overflow": 0,
+      "title": "Data engineering | Hsiang Kuo Chang",
+      "h1": "数据工程",
+      "bodyCharacters": 212,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-engineering-initial.png"
+    },
+    {
+      "route": "/engineering/p1-reliability-lab",
+      "locale": "zh",
+      "viewport": "desktop",
+      "status": 200,
+      "durationMs": 2611,
+      "overflow": 0,
+      "title": "p1-reliability-lab | Hsiang Kuo Chang",
+      "h1": "p1-reliability-lab",
+      "bodyCharacters": 2441,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中",
+        "任务崩溃task-crash",
+        "检查点恢复checkpoint-restore",
+        "JobManager 重启jobmanager-restart",
+        "保存点恢复savepoint-restore",
+        "Sink 提交故障sink-commit-fault",
+        "上一步",
+        "播放回放",
+        "下一步",
+        "重置回放"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-engineering-p1-reliability-lab-initial.png"
+    },
+    {
+      "route": "/",
+      "locale": "en",
+      "viewport": "tablet",
+      "status": 200,
+      "durationMs": 5043,
+      "overflow": 0,
+      "title": "Hsiang Kuo Chang | Systems portfolio",
+      "h1": "Hsiang Kuo Chang",
+      "bodyCharacters": 2295,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-tablet-home-initial.png"
+    },
+    {
+      "route": "/ai",
+      "locale": "en",
+      "viewport": "tablet",
+      "status": 200,
+      "durationMs": 3307,
+      "overflow": 0,
+      "title": "AI applications | Hsiang Kuo Chang",
+      "h1": "AI applications",
+      "bodyCharacters": 984,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-tablet-ai-initial.png"
+    },
+    {
+      "route": "/ai/privacy-preflight-mac",
+      "locale": "en",
+      "viewport": "tablet",
+      "status": 200,
+      "durationMs": 2780,
+      "overflow": 0,
+      "title": "Privacy Preflight Web + Mac | Hsiang Kuo Chang",
+      "h1": "Privacy Preflight Web + Mac",
+      "bodyCharacters": 4393,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中",
+        "Text",
+        "Image",
+        "PDF",
+        "Load synthetic example",
+        "Balanced",
+        "Strict",
+        "Scan",
+        "Undo",
+        "Reset",
+        "Add selected text",
+        "Mask",
+        "Replace",
+        "Remove",
+        "Copy",
+        "Download .txt"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-tablet-ai-privacy-preflight-mac-initial.png"
+    },
+    {
+      "route": "/ai/rag-quality-lab",
+      "locale": "en",
+      "viewport": "tablet",
+      "status": 200,
+      "durationMs": 3020,
+      "overflow": 0,
+      "title": "RAG Quality Lab | Hsiang Kuo Chang",
+      "h1": "RAG Quality Lab",
+      "bodyCharacters": 5630,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中",
+        "Aligned",
+        "Corpus drift",
+        "Metric leak",
+        "Sync overclaim",
+        "Verify",
+        "Reset",
+        "Edit one character",
+        "Change document ID",
+        "Delete title field",
+        "Change backend contract",
+        "Normalize + verify"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-tablet-ai-rag-quality-lab-initial.png"
+    },
+    {
+      "route": "/ai/release-guardian",
+      "locale": "en",
+      "viewport": "tablet",
+      "status": 200,
+      "durationMs": 2896,
+      "overflow": 0,
+      "title": "Release Guardian | Hsiang Kuo Chang",
+      "h1": "Release Guardian",
+      "bodyCharacters": 6067,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中",
+        "authentication configurationSYN-AUTH-01",
+        "database schema changeSYN-SCHEMA-02",
+        "API field removalSYN-API-03",
+        "dependency upgradeSYN-DEP-04",
+        "Previous stage",
+        "Play replay",
+        "Next stage",
+        "Reset replay"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-tablet-ai-release-guardian-initial.png"
+    },
+    {
+      "route": "/analytics",
+      "locale": "en",
+      "viewport": "tablet",
+      "status": 200,
+      "durationMs": 3126,
+      "overflow": 0,
+      "title": "Data analytics | Hsiang Kuo Chang",
+      "h1": "Data analytics",
+      "bodyCharacters": 742,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-tablet-analytics-initial.png"
+    },
+    {
+      "route": "/analytics/analytics-tandem",
+      "locale": "en",
+      "viewport": "tablet",
+      "status": 200,
+      "durationMs": 2582,
+      "overflow": 0,
+      "title": "Analytics Tandem | Hsiang Kuo Chang",
+      "h1": "Analytics Tandem",
+      "bodyCharacters": 2675,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-tablet-analytics-analytics-tandem-initial.png"
+    },
+    {
+      "route": "/analytics/credit-policy-lab",
+      "locale": "en",
+      "viewport": "tablet",
+      "status": 200,
+      "durationMs": 2616,
+      "overflow": 0,
+      "title": "Credit Policy Lab | Hsiang Kuo Chang",
+      "h1": "Credit Policy Lab",
+      "bodyCharacters": 4348,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中",
+        "Reset",
+        "Record policy decision"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-tablet-analytics-credit-policy-lab-initial.png"
+    },
+    {
+      "route": "/analytics/margin-control-tower",
+      "locale": "en",
+      "viewport": "tablet",
+      "status": 200,
+      "durationMs": 3463,
+      "overflow": 0,
+      "title": "Margin Control Tower | Hsiang Kuo Chang",
+      "h1": "Margin Control Tower",
+      "bodyCharacters": 3731,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中",
+        "Reset",
+        "01-07",
+        "01-14",
+        "01-21",
+        "01-28",
+        "02-04",
+        "02-11",
+        "02-18",
+        "02-25"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-tablet-analytics-margin-control-tower-initial.png"
+    },
+    {
+      "route": "/engineering",
+      "locale": "en",
+      "viewport": "tablet",
+      "status": 200,
+      "durationMs": 2681,
+      "overflow": 0,
+      "title": "Data engineering | Hsiang Kuo Chang",
+      "h1": "Data engineering",
+      "bodyCharacters": 486,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-tablet-engineering-initial.png"
+    },
+    {
+      "route": "/engineering/p1-reliability-lab",
+      "locale": "en",
+      "viewport": "tablet",
+      "status": 200,
+      "durationMs": 2845,
+      "overflow": 0,
+      "title": "p1-reliability-lab | Hsiang Kuo Chang",
+      "h1": "p1-reliability-lab",
+      "bodyCharacters": 4465,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中",
+        "Task crashtask-crash",
+        "Checkpoint restorecheckpoint-restore",
+        "JobManager restartjobmanager-restart",
+        "Savepoint restoresavepoint-restore",
+        "Sink commit faultsink-commit-fault",
+        "Previous stage",
+        "Play replay",
+        "Next stage",
+        "Reset replay"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-tablet-engineering-p1-reliability-lab-initial.png"
+    },
+    {
+      "route": "/",
+      "locale": "zh",
+      "viewport": "tablet",
+      "status": 200,
+      "durationMs": 5549,
+      "overflow": 0,
+      "title": "Hsiang Kuo Chang | Systems portfolio",
+      "h1": "章向国",
+      "bodyCharacters": 916,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-home-initial.png"
+    },
+    {
+      "route": "/ai",
+      "locale": "zh",
+      "viewport": "tablet",
+      "status": 200,
+      "durationMs": 3051,
+      "overflow": 0,
+      "title": "AI applications | Hsiang Kuo Chang",
+      "h1": "AI 应用",
+      "bodyCharacters": 380,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-ai-initial.png"
+    },
+    {
+      "route": "/ai/privacy-preflight-mac",
+      "locale": "zh",
+      "viewport": "tablet",
+      "status": 200,
+      "durationMs": 2562,
+      "overflow": 0,
+      "title": "Privacy Preflight Web + Mac | Hsiang Kuo Chang",
+      "h1": "Privacy Preflight Web + Mac",
+      "bodyCharacters": 1838,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中",
+        "文本",
+        "图片",
+        "PDF",
+        "载入合成示例",
+        "平衡",
+        "严格",
+        "重新扫描",
+        "撤销",
+        "重置",
+        "新增所选文本",
+        "遮罩",
+        "替换",
+        "移除",
+        "复制",
+        "下载 .txt"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-ai-privacy-preflight-mac-initial.png"
+    },
+    {
+      "route": "/ai/rag-quality-lab",
+      "locale": "zh",
+      "viewport": "tablet",
+      "status": 200,
+      "durationMs": 2381,
+      "overflow": 0,
+      "title": "RAG Quality Lab | Hsiang Kuo Chang",
+      "h1": "RAG Quality Lab",
+      "bodyCharacters": 3255,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中",
+        "一致",
+        "语料漂移",
+        "指标泄漏",
+        "同步过度声明",
+        "校验",
+        "Reset",
+        "修改一个字符",
+        "修改文档 ID",
+        "删除 title 字段",
+        "修改 backend 契约",
+        "规范化 + 校验"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-ai-rag-quality-lab-initial.png"
+    },
+    {
+      "route": "/ai/release-guardian",
+      "locale": "zh",
+      "viewport": "tablet",
+      "status": 200,
+      "durationMs": 2715,
+      "overflow": 0,
+      "title": "Release Guardian | Hsiang Kuo Chang",
+      "h1": "Release Guardian",
+      "bodyCharacters": 3037,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中",
+        "authentication configurationSYN-AUTH-01",
+        "database schema changeSYN-SCHEMA-02",
+        "API field removalSYN-API-03",
+        "dependency upgradeSYN-DEP-04",
+        "上一步",
+        "Play replay",
+        "下一步",
+        "重置回放"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-ai-release-guardian-initial.png"
+    },
+    {
+      "route": "/analytics",
+      "locale": "zh",
+      "viewport": "tablet",
+      "status": 200,
+      "durationMs": 2975,
+      "overflow": 0,
+      "title": "Data analytics | Hsiang Kuo Chang",
+      "h1": "数据分析",
+      "bodyCharacters": 303,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-analytics-initial.png"
+    },
+    {
+      "route": "/analytics/analytics-tandem",
+      "locale": "zh",
+      "viewport": "tablet",
+      "status": 200,
+      "durationMs": 2768,
+      "overflow": 0,
+      "title": "Analytics Tandem | Hsiang Kuo Chang",
+      "h1": "分析双项目",
+      "bodyCharacters": 993,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-analytics-analytics-tandem-initial.png"
+    },
+    {
+      "route": "/analytics/credit-policy-lab",
+      "locale": "zh",
+      "viewport": "tablet",
+      "status": 200,
+      "durationMs": 2431,
+      "overflow": 0,
+      "title": "Credit Policy Lab | Hsiang Kuo Chang",
+      "h1": "Credit Policy Lab",
+      "bodyCharacters": 2542,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中",
+        "重置",
+        "记录策略决策"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-analytics-credit-policy-lab-initial.png"
+    },
+    {
+      "route": "/analytics/margin-control-tower",
+      "locale": "zh",
+      "viewport": "tablet",
+      "status": 200,
+      "durationMs": 2236,
+      "overflow": 0,
+      "title": "Margin Control Tower | Hsiang Kuo Chang",
+      "h1": "Margin Control Tower",
+      "bodyCharacters": 1971,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中",
+        "重置",
+        "01-07",
+        "01-14",
+        "01-21",
+        "01-28",
+        "02-04",
+        "02-11",
+        "02-18",
+        "02-25"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-analytics-margin-control-tower-initial.png"
+    },
+    {
+      "route": "/engineering",
+      "locale": "zh",
+      "viewport": "tablet",
+      "status": 200,
+      "durationMs": 2386,
+      "overflow": 0,
+      "title": "Data engineering | Hsiang Kuo Chang",
+      "h1": "数据工程",
+      "bodyCharacters": 212,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-engineering-initial.png"
+    },
+    {
+      "route": "/engineering/p1-reliability-lab",
+      "locale": "zh",
+      "viewport": "tablet",
+      "status": 200,
+      "durationMs": 2465,
+      "overflow": 0,
+      "title": "p1-reliability-lab | Hsiang Kuo Chang",
+      "h1": "p1-reliability-lab",
+      "bodyCharacters": 2441,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中",
+        "任务崩溃task-crash",
+        "检查点恢复checkpoint-restore",
+        "JobManager 重启jobmanager-restart",
+        "保存点恢复savepoint-restore",
+        "Sink 提交故障sink-commit-fault",
+        "上一步",
+        "播放回放",
+        "下一步",
+        "重置回放"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-engineering-p1-reliability-lab-initial.png"
+    },
+    {
+      "route": "/",
+      "locale": "en",
+      "viewport": "mobile",
+      "status": 200,
+      "durationMs": 4463,
+      "overflow": 0,
+      "title": "Hsiang Kuo Chang | Systems portfolio",
+      "h1": "Hsiang Kuo Chang",
+      "bodyCharacters": 2073,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-mobile-home-initial.png"
+    },
+    {
+      "route": "/ai",
+      "locale": "en",
+      "viewport": "mobile",
+      "status": 200,
+      "durationMs": 2699,
+      "overflow": 0,
+      "title": "AI applications | Hsiang Kuo Chang",
+      "h1": "AI applications",
+      "bodyCharacters": 919,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-mobile-ai-initial.png"
+    },
+    {
+      "route": "/ai/privacy-preflight-mac",
+      "locale": "en",
+      "viewport": "mobile",
+      "status": 200,
+      "durationMs": 2276,
+      "overflow": 0,
+      "title": "Privacy Preflight Web + Mac | Hsiang Kuo Chang",
+      "h1": "Privacy Preflight Web + Mac",
+      "bodyCharacters": 4317,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中",
+        "Text",
+        "Image",
+        "PDF",
+        "Load synthetic example",
+        "Balanced",
+        "Strict",
+        "Scan",
+        "Undo",
+        "Reset",
+        "Add selected text",
+        "Mask",
+        "Replace",
+        "Remove",
+        "Copy",
+        "Download .txt"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-mobile-ai-privacy-preflight-mac-initial.png"
+    },
+    {
+      "route": "/ai/rag-quality-lab",
+      "locale": "en",
+      "viewport": "mobile",
+      "status": 200,
+      "durationMs": 2227,
+      "overflow": 0,
+      "title": "RAG Quality Lab | Hsiang Kuo Chang",
+      "h1": "RAG Quality Lab",
+      "bodyCharacters": 5565,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中",
+        "Aligned",
+        "Corpus drift",
+        "Metric leak",
+        "Sync overclaim",
+        "Verify",
+        "Reset",
+        "Edit one character",
+        "Change document ID",
+        "Delete title field",
+        "Change backend contract",
+        "Normalize + verify"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-mobile-ai-rag-quality-lab-initial.png"
+    },
+    {
+      "route": "/ai/release-guardian",
+      "locale": "en",
+      "viewport": "mobile",
+      "status": 200,
+      "durationMs": 2173,
+      "overflow": 0,
+      "title": "Release Guardian | Hsiang Kuo Chang",
+      "h1": "Release Guardian",
+      "bodyCharacters": 6002,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中",
+        "authentication configurationSYN-AUTH-01",
+        "database schema changeSYN-SCHEMA-02",
+        "API field removalSYN-API-03",
+        "dependency upgradeSYN-DEP-04",
+        "Previous stage",
+        "Play replay",
+        "Next stage",
+        "Reset replay"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-mobile-ai-release-guardian-initial.png"
+    },
+    {
+      "route": "/analytics",
+      "locale": "en",
+      "viewport": "mobile",
+      "status": 200,
+      "durationMs": 2288,
+      "overflow": 0,
+      "title": "Data analytics | Hsiang Kuo Chang",
+      "h1": "Data analytics",
+      "bodyCharacters": 677,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-mobile-analytics-initial.png"
+    },
+    {
+      "route": "/analytics/analytics-tandem",
+      "locale": "en",
+      "viewport": "mobile",
+      "status": 200,
+      "durationMs": 2191,
+      "overflow": 0,
+      "title": "Analytics Tandem | Hsiang Kuo Chang",
+      "h1": "Analytics Tandem",
+      "bodyCharacters": 2610,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-mobile-analytics-analytics-tandem-initial.png"
+    },
+    {
+      "route": "/analytics/credit-policy-lab",
+      "locale": "en",
+      "viewport": "mobile",
+      "status": 200,
+      "durationMs": 2114,
+      "overflow": 0,
+      "title": "Credit Policy Lab | Hsiang Kuo Chang",
+      "h1": "Credit Policy Lab",
+      "bodyCharacters": 4283,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中",
+        "Reset",
+        "Record policy decision"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-mobile-analytics-credit-policy-lab-initial.png"
+    },
+    {
+      "route": "/analytics/margin-control-tower",
+      "locale": "en",
+      "viewport": "mobile",
+      "status": 200,
+      "durationMs": 2159,
+      "overflow": 0,
+      "title": "Margin Control Tower | Hsiang Kuo Chang",
+      "h1": "Margin Control Tower",
+      "bodyCharacters": 3666,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中",
+        "Reset",
+        "01-07",
+        "01-14",
+        "01-21",
+        "01-28",
+        "02-04",
+        "02-11",
+        "02-18",
+        "02-25"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-mobile-analytics-margin-control-tower-initial.png"
+    },
+    {
+      "route": "/engineering",
+      "locale": "en",
+      "viewport": "mobile",
+      "status": 200,
+      "durationMs": 2326,
+      "overflow": 0,
+      "title": "Data engineering | Hsiang Kuo Chang",
+      "h1": "Data engineering",
+      "bodyCharacters": 421,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-mobile-engineering-initial.png"
+    },
+    {
+      "route": "/engineering/p1-reliability-lab",
+      "locale": "en",
+      "viewport": "mobile",
+      "status": 200,
+      "durationMs": 2086,
+      "overflow": 0,
+      "title": "p1-reliability-lab | Hsiang Kuo Chang",
+      "h1": "p1-reliability-lab",
+      "bodyCharacters": 4434,
+      "buttons": [
+        "Search⌘K",
+        "EN",
+        "中",
+        "Task crashtask-crash",
+        "Checkpoint restorecheckpoint-restore",
+        "JobManager restartjobmanager-restart",
+        "Savepoint restoresavepoint-restore",
+        "Sink commit faultsink-commit-fault",
+        "Previous stage",
+        "Play replay",
+        "Next stage",
+        "Reset replay"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-mobile-engineering-p1-reliability-lab-initial.png"
+    },
+    {
+      "route": "/",
+      "locale": "zh",
+      "viewport": "mobile",
+      "status": 200,
+      "durationMs": 3807,
+      "overflow": 0,
+      "title": "Hsiang Kuo Chang | Systems portfolio",
+      "h1": "章向国",
+      "bodyCharacters": 831,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-home-initial.png"
+    },
+    {
+      "route": "/ai",
+      "locale": "zh",
+      "viewport": "mobile",
+      "status": 200,
+      "durationMs": 2371,
+      "overflow": 0,
+      "title": "AI applications | Hsiang Kuo Chang",
+      "h1": "AI 应用",
+      "bodyCharacters": 354,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-ai-initial.png"
+    },
+    {
+      "route": "/ai/privacy-preflight-mac",
+      "locale": "zh",
+      "viewport": "mobile",
+      "status": 200,
+      "durationMs": 1967,
+      "overflow": 0,
+      "title": "Privacy Preflight Web + Mac | Hsiang Kuo Chang",
+      "h1": "Privacy Preflight Web + Mac",
+      "bodyCharacters": 1806,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中",
+        "文本",
+        "图片",
+        "PDF",
+        "载入合成示例",
+        "平衡",
+        "严格",
+        "重新扫描",
+        "撤销",
+        "重置",
+        "新增所选文本",
+        "遮罩",
+        "替换",
+        "移除",
+        "复制",
+        "下载 .txt"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-ai-privacy-preflight-mac-initial.png"
+    },
+    {
+      "route": "/ai/rag-quality-lab",
+      "locale": "zh",
+      "viewport": "mobile",
+      "status": 200,
+      "durationMs": 2135,
+      "overflow": 0,
+      "title": "RAG Quality Lab | Hsiang Kuo Chang",
+      "h1": "RAG Quality Lab",
+      "bodyCharacters": 3229,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中",
+        "一致",
+        "语料漂移",
+        "指标泄漏",
+        "同步过度声明",
+        "校验",
+        "Reset",
+        "修改一个字符",
+        "修改文档 ID",
+        "删除 title 字段",
+        "修改 backend 契约",
+        "规范化 + 校验"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-ai-rag-quality-lab-initial.png"
+    },
+    {
+      "route": "/ai/release-guardian",
+      "locale": "zh",
+      "viewport": "mobile",
+      "status": 200,
+      "durationMs": 1931,
+      "overflow": 0,
+      "title": "Release Guardian | Hsiang Kuo Chang",
+      "h1": "Release Guardian",
+      "bodyCharacters": 3011,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中",
+        "authentication configurationSYN-AUTH-01",
+        "database schema changeSYN-SCHEMA-02",
+        "API field removalSYN-API-03",
+        "dependency upgradeSYN-DEP-04",
+        "上一步",
+        "Play replay",
+        "下一步",
+        "重置回放"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-ai-release-guardian-initial.png"
+    },
+    {
+      "route": "/analytics",
+      "locale": "zh",
+      "viewport": "mobile",
+      "status": 200,
+      "durationMs": 2708,
+      "overflow": 0,
+      "title": "Data analytics | Hsiang Kuo Chang",
+      "h1": "数据分析",
+      "bodyCharacters": 277,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-analytics-initial.png"
+    },
+    {
+      "route": "/analytics/analytics-tandem",
+      "locale": "zh",
+      "viewport": "mobile",
+      "status": 200,
+      "durationMs": 2182,
+      "overflow": 0,
+      "title": "Analytics Tandem | Hsiang Kuo Chang",
+      "h1": "分析双项目",
+      "bodyCharacters": 967,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-analytics-analytics-tandem-initial.png"
+    },
+    {
+      "route": "/analytics/credit-policy-lab",
+      "locale": "zh",
+      "viewport": "mobile",
+      "status": 200,
+      "durationMs": 2030,
+      "overflow": 0,
+      "title": "Credit Policy Lab | Hsiang Kuo Chang",
+      "h1": "Credit Policy Lab",
+      "bodyCharacters": 2516,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中",
+        "重置",
+        "记录策略决策"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-analytics-credit-policy-lab-initial.png"
+    },
+    {
+      "route": "/analytics/margin-control-tower",
+      "locale": "zh",
+      "viewport": "mobile",
+      "status": 200,
+      "durationMs": 2356,
+      "overflow": 0,
+      "title": "Margin Control Tower | Hsiang Kuo Chang",
+      "h1": "Margin Control Tower",
+      "bodyCharacters": 1945,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中",
+        "重置",
+        "01-07",
+        "01-14",
+        "01-21",
+        "01-28",
+        "02-04",
+        "02-11",
+        "02-18",
+        "02-25"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-analytics-margin-control-tower-initial.png"
+    },
+    {
+      "route": "/engineering",
+      "locale": "zh",
+      "viewport": "mobile",
+      "status": 200,
+      "durationMs": 1964,
+      "overflow": 0,
+      "title": "Data engineering | Hsiang Kuo Chang",
+      "h1": "数据工程",
+      "bodyCharacters": 186,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-engineering-initial.png"
+    },
+    {
+      "route": "/engineering/p1-reliability-lab",
+      "locale": "zh",
+      "viewport": "mobile",
+      "status": 200,
+      "durationMs": 2436,
+      "overflow": 0,
+      "title": "p1-reliability-lab | Hsiang Kuo Chang",
+      "h1": "p1-reliability-lab",
+      "bodyCharacters": 2422,
+      "buttons": [
+        "搜索⌘K",
+        "EN",
+        "中",
+        "任务崩溃task-crash",
+        "检查点恢复checkpoint-restore",
+        "JobManager 重启jobmanager-restart",
+        "保存点恢复savepoint-restore",
+        "Sink 提交故障sink-commit-fault",
+        "上一步",
+        "播放回放",
+        "下一步",
+        "重置回放"
+      ],
+      "disabledAnchors": 0,
+      "consoleErrors": [
+        "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        "GET https://vercel.live/_next-live/feedback/feedback.js csp"
+      ],
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-engineering-p1-reliability-lab-initial.png"
+    }
+  ],
+  "artifacts": [
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/analytics-tandem/links.json",
+      "linked": false,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"links.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/credit-policy-lab/README.md",
+      "linked": true,
+      "status": 200,
+      "contentType": "text/markdown; charset=utf-8",
+      "disposition": "inline; filename=\"README.md\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/credit-policy-lab/architecture.mmd",
+      "linked": false,
+      "status": 200,
+      "contentType": "application/vnd.chipnuts.karaoke-mmd",
+      "disposition": "inline; filename=\"architecture.mmd\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/credit-policy-lab/policy-contract.json",
+      "linked": true,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"policy-contract.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/credit-policy-lab/synthetic-credit-data.json",
+      "linked": true,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"synthetic-credit-data.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/margin-control-tower/README.md",
+      "linked": true,
+      "status": 200,
+      "contentType": "text/markdown; charset=utf-8",
+      "disposition": "inline; filename=\"README.md\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/margin-control-tower/architecture.mmd",
+      "linked": false,
+      "status": 200,
+      "contentType": "application/vnd.chipnuts.karaoke-mmd",
+      "disposition": "inline; filename=\"architecture.mmd\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/margin-control-tower/data-contract.json",
+      "linked": true,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"data-contract.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/margin-control-tower/metric-registry.json",
+      "linked": true,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"metric-registry.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/margin-control-tower/synthetic-margin-data.json",
+      "linked": true,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"synthetic-margin-data.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/README.md",
+      "linked": false,
+      "status": 200,
+      "contentType": "text/markdown; charset=utf-8",
+      "disposition": "inline; filename=\"README.md\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/media/phase-1.4-dashboard.jpg",
+      "linked": false,
+      "status": 200,
+      "contentType": "image/jpeg",
+      "disposition": "inline; filename=\"phase-1.4-dashboard.jpg\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/media/phase-2.2-small-file-rewrite.svg",
+      "linked": false,
+      "status": 200,
+      "contentType": "image/svg+xml",
+      "disposition": "inline; filename=\"phase-2.2-small-file-rewrite.svg\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/media/phase-2.3-checkpoint-metrics.svg",
+      "linked": false,
+      "status": 200,
+      "contentType": "image/svg+xml",
+      "disposition": "inline; filename=\"phase-2.3-checkpoint-metrics.svg\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/checkpoint_metrics.json",
+      "linked": true,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"checkpoint_metrics.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/eo_reconciliation.json",
+      "linked": true,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"eo_reconciliation.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/iceberg_small_file_rewrite.json",
+      "linked": true,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"iceberg_small_file_rewrite.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/index.json",
+      "linked": false,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"index.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/phase-1.1-smoke.json",
+      "linked": true,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"phase-1.1-smoke.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/phase-1.2-cdc-smoke.json",
+      "linked": true,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"phase-1.2-cdc-smoke.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/u6-local-mac/SUMMARY.md",
+      "linked": false,
+      "status": 200,
+      "contentType": "text/markdown; charset=utf-8",
+      "disposition": "inline; filename=\"SUMMARY.md\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/u6-local-mac/eo_reconciliation-all.json",
+      "linked": true,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"eo_reconciliation-all.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/u6-local-mac/manifest.json",
+      "linked": false,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"manifest.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/runbook-incidents.md",
+      "linked": false,
+      "status": 200,
+      "contentType": "text/markdown; charset=utf-8",
+      "disposition": "inline; filename=\"runbook-incidents.md\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/workstation-reproduction-guide.md",
+      "linked": true,
+      "status": 200,
+      "contentType": "text/markdown; charset=utf-8",
+      "disposition": "inline; filename=\"workstation-reproduction-guide.md\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/privacy-preflight/image-redaction-result.json",
+      "linked": false,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"image-redaction-result.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/privacy-preflight/image-synthetic-input.png",
+      "linked": false,
+      "status": 200,
+      "contentType": "image/png",
+      "disposition": "inline; filename=\"image-synthetic-input.png\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/privacy-preflight/image-synthetic-redacted.png",
+      "linked": false,
+      "status": 200,
+      "contentType": "image/png",
+      "disposition": "inline; filename=\"image-synthetic-redacted.png\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/privacy-preflight/manifest.json",
+      "linked": true,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"manifest.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/privacy-preflight/pdf-redaction-result.json",
+      "linked": false,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"pdf-redaction-result.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/privacy-preflight/pdf-synthetic-input-preview.png",
+      "linked": false,
+      "status": 200,
+      "contentType": "image/png",
+      "disposition": "inline; filename=\"pdf-synthetic-input-preview.png\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/privacy-preflight/pdf-synthetic-redacted-preview.png",
+      "linked": false,
+      "status": 200,
+      "contentType": "image/png",
+      "disposition": "inline; filename=\"pdf-synthetic-redacted-preview.png\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/privacy-preflight/pdf-synthetic-redacted.pdf",
+      "linked": true,
+      "status": 200,
+      "contentType": "application/pdf",
+      "disposition": "inline; filename=\"pdf-synthetic-redacted.pdf\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/privacy-preflight/swiftui-app.png",
+      "linked": false,
+      "status": 200,
+      "contentType": "image/png",
+      "disposition": "inline; filename=\"swiftui-app.png\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/privacy-preflight/text-redaction-result.json",
+      "linked": false,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"text-redaction-result.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/privacy-preflight/web-implementation.json",
+      "linked": false,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"web-implementation.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/rag-quality-lab/c3-timebox/README.md",
+      "linked": true,
+      "status": 200,
+      "contentType": "text/markdown; charset=utf-8",
+      "disposition": "inline; filename=\"README.md\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/rag-quality-lab/c3-timebox/dependency-preflight.json",
+      "linked": false,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"dependency-preflight.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/rag-quality-lab/claim-registry.json",
+      "linked": true,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"claim-registry.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/release-guardian/architecture.mmd",
+      "linked": true,
+      "status": 200,
+      "contentType": "application/vnd.chipnuts.karaoke-mmd",
+      "disposition": "inline; filename=\"architecture.mmd\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/release-guardian/data/cost-evidence.csv",
+      "linked": false,
+      "status": 200,
+      "contentType": "text/csv; charset=utf-8",
+      "disposition": "inline; filename=\"cost-evidence.csv\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/release-guardian/data/evaluation-live.csv",
+      "linked": false,
+      "status": 200,
+      "contentType": "text/csv; charset=utf-8",
+      "disposition": "inline; filename=\"evaluation-live.csv\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/release-guardian/data/evaluation-stub.csv",
+      "linked": false,
+      "status": 200,
+      "contentType": "text/csv; charset=utf-8",
+      "disposition": "inline; filename=\"evaluation-stub.csv\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/release-guardian/data/findings.csv",
+      "linked": true,
+      "status": 200,
+      "contentType": "text/csv; charset=utf-8",
+      "disposition": "inline; filename=\"findings.csv\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/release-guardian/manifest.json",
+      "linked": false,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"manifest.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/release-guardian/replay/synthetic-scenarios.json",
+      "linked": true,
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "disposition": "inline; filename=\"synthetic-scenarios.json\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/release-guardian/screenshots/evaluation-stub.png",
+      "linked": false,
+      "status": 200,
+      "contentType": "image/png",
+      "disposition": "inline; filename=\"evaluation-stub.png\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/release-guardian/screenshots/pipeline-trace-stub.png",
+      "linked": false,
+      "status": 200,
+      "contentType": "image/png",
+      "disposition": "inline; filename=\"pipeline-trace-stub.png\""
+    },
+    {
+      "href": "https://portfolio-site-gpt-review.vercel.app/case-studies/release-guardian/screenshots/risk-guardrail.png",
+      "linked": false,
+      "status": 200,
+      "contentType": "image/png",
+      "disposition": "inline; filename=\"risk-guardrail.png\""
+    }
+  ],
+  "externalLinks": [
+    {
+      "href": "https://github.com/LucisZhang",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "href": "https://github.com/LucisZhang/Risk-Control-Portfolio",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "href": "https://github.com/LucisZhang/p1-reliability-lab",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "href": "https://github.com/LucisZhang/portfolio-site/blob/main/PUBLICATION.md",
+      "status": 429,
+      "error": ""
+    },
+    {
+      "href": "https://github.com/LucisZhang/rag-quality-lab",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "href": "https://huggingface.co/spaces/Luciss007/Risk-Control-Portfolio",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "href": "https://public.tableau.com/app/profile/lucis.zhang/viz/Ecommerce_RFM_and_Funnel_Analysis/Dashboard1",
+      "status": 200,
+      "error": ""
+    },
+    {
+      "href": "https://www.linkedin.com/in/xiangguo-zhang",
+      "status": 999,
+      "error": ""
+    }
+  ],
+  "mailLinks": [
+    "mailto:HsiangKuoChang@outlook.com"
+  ],
+  "screenshots": [
+    "phase2-public-review-artifacts/baseline/screenshots/en-desktop-home-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-desktop-ai-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-desktop-ai-privacy-preflight-mac-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-desktop-ai-privacy-preflight-mac-text-review.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-desktop-ai-privacy-preflight-mac-image-export.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-desktop-ai-privacy-preflight-mac-pdf-review.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-desktop-ai-rag-quality-lab-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-desktop-ai-rag-quality-lab-contract-drift.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-desktop-ai-release-guardian-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-desktop-ai-release-guardian-approval-audit.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-desktop-analytics-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-desktop-analytics-analytics-tandem-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-desktop-analytics-credit-policy-lab-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-desktop-analytics-credit-policy-lab-policy-decision.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-desktop-analytics-margin-control-tower-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-desktop-analytics-margin-control-tower-scenario.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-desktop-engineering-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-desktop-engineering-p1-reliability-lab-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-desktop-engineering-p1-reliability-lab-failure-recovery.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-home-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-ai-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-ai-privacy-preflight-mac-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-ai-privacy-preflight-mac-text-review.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-ai-rag-quality-lab-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-ai-rag-quality-lab-contract-drift.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-ai-release-guardian-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-ai-release-guardian-approval-audit.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-analytics-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-analytics-analytics-tandem-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-analytics-credit-policy-lab-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-analytics-credit-policy-lab-policy-decision.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-analytics-margin-control-tower-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-analytics-margin-control-tower-scenario.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-engineering-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-engineering-p1-reliability-lab-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-desktop-engineering-p1-reliability-lab-failure-recovery.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-tablet-home-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-tablet-ai-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-tablet-ai-privacy-preflight-mac-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-tablet-ai-privacy-preflight-mac-text-review.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-tablet-ai-rag-quality-lab-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-tablet-ai-rag-quality-lab-contract-drift.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-tablet-ai-release-guardian-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-tablet-ai-release-guardian-approval-audit.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-tablet-analytics-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-tablet-analytics-analytics-tandem-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-tablet-analytics-credit-policy-lab-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-tablet-analytics-credit-policy-lab-policy-decision.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-tablet-analytics-margin-control-tower-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-tablet-analytics-margin-control-tower-scenario.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-tablet-engineering-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-tablet-engineering-p1-reliability-lab-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-tablet-engineering-p1-reliability-lab-failure-recovery.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-home-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-ai-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-ai-privacy-preflight-mac-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-ai-privacy-preflight-mac-text-review.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-ai-rag-quality-lab-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-ai-rag-quality-lab-contract-drift.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-ai-release-guardian-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-ai-release-guardian-approval-audit.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-analytics-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-analytics-analytics-tandem-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-analytics-credit-policy-lab-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-analytics-credit-policy-lab-policy-decision.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-analytics-margin-control-tower-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-analytics-margin-control-tower-scenario.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-engineering-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-engineering-p1-reliability-lab-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-tablet-engineering-p1-reliability-lab-failure-recovery.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-mobile-home-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-mobile-ai-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-mobile-ai-privacy-preflight-mac-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-mobile-ai-privacy-preflight-mac-text-review.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-mobile-ai-rag-quality-lab-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-mobile-ai-rag-quality-lab-contract-drift.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-mobile-ai-release-guardian-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-mobile-ai-release-guardian-approval-audit.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-mobile-analytics-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-mobile-analytics-analytics-tandem-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-mobile-analytics-credit-policy-lab-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-mobile-analytics-credit-policy-lab-policy-decision.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-mobile-analytics-margin-control-tower-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-mobile-analytics-margin-control-tower-scenario.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-mobile-engineering-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-mobile-engineering-p1-reliability-lab-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/en-mobile-engineering-p1-reliability-lab-failure-recovery.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-home-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-ai-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-ai-privacy-preflight-mac-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-ai-privacy-preflight-mac-text-review.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-ai-rag-quality-lab-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-ai-rag-quality-lab-contract-drift.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-ai-release-guardian-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-ai-release-guardian-approval-audit.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-analytics-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-analytics-analytics-tandem-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-analytics-credit-policy-lab-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-analytics-credit-policy-lab-policy-decision.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-analytics-margin-control-tower-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-analytics-margin-control-tower-scenario.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-engineering-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-engineering-p1-reliability-lab-initial.png",
+    "phase2-public-review-artifacts/baseline/screenshots/zh-mobile-engineering-p1-reliability-lab-failure-recovery.png"
+  ],
+  "issues": [
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "preview-toolbar-csp",
+      "page": "all routes",
+      "severity": "high",
+      "category": "preview toolbar/CSP",
+      "problem": "Vercel injects the Preview Toolbar feedback script, while the site CSP blocks it and logs a console error on every page.",
+      "reproduction": "Open any public Review route with a fresh console and observe the blocked vercel.live feedback script.",
+      "screenshot": "phase2-public-review-artifacts/baseline/screenshots/en-desktop-home-initial.png"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "artifact experience:https://portfolio-site-gpt-review.vercel.app/case-studies/credit-policy-lab/README.md:Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "page": "https://portfolio-site-gpt-review.vercel.app/case-studies/credit-policy-lab/README.md",
+      "severity": "medium",
+      "category": "artifact experience",
+      "problem": "Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "reproduction": "Follow the artifact link https://portfolio-site-gpt-review.vercel.app/case-studies/credit-policy-lab/README.md from its case study.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "artifact experience:https://portfolio-site-gpt-review.vercel.app/case-studies/credit-policy-lab/policy-contract.json:Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "page": "https://portfolio-site-gpt-review.vercel.app/case-studies/credit-policy-lab/policy-contract.json",
+      "severity": "medium",
+      "category": "artifact experience",
+      "problem": "Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "reproduction": "Follow the artifact link https://portfolio-site-gpt-review.vercel.app/case-studies/credit-policy-lab/policy-contract.json from its case study.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "artifact experience:https://portfolio-site-gpt-review.vercel.app/case-studies/credit-policy-lab/synthetic-credit-data.json:Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "page": "https://portfolio-site-gpt-review.vercel.app/case-studies/credit-policy-lab/synthetic-credit-data.json",
+      "severity": "medium",
+      "category": "artifact experience",
+      "problem": "Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "reproduction": "Follow the artifact link https://portfolio-site-gpt-review.vercel.app/case-studies/credit-policy-lab/synthetic-credit-data.json from its case study.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "artifact experience:https://portfolio-site-gpt-review.vercel.app/case-studies/margin-control-tower/README.md:Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "page": "https://portfolio-site-gpt-review.vercel.app/case-studies/margin-control-tower/README.md",
+      "severity": "medium",
+      "category": "artifact experience",
+      "problem": "Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "reproduction": "Follow the artifact link https://portfolio-site-gpt-review.vercel.app/case-studies/margin-control-tower/README.md from its case study.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "artifact experience:https://portfolio-site-gpt-review.vercel.app/case-studies/margin-control-tower/data-contract.json:Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "page": "https://portfolio-site-gpt-review.vercel.app/case-studies/margin-control-tower/data-contract.json",
+      "severity": "medium",
+      "category": "artifact experience",
+      "problem": "Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "reproduction": "Follow the artifact link https://portfolio-site-gpt-review.vercel.app/case-studies/margin-control-tower/data-contract.json from its case study.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "artifact experience:https://portfolio-site-gpt-review.vercel.app/case-studies/margin-control-tower/metric-registry.json:Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "page": "https://portfolio-site-gpt-review.vercel.app/case-studies/margin-control-tower/metric-registry.json",
+      "severity": "medium",
+      "category": "artifact experience",
+      "problem": "Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "reproduction": "Follow the artifact link https://portfolio-site-gpt-review.vercel.app/case-studies/margin-control-tower/metric-registry.json from its case study.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "artifact experience:https://portfolio-site-gpt-review.vercel.app/case-studies/margin-control-tower/synthetic-margin-data.json:Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "page": "https://portfolio-site-gpt-review.vercel.app/case-studies/margin-control-tower/synthetic-margin-data.json",
+      "severity": "medium",
+      "category": "artifact experience",
+      "problem": "Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "reproduction": "Follow the artifact link https://portfolio-site-gpt-review.vercel.app/case-studies/margin-control-tower/synthetic-margin-data.json from its case study.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "artifact experience:https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/checkpoint_metrics.json:Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "page": "https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/checkpoint_metrics.json",
+      "severity": "medium",
+      "category": "artifact experience",
+      "problem": "Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "reproduction": "Follow the artifact link https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/checkpoint_metrics.json from its case study.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "artifact experience:https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/eo_reconciliation.json:Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "page": "https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/eo_reconciliation.json",
+      "severity": "medium",
+      "category": "artifact experience",
+      "problem": "Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "reproduction": "Follow the artifact link https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/eo_reconciliation.json from its case study.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "artifact experience:https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/iceberg_small_file_rewrite.json:Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "page": "https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/iceberg_small_file_rewrite.json",
+      "severity": "medium",
+      "category": "artifact experience",
+      "problem": "Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "reproduction": "Follow the artifact link https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/iceberg_small_file_rewrite.json from its case study.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "artifact experience:https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/phase-1.1-smoke.json:Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "page": "https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/phase-1.1-smoke.json",
+      "severity": "medium",
+      "category": "artifact experience",
+      "problem": "Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "reproduction": "Follow the artifact link https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/phase-1.1-smoke.json from its case study.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "artifact experience:https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/phase-1.2-cdc-smoke.json:Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "page": "https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/phase-1.2-cdc-smoke.json",
+      "severity": "medium",
+      "category": "artifact experience",
+      "problem": "Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "reproduction": "Follow the artifact link https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/phase-1.2-cdc-smoke.json from its case study.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "artifact experience:https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/u6-local-mac/eo_reconciliation-all.json:Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "page": "https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/u6-local-mac/eo_reconciliation-all.json",
+      "severity": "medium",
+      "category": "artifact experience",
+      "problem": "Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "reproduction": "Follow the artifact link https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/results/u6-local-mac/eo_reconciliation-all.json from its case study.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "artifact experience:https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/workstation-reproduction-guide.md:Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "page": "https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/workstation-reproduction-guide.md",
+      "severity": "medium",
+      "category": "artifact experience",
+      "problem": "Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "reproduction": "Follow the artifact link https://portfolio-site-gpt-review.vercel.app/case-studies/p1-reliability-lab/workstation-reproduction-guide.md from its case study.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "artifact experience:https://portfolio-site-gpt-review.vercel.app/case-studies/privacy-preflight/manifest.json:Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "page": "https://portfolio-site-gpt-review.vercel.app/case-studies/privacy-preflight/manifest.json",
+      "severity": "medium",
+      "category": "artifact experience",
+      "problem": "Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "reproduction": "Follow the artifact link https://portfolio-site-gpt-review.vercel.app/case-studies/privacy-preflight/manifest.json from its case study.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "artifact experience:https://portfolio-site-gpt-review.vercel.app/case-studies/privacy-preflight/pdf-synthetic-redacted.pdf:Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "page": "https://portfolio-site-gpt-review.vercel.app/case-studies/privacy-preflight/pdf-synthetic-redacted.pdf",
+      "severity": "medium",
+      "category": "artifact experience",
+      "problem": "Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "reproduction": "Follow the artifact link https://portfolio-site-gpt-review.vercel.app/case-studies/privacy-preflight/pdf-synthetic-redacted.pdf from its case study.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "artifact experience:https://portfolio-site-gpt-review.vercel.app/case-studies/rag-quality-lab/c3-timebox/README.md:Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "page": "https://portfolio-site-gpt-review.vercel.app/case-studies/rag-quality-lab/c3-timebox/README.md",
+      "severity": "medium",
+      "category": "artifact experience",
+      "problem": "Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "reproduction": "Follow the artifact link https://portfolio-site-gpt-review.vercel.app/case-studies/rag-quality-lab/c3-timebox/README.md from its case study.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "artifact experience:https://portfolio-site-gpt-review.vercel.app/case-studies/rag-quality-lab/claim-registry.json:Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "page": "https://portfolio-site-gpt-review.vercel.app/case-studies/rag-quality-lab/claim-registry.json",
+      "severity": "medium",
+      "category": "artifact experience",
+      "problem": "Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "reproduction": "Follow the artifact link https://portfolio-site-gpt-review.vercel.app/case-studies/rag-quality-lab/claim-registry.json from its case study.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "artifact experience:https://portfolio-site-gpt-review.vercel.app/case-studies/release-guardian/architecture.mmd:Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "page": "https://portfolio-site-gpt-review.vercel.app/case-studies/release-guardian/architecture.mmd",
+      "severity": "medium",
+      "category": "artifact experience",
+      "problem": "Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "reproduction": "Follow the artifact link https://portfolio-site-gpt-review.vercel.app/case-studies/release-guardian/architecture.mmd from its case study.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "artifact experience:https://portfolio-site-gpt-review.vercel.app/case-studies/release-guardian/data/findings.csv:Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "page": "https://portfolio-site-gpt-review.vercel.app/case-studies/release-guardian/data/findings.csv",
+      "severity": "medium",
+      "category": "artifact experience",
+      "problem": "Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "reproduction": "Follow the artifact link https://portfolio-site-gpt-review.vercel.app/case-studies/release-guardian/data/findings.csv from its case study.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "artifact experience:https://portfolio-site-gpt-review.vercel.app/case-studies/release-guardian/replay/synthetic-scenarios.json:Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "page": "https://portfolio-site-gpt-review.vercel.app/case-studies/release-guardian/replay/synthetic-scenarios.json",
+      "severity": "medium",
+      "category": "artifact experience",
+      "problem": "Artifact is linked as a raw file instead of opening in a contextual viewer.",
+      "reproduction": "Follow the artifact link https://portfolio-site-gpt-review.vercel.app/case-studies/release-guardian/replay/synthetic-scenarios.json from its case study.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "external link:https://github.com/LucisZhang/portfolio-site/blob/main/PUBLICATION.md:Anonymous request returned HTTP 429.",
+      "page": "https://github.com/LucisZhang/portfolio-site/blob/main/PUBLICATION.md",
+      "severity": "high",
+      "category": "external link",
+      "problem": "Anonymous request returned HTTP 429.",
+      "reproduction": "Open https://github.com/LucisZhang/portfolio-site/blob/main/PUBLICATION.md without an authenticated session.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "external link:https://www.linkedin.com/in/xiangguo-zhang:Anonymous request returned HTTP 999.",
+      "page": "https://www.linkedin.com/in/xiangguo-zhang",
+      "severity": "medium",
+      "category": "external link",
+      "problem": "Anonymous request returned HTTP 999.",
+      "reproduction": "Open https://www.linkedin.com/in/xiangguo-zhang without an authenticated session.",
+      "screenshot": "none"
+    },
+    {
+      "status": "open",
+      "fixVerification": "pending",
+      "dedupeKey": "localization:/:Chinese selection persists only in browser storage; the URL cannot preserve or share the selected language.",
+      "page": "/",
+      "severity": "high",
+      "category": "localization",
+      "problem": "Chinese selection persists only in browser storage; the URL cannot preserve or share the selected language.",
+      "reproduction": "Switch to Chinese, copy the URL, then open it in a fresh context.",
+      "screenshot": "none"
+    }
+  ],
+  "localePersistence": {
+    "initialUrl": "https://portfolio-site-gpt-review.vercel.app/",
+    "switchedUrl": "https://portfolio-site-gpt-review.vercel.app/",
+    "persisted": true,
+    "shareable": false
+  },
+  "issueCounts": {
+    "high": 3,
+    "medium": 22
+  }
+}

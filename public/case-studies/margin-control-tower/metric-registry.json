@@ -1,0 +1,33 @@
+{
+  "schema_version": 2,
+  "metrics": [
+    {
+      "id": "gross_revenue",
+      "formula": "units * unit_price",
+      "grain": "week x product x region x channel",
+      "unit": "synthetic currency units"
+    },
+    {
+      "id": "net_revenue",
+      "formula": "gross_revenue - discounts - returns",
+      "grain": "week x product x region x channel",
+      "unit": "synthetic currency units"
+    },
+    {
+      "id": "contribution_margin",
+      "formula": "net_revenue - cogs - fulfillment",
+      "grain": "week x product x region x channel",
+      "unit": "synthetic currency units",
+      "decision_use": "diagnose margin leakage and compare bounded promotion scenarios"
+    },
+    {
+      "id": "contribution_margin_rate",
+      "formula": "contribution_margin / gross_revenue",
+      "grain": "selected analytical slice",
+      "unit": "ratio",
+      "decision_use": "compare slices with different revenue scales"
+    }
+  ],
+  "owner": "fictional category finance owner",
+  "provenance": "computed from fixed-seed synthetic dataset v2"
+}

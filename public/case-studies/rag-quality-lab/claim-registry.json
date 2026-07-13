@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-07-13",
+  "evidence_mode": "Deterministic Verifier",
+  "project": "RAG Quality Lab",
+  "public_repository": {
+    "url": "https://github.com/LucisZhang/rag-quality-lab",
+    "baseline_commit": "0fc1433",
+    "c2_sync_status": "pending",
+    "boundary": "The current public repository is baseline code and does not yet contain the local C2 checkpoints."
+  },
+  "evidence_checkpoint": {
+    "commit": "6c887a1",
+    "visibility": "private local working copy",
+    "verification_date": "2026-07-12"
+  },
+  "baseline_manifest": {
+    "dataset": "EnterpriseRAG-Bench v1.0.0 S1 (confluence + jira)",
+    "documents": 11309,
+    "questions": 130,
+    "tests_passed": 68,
+    "answer_quality_metrics": null,
+    "c3_results_generated": false,
+    "fallback_metrics_substituted": false,
+    "public_c2_code_synced": false
+  },
+  "claims": [
+    {
+      "id": "c2.documents",
+      "display": "11,309 S1 documents",
+      "status": "verified",
+      "source": "data/MANIFEST.json at local evidence checkpoint 6c887a1",
+      "source_sha256": "8d3a06a06340eea30aa5aeb5e6e243c0278f0097d434de4327b091777ec44dd9",
+      "boundary": "Dataset and adapter integrity only; not retrieval or answer quality."
+    },
+    {
+      "id": "c2.questions",
+      "display": "130 S1-answerable questions",
+      "status": "verified",
+      "source": "data/MANIFEST.json at local evidence checkpoint 6c887a1",
+      "source_sha256": "b2775a25da1d64d3f7db7e78f262c827ca6ac2bfaa4e173069d62eafdb2348fa",
+      "boundary": "Question adaptation and integrity only; no completed C3 evaluation."
+    },
+    {
+      "id": "c2.tests",
+      "display": "68 passing tests",
+      "status": "verified",
+      "source": "Local CI-equivalent verification at checkpoint 6c887a1 on 2026-07-12",
+      "source_sha256": null,
+      "boundary": "Model-free tests and deterministic wrappers; not answer-quality evidence."
+    },
+    {
+      "id": "c3.results",
+      "display": "C3 closed without metrics",
+      "status": "blocked_no_results",
+      "source": "/case-studies/rag-quality-lab/c3-timebox/dependency-preflight.json",
+      "source_sha256": "78ab99f3c9d40c1e96f272dad9992acda2035e5af7750c401e46dd70f563418e",
+      "boundary": "No retrieval table, answer-quality score, judged result, or fallback metric exists."
+    }
+  ],
+  "forbidden_current_claims": [
+    "498,725 documents as the current C2 scope",
+    "0.809 to 0.944 as a current answer-quality result",
+    "C3 retrieval metrics",
+    "fallback or toy-pipeline metrics",
+    "C2 code already synced to the public repository"
+  ]
+}

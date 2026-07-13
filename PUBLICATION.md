@@ -28,3 +28,19 @@ records package chronology; it is not the current publication status.
 
 Approval does not extend to the private source repository, raw reports, prompts, scenarios,
 traces, datasets, original screenshots, or any substituted asset hash.
+
+## Phase 2 release candidate
+
+Phase 2 is prepared on `codex/portfolio-phase2` and remains a review candidate. It adds six current
+case studies, URL-based Chinese localization, contextual artifact viewers, deeper fixed-seed
+analytics fixtures, and a sanitized Release Guardian presentation-layer source entry. The legacy
+Analytics Tandem URL remains a migration page.
+
+The new Review URL and final verification results are recorded in
+[`docs/phase2-release-candidate.md`](docs/phase2-release-candidate.md). This candidate does not:
+
+- change or alias the production deployment;
+- modify any approved Release Guardian asset or hash;
+- publish a private candidate repository;
+- publish the unsigned and unnotarized macOS build;
+- merge a public repository pull request.
