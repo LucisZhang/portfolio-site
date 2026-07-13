@@ -24,10 +24,10 @@ and Credit regenerated their JSON/CSV/Parquet outputs from the scoped fixed-seed
 reported no leaks, and TruffleHog reported zero verified and zero unverified secrets for all three
 candidates. These checks do not authorize making a repository public.
 
-The Portfolio Review deployment is `dpl_E4UoaJLJzk1GDgL5WPBGYDMoWwu9` at
-`portfolio-site-phase2-review.vercel.app`. Access uses a Vercel Shareable Link whose secure
-parameter is distributed out of band and is not stored in this manifest, Git history, screenshots,
-or machine reports. The deployment is Preview-only; production remains unchanged.
+The public Portfolio Review deployment is `dpl_GHCdY6nEZQLSUCMDDCqnedrs3xAf` in isolated project
+`prj_HB6kn3PkGaIcNWB0BwC2SE6x1gDW`, at `portfolio-site-gpt-review.vercel.app`. It returns HTTP 200
+without a login or secret. The final deployment explicitly targets Preview; production remains
+unchanged.
 
 ## macOS source boundary
 

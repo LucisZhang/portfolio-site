@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-13T09:26:07.659Z",
-  "baseUrl": "https://portfolio-site-phase2-review.vercel.app/",
+  "generatedAt": "2026-07-13T10:21:56.213Z",
+  "baseUrl": "https://portfolio-site-gpt-review.vercel.app/",
   "routes": [
     "/",
     "/ai",

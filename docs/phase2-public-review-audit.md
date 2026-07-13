@@ -1,6 +1,6 @@
 # Phase 2 public Review audit
 
-Updated: 2026-07-13 18:06 Asia/Shanghai (10:06 UTC)
+Updated: 2026-07-13 18:23 Asia/Shanghai (10:23 UTC)
 
 ## Baseline
 
@@ -13,9 +13,10 @@ The baseline established the original information hierarchy, raw-file experience
 
 ## Final Review
 
-- Review origin: <https://portfolio-site-phase2-review.vercel.app>
-- Preview deployment: `dpl_E4UoaJLJzk1GDgL5WPBGYDMoWwu9`, `READY`, non-production
-- Access: Vercel Shareable Link authorization; the secure query parameter is distributed out of band and is not stored in Git or audit files
+- Review origin: <https://portfolio-site-gpt-review.vercel.app>
+- Isolated Vercel project: `prj_HB6kn3PkGaIcNWB0BwC2SE6x1gDW`
+- Preview deployment: `dpl_GHCdY6nEZQLSUCMDDCqnedrs3xAf`, `READY`, target Preview
+- Access: public HTTP 200 with no Vercel Authentication, cookie, password, or query secret
 - Browser: Google Chrome through Playwright, fresh contexts, service workers blocked
 - Viewports: 1440 x 1000, 1024 x 900, 390 x 844
 - Locales: English and Chinese, including shareable `?lang=zh` navigation and refresh
@@ -26,7 +27,7 @@ The baseline established the original information hierarchy, raw-file experience
 
 All 66 page states and all 65 public artifacts returned HTTP 200. The final report records zero critical, high, medium, or low issues; zero document-level horizontal overflow; zero application console errors; zero page exceptions; and successful project interactions. Next.js ArtifactViewer prefetches cancelled when an audited page closed are excluded as expected browser lifecycle events.
 
-The link checker covered 68 internal targets and 8 external targets with zero errors. LinkedIn returned HTTP 999 to the automated request and remains a recorded anti-bot warning. Mobile Lighthouse scored Performance 99, Accessibility 100, Best Practices 100, and SEO 100; LCP was 1.7 seconds, TBT 40 milliseconds, and CLS 0.
+The link checker covered 68 internal targets and 8 external targets with zero errors. LinkedIn returned HTTP 999 to the automated request and remains a recorded anti-bot warning. Mobile Lighthouse scored Performance 96, Accessibility 100, Best Practices 100, and SEO 100; LCP was 2.6 seconds, TBT 30 milliseconds, and CLS 0.
 
 ## Finding resolution
 
@@ -51,8 +52,9 @@ The link checker covered 68 internal targets and 8 external targets with zero er
 
 ## Boundaries
 
-- The Review is not a production deployment and was created without `--prod`.
+- The final Review is a Preview deployment created with explicit `--target=preview`; it was not promoted and no `--prod` command was used.
+- Vercel initially defaulted the first deployment in the isolated project to target Production despite no `--prod`; `dpl_DxeptbuYPQ16sDkJnP3bG7q23MjU` was cancelled while building and never reached READY.
 - Production remains `dpl_3Z6REfn6jCR9BXvyBQ4qSP1yChAw`; its ETag remains `b34f9f7eceba45aa1138c766998f440c`.
-- The Shareable Link grants external Review access without disabling Vercel Authentication for every Preview. The secret is intentionally absent from committed artifacts.
+- Public access is isolated to `portfolio-site-phase2-public-review`; the existing production project and its protected Preview policy were not opened globally.
 - Privacy, Margin, and Credit repositories remain private. Their Portfolio source labels do not imply publication authorization.
 - No formal macOS binary is published; licensing, packaging, signing, notarization, and stapling gates remain open.

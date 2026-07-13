@@ -1,24 +1,25 @@
 # Portfolio Phase 2 release candidate
 
-Updated: 2026-07-13 18:06 Asia/Shanghai (10:06 UTC)
+Updated: 2026-07-13 18:23 Asia/Shanghai (10:23 UTC)
 
 ## Review entry points
 
-- Phase 2 Review origin: <https://portfolio-site-phase2-review.vercel.app>
-- English home: <https://portfolio-site-phase2-review.vercel.app/>
-- Chinese home: <https://portfolio-site-phase2-review.vercel.app/?lang=zh>
-- Preview deployment: `dpl_E4UoaJLJzk1GDgL5WPBGYDMoWwu9`, `READY`, target Preview
-- External access: Vercel Shareable Link parameter provided separately; it is not committed
+- Phase 2 Review origin: <https://portfolio-site-gpt-review.vercel.app>
+- English home: <https://portfolio-site-gpt-review.vercel.app/>
+- Chinese home: <https://portfolio-site-gpt-review.vercel.app/?lang=zh>
+- Isolated Vercel project: `prj_HB6kn3PkGaIcNWB0BwC2SE6x1gDW`
+- Preview deployment: `dpl_GHCdY6nEZQLSUCMDDCqnedrs3xAf`, `READY`, target Preview
+- External access: public HTTP 200; no login, cookie, password, or query secret
 - Production, unchanged: <https://portfolio-site-seven-murex.vercel.app>
 
 ## Six direct project routes
 
-- [Release Guardian](https://portfolio-site-phase2-review.vercel.app/ai/release-guardian)
-- [p1 Reliability Lab](https://portfolio-site-phase2-review.vercel.app/engineering/p1-reliability-lab)
-- [RAG Quality Lab](https://portfolio-site-phase2-review.vercel.app/ai/rag-quality-lab)
-- [Privacy Preflight](https://portfolio-site-phase2-review.vercel.app/ai/privacy-preflight-mac)
-- [Margin Control Tower](https://portfolio-site-phase2-review.vercel.app/analytics/margin-control-tower)
-- [Credit Policy Lab](https://portfolio-site-phase2-review.vercel.app/analytics/credit-policy-lab)
+- [Release Guardian](https://portfolio-site-gpt-review.vercel.app/ai/release-guardian)
+- [p1 Reliability Lab](https://portfolio-site-gpt-review.vercel.app/engineering/p1-reliability-lab)
+- [RAG Quality Lab](https://portfolio-site-gpt-review.vercel.app/ai/rag-quality-lab)
+- [Privacy Preflight](https://portfolio-site-gpt-review.vercel.app/ai/privacy-preflight-mac)
+- [Margin Control Tower](https://portfolio-site-gpt-review.vercel.app/analytics/margin-control-tower)
+- [Credit Policy Lab](https://portfolio-site-gpt-review.vercel.app/analytics/credit-policy-lab)
 
 Append `?lang=zh` to any route for the shareable Chinese version. `/analytics/analytics-tandem` is a migration page, not a seventh project.
 
@@ -59,9 +60,10 @@ Review deployment:
 - Localization: 30 dictionary keys, 11 routes in English and Chinese, 0 findings.
 - Links: 11 routes, 68 internal targets, 8 external targets, 0 errors; LinkedIn HTTP 999 is one anti-bot warning.
 - Browser matrix: 11 routes, 66 states, 65 artifacts, 104 referenced screenshots, 0 issues.
-- Lighthouse mobile: Performance 99, Accessibility 100, Best Practices 100, SEO 100; LCP 1.7s, TBT 40ms, CLS 0.
-- Review alias uses an out-of-band Vercel Shareable Link; the saved reports contain no access token.
+- Lighthouse mobile: Performance 96, Accessibility 100, Best Practices 100, SEO 100; LCP 2.6s, TBT 30ms, CLS 0.
+- Review access is public on an isolated Vercel project; the saved reports contain no access token because none is required.
 - Production remains `dpl_3Z6REfn6jCR9BXvyBQ4qSP1yChAw`, READY, with unchanged ETag `b34f9f7eceba45aa1138c766998f440c`.
+- Vercel's first-deployment default briefly created `dpl_DxeptbuYPQ16sDkJnP3bG7q23MjU` with target Production in the isolated project; it was cancelled while building. The final deployment explicitly used `--target=preview`.
 
 ## License and macOS state
 
