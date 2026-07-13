@@ -1,0 +1,31 @@
+{
+  "generatedAt": "2026-07-13T09:26:07.659Z",
+  "baseUrl": "https://portfolio-site-phase2-review.vercel.app/",
+  "routes": [
+    "/",
+    "/ai",
+    "/ai/privacy-preflight-mac",
+    "/ai/rag-quality-lab",
+    "/ai/release-guardian",
+    "/analytics",
+    "/analytics/analytics-tandem",
+    "/analytics/credit-policy-lab",
+    "/analytics/margin-control-tower",
+    "/engineering",
+    "/engineering/p1-reliability-lab"
+  ],
+  "internalTargets": 68,
+  "externalTargets": 8,
+  "findings": [
+    {
+      "severity": "warning",
+      "category": "external rate limit",
+      "page": "external",
+      "target": "https://www.linkedin.com/in/xiangguo-zhang",
+      "message": "Automated request returned HTTP 999; verify in a normal anonymous browser."
+    }
+  ],
+  "counts": {
+    "warning": 1
+  }
+}

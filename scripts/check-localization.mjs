@@ -10,6 +10,7 @@ function option(name, fallback = "") {
 }
 
 const baseUrl = new URL(option("--url", process.env.PORTFOLIO_URL || "http://127.0.0.1:4173"));
+const vercelShareToken = process.env.VERCEL_SHARE_TOKEN || "";
 const findings = [];
 const allowlist = new Set([
   "API", "Apple Silicon", "Brier", "CDC", "CSV", "Docker", "EAD", "Email", "Flink", "GitHub", "Hugging Face", "Iceberg", "JSON", "JPEG", "LGD", "Mac", "Mermaid", "MySQL", "Next.js", "OCR", "PDF", "PII", "PNG", "PSI", "RAG", "README", "SHA-256", "SQL", "Streamlit", "Swift", "Tableau", "TypeScript", "Web Worker", "macOS", "pdf-lib", "run ID",
@@ -17,6 +18,17 @@ const allowlist = new Set([
 
 function addFinding(severity, category, page, message, value = "") {
   findings.push({ severity, category, page, message, value });
+}
+
+function accessUrl(value) {
+  const url = new URL(value, baseUrl);
+  if (vercelShareToken) url.searchParams.set("_vercel_share", vercelShareToken);
+  return url;
+}
+
+async function authorizeContext(context) {
+  if (!vercelShareToken) return;
+  await context.request.get(accessUrl("/").href, { failOnStatusCode: false, timeout: 30_000 });
 }
 
 function dictionaryKeys(source, variableName) {
@@ -44,10 +56,12 @@ try {
     const contexts = await Promise.all(["en", "zh"].map(async (locale) => {
       const context = await browser.newContext({ locale: locale === "zh" ? "zh-CN" : "en-US", serviceWorkers: "block" });
       const page = await context.newPage();
+      await authorizeContext(context);
       const url = new URL(route, baseUrl);
       if (locale === "zh") url.searchParams.set("lang", "zh");
       const response = await page.goto(url.href, { waitUntil: "domcontentloaded", timeout: 30_000 });
-      await page.waitForTimeout(250);
+      await page.waitForLoadState("networkidle", { timeout: 15_000 }).catch(() => undefined);
+      await page.waitForTimeout(750);
       const snapshot = await page.evaluate(() => ({
         url: location.href,
         lang: document.documentElement.lang,
@@ -83,9 +97,12 @@ try {
 
   const context = await browser.newContext({ serviceWorkers: "block" });
   const page = await context.newPage();
+  await authorizeContext(context);
   const url = new URL("/", baseUrl);
   url.searchParams.set("lang", "zh");
   await page.goto(url.href, { waitUntil: "domcontentloaded" });
+  await page.waitForLoadState("networkidle", { timeout: 15_000 }).catch(() => undefined);
+  await page.waitForTimeout(750);
   await page.getByRole("link", { name: /Release Guardian/ }).click();
   if (new URL(page.url()).searchParams.get("lang") !== "zh") addFinding("error", "navigation locale", "/", "Internal navigation dropped the Chinese locale.", page.url());
   await page.reload({ waitUntil: "domcontentloaded" });

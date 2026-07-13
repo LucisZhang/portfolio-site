@@ -10,6 +10,7 @@ function option(name, fallback = "") {
 }
 
 const baseUrl = new URL(option("--url", process.env.PORTFOLIO_URL || "http://127.0.0.1:4173"));
+const vercelShareToken = process.env.VERCEL_SHARE_TOKEN || "";
 const output = option("--output");
 const routeQueue = ["/", "/analytics/analytics-tandem"];
 const visitedRoutes = new Set();
@@ -34,6 +35,17 @@ function addFinding(severity, category, page, message, target = "") {
   findings.push({ severity, category, page, target, message });
 }
 
+function accessUrl(value) {
+  const url = new URL(value, baseUrl);
+  if (vercelShareToken) url.searchParams.set("_vercel_share", vercelShareToken);
+  return url;
+}
+
+async function authorizeContext(context) {
+  if (!vercelShareToken) return;
+  await context.request.get(accessUrl("/").href, { failOnStatusCode: false, timeout: 30_000 });
+}
+
 function normalizeRoute(url) {
   return `${url.pathname}${url.searchParams.has("lang") ? `?lang=${url.searchParams.get("lang")}` : ""}`;
 }
@@ -52,6 +64,7 @@ function addInternal(url, detail) {
 const browser = await chromium.launch({ channel: "chrome", headless: true });
 try {
   const context = await browser.newContext({ serviceWorkers: "block" });
+  await authorizeContext(context);
   while (routeQueue.length) {
     const route = routeQueue.shift();
     if (!route || visitedRoutes.has(route)) continue;
@@ -59,7 +72,8 @@ try {
     const page = await context.newPage();
     const response = await page.goto(new URL(route, baseUrl).href, { waitUntil: "domcontentloaded", timeout: 30_000 });
     if (!response || response.status() >= 400) addFinding("error", "route", route, `Route returned HTTP ${response?.status() || 0}.`);
-    await page.waitForTimeout(250);
+    await page.waitForLoadState("networkidle", { timeout: 15_000 }).catch(() => undefined);
+    await page.waitForTimeout(750);
     const controls = await page.evaluate(() => ({
       anchors: [...document.querySelectorAll("a")].map((anchor) => ({
         href: anchor.getAttribute("href") || "",

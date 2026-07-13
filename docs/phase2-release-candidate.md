@@ -1,41 +1,41 @@
 # Portfolio Phase 2 release candidate
 
-Updated: 2026-07-13
+Updated: 2026-07-13 18:06 Asia/Shanghai (10:06 UTC)
 
 ## Review entry points
 
-- Public baseline: <https://portfolio-site-gpt-review.vercel.app>
-- New anonymous Phase 2 Preview: pending final candidate deployment
-- English home: pending
-- Chinese home: pending (`?lang=zh`)
-- Production remains unchanged: <https://portfolio-site-seven-murex.vercel.app>
+- Phase 2 Review origin: <https://portfolio-site-phase2-review.vercel.app>
+- English home: <https://portfolio-site-phase2-review.vercel.app/>
+- Chinese home: <https://portfolio-site-phase2-review.vercel.app/?lang=zh>
+- Preview deployment: `dpl_E4UoaJLJzk1GDgL5WPBGYDMoWwu9`, `READY`, target Preview
+- External access: Vercel Shareable Link parameter provided separately; it is not committed
+- Production, unchanged: <https://portfolio-site-seven-murex.vercel.app>
 
 ## Six direct project routes
 
-The final Preview origin will be combined with these routes:
+- [Release Guardian](https://portfolio-site-phase2-review.vercel.app/ai/release-guardian)
+- [p1 Reliability Lab](https://portfolio-site-phase2-review.vercel.app/engineering/p1-reliability-lab)
+- [RAG Quality Lab](https://portfolio-site-phase2-review.vercel.app/ai/rag-quality-lab)
+- [Privacy Preflight](https://portfolio-site-phase2-review.vercel.app/ai/privacy-preflight-mac)
+- [Margin Control Tower](https://portfolio-site-phase2-review.vercel.app/analytics/margin-control-tower)
+- [Credit Policy Lab](https://portfolio-site-phase2-review.vercel.app/analytics/credit-policy-lab)
 
-- `/ai/release-guardian`
-- `/engineering/p1-reliability-lab`
-- `/ai/rag-quality-lab`
-- `/ai/privacy-preflight-mac`
-- `/analytics/margin-control-tower`
-- `/analytics/credit-policy-lab`
+Append `?lang=zh` to any route for the shareable Chinese version. `/analytics/analytics-tandem` is a migration page, not a seventh project.
 
-Append `?lang=zh` to any route for the shareable Chinese version. The old
-`/analytics/analytics-tandem` URL is a migration page, not a seventh project.
-
-## Before and after review evidence
+## Review evidence
 
 - Baseline screenshots: `docs/phase2-public-review-artifacts/baseline/screenshots/`
-- Final screenshots: pending under `docs/phase2-public-review-artifacts/final/screenshots/`
-- Baseline audit: `docs/phase2-public-review-audit.md`
-- Final anonymous audit: pending candidate deployment
+- Final screenshots: `docs/phase2-public-review-artifacts/final/screenshots/`
+- Baseline and final resolution: `docs/phase2-public-review-audit.md`
+- Final machine report: `docs/phase2-public-review-artifacts/final/audit.json`
+- Final link report: `docs/phase2-public-review-artifacts/final-link-check.json`
+- Sanitized Lighthouse report: `docs/phase2-public-review-artifacts/final/lighthouse-mobile.json`
 
-## Repository candidates
+## Repository state
 
 | Repository | State |
 | --- | --- |
-| Portfolio Site | `codex/portfolio-phase2`; public PR pending |
+| Portfolio Site | `codex/portfolio-phase2`; [PR #1](https://github.com/LucisZhang/portfolio-site/pull/1) open, not merged |
 | RAG Quality Lab | `codex/c2-claim-reconciliation`; [PR #1](https://github.com/LucisZhang/rag-quality-lab/pull/1) open, not merged |
 | p1 Reliability Lab | `codex/portfolio-readme`; [PR #3](https://github.com/LucisZhang/p1-reliability-lab/pull/3) open, not merged |
 | Risk-Control-Portfolio | `codex/legacy-label`; [PR #1](https://github.com/LucisZhang/Risk-Control-Portfolio/pull/1) open, not merged |
@@ -43,49 +43,41 @@ Append `?lang=zh` to any route for the shareable Chinese version. The old
 | margin-control-tower | Private candidate at `68ef751`; publication not authorized |
 | credit-policy-lab | Private candidate at `639fbc0`; publication not authorized |
 
-See `docs/github-publication-manifest.md` for license, data, source-label, scan, and publication
-boundaries.
+## Verification
 
-## Verification status
+Local candidate:
 
-Completed on the current local candidate:
+- TypeScript, ESLint, evidence verification, production build, and performance budget passed.
+- Playwright: 112 passed, 14 intentional viewport-specific skips, 0 failed.
+- Performance budget: 152,262 JavaScript bytes and 138,807 CSS bytes uncompressed.
+- Privacy benchmark: 7 fixtures, 19 expected, 18 hit, 0 false positives, 94.7% recall, 100% precision.
+- `npm audit --omit=dev --audit-level=high`: 0 vulnerabilities.
+- Candidate Gitleaks and TruffleHog scans: 0 leaks; 0 verified and 0 unverified secrets.
 
-- TypeScript: passed.
-- ESLint: passed.
-- Evidence verifier: passed after updating assertions to the Phase 2 fixture dimensions.
-- Production build: passed outside the restricted sandbox; Turbopack required an internal local port.
-- Performance budget: 152,262 JavaScript bytes and 138,807 CSS bytes, uncompressed; passed.
-- Localization checker: 30 dictionary keys, 11 routes x English/Chinese, no findings.
-- Playwright: 112 passed, 14 intentional viewport-specific skips, zero failed.
+Review deployment:
 
-Still required after the final commit and public Preview:
-
-- local and public link checks;
-- second full public browser audit and screenshots;
-- npm audit, Gitleaks, TruffleHog, and Lighthouse;
-- anonymous access verification and normal-browser checks for rate-limited profile links.
+- Localization: 30 dictionary keys, 11 routes in English and Chinese, 0 findings.
+- Links: 11 routes, 68 internal targets, 8 external targets, 0 errors; LinkedIn HTTP 999 is one anti-bot warning.
+- Browser matrix: 11 routes, 66 states, 65 artifacts, 104 referenced screenshots, 0 issues.
+- Lighthouse mobile: Performance 99, Accessibility 100, Best Practices 100, SEO 100; LCP 1.7s, TBT 40ms, CLS 0.
+- Review alias uses an out-of-band Vercel Shareable Link; the saved reports contain no access token.
+- Production remains `dpl_3Z6REfn6jCR9BXvyBQ4qSP1yChAw`, READY, with unchanged ETag `b34f9f7eceba45aa1138c766998f440c`.
 
 ## License and macOS state
 
-Portfolio content remains all rights reserved. The three private candidate repositories have no
-chosen publication license and cannot be made public as an implied license decision. Synthetic data
-sources and assumptions are documented in each candidate README.
+Portfolio content remains all rights reserved. The three private candidate repositories have no chosen publication license and cannot be made public as an implied license decision. Synthetic data sources and assumptions are documented in each candidate README.
 
-No formal macOS download is included. The captured source checkpoint built and passed 95 worker
-tests, but the candidate is thin arm64, ad hoc signed, not notarized or stapled, does not bundle its
-runtime/dependencies, and has an unresolved PyMuPDF AGPL/commercial licensing gate. See
-`docs/privacy-macos-release-audit.md`.
+No formal macOS download is included. The captured source checkpoint built and passed 95 worker tests, but the candidate is thin arm64, ad hoc signed, not notarized or stapled, does not bundle its runtime/dependencies, and has an unresolved PyMuPDF AGPL/commercial licensing gate. See `docs/privacy-macos-release-audit.md`.
 
-## Production publication actions
+## Final publishing actions
 
-After candidate acceptance and an explicit final authorization, the release operator would:
+After candidate acceptance and separate explicit authorization:
 
-1. Merge the reviewed Portfolio, RAG, p1, and legacy disclosure PRs specified in the publication manifest.
+1. Merge the reviewed Portfolio, RAG, p1, and legacy disclosure PRs.
 2. Decide licenses, then separately authorize any visibility changes for the three private candidates.
 3. Replace the three pending Source states only after those repositories are anonymously accessible.
-4. Archive `Risk-Control-Portfolio` only if explicitly authorized after its disclosure PR merges.
+4. Archive `Risk-Control-Portfolio` only if separately authorized after its disclosure PR merges.
 5. Keep macOS Release creation blocked until licensing, packaging, signing, notarization, stapling, entitlements, SHA-256, and anonymous-download checks pass.
-6. Deploy Portfolio production only with a separate production authorization; do not reuse the Preview command with `--prod` implicitly.
+6. Deploy Portfolio production only with separate production authorization; this Review did not use `--prod`.
 
-The only requested human action at this stage is candidate acceptance. No merge, visibility change,
-legacy archive, macOS Release, or production deployment is part of this review build.
+No merge, visibility change, legacy archive, macOS Release, or production deployment is part of this Review candidate.

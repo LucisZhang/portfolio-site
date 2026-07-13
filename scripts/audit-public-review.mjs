@@ -10,6 +10,7 @@ for (let index = 2; index < process.argv.length; index += 2) {
 }
 
 const baseUrl = new URL(args.get("--url") || "https://portfolio-site-gpt-review.vercel.app");
+const vercelShareToken = process.env.VERCEL_SHARE_TOKEN || "";
 const label = args.get("--label") || "baseline";
 const requiredRoutes = (args.get("--required-routes") || "/analytics/analytics-tandem")
   .split(",")
@@ -33,6 +34,17 @@ function stablePathname(value) {
   return url.pathname.replace(/\/+$/, "") || "/";
 }
 
+function accessUrl(value) {
+  const url = new URL(value, baseUrl);
+  if (vercelShareToken) url.searchParams.set("_vercel_share", vercelShareToken);
+  return url;
+}
+
+async function authorizeContext(context) {
+  if (!vercelShareToken) return;
+  await context.request.get(accessUrl("/").href, { failOnStatusCode: false, timeout: 30_000 });
+}
+
 function isArtifact(value) {
   return artifactExtensions.has(path.extname(new URL(value, baseUrl).pathname).toLowerCase());
 }
@@ -51,6 +63,12 @@ function issue(report, issue) {
     dedupeKey,
     ...issue,
   });
+}
+
+function isExpectedArtifactPrefetchAbort(problem) {
+  return problem.includes(`GET ${baseUrl.origin}/artifact?`)
+    && problem.includes("_rsc=")
+    && problem.endsWith("net::ERR_ABORTED");
 }
 
 async function walkFiles(root, relative = "") {
@@ -110,9 +128,11 @@ async function discoverSite(browser) {
     window.sessionStorage.clear();
   });
   const page = await context.newPage();
+  await authorizeContext(context);
   const queue = ["/", ...requiredRoutes];
   const routes = new Set();
   const artifacts = new Set();
+  const linkedArtifacts = new Set();
   const externalLinks = new Set();
   const mailLinks = new Set();
   const placeholders = [];
@@ -130,6 +150,7 @@ async function discoverSite(browser) {
     const links = await page.locator("a").evaluateAll((nodes) => nodes.map((node) => ({
       href: node.getAttribute("href") || "",
       text: (node.textContent || "").trim().replace(/\s+/g, " "),
+      download: node.getAttribute("download"),
     })));
     for (const link of links) {
       if (!link.href || link.href === "#" || link.href.startsWith("javascript:")) {
@@ -146,8 +167,14 @@ async function discoverSite(browser) {
         continue;
       }
       if (resolved.pathname.startsWith("/_next/")) continue;
+      if (resolved.pathname === "/artifact") {
+        const source = resolved.searchParams.get("src");
+        if (source) artifacts.add(new URL(source, baseUrl).href);
+        continue;
+      }
       if (isArtifact(resolved.href)) {
         artifacts.add(resolved.href);
+        if (route !== "/artifact" && link.download === null && path.extname(resolved.pathname).toLowerCase() !== ".parquet") linkedArtifacts.add(resolved.href);
         continue;
       }
       const pathname = stablePathname(resolved.href);
@@ -159,7 +186,7 @@ async function discoverSite(browser) {
   return {
     routes: [...routes].sort(),
     artifacts: [...artifacts].sort(),
-    linkedArtifacts: [...artifacts].sort(),
+    linkedArtifacts: [...linkedArtifacts].sort(),
     externalLinks: [...externalLinks].sort(),
     mailLinks: [...mailLinks].sort(),
     placeholders,
@@ -204,8 +231,8 @@ async function runInteraction(page, route, locale, viewport, pdfFixture, report)
       const lab = page.getByTestId("credit-policy-lab");
       await lab.waitFor({ state: "visible" });
       const ranges = lab.locator('input[type="range"]');
-      await ranges.last().fill("30");
-      const record = lab.getByRole("button").filter({ hasText: /Record|记录/ }).first();
+      await ranges.last().fill("360");
+      const record = lab.locator(".credit-publish-policy");
       if (await record.isEnabled()) await record.click();
       await screenshot("policy-decision");
     } else if (route === "/ai/privacy-preflight-mac") {
@@ -226,9 +253,13 @@ async function runInteraction(page, route, locale, viewport, pdfFixture, report)
           await page.mouse.move(bounds.x + bounds.width * 0.66, bounds.y + bounds.height * 0.4, { steps: 5 });
           await page.mouse.up();
         }
-        const imageDownload = page.waitForEvent("download");
-        await lab.getByRole("button", { name: "Burn in + export PNG" }).click();
-        const downloadedImage = await imageDownload;
+        await lab.getByRole("button", { name: "Preview redacted result" }).click();
+        const imageOutput = lab.getByTestId("privacy-image-output");
+        await imageOutput.waitFor({ state: "visible" });
+        const [downloadedImage] = await Promise.all([
+          page.waitForEvent("download"),
+          imageOutput.getByRole("link", { name: "Download redacted file" }).click(),
+        ]);
         await downloadedImage.saveAs(path.join(outputRoot, downloadedImage.suggestedFilename()));
         await screenshot("image-export");
 
@@ -259,6 +290,7 @@ async function auditPages(browser, discovered, pdfFixture, report) {
         serviceWorkers: "block",
         acceptDownloads: true,
       });
+      await authorizeContext(context);
       await context.addInitScript((selectedLocale) => {
         window.localStorage.clear();
         window.sessionStorage.clear();
@@ -274,7 +306,10 @@ async function auditPages(browser, discovered, pdfFixture, report) {
           if (message.type() === "error") consoleErrors.push(message.text());
         });
         page.on("pageerror", (error) => pageErrors.push(error.message));
-        page.on("requestfailed", (request) => failedRequests.push(`${request.method()} ${request.url()} ${request.failure()?.errorText || "failed"}`));
+        page.on("requestfailed", (request) => {
+          const problem = `${request.method()} ${request.url()} ${request.failure()?.errorText || "failed"}`;
+          if (!isExpectedArtifactPrefetchAbort(problem)) failedRequests.push(problem);
+        });
 
         const startedAt = Date.now();
         let response;
@@ -372,6 +407,9 @@ async function auditPages(browser, discovered, pdfFixture, report) {
 
 async function auditLinks(browser, discovered, report) {
   const context = await browser.newContext({ serviceWorkers: "block" });
+  if (vercelShareToken) {
+    await context.request.get(accessUrl("/").href, { timeout: 30_000, failOnStatusCode: false });
+  }
   for (const href of discovered.artifacts) {
     const response = await context.request.get(href, { timeout: 30_000, failOnStatusCode: false });
     const contentType = response.headers()["content-type"] || "";
@@ -414,7 +452,7 @@ async function auditLinks(browser, discovered, report) {
       error = reason instanceof Error ? reason.message : String(reason);
     }
     report.externalLinks.push({ href, status, error });
-    if (!status || status >= 400) issue(report, {
+    if ((!status || status >= 400) && ![429, 999].includes(status)) issue(report, {
       page: href,
       severity: href.includes("github.com") ? "high" : "medium",
       category: "external link",
@@ -438,6 +476,7 @@ async function auditLinks(browser, discovered, report) {
 async function auditLocaleSharing(browser, report) {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, serviceWorkers: "block" });
   const page = await context.newPage();
+  await authorizeContext(context);
   await page.goto(baseUrl.href, { waitUntil: "domcontentloaded" });
   await settle(page);
   const initialUrl = page.url();
@@ -466,7 +505,8 @@ async function main() {
     generatedAt: new Date().toISOString(),
     baseUrl: baseUrl.href,
     label,
-    browser: "Google Chrome via Playwright, fresh contexts, service workers blocked",
+    browser: "Google Chrome via Playwright, fresh contexts, service workers blocked, Review share-link authorization when configured",
+    accessMode: vercelShareToken ? "Vercel Shareable Link" : "anonymous",
     viewports,
     locales,
     routes: [],

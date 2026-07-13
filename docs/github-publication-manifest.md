@@ -7,7 +7,7 @@ candidates. A private URL must never be rendered as a clickable Portfolio source
 
 | Project | Repository and state | Branch / PR | Code license | Data license | Secrets scan | Portfolio label / URL | Blocker before publication |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Portfolio Site | `LucisZhang/portfolio-site`, public | `codex/portfolio-phase2`; PR pending branch push | All rights reserved; `NOTICE.md` | Project-specific synthetic or approved sanitized files only | Gitleaks and TruffleHog final scans pending | `Portfolio source`; feature-branch URL during review | PR review and final production authorization |
+| Portfolio Site | `LucisZhang/portfolio-site`, public | `codex/portfolio-phase2`; [PR #1](https://github.com/LucisZhang/portfolio-site/pull/1) open, not merged | All rights reserved; `NOTICE.md` | Project-specific synthetic or approved sanitized files only | Candidate Gitleaks and TruffleHog scans passed; final follow-up diff is rescanned before push | `Portfolio source`; feature-branch URL during review | PR review and final production authorization |
 | Release Guardian demo | Actual component inside Portfolio public candidate | Same Portfolio branch / PR | Portfolio rights apply | Four deterministic synthetic scenarios; approved historical files retain exact manifest hashes | Covered by Portfolio scans | `Public sanitized demo source`; `src/components/release/` | Do not describe as private production source |
 | p1 Reliability Lab | `LucisZhang/p1-reliability-lab`, public | `codex/portfolio-readme`; [PR #3](https://github.com/LucisZhang/p1-reliability-lab/pull/3) | No license file found | Captured evidence retains repository terms | Staged README diff passed; existing synthetic `business_key` values trigger repository-wide generic-key heuristics | `GitHub repository`; public baseline until PR merges | README PR review; keep environment boundary |
 | RAG Quality Lab | `LucisZhang/rag-quality-lab`, public | `codex/c2-claim-reconciliation`; [PR #1](https://github.com/LucisZhang/rag-quality-lab/pull/1) | No license file found | Existing repository datasets retain their recorded sources/terms | Working tree scan passed | `Current claim reconciliation PR` | PR review; current C2 implementation is still not claimed public |
@@ -23,6 +23,11 @@ mobile Playwright checks. Privacy additionally passed its fixed seven-fixture OC
 and Credit regenerated their JSON/CSV/Parquet outputs from the scoped fixed-seed generators. Gitleaks
 reported no leaks, and TruffleHog reported zero verified and zero unverified secrets for all three
 candidates. These checks do not authorize making a repository public.
+
+The Portfolio Review deployment is `dpl_E4UoaJLJzk1GDgL5WPBGYDMoWwu9` at
+`portfolio-site-phase2-review.vercel.app`. Access uses a Vercel Shareable Link whose secure
+parameter is distributed out of band and is not stored in this manifest, Git history, screenshots,
+or machine reports. The deployment is Preview-only; production remains unchanged.
 
 ## macOS source boundary
 
