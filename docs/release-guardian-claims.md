@@ -12,26 +12,44 @@ company/repository-owner and legal gate is complete. Underlying artifacts may be
 they are within the privately recorded approval scope and pass the W4 allowlist, sanitization,
 scan, and final artifact-sign-off workflow. No raw artifact has been copied or published yet.
 
-## 1. Evidence artifacts (canonical locations + integrity anchors)
+## 1. Evidence artifacts (public paths + integrity anchors)
 
-| Artifact | Location | Integrity |
+This public candidate intentionally omits the private source repository, source bundle,
+materials archive, raw evaluation JSON, and private source documentation. No local storage or
+coordination path is part of the public provenance contract. Public review must use the
+sanitized derivatives below together with the boundaries recorded in the evidence manifest.
+
+| Public artifact | Purpose / boundary | SHA-256 |
 |---|---|---|
-| Source repo working copy | `~/release-guardian-portfolio` (PRIVATE, no remote) | HEAD `ca2ef58dfc1a6dc188ccb9e87525c9537ab8e11d`, 27 commits, fsck-clean; pre-migration HEAD `9c338c5` is a fast-forward ancestor (11 new commits) |
-| Source bundle (original) | `~/Downloads/release-guardian-source-ca2ef58.bundle` | sha256 `1c9cf23846a3cba1b311d036601d612d318b3789228d0ac391fa1d9ffdd11a91` (matches handoff SHA256SUMS; re-verified at W1 clone time) |
-| Materials archive (original) | `~/Downloads/release-guardian-portfolio-materials-ca2ef58.tar.gz` | sha256 `5e58c6fa96f5557431a7af730563d2396df8ad8b16062c58ab57b53ee8e47a1c` (matches SHA256SUMS) |
-| Handoff (extracted, canonical) | `…/Codex/2026-07-09/computer-use-claude-artifacts-download-follow/release_guardian-company-handoff-20260711` | contains `source/`, materials dir, SHA256SUMS |
-| Funded live report (AUTHORITATIVE) | handoff `…-materials-ca2ef58/eval/reports/post-l-live-funded.json` | sha256 `0e07cefc977279471b5b37189d05f5de91bd7ea67c16a294f26dd8c5ca4102c6` |
-| Post-L stub report | same dir, `post-l-stub.json` | sha256 `b1cf95f202dc12ab3ff709e3f978159936902fd7a9a09b278f9852f7c0d346fb` |
-| Pre-L stub report | same dir, `pre-l-stub.json` | sha256 `ef157b1be85a5f185543b0067001611cf4c47491f63161ed50f00a17e14d8e9f` |
-| Pre-L live report (baseline, known failures) | same dir, `pre-l-live.json` | sha256 `dc5fa6dc3fe43f239c55a6c892058da6369d604087eb33b217f05abb16c0a6a7` |
-| Cost/latency report | repo `eval/results/cost_report.json` @ ca2ef58 (byte-identical copy in materials archive) | sha256 `5008a039aace2bea0731dd68e7cd4c33f94b043c9e476640601ab3ea00caaafc`; `generated_at` 2026-07-08 (PRE-migration, xAI-era stack + prices) |
-| Docs (README/ARCHITECTURE/DECISIONS/EVAL/INTERVIEW_DEFENSE/MIGRATION_PROGRESS) | repo @ ca2ef58 | byte-identical to materials-archive copies (diff-verified 2026-07-12) |
-| Screenshots ×3 (change/trace/eval views) | repo `docs/screenshots/` @ ca2ef58 | byte-identical to archive copies; eligible only through approved W4 staging and visual review |
+| `public/case-studies/release-guardian/manifest.json` | Authoritative public inventory, provenance labels, approval state, and per-asset boundaries | `f37967289db4816cfd5f23bdad7ca281b979f52420c4bf65b34b0383a6796eb8` |
+| `public/case-studies/release-guardian/data/evaluation-live.csv` | Sanitized funded-live aggregate metrics; must be paired with the 30/44 strict residual | `29eca7eddbc8885c0eb96705af46883c5986f61dda46f6a34c261e86aa49a892` |
+| `public/case-studies/release-guardian/data/evaluation-stub.csv` | Deterministic-stub metrics; not live performance; must be paired with the 15/44 strict residual | `a312feb6599f7e63732ad36387c3bb390bc73f18a67695e9437182dcd01b1bfe` |
+| `public/case-studies/release-guardian/data/cost-evidence.csv` | Sanitized measured, estimated, projected, and modeled cost evidence with labels retained | `3eb3ac2908f8e7b9aec9b725e8f757dcca1fb89010022ba6643f83ac3532201c` |
+| `public/case-studies/release-guardian/data/findings.csv` | Sanitized consistency findings derived from this claims matrix | `8f479171837a543ff8e8439ac983d37fc4b3bb1ccb3792486e037a828d7f9b95` |
+| `public/case-studies/release-guardian/replay/synthetic-scenarios.json` | Fictional deterministic replay inputs only | `9e28c710e63191ac37f9b015e52f3a41a5f848d7286dd93ed94fcb4d7d506541` |
+| `public/case-studies/release-guardian/architecture.mmd` | Public diagram source written from the approved claim boundary | `ca53cb3aab82d1d02ad14a11f6e394a710be81a0ff3f5c48feefac093d70ddba` |
+| `public/case-studies/release-guardian/screenshots/risk-guardrail.png` | Sanitized deterministic risk-factor crop; candidate for exact-asset review | `0df0b05fdd99188946c594462f9beb84dc8efd69dee5de147f408707acc582a9` |
+| `public/case-studies/release-guardian/screenshots/pipeline-trace-stub.png` | Sanitized stub design trace; not a live latency benchmark | `22de4890f08b961dee8e7c234f843d702a7833a6f825a199d9cc708db645acff` |
+| `public/case-studies/release-guardian/screenshots/evaluation-stub.png` | Sanitized deterministic-stub evaluation crop; not live performance | `f534a133d5bc2a0cf6b0aed3425446127537b1a72e6ce14c8c3978486719eff9` |
+
+Private raw-source integrity anchors are retained only to make derivation auditable; the files
+themselves are not distributed in this repository:
+
+| Private source artifact | Boundary | SHA-256 |
+|---|---|---|
+| `post-l-live-funded.json` | Authoritative funded-live source for §2 | `0e07cefc977279471b5b37189d05f5de91bd7ea67c16a294f26dd8c5ca4102c6` |
+| `post-l-stub.json` | Deterministic post-L source for §3 | `b1cf95f202dc12ab3ff709e3f978159936902fd7a9a09b278f9852f7c0d346fb` |
+| `pre-l-stub.json` | Deterministic pre-L comparison source for §3 | `ef157b1be85a5f185543b0067001611cf4c47491f63161ed50f00a17e14d8e9f` |
+| `pre-l-live.json` | Known-failure operational baseline for §4; not a clean causal baseline | `dc5fa6dc3fe43f239c55a6c892058da6369d604087eb33b217f05abb16c0a6a7` |
+| `cost_report.json` | 2026-07-08 pre-migration snapshot; source for §5 | `5008a039aace2bea0731dd68e7cd4c33f94b043c9e476640601ab3ea00caaafc` |
+
+The private source commit anchor is
+`ca2ef58dfc1a6dc188ccb9e87525c9537ab8e11d`; its pre-migration ancestor is `9c338c5`.
 
 **Provenance note (important):** the four Phase-L eval reports (run 2026-07-11) are NOT
 tracked files in the repo at `ca2ef58` — the repo's tracked `eval/results/` holds only the
 2026-07-08 stub-era reports (`latest.json` == `eval-20260708-140546.json`, hash-identical).
-The Phase-L raw JSON exists only in the handoff materials archive; commit `ca2ef58`
+The Phase-L raw JSON exists only in the retained private source archive; commit `ca2ef58`
 ("docs: record funded Phase L evaluation") records the same values as text in EVAL.md and
 MIGRATION_PROGRESS.md. Cite the archive as the raw-data source for all Phase-L numbers.
 

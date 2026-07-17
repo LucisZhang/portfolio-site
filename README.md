@@ -42,7 +42,7 @@ flowchart LR
   live under `public/case-studies/` and open through contextual viewers where supported.
 - **Reproducibility plane:** `pipelines/` records generation commands, input hashes, environment,
   provenance, and output verification for the analytics derivatives.
-- **Claim control:** `src/lib/projects.ts`, `docs/project-state/`, and the evidence verifier keep
+- **Claim control:** `src/lib/projects.ts`, `docs/EVIDENCE_INDEX.md`, and the evidence verifier keep
   visible numbers tied to project-specific provenance and limitation text.
 
 Start with the [claim-to-artifact evidence index](docs/EVIDENCE_INDEX.md). It is the shortest route
@@ -78,8 +78,8 @@ npm run test:e2e -- --workers=1
 npm audit --omit=dev
 ```
 
-The browser suite is serialized on the documented review Mac to avoid host-level Chrome resource
-contention. See [`docs/RUNBOOK.md`](docs/RUNBOOK.md) for the complete workflow and
+The browser suite is serialized on the review Mac to avoid host-level Chrome resource contention.
+See [`STATE.md`](STATE.md) for the commit-local public boundary and
 [`docs/PUBLICATION_CHECKLIST.md`](docs/PUBLICATION_CHECKLIST.md) for the exact owner-gated steps
 needed before a branch, pull request, or deployment can be represented as public-current.
 

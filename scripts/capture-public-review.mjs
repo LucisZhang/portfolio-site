@@ -2,6 +2,8 @@ import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { chromium } from "@playwright/test";
 
+const browserChannel = process.env.PLAYWRIGHT_CHANNEL || "chrome";
+
 const baseUrl = process.env.PORTFOLIO_CAPTURE_BASE_URL ?? "http://127.0.0.1:4173";
 const outputDirectory = path.resolve(
   "docs/phase2-public-review-artifacts/portfolio-upgrade-20260717/screenshots",
@@ -31,7 +33,7 @@ async function capture(page, route, filename, fullPage = true) {
 }
 
 await mkdir(outputDirectory, { recursive: true });
-const browser = await chromium.launch({ channel: "chrome", headless: true });
+const browser = await chromium.launch({ channel: browserChannel, headless: true });
 
 try {
   const desktop = await browser.newPage({ viewport: { width: 1440, height: 900 } });

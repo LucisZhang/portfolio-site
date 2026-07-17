@@ -29,18 +29,19 @@ records package chronology; it is not the current publication status.
 Approval does not extend to the private source repository, raw reports, prompts, scenarios,
 traces, datasets, original screenshots, or any substituted asset hash.
 
-## Phase 2 release candidate
+## Current feature-branch candidate
 
-Phase 2 is prepared on `codex/portfolio-phase2` and remains a review candidate. It adds six current
-case studies, URL-based Chinese localization, contextual artifact viewers, deeper fixed-seed
-analytics fixtures, and a sanitized Release Guardian presentation-layer source entry. The legacy
-Analytics Tandem URL remains a migration page.
+The current delivery is prepared for `codex/portfolio-phase2` and remains a review candidate. It
+adds six current case studies, bilingual localization, contextual artifact viewers, the two
+derived-only real-data Analytics pipelines, and the arm64 Privacy Preflight app/source package.
+The legacy Analytics Tandem URL remains a migration page.
 
-The new Review URL and final verification results are recorded in
-[`docs/phase2-release-candidate.md`](docs/phase2-release-candidate.md). This candidate does not:
+Commit-local evidence is indexed in [`docs/EVIDENCE_INDEX.md`](docs/EVIDENCE_INDEX.md); the
+publication gates are in [`docs/PUBLICATION_CHECKLIST.md`](docs/PUBLICATION_CHECKLIST.md). Merely
+creating this candidate does not:
 
 - change or alias the production deployment;
 - modify any approved Release Guardian asset or hash;
 - publish a private candidate repository;
-- publish the unsigned and unnotarized macOS build;
+- establish anonymous availability of the staged unnotarized macOS download;
 - merge a public repository pull request.

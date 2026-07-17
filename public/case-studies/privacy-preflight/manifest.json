@@ -44,6 +44,13 @@
       "sha256": "a783351c3262b70b65a59daf04df0531e8d3756aa6b9f79e7a0f10baad52aeb9"
     },
     {
+      "path": "worker-tests-goal-candidate.json",
+      "generated_at": "2026-07-17T23:11:22Z",
+      "source": "exact final app/source ZIP replay",
+      "bytes": 3061,
+      "sha256": "97b66536d10ae24186fffe4725e7f10809d0473bd87a486c8068b560ade626c4"
+    },
+    {
       "path": "image-example-english.png",
       "generated_at": "2026-07-17",
       "source": "scripts/generate-privacy-examples.mjs",
@@ -114,7 +121,7 @@
     "swiftui_app_capture": "development app running against local worker on 127.0.0.1:8891",
     "pdf_export": "image-only; extractable text layer empty",
     "swift_build": "passed",
-    "worker_tests": "95 passed"
+    "worker_tests": "96 passed on the final source snapshot with the exact app ZIP interpreter and runtime dependencies"
   },
   "worker_endpoint": "127.0.0.1:8891",
   "browser_fixture_identity": {
@@ -132,6 +139,6 @@
     },
     "boundary": "Synthetic local OCR fixtures only. These results are not a general OCR performance claim."
   },
-  "source_base_commit": "2f9b5a08371d02ba441abbc439faf33ffc72cdac",
-  "source_state": "local Goal candidate, uncommitted when generated; asset hashes authoritative"
+  "source_snapshot": "runtime-matching metadata-stripped public source; exact identity is the source ZIP SHA-256 in downloads/release-manifest.json",
+  "source_sanitization": "internal coordination files, caches, build outputs, editable-install provenance, and first-party Swift debug paths are excluded"
 }

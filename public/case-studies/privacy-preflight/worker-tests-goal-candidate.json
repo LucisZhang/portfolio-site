@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "recordType": "exact-artifact-worker-test-summary",
+  "recordedAt": "2026-07-17T23:11:22Z",
+  "scope": "Final 0.1.0 source snapshot tested with the CPython 3.12.13 interpreter and application dependencies extracted from the final ad-hoc-signed app ZIP.",
+  "artifacts": {
+    "appZip": {
+      "path": "/case-studies/privacy-preflight/downloads/Privacy-Preflight-0.1.0-macOS-arm64-unnotarized.zip",
+      "sha256": "360083a7fab6b60600f597b28a32c533a9df932766c21b80cba80e6c56350911"
+    },
+    "sourceZip": {
+      "path": "/case-studies/privacy-preflight/downloads/Privacy-Preflight-0.1.0-source.zip",
+      "sha256": "4138cd3b61a17b4f7b36a5e104389aa229f5e638c3d3a019ce6aa26171624295"
+    },
+    "embeddedInterpreter": {
+      "relativePath": "Privacy Preflight.app/Contents/Resources/python/bin/python3.12",
+      "version": "3.12.13",
+      "sha256AfterArchiveExtraction": "8d5d747730b43e5adf1e686243c0382be22e54f651e38d7c75aa826a88f40b1b"
+    },
+    "sourceWorkerTree": {
+      "relativePath": "Privacy-Preflight-0.1.0-source/services/worker",
+      "files": 35,
+      "fingerprintAlgorithm": "SHA-256 of sorted lines from SHA-256(relative file bytes) plus relative POSIX path; .pytest_cache and pyc excluded",
+      "sha256": "60ca942cb6be93ce004fa02ce32fd089355ba461997ed6bbf9700b0eb0e77dbf"
+    }
+  },
+  "harness": {
+    "pytestVersion": "8.4.2",
+    "pytestFrontendBundled": false,
+    "applicationDependenciesSource": "final app ZIP embedded runtime",
+    "pytestFrontendSource": "pre-existing local test environment, appended after embedded site-packages",
+    "pluginAutoloadDisabled": true,
+    "cacheProviderDisabled": true,
+    "bytecodeWritesDisabled": true,
+    "commandTemplate": "cd <source-extract>/Privacy-Preflight-0.1.0-source/services/worker && PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 <app-extract>/Privacy Preflight.app/Contents/Resources/python/bin/python3.12 -c 'append the pytest 8.4.2 frontend after embedded site-packages; run pytest.main([\"-p\", \"no:cacheprovider\"])'"
+  },
+  "results": {
+    "collected": 96,
+    "passed": 96,
+    "failed": 0,
+    "warnings": 1,
+    "durationSeconds": 1.66,
+    "warningTypes": [
+      "StarletteDeprecationWarning for the embedded FastAPI TestClient httpx compatibility layer"
+    ]
+  },
+  "junit": {
+    "tests": 96,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "timeSeconds": 1.660,
+    "rawReporterBytes": 11816,
+    "rawReporterSha256": "3c1e04dd8bed211445c6e873adf1b60ee964ab962abcfe40cc21af0fd8fcb40c",
+    "rawReporterPublished": false,
+    "reason": "The public summary preserves the JUnit totals but excludes the raw runner-hostname field."
+  },
+  "boundary": "The previous 95-test statement predated the general Chinese-mobile regression. This 96-test result covers the final source snapshot. The separately supplied pytest frontend is test harness only; the interpreter, application modules, and runtime dependencies under test came from the final artifacts. This is not a clean-Mac compatibility or notarization result."
+}

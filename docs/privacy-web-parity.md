@@ -2,7 +2,7 @@
 
 Updated: 2026-07-17
 
-Authority for Mac behavior: `~/Privacy Preflight for Mac` at source commit `78f13d5`, its SwiftUI source, worker tests, and the published synthetic evidence manifest. The web implementation is intentionally browser-local and does not call the Mac worker.
+Authority for Mac behavior: the separately maintained macOS source snapshot at commit `78f13d5`, its SwiftUI source, worker tests, and the published synthetic evidence manifest. The web implementation is intentionally browser-local and does not call the Mac worker.
 
 ## Security boundary
 

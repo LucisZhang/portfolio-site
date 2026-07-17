@@ -17,8 +17,11 @@ test.describe("analytics real-data evidence", () => {
     await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "en"));
   });
 
-  test("both project pages mount the dedicated pipeline-backed methods section", async ({ page }) => {
-    for (const [route, project] of [["/analytics/margin-control-tower", "margin"], ["/analytics/credit-policy-lab", "credit"]] as const) {
+  test("both project pages mount the dedicated methods section and exact public-branch pipeline link", async ({ page }) => {
+    for (const [route, project, sourceHref] of [
+      ["/analytics/margin-control-tower", "margin", "https://github.com/LucisZhang/portfolio-site/tree/codex/portfolio-phase2/pipelines/olist-margin"],
+      ["/analytics/credit-policy-lab", "credit", "https://github.com/LucisZhang/portfolio-site/tree/codex/portfolio-phase2/pipelines/credit-backtest"],
+    ] as const) {
       await page.goto(route, { waitUntil: "networkidle" });
       const methods = page.getByTestId(`analytics-methods-${project}`);
       await expect(methods).toBeVisible();
@@ -31,6 +34,7 @@ test.describe("analytics real-data evidence", () => {
       await expect(methods).toContainText("What changed with real data");
       await expect(methods).toContainText("Reproduce");
       await expect(methods.locator("code[title]")).toHaveText(/^[a-f0-9]{64}$/);
+      await expect(page.getByRole("link", { name: "Real-data pipeline source" })).toHaveAttribute("href", sourceHref);
     }
   });
 

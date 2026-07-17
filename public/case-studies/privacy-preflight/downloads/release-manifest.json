@@ -1,24 +1,24 @@
 {
   "schemaVersion": 2,
   "release": "0.1.0",
-  "generatedAt": "2026-07-17T10:57:47.470Z",
+  "generatedAt": "2026-07-17T23:12:00.000Z",
   "scope": "Local unnotarized Apple-silicon preview; not a general OCR or legal-grade redaction claim.",
   "artifacts": [
     {
       "path": "/case-studies/privacy-preflight/downloads/Privacy-Preflight-0.1.0-macOS-arm64-unnotarized.zip",
-      "bytes": 33991551,
-      "sha256": "dcb1735e90c59e5f33e367f925e49a50e8c1ea60ea21f25e84d283040ff83213"
+      "bytes": 33930369,
+      "sha256": "360083a7fab6b60600f597b28a32c533a9df932766c21b80cba80e6c56350911"
     },
     {
       "path": "/case-studies/privacy-preflight/downloads/Privacy-Preflight-0.1.0-source.zip",
-      "bytes": 208775,
-      "sha256": "545c4a6ef538291ca75a9fc93651f462a846190316f6d886657707831b5a492f"
+      "bytes": 202613,
+      "sha256": "4138cd3b61a17b4f7b36a5e104389aa229f5e638c3d3a019ce6aa26171624295"
     }
   ],
   "bundle": {
     "minimumMacOS": "14.0",
     "architecture": "arm64",
-    "rawAppDiskUsageKiB": 94840,
+    "rawAppDiskUsageKiB": 94476,
     "machOFiles": 37,
     "allMachOThinArm64": true,
     "embeddedPython": "3.12.13",
@@ -32,10 +32,11 @@
     "spctlAssessment": "Code Signing subsystem internal error; no accept/reject result"
   },
   "verification": {
-    "workerTests": "95 passed under the exact embedded runtime before release pruning",
+    "workerTests": "96 passed on the final source snapshot with the CPython 3.12.13 interpreter and application dependencies extracted from the exact app ZIP; pytest 8.4.2 frontend supplied separately as the test harness",
     "ocrFixtureBenchmark": "19/19 exact expected values; 2 false positives across 7 fixed synthetic fixtures using the complete browser-equivalent multi-pass union",
     "isolatedPathSmoke": "PATH=/bin; bundled Vision OCR found EMAIL, PHONE, and LOCAL_PATH in the Chinese fixture; scanned PDF produced three OCR regions",
-    "archiveSmoke": "zip extracted, deep strict codesign verified, app launched, bundled worker returned health ok"
+    "archiveSmoke": "zip extracted, deep strict codesign verified, app launched with Bundled Python 3.12, bundled worker returned health ok, and graceful quit stopped the worker",
+    "publicSafety": "runtime-matching source excludes internal coordination files, caches, and build outputs; packaging disables first-party Swift debug paths, strips symbols, and removes editable-install provenance before signing"
   },
   "companionFiles": [
     {

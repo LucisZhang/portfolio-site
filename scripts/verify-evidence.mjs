@@ -69,9 +69,10 @@ assert(reproductionGuide.includes("make eo-verify ARGS=\"--failure all\""), "p1 
 
 const privacy = await verifyManifest("public/case-studies/privacy-preflight/manifest.json");
 assert(privacy.fixture_policy.includes("fictional"), "Privacy demo fixture is not marked fictional");
-assert(!("source_commit" in privacy), "Privacy manifest must not mislabel the local Goal candidate as a committed source state");
-assert(privacy.source_base_commit === "2f9b5a08371d02ba441abbc439faf33ffc72cdac", "Privacy source base checkpoint drifted");
-assert(privacy.source_state === "local Goal candidate, uncommitted when generated; asset hashes authoritative", "Privacy local source-state boundary drifted");
+assert(!("source_commit" in privacy), "Privacy manifest must not mislabel the source snapshot as a committed source state");
+assert(!("source_base_commit" in privacy), "Privacy manifest must not expose an unrelated portfolio base as source provenance");
+assert(privacy.source_snapshot === "runtime-matching metadata-stripped public source; exact identity is the source ZIP SHA-256 in downloads/release-manifest.json", "Privacy source-snapshot identity boundary drifted");
+assert(privacy.source_sanitization === "internal coordination files, caches, build outputs, editable-install provenance, and first-party Swift debug paths are excluded", "Privacy source-sanitization boundary drifted");
 const requiredPrivacyAssets = [
   "ocr-fixture-benchmark.json",
   "image-example-english.png",

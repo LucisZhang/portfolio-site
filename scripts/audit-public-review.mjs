@@ -4,6 +4,8 @@ import path from "node:path";
 import process from "node:process";
 import { PDFDocument, StandardFonts } from "pdf-lib";
 
+const browserChannel = process.env.PLAYWRIGHT_CHANNEL || "chrome";
+
 const args = new Map();
 for (let index = 2; index < process.argv.length; index += 2) {
   args.set(process.argv[index], process.argv[index + 1]);
@@ -518,7 +520,7 @@ async function main() {
     issues: [],
   };
 
-  const browser = await chromium.launch({ channel: "chrome", headless: true });
+  const browser = await chromium.launch({ channel: browserChannel, headless: true });
   try {
     const discovered = await discoverSite(browser);
     discovered.artifacts = [...new Set([...discovered.artifacts, ...await discoverPublicArtifacts()])].sort();

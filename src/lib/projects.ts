@@ -276,8 +276,8 @@ export const projects: Project[] = [
       zh: "我先做了一个 Mac 应用来复核和脱敏敏感文本、图片与 PDF，再把同样的流程搬进浏览器，加入英文与简体中文本地 OCR 及破坏式导出检查。",
     },
     metrics: {
-      en: "95 embedded-worker tests · 67 recorded browser cases · OCR 19/19 hits / 2 false positives",
-      zh: "95 项嵌入式 worker 测试 · 67 个已记录浏览器案例 · OCR 命中 19/19 / 误报 2",
+      en: "96 embedded-worker tests · 67 recorded browser cases · OCR 19/19 hits / 2 false positives",
+      zh: "96 项嵌入式 worker 测试 · 67 个已记录浏览器案例 · OCR 命中 19/19 / 误报 2",
     },
     problem: {
       en: "Sensitive material needs a careful review step before sharing, and destructive redaction must be checked separately from a visual overlay.",
@@ -292,8 +292,8 @@ export const projects: Project[] = [
       zh: "先构建 SwiftUI 基线，再将复核模型移植为浏览器本地 TypeScript 工作区，加入同源 OCR/PDF worker、确定性检测、像素烧录与 fail-closed 导出验证。",
     },
     outcome: {
-      en: "The browser workbench covers reviewed text, image, and multi-page PDF redaction. A standalone Apple-silicon preview bundles CPython 3.12.13 and the replacement PDF/OCR backend; its ZIP is ad-hoc signed only and not notarized.",
-      zh: "浏览器工作台已覆盖经复核的文本、图片与多页 PDF 脱敏。独立的 Apple 芯片预览版内置 CPython 3.12.13 及替换后的 PDF/OCR 后端；ZIP 仅使用 ad-hoc 签名，未经公证。",
+      en: "The browser workbench covers reviewed text, image, and multi-page PDF redaction. A standalone Apple-silicon preview bundles CPython 3.12.13 and the replacement PDF/OCR backend; the app inside its ZIP is ad-hoc signed only and not notarized.",
+      zh: "浏览器工作台已覆盖经复核的文本、图片与多页 PDF 脱敏。独立的 Apple 芯片预览版内置 CPython 3.12.13 及替换后的 PDF/OCR 后端；ZIP 内的应用仅使用 ad-hoc 签名，未经公证。",
     },
     stack: ["TypeScript", "Canvas", "Web Workers", "Tesseract.js", "PDF.js", "pdf-lib", "Web Crypto", "SwiftUI"],
     architecture: [
@@ -309,12 +309,12 @@ export const projects: Project[] = [
         zh: "固定的 7 组 OCR 夹具运行了与浏览器等价的完整多路结果并集：预期值命中 19/19、检测 21 项、误报 2 项、精确率 90.5%。这是合成夹具证据，不代表通用 OCR 准确率。",
       },
       {
-        en: "The replacement backend passed 95 tests under the exact embedded CPython 3.12.13 runtime. An extracted-archive smoke on the build Mac, with PATH=/bin, exercised health, Chinese image OCR, and scanned-PDF OCR through binaries inside the app bundle.",
-        zh: "替换后的后端在安装包内置的 CPython 3.12.13 运行时下通过 95 项测试。在构建所用 Mac 上解压归档后，以 PATH=/bin 完成健康检查、中文图片 OCR 与扫描版 PDF OCR，进程均使用应用包内的二进制。",
+        en: "The final replacement-backend snapshot passed 96 tests with the CPython 3.12.13 interpreter and application dependencies extracted from the exact app ZIP. An extracted-archive smoke on the build Mac, with PATH=/bin, exercised health, Chinese image OCR, and scanned-PDF OCR through binaries inside the app bundle.",
+        zh: "最终替换后端快照使用精确应用 ZIP 中的 CPython 3.12.13 解释器及应用依赖，通过了 96 项测试。在构建所用 Mac 上解压归档后，以 PATH=/bin 完成健康检查、中文图片 OCR 与扫描版 PDF OCR，进程均使用应用包内的二进制。",
       },
       {
-        en: "The arm64 app ZIP is 33,991,551 bytes with SHA-256 dcb1735e90c59e5f33e367f925e49a50e8c1ea60ea21f25e84d283040ff83213. The runtime-matching source ZIP is 208,775 bytes with SHA-256 545c4a6ef538291ca75a9fc93651f462a846190316f6d886657707831b5a492f. It was generated from a local Goal candidate based on 2f9b5a08371d02ba441abbc439faf33ffc72cdac; that state was uncommitted, so the artifact hashes are authoritative.",
-        zh: "arm64 应用 ZIP 为 33,991,551 字节，SHA-256 为 dcb1735e90c59e5f33e367f925e49a50e8c1ea60ea21f25e84d283040ff83213。运行时代码匹配的源码 ZIP 为 208,775 字节，SHA-256 为 545c4a6ef538291ca75a9fc93651f462a846190316f6d886657707831b5a492f。它由基于 2f9b5a08371d02ba441abbc439faf33ffc72cdac 的本地 Goal 候选状态生成；该状态尚未提交，因此以产物哈希为准。",
+        en: "The arm64 app ZIP is 33,930,369 bytes with SHA-256 360083a7fab6b60600f597b28a32c533a9df932766c21b80cba80e6c56350911. The runtime-matching source ZIP is 202,613 bytes with SHA-256 4138cd3b61a17b4f7b36a5e104389aa229f5e638c3d3a019ce6aa26171624295. The public source snapshot excludes internal coordination files, caches, and build outputs; its packaging script also disables first-party Swift debug paths and removes editable-install provenance before signing.",
+        zh: "arm64 应用 ZIP 为 33,930,369 字节，SHA-256 为 360083a7fab6b60600f597b28a32c533a9df932766c21b80cba80e6c56350911。运行时代码匹配的源码 ZIP 为 202,613 字节，SHA-256 为 4138cd3b61a17b4f7b36a5e104389aa229f5e638c3d3a019ce6aa26171624295。公开源码快照排除了内部协作文档、缓存与构建产物；其打包脚本还会禁用第一方 Swift 调试路径，并在签名前移除 editable-install 来源元数据。",
       },
       {
         en: "The packaged runtime uses pypdfium2/PDFium, pypdf, Pillow, and ReportLab, with no PyMuPDF or fitz package found in the bundle/source runtime scans. A 26-package SPDX 2.3 runtime SBOM, exact CPython license, dependency lock, source, and notices ship beside the download. Separately, the 2026-07-13 historical portfolio checkpoint recorded 67 passing browser cases and two intentional duplicate heavy-OCR skips; its raw reporter file was not retained, so later candidates rerun the full suite.",
@@ -392,7 +392,7 @@ export const projects: Project[] = [
     ],
     links: [
       { label: { en: "Public browser implementation", zh: "公开浏览器实现" }, href: "https://github.com/LucisZhang/portfolio-site/blob/codex/portfolio-phase2/src/components/analytics/MarginControlTower.tsx" },
-      { label: { en: "Real-data pipeline source", zh: "真实数据管道源码" }, pending: { en: "Pipeline publication pending", zh: "管道尚待公开发布" } },
+      { label: { en: "Real-data pipeline source", zh: "真实数据管道源码" }, href: "https://github.com/LucisZhang/portfolio-site/tree/codex/portfolio-phase2/pipelines/olist-margin" },
       { label: { en: "Read project README", zh: "项目 README" }, href: "/case-studies/margin-control-tower/README.md" },
       { label: { en: "Open data contract", zh: "数据契约" }, href: "/case-studies/margin-control-tower/data-contract.json" },
     ],
@@ -431,7 +431,7 @@ export const projects: Project[] = [
     ],
     links: [
       { label: { en: "Public browser implementation", zh: "公开浏览器实现" }, href: "https://github.com/LucisZhang/portfolio-site/blob/codex/portfolio-phase2/src/components/analytics/CreditPolicyLab.tsx" },
-      { label: { en: "Real-data pipeline source", zh: "真实数据管道源码" }, pending: { en: "Pipeline publication pending", zh: "管道尚待公开发布" } },
+      { label: { en: "Real-data pipeline source", zh: "真实数据管道源码" }, href: "https://github.com/LucisZhang/portfolio-site/tree/codex/portfolio-phase2/pipelines/credit-backtest" },
       { label: { en: "Read project README", zh: "项目 README" }, href: "/case-studies/credit-policy-lab/README.md" },
       { label: { en: "Open policy contract", zh: "策略契约" }, href: "/case-studies/credit-policy-lab/policy-contract.json" },
       { label: { en: "Prior Streamlit demo", zh: "先前 Streamlit 演示" }, href: "https://huggingface.co/spaces/Luciss007/Risk-Control-Portfolio" },

@@ -15,22 +15,21 @@ visibility change, or GitHub Release was performed while preparing it.
   `234da138c3bc6b81569da8aa6fc9a1325a4d344f`.
 - [PR #1](https://github.com/LucisZhang/portfolio-site/pull/1) is open, ready for review, and
   targets `main` from `codex/portfolio-phase2`.
-- Local integration branch: `codex/portfolio-upgrade-preview-20260717`. It contains internal
-  handoff and source-index material and therefore must never be pushed directly. A publishable
-  candidate must be a separate clean branch based exactly on `public/codex/portfolio-phase2`, with
-  only the audited public delta applied. The current upgrade and its pipeline work are **not
-  public** until a later authorized push succeeds.
-- `origin` is the private integration repository; `public` is the public portfolio repository.
-  Publication commands must name `public` explicitly.
+- The tested integration tree contains internal handoff/source-index material and is not a
+  publication source. A publishable candidate must be a separate clean branch based exactly on
+  `public/codex/portfolio-phase2`, with only the audited public delta applied. The current upgrade
+  and its pipeline work are **not public** until a later authorized push succeeds.
+- The commands below use `public` as the local name of the public portfolio remote. Verify that
+  remote resolves to `LucisZhang/portfolio-site` before any authorized push.
 
 ## 1. Freeze and inspect the exact candidate
 
 1. Stop concurrent edits and record both the internal integration commit SHA and the distinct clean
    public-candidate commit SHA.
 2. Create the public candidate from `public/codex/portfolio-phase2` in a separate worktree. Apply
-   only the audited public delta. Preserve the public-base versions of `AGENTS.md` and `STATE.md`;
-   exclude `docs/SESSION_HANDOFF.md`, `docs/PROJECT_SOURCE_INDEX.md`,
-   `docs/PROJECT_DOSSIER.md`, local coordination notes, and every absolute local path.
+   only the audited public delta. Keep `AGENTS.md` and `STATE.md` public-safe and current; exclude
+   internal handoffs/source indexes/dossiers, local coordination notes, and every absolute local
+   path.
 3. Confirm the clean candidate contains only approved portfolio source, derived artifacts,
    documentation, and test evidence. Never treat the integration branch as the push source.
 4. Confirm `pipelines/` contains no downloaded raw Olist, Lending Club, or substitute datasets;
@@ -118,8 +117,10 @@ In a signed-out session, verify all of the following against the pushed commit S
    provenance, command, and artifact entries it names.
 3. Both analytics pipeline trees and their provenance are visible, while no raw input dataset is
    present anywhere in the public history.
-4. All portfolio source links resolve without authentication. Only now may a corresponding
-   “publication pending” label be changed to an active source link.
+4. All portfolio source links resolve without authentication. A clean candidate may prewire a
+   source link to the exact destination feature branch so that the authorized push and subsequent
+   Preview deployment expose the same reviewed code. Do not call that link anonymously available,
+   and do not deploy a page containing it, until the branch path exists and this check passes.
 5. The Privacy Preflight download resolves anonymously, its published SHA-256 matches the file, and
    the documented right-click/Open and Privacy & Security/Open Anyway paths are accurate on an
    arm64 Mac.

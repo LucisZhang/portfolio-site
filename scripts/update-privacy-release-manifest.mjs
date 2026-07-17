@@ -27,7 +27,7 @@ const companionNames = [
 ];
 const benchmark = JSON.parse(await readFile(benchmarkPath, "utf8"));
 const sbom = JSON.parse(await readFile(resolve(releaseRoot, "sbom.spdx.json"), "utf8"));
-const manifestGeneratedAt = "2026-07-17T10:57:47.470Z";
+const manifestGeneratedAt = "2026-07-17T23:12:00.000Z";
 
 const report = {
   schemaVersion: 2,
@@ -38,7 +38,7 @@ const report = {
   bundle: {
     minimumMacOS: "14.0",
     architecture: "arm64",
-    rawAppDiskUsageKiB: 94840,
+    rawAppDiskUsageKiB: 94476,
     machOFiles: 37,
     allMachOThinArm64: true,
     embeddedPython: "3.12.13",
@@ -52,10 +52,11 @@ const report = {
     spctlAssessment: "Code Signing subsystem internal error; no accept/reject result",
   },
   verification: {
-    workerTests: "95 passed under the exact embedded runtime before release pruning",
+    workerTests: "96 passed on the final source snapshot with the CPython 3.12.13 interpreter and application dependencies extracted from the exact app ZIP; pytest 8.4.2 frontend supplied separately as the test harness",
     ocrFixtureBenchmark: benchmark.summary.hitCount + "/" + benchmark.summary.expectedCount + " exact expected values; " + benchmark.summary.falsePositiveCount + " false positives across " + benchmark.summary.fixtures + " fixed synthetic fixtures using the complete browser-equivalent multi-pass union",
     isolatedPathSmoke: "PATH=/bin; bundled Vision OCR found EMAIL, PHONE, and LOCAL_PATH in the Chinese fixture; scanned PDF produced three OCR regions",
-    archiveSmoke: "zip extracted, deep strict codesign verified, app launched, bundled worker returned health ok",
+    archiveSmoke: "zip extracted, deep strict codesign verified, app launched with Bundled Python 3.12, bundled worker returned health ok, and graceful quit stopped the worker",
+    publicSafety: "runtime-matching source excludes internal coordination files, caches, and build outputs; packaging disables first-party Swift debug paths, strips symbols, and removes editable-install provenance before signing",
   },
   companionFiles: await Promise.all(companionNames.map(fileRecord)),
   sbom: {

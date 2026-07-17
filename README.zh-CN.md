@@ -29,7 +29,7 @@
 - **证据层：** JSON、CSV、Parquet、Markdown、Mermaid、图片与 PDF 衍生物位于
   `public/case-studies/`，支持的格式可在站内直接检查。
 - **复现层：** `pipelines/` 记录分析产物的生成命令、输入哈希、运行环境、来源与输出校验。
-- **声明控制：** `src/lib/projects.ts`、`docs/project-state/` 与证据校验器共同约束可见数字、
+- **声明控制：** `src/lib/projects.ts`、`docs/EVIDENCE_INDEX.md` 与证据校验器共同约束可见数字、
   来源和 limitation 文案。
 
 从 [`docs/EVIDENCE_INDEX.md`](docs/EVIDENCE_INDEX.md) 开始，可以把页面声明逐项追到精确
@@ -61,8 +61,8 @@ npm run test:e2e -- --workers=1
 npm audit --omit=dev
 ```
 
-当前评审 Mac 上串行执行浏览器测试，以避免主机级 Chrome 资源争用。完整流程见
-[`docs/RUNBOOK.md`](docs/RUNBOOK.md)；远端分支、PR 与部署的 owner-gated 步骤见
+当前评审 Mac 上串行执行浏览器测试，以避免主机级 Chrome 资源争用。提交内的公开边界见
+[`STATE.md`](STATE.md)；远端分支、PR 与部署的 owner-gated 步骤见
 [`docs/PUBLICATION_CHECKLIST.md`](docs/PUBLICATION_CHECKLIST.md)。
 
 ## 证据纪律

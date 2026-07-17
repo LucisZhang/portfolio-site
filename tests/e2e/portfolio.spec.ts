@@ -582,6 +582,54 @@ test.describe("Privacy Preflight Web", () => {
     await expect(scanButton).toBeEnabled({ timeout: 100_000 });
   });
 
+  test("the genuine three-page PDF is OCR-reviewed, burned in, and previewed page by page", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop", "The three-page OCR/export path is exercised once.");
+    test.setTimeout(360_000);
+    await page.getByRole("tab", { name: "PDF" }).click();
+    await page.getByRole("button", { name: "Load multi-page PDF" }).click();
+
+    const sourceCounter = page.locator(".privacy-pdf-workspace > .privacy-actionbar .privacy-page-counter");
+    const redactionCenters: { x: number; y: number }[] = [];
+    for (let index = 0; index < 3; index += 1) {
+      if (index > 0) await page.getByTitle("Next page").click();
+      await expect(sourceCounter).toContainText(`${index + 1} / 3`);
+      await page.getByRole("button", { name: "Scan for sensitive information" }).click();
+      await expect(page.locator(".privacy-page-method")).toContainText("Local OCR", { timeout: 100_000 });
+      await expect(page.locator(".privacy-ocr-status")).toContainText(/rule-matched OCR regions/, { timeout: 100_000 });
+      const firstRegion = page.locator(".privacy-box-list article").first();
+      await expect(firstRegion).toBeVisible();
+      const [x, y, width, height] = await firstRegion.locator("input").evaluateAll((inputs) => inputs.map((input) => Number((input as HTMLInputElement).value) / 100));
+      redactionCenters.push({ x: x + width / 2, y: y + height / 2 });
+      await page.getByRole("button", { name: "Mark page reviewed" }).click();
+    }
+
+    await page.getByRole("button", { name: "Preview redacted result" }).click();
+    const result = page.getByTestId("privacy-pdf-result-preview");
+    const resultCounter = result.locator(".privacy-page-counter");
+    const resultCanvas = result.locator("canvas");
+    await expect(resultCanvas).toBeVisible({ timeout: 100_000 });
+    for (let index = 0; index < 3; index += 1) {
+      let previousFrame = "";
+      if (index > 0) {
+        previousFrame = await resultCanvas.evaluate((canvas) => (canvas as HTMLCanvasElement).toDataURL());
+        await page.getByTitle("Next preview page").click();
+      }
+      await expect(resultCounter).toContainText(`${index + 1} / 3`);
+      if (index > 0) {
+        await expect.poll(() => resultCanvas.evaluate((canvas) => (canvas as HTMLCanvasElement).toDataURL())).not.toBe(previousFrame);
+      }
+      await expect.poll(() => resultCanvas.evaluate((canvas, center) => {
+        const node = canvas as HTMLCanvasElement;
+        const context = node.getContext("2d");
+        if (!context || !node.width || !node.height) return false;
+        const pixel = context.getImageData(Math.floor(center.x * node.width), Math.floor(center.y * node.height), 1, 1).data;
+        return pixel[0] < 8 && pixel[1] < 8 && pixel[2] < 8 && pixel[3] > 245;
+      }, redactionCenters[index])).toBe(true);
+    }
+    await expect(page.locator(".privacy-validation.pass")).toContainText("ready to preview and download");
+    await expect(page.locator(".privacy-pdf-checks span")).toHaveCount(7);
+  });
+
   test("PDF export reviews every page, rasterizes, rebuilds, and passes the fail-closed gate", async ({ page }, testInfo) => {
     test.setTimeout(120_000);
     await page.getByRole("tab", { name: "PDF" }).click();

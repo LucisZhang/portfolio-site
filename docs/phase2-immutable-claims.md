@@ -104,7 +104,9 @@ Allowed facts:
 
 - All bundled names and contact details are fictional.
 - Mac evidence source commit: `78f13d5`.
-- Recorded Mac verification: 95 worker tests passed; Swift build passed.
+- Historical source checkpoint `78f13d5`: 95 worker tests passed; Swift build passed.
+- Final 0.1.0 source snapshot: 96 worker tests passed with the exact app ZIP's CPython 3.12.13
+  interpreter and runtime dependencies; pytest 8.4.2 frontend was supplied separately as harness.
 - Recorded Mac worker endpoint: `127.0.0.1:8891`.
 - The browser implementation is presentation-layer implementation, not source evidence for the Mac product.
 - Browser processing boundary: no server upload, no third-party OCR, no content in web storage; runtime assets are same-origin GET requests only.

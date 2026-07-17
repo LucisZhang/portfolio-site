@@ -48,8 +48,10 @@ manifest.assets = [
 ];
 manifest.generated_at = "2026-07-17";
 delete manifest.source_commit;
-manifest.source_base_commit = "2f9b5a08371d02ba441abbc439faf33ffc72cdac";
-manifest.source_state = "local Goal candidate, uncommitted when generated; asset hashes authoritative";
+delete manifest.source_base_commit;
+delete manifest.source_state;
+manifest.source_snapshot = "runtime-matching metadata-stripped public source; exact identity is the source ZIP SHA-256 in downloads/release-manifest.json";
+manifest.source_sanitization = "internal coordination files, caches, build outputs, editable-install provenance, and first-party Swift debug paths are excluded";
 manifest.browser_fixture_identity = {
   generated_examples_source: "scripts/generate-privacy-examples.mjs",
   benchmark_source: "scripts/run-privacy-ocr-benchmark.mjs",
