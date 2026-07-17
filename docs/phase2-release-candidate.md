@@ -2,6 +2,10 @@
 
 Updated: 2026-07-13 18:23 Asia/Shanghai (10:23 UTC)
 
+> Historical 2026-07-13 deployment snapshot. Its verification counts and Privacy benchmark below
+> describe that checkpoint only. For the current local Goal candidate, use `docs/EVIDENCE_INDEX.md`,
+> `docs/PUBLICATION_CHECKLIST.md`, and the current machine-gate output; no new deployment is implied.
+
 ## Review entry points
 
 - Phase 2 Review origin: <https://portfolio-site-gpt-review.vercel.app>

@@ -1,0 +1,45 @@
+.methods { margin-top: 24px; border: 1px solid var(--line-dark); background: var(--paper); box-shadow: 7px 7px 0 color-mix(in srgb, var(--ink) 9%, transparent); }
+.heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; padding: 18px 20px; border-bottom: 1px solid var(--line-dark); background: #eef3ef; }
+.heading p { margin: 0 0 4px; color: var(--muted); font-family: var(--font-geist-mono); font-size: 9px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+.heading h3 { margin: 0; max-width: 760px; font-size: clamp(19px, 2.4vw, 28px); line-height: 1.12; }
+.heading a { flex: 0 0 auto; color: var(--ink); font-family: var(--font-geist-mono); font-size: 10px; font-weight: 700; text-underline-offset: 3px; }
+.dataset { display: grid; grid-template-columns: 1.3fr .75fr 1fr; border-bottom: 1px solid var(--line); }
+.dataset > div { display: flex; flex-direction: column; justify-content: center; gap: 4px; min-width: 0; min-height: 88px; padding: 12px 16px; border-right: 1px solid var(--line); }
+.dataset > div:last-child { border-right: 0; }
+.dataset span, .metrics span, .changed span, .reproduce span { color: var(--muted); font-family: var(--font-geist-mono); font-size: 8px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+.dataset strong { font-size: 12px; line-height: 1.4; }
+.dataset small { color: var(--muted); font-size: 9px; }
+.dataset code { overflow: hidden; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--line-dark); background: #f7f9f7; }
+.metrics > div { display: flex; flex-direction: column; gap: 7px; padding: 12px 16px; border-right: 1px solid var(--line); }
+.metrics > div:last-child { border-right: 0; }
+.metrics strong { font-family: var(--font-geist-mono); font-size: 18px; }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid article { min-width: 0; padding: 18px 20px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.grid article:nth-child(2n) { border-right: 0; }
+.grid article:last-child { grid-column: 1 / -1; border-right: 0; }
+.grid header { display: flex; align-items: center; gap: 8px; }
+.grid header svg { width: 15px; height: 15px; color: var(--green); }
+.grid h4 { margin: 0; font-size: 13px; }
+.grid ol { margin: 10px 0 0; padding-left: 18px; }
+.grid li { margin: 6px 0; color: var(--muted); font-size: 10px; line-height: 1.58; }
+.changed { padding: 18px 20px; border-bottom: 1px solid var(--line-dark); background: #17231c; color: #f5f7f5; }
+.changed span { color: #9fd0ad; }
+.changed p { margin: 8px 0 0; max-width: 900px; font-size: 12px; line-height: 1.65; }
+.reproduce { display: grid; grid-template-columns: 1.35fr 1fr; }
+.reproduce > div, .reproduce > p { min-width: 0; margin: 0; padding: 16px 20px; }
+.reproduce > div { display: flex; flex-direction: column; gap: 7px; border-right: 1px solid var(--line); }
+.reproduce code { overflow-x: auto; padding: 7px 8px; background: #eef1ee; font-size: 8px; white-space: nowrap; }
+.reproduce p { color: var(--muted); font-size: 9px; line-height: 1.65; }
+.reproduce p strong { display: block; margin-bottom: 5px; color: var(--ink); }
+.pending { display: flex; gap: 12px; padding: 20px; }
+.pending svg { flex: 0 0 auto; width: 18px; }
+.pending h3 { margin: 0; font-size: 18px; }
+.pending p { margin: 6px 0 0; color: var(--muted); font-size: 10px; }
+
+@media (max-width: 700px) {
+  .heading { align-items: flex-start; flex-direction: column; }
+  .dataset, .metrics, .grid, .reproduce { grid-template-columns: 1fr; }
+  .dataset > div, .metrics > div, .grid article, .reproduce > div { border-right: 0; border-bottom: 1px solid var(--line); }
+  .grid article:last-child { grid-column: auto; }
+}

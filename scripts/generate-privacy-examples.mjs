@@ -6,6 +6,17 @@ import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 const output = resolve(import.meta.dirname, "../public/case-studies/privacy-preflight");
 const width = 1200;
 const height = 700;
+const fixtureTimestamp = new Date("2026-07-17T00:00:00.000Z");
+
+function lockPdfMetadata(doc, title) {
+  doc.setTitle(title);
+  doc.setAuthor("Portfolio synthetic fixture generator");
+  doc.setSubject("Fictional local redaction QA fixture");
+  doc.setCreator("scripts/generate-privacy-examples.mjs");
+  doc.setProducer("pdf-lib 1.17.1");
+  doc.setCreationDate(fixtureTimestamp);
+  doc.setModificationDate(fixtureTimestamp);
+}
 
 function escape(value) {
   return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
@@ -33,6 +44,7 @@ const multiline = await png("ocr-fixture-multiline.png", { title: "Multiple line
 await sharp(multiline).rotate(90).png().toFile(resolve(output, "ocr-fixture-rotated.png"));
 
 const textPdf = await PDFDocument.create();
+lockPdfMetadata(textPdf, "Privacy Preflight synthetic text-layer fixture");
 const font = await textPdf.embedFont(StandardFonts.Helvetica);
 const page = textPdf.addPage([612, 792]);
 page.drawText("PRIVACY PREFLIGHT / SYNTHETIC TEXT-LAYER PDF", { x: 48, y: 720, size: 16, font, color: rgb(.1, .14, .18) });
@@ -44,6 +56,7 @@ await writeFile(resolve(output, "pdf-example-text-layer.pdf"), await textPdf.sav
 
 async function imagePdf(name, images) {
   const doc = await PDFDocument.create();
+  lockPdfMetadata(doc, `Privacy Preflight synthetic ${images.length}-page image fixture`);
   for (const image of images) {
     const embedded = await doc.embedPng(image);
     const pdfPage = doc.addPage([612, 357]);
@@ -52,5 +65,5 @@ async function imagePdf(name, images) {
   await writeFile(resolve(output, name), await doc.save());
 }
 await imagePdf("pdf-example-scanned.pdf", [english]);
-await imagePdf("pdf-example-multipage.pdf", [english, chinese]);
+await imagePdf("pdf-example-multipage.pdf", [english, chinese, multiline]);
 console.log("Generated Privacy synthetic image and PDF examples.");

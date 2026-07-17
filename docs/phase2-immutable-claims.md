@@ -112,10 +112,10 @@ Allowed facts:
 - Browser PDF limits: 20 MiB, 20 pages, and 18,000,000 render pixels per page.
 - PDF export is image-only, requires every page to be reviewed, and fails closed.
 - PDF verification has seven named checks: page count, page dimensions, empty extractable text, no annotations, known terms absent, original metadata absent, and burned-in pixels.
-- The fixed synthetic OCR fixture benchmark contains seven fixtures and 19 expected values. The recorded browser implementation found 18 with zero false positives: fixture recall 94.7% and precision 100%. These values describe only the committed fixtures.
+- The fixed synthetic OCR fixture benchmark contains seven fixtures and 19 expected values. The complete browser-equivalent multi-pass union found all 19 expected values across 21 detections, including 2 false positives: fixture recall 100% and precision 90.5%. These values describe only the committed fixtures.
 - Current browser runtime versions remain those recorded in `web-implementation.json` unless dependencies are intentionally upgraded and reverified.
 - “Local” means in the browser for the Web app or through the local worker for the captured Mac build. Do not collapse these two architectures.
-- The current Mac artifact is not signed, notarized, or approved as a public binary download unless a later release audit proves every gate.
+- The staged Mac preview is arm64-only, ad-hoc signed only, not Developer ID signed, and not notarized. It is verified on the build Mac only; Gatekeeper acceptance was not established because the local `spctl`/`stapler` checks returned subsystem errors, and no clean-Mac, Apple-approval, Intel, universal, or broader compatibility claim is allowed.
 
 Forbidden rewrites:
 
@@ -123,7 +123,7 @@ Forbidden rewrites:
 - Do not generalize the fixed-fixture OCR recall or precision to arbitrary documents, languages, scans, or production use.
 - Do not say the browser implementation uploads user files or sends them to a third-party OCR provider.
 - Do not present pre-generated example output as if a live action generated it.
-- Do not publish a Mac download CTA before license, build, signing, notarization, hash, and anonymous release checks pass.
+- Do not describe the Mac preview as Developer ID signed or notarized. A download CTA must retain the arm64-only, ad-hoc-only, unnotarized boundary and link the exact hash, matching source, license notices, SBOM, and first-open instructions.
 
 ## Margin Control Tower
 

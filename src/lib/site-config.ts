@@ -11,8 +11,6 @@ export const siteIdentity = {
     email: "HsiangKuoChang@outlook.com",
   },
   resume: {
-    href: null as string | null,
-    todo: "Resume update in progress",
-    todoZh: "简历更新中。",
+    href: "/resume.pdf",
   },
 } as const;

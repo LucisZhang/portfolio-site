@@ -1,8 +1,13 @@
 import type { NextConfig } from "next";
 import createMDX from "@next/mdx";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 
 const nextConfig: NextConfig = {
   pageExtensions: ["ts", "tsx", "md", "mdx"],
+  env: {
+    NEXT_PUBLIC_RESUME_AVAILABLE: String(existsSync(join(process.cwd(), "public", "resume.pdf"))),
+  },
   async headers() {
     return [
       {

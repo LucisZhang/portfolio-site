@@ -1,0 +1,116 @@
+{
+  "report_version": "analytics-methods-v1",
+  "project": "margin",
+  "dataset": {
+    "name": "Brazilian E-Commerce Public Dataset by Olist",
+    "source_url": "https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce",
+    "license": "CC BY-NC-SA 4.0",
+    "retrieval_date": "2026-07-17",
+    "raw_records": 547593,
+    "derived_rows": 15809,
+    "date_range": [
+      "2016-08-29",
+      "2018-09-03"
+    ],
+    "artifact_sha256": "6921b7ed790367fe9d9ade878a7b97e6d7c2879b9488eef51b326ad9775722fb"
+  },
+  "acquisition_and_cleaning": {
+    "en": [
+      "Pinned the Olist owner dataset and verified every transported table against locked byte counts and SHA-256 hashes.",
+      "Collapsed 2,961 multi-payment orders to the largest payment-value channel and 547 multi-review orders to the lowest reported score.",
+      "Joined order items to orders, customers, categories, payments, and reviews; retained missing categories as explicit unknown values and audited payment-versus-item-plus-freight gaps.",
+      "Aggregated only after reconciliation to week × category × state-mapped region × payment channel."
+    ],
+    "zh": [
+      "锁定 Olist 官方发布的数据集，并用固定字节数与 SHA-256 校验每个传输表。",
+      "将 2,961 个多支付订单归到支付金额最大的渠道，并把 547 个多评价订单折叠为最低评分。",
+      "连接订单明细、订单、客户、品类、支付和评价；缺失品类明确保留为 unknown，并审计支付额与商品加运费的差额。",
+      "完成对账后才聚合到 周 × 品类 × 州映射区域 × 支付渠道。"
+    ]
+  },
+  "modeling": {
+    "en": [
+      "Contribution margin uses observed item price and freight, a prior-only category reference-price discount proxy, a status/review return proxy, and a disclosed 60% COGS proxy. Across categories, 275 item rows fall in their category's first observed week; they use current price and therefore receive zero proxy discount.",
+      "Before anomaly evaluation, 95 observed weekly totals are reindexed to a complete 106-Monday calendar. The 11 weeks with no derived Olist cells are explicitly zero-filled; replay labels are placed only on observed Mondays. The detector then applies a 13-week robust STL residual and MAD z-score threshold of 3.5.",
+      "Elasticity is HC3 log-log OLS with category, region, and channel fixed effects; it is associational, not causal."
+    ],
+    "zh": [
+      "贡献毛利使用实测商品价格与运费、仅引用历史的品类参考价折扣代理、状态/评价退货代理，以及明确披露的 60% COGS 代理。各品类首个观测周的 275 条商品明细会回填当前价格，因此代理折扣为零。",
+      "异常评估前，95 个有观测周总额会重建为连续 106 个星期一的完整日历；11 个没有 Olist 聚合单元的周明确补零，重放标签只放在有观测的星期一。随后采用 13 周 robust STL 残差与阈值 3.5 的 MAD z-score。",
+      "弹性模型为带品类、区域和渠道固定效应的 HC3 log-log OLS；它只表示相关性，不表示因果。"
+    ]
+  },
+  "split_and_leakage": {
+    "en": [
+      "The last eight observed weeks are holdout (1,496 rows); all earlier weeks are analysis (14,313 rows).",
+      "Reference prices use shifted expanding medians after the explicit first-observed-category-week current-price fallback; the elasticity coefficient is fit only on analysis rows, while later holdout rows evaluate MAPE only."
+    ],
+    "zh": [
+      "最后 8 个观测周为 holdout（1,496 行），此前为 analysis（14,313 行）。",
+      "除明确披露的品类首周当前价格回填外，参考价格使用向后移位的扩展中位数；弹性系数只在 analysis 行拟合，后续 holdout 行仅用于评估 MAPE。"
+    ]
+  },
+  "labels": {
+    "en": [
+      "Six deterministic fixed-location negative perturbations are replayed on observed Mondays within the complete calendar series.",
+      "No manual real-anomaly label is claimed, and replay values are never written into the Parquet artifact."
+    ],
+    "zh": [
+      "在完整日历序列中有观测的星期一上重放 6 个确定性固定位置负向扰动。",
+      "不声称存在人工真实异常标签，重放值也从不写入 Parquet 产物。"
+    ]
+  },
+  "trust": {
+    "en": [
+      "The pipeline fails closed on source hashes, unique grain, bounds, and all three accounting identities; verification also reconstructs the complete Monday calendar and both reports from the exact Parquet.",
+      "The artifact embeds source URL, license, retrieval date, raw hashes, transform version, missing-week treatment, and proxy boundaries."
+    ],
+    "zh": [
+      "源哈希、唯一粒度、数值边界或三条会计恒等式任一失败，流水线都会阻断；验证还会从精确 Parquet 重建完整星期一日历与两份报告。",
+      "产物内嵌来源 URL、许可证、获取日期、原始哈希、转换版本、缺失周处理与代理边界。"
+    ]
+  },
+  "changed": {
+    "en": "The synthetic walkthrough remains available, but real mode now queries 15,809 reconciled cells. Measured replay precision/recall are 0.316/1.000; the analysis-fit associational log-log price coefficient is +0.040, with 75.85% MAPE on the later eight weeks.",
+    "zh": "合成演示仍保留，但真实模式现查询 15,809 个已对账单元。实测重放 precision/recall 为 0.316/1.000；analysis 期拟合的相关性 log-log 价格系数为 +0.040，后续 8 周的 MAPE 为 75.85%。"
+  },
+  "metrics": [
+    {
+      "label": {
+        "en": "Reconciled cells",
+        "zh": "对账后单元"
+      },
+      "value": "15,809"
+    },
+    {
+      "label": {
+        "en": "STL calendar / missing weeks",
+        "zh": "STL 日历周 / 缺失周"
+      },
+      "value": "106 / 11"
+    },
+    {
+      "label": {
+        "en": "Replay precision / recall",
+        "zh": "重放 precision / recall"
+      },
+      "value": "0.316 / 1.000"
+    },
+    {
+      "label": {
+        "en": "Holdout MAPE",
+        "zh": "Holdout MAPE"
+      },
+      "value": "75.85%"
+    }
+  ],
+  "reproduction": [
+    "python3 -m venv .venv && .venv/bin/pip install -r pipelines/olist-margin/requirements.txt",
+    ".venv/bin/python pipelines/olist-margin/build.py --download",
+    ".venv/bin/python pipelines/olist-margin/build.py --verify-only"
+  ],
+  "boundaries": {
+    "en": "No causal lift, production decisioning, audited COGS, or manually verified real-anomaly claim.",
+    "zh": "不声称因果提升、生产决策、经审计 COGS 或人工验证的真实异常。"
+  }
+}

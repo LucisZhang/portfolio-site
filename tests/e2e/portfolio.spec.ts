@@ -19,7 +19,6 @@ const routes = [
 
 const forbiddenClaims = [
   "498,725",
-  "0.809",
   "0.944",
   "Private GitHub",
   "Heavy stack re-run on a 16 GB laptop remains",
@@ -48,10 +47,33 @@ for (const locale of ["en", "zh"] as const) {
       if (locale === "zh") expect(bodyText).toMatch(/[\u3400-\u9fff]/);
       if (route === "/") {
         await expect(page.locator("h1")).toHaveText(locale === "en" ? "Hsiang Kuo Chang" : "章向国");
+        await expect(page.locator(".target-roles")).toHaveText(locale === "en"
+          ? "Open to Data Analytics, Data Engineering, and AI Application Engineering roles."
+          : "求职方向：数据分析、数据工程与 AI 应用工程。");
         await expect(page.locator('a[href="https://github.com/LucisZhang"]')).toBeVisible();
         await expect(page.locator('a[href="https://www.linkedin.com/in/xiangguo-zhang"]')).toBeVisible();
         await expect(page.locator('a[href="mailto:HsiangKuoChang@outlook.com"]')).toBeVisible();
-        await expect(page.locator(".identity-link-pending")).toContainText("Resume");
+        await expect(page.locator('a[href="/resume.pdf"]')).toHaveCount(0);
+        await expect(page.locator(".workspace-index")).toContainText(locale === "en" ? "6 interactive demos" : "6 个交互式演示");
+        const projectLinks = page.locator(".project-table > a");
+        await expect(projectLinks).toHaveCount(6);
+        await expect(projectLinks.nth(0)).toHaveAttribute("href", /^\/ai\/release-guardian(?:\?lang=zh)?$/);
+        await expect(projectLinks.nth(1)).toHaveAttribute("href", /^\/ai\/rag-quality-lab(?:\?lang=zh)?$/);
+        await expect(projectLinks.nth(2)).toHaveAttribute("href", /^\/ai\/privacy-preflight-mac(?:\?lang=zh)?$/);
+        await expect(projectLinks.nth(3)).toHaveAttribute("href", /^\/analytics\/margin-control-tower(?:\?lang=zh)?$/);
+        await expect(projectLinks.nth(4)).toHaveAttribute("href", /^\/engineering\/p1-reliability-lab(?:\?lang=zh)?$/);
+        await expect(projectLinks.nth(5)).toHaveAttribute("href", /^\/analytics\/credit-policy-lab(?:\?lang=zh)?$/);
+        await expect(projectLinks.nth(0).locator(".metrics-chips")).toContainText(locale === "en" ? "132 live graph runs" : "132 次在线图运行");
+        if (testInfo.project.name === "mobile") {
+          await expect(page.locator(".discipline-strip .page-shell")).toHaveCSS("display", "flex");
+          await expect(page.locator(".discipline-strip a")).toHaveCount(3);
+          await expect(page.locator(".discipline-strip strong")).toHaveText(locale === "en"
+            ? ["AI applications", "Data engineering", "Data analytics"]
+            : ["AI 应用", "数据工程", "数据分析"]);
+          for (const label of await page.locator(".discipline-strip strong").all()) await expect(label).toBeVisible();
+          const selectedWorkY = (await page.locator(".index-heading h2").boundingBox())?.y ?? Number.POSITIVE_INFINITY;
+          expect(selectedWorkY).toBeLessThanOrEqual(844 * 1.5);
+        }
       }
       if (route.split("/").length === 3) {
         expect(bodyText).toContain(locale === "en" ? "Audience" : "面向对象");
@@ -59,12 +81,43 @@ for (const locale of ["en", "zh"] as const) {
       if (route === "/engineering/p1-reliability-lab") {
         await expect(page.locator(".artifact-table > a")).toHaveCount(5);
         await expect(page.locator('a[href^="/artifact?"][href*="workstation-reproduction-guide.md"]')).toBeVisible();
+        await expect(page.locator(".p1-pressure-evidence")).toContainText("55 ms → 19,022 ms");
+        await expect(page.locator(".p1-pressure-evidence")).toContainText(locale === "en" ? "320 events → 0" : "320 个事件 → 0");
       }
       if (route === "/ai/release-guardian") {
         await expect(page.locator(".finding-table > div:not(.finding-head)")).toHaveCount(5);
+        await expect(page.locator(".release-funded-stats")).toContainText("$8.1214");
+        await expect(page.locator(".release-funded-stats")).toContainText("~35.08 s");
+        await expect(page.locator(".release-eval-pair article.aggregate")).toContainText("8 / 8");
+        await expect(page.locator(".release-strict-definition")).toContainText(locale === "en"
+          ? "a scenario is flagged if any criterion failed in any of its three trials"
+          : "只要任一项标准在三次试验中的任何一次失败");
+      }
+      if (route === "/ai/rag-quality-lab") {
+        await expect(page.locator(".rag-historical-result")).toContainText("0.8093 → 0.9438");
+        await expect(page.locator(".rag-historical-result")).toContainText(locale === "en"
+          ? "Historical 12-question corpus only; does not transfer to the 11,309-document S1 checkpoint."
+          : "仅适用于历史 12 问题语料；不能迁移解释为 11,309 文档 S1 检查点的结果。");
+      }
+      if (route === "/ai/privacy-preflight-mac") {
+        await expect(page.locator(".privacy-verification-metrics")).toContainText(locale === "en"
+          ? /67\s*recorded end-to-end browser cases/
+          : /67\s*个已记录端到端浏览器案例/);
       }
       if (route === "/ai/privacy-preflight-mac") {
         await expect(page.locator(".redline-grid > span")).toHaveCount(3);
+      }
+      if (route === "/engineering") {
+        await expect(page.locator(".related-engineering-evidence")).toContainText(locale === "en" ? "Related engineering evidence" : "相关工程证据");
+        await expect(page.locator('.related-engineering-evidence a[href^="/ai/release-guardian"]')).toBeVisible();
+        await expect(page.locator('.related-engineering-evidence a[href^="/ai/rag-quality-lab"]')).toBeVisible();
+      }
+
+      const robots = page.locator('meta[name="robots"]');
+      if (route === "/analytics/analytics-tandem") {
+        await expect(robots).toHaveAttribute("content", /noindex/);
+      } else {
+        await expect(robots).toHaveCount(0);
       }
 
       const overflow = await page.evaluate(
@@ -86,6 +139,19 @@ for (const locale of ["en", "zh"] as const) {
     });
   }
 }
+
+test("homepage and non-analytics routes do not load the DuckDB browser runtime", async ({ page }) => {
+  const duckDbRequests: string[] = [];
+  page.on("request", (request) => {
+    if (request.url().includes("/duckdb/")) duckDbRequests.push(request.url());
+  });
+
+  for (const route of ["/", "/engineering/p1-reliability-lab", "/ai/release-guardian", "/ai/rag-quality-lab", "/ai/privacy-preflight-mac"]) {
+    await page.goto(route, { waitUntil: "networkidle" });
+  }
+
+  expect(duckDbRequests).toEqual([]);
+});
 
 test.describe("p1 Failure Replay Console", () => {
   test.beforeEach(async ({ page }) => {
@@ -296,6 +362,11 @@ test.describe("Analytics decision vertical slices", () => {
     await expect(lab.locator(".analytics-contract-grid")).toContainText("All ten checks pass");
     await expect(lab).toContainText("Model probability is not the final business decision");
     await expect(lab).toContainText("Backtest score comparison");
+    await expect(lab.getByRole("button", { name: "Resolve queue overflow" })).toBeDisabled();
+    await expect(lab.locator(".credit-policy-guidance")).toContainText("deliberately overloaded review queue");
+    await lab.getByRole("button", { name: "Show a publishable policy" }).click();
+    await expect(lab.getByRole("button", { name: "Record policy decision" })).toBeEnabled();
+    await lab.getByRole("button", { name: "Reset" }).click();
     await lab.getByRole("slider", { name: "Review capacity" }).fill("40");
     await expect(lab.getByRole("button", { name: "Resolve queue overflow" })).toBeDisabled();
     await lab.getByRole("slider", { name: "Review capacity" }).fill("360");
@@ -377,6 +448,7 @@ test.describe("Privacy Preflight Web", () => {
     await page.locator('input[type="file"]').setInputFiles(path.resolve("public/case-studies/privacy-preflight/image-synthetic-input.png"));
     const canvas = page.locator(".privacy-canvas-wrap canvas");
     await expect(canvas).toBeVisible();
+    await canvas.scrollIntoViewIfNeeded();
     const bounds = await canvas.boundingBox();
     expect(bounds).not.toBeNull();
     if (!bounds) return;
@@ -399,6 +471,17 @@ test.describe("Privacy Preflight Web", () => {
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toContain("-redacted.png");
     await expect(page.locator(".privacy-validation.pass")).toBeVisible();
+    await canvas.scrollIntoViewIfNeeded();
+    const mutationBounds = await canvas.boundingBox();
+    expect(mutationBounds).not.toBeNull();
+    if (!mutationBounds) return;
+    await page.mouse.move(mutationBounds.x + mutationBounds.width * 0.72, mutationBounds.y + mutationBounds.height * 0.68);
+    await page.mouse.down();
+    await page.mouse.move(mutationBounds.x + mutationBounds.width * 0.84, mutationBounds.y + mutationBounds.height * 0.8, { steps: 4 });
+    await page.mouse.up();
+    await expect(page.locator(".privacy-box-list article")).toHaveCount(2);
+    await expect(page.getByTestId("privacy-image-output")).toHaveCount(0);
+    await expect(page.locator(".privacy-validation")).toHaveCount(0);
     expect(requests).toEqual([]);
   });
 
@@ -419,6 +502,84 @@ test.describe("Privacy Preflight Web", () => {
     await expect(page.locator(".privacy-ocr-status")).toContainText(/rule-matched OCR regions/, { timeout: 100_000 });
     expect(await page.locator('.privacy-box-list article code').filter({ hasText: "ocr" }).count()).toBeGreaterThan(0);
     expect(unsafeRequests).toEqual([]);
+  });
+
+  test("Chinese mobile OCR maps to its word box and burns the phone pixels", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop", "The bilingual OCR runtime is exercised once.");
+    test.setTimeout(120_000);
+    await page.getByRole("tab", { name: "Image" }).click();
+    await page.getByRole("button", { name: "Load Chinese image example" }).click();
+    await page.getByRole("button", { name: "Scan for sensitive information" }).click();
+    await expect(page.locator(".privacy-ocr-status")).toContainText(/rule-matched OCR regions/, { timeout: 100_000 });
+    const phoneRegion = page.locator(".privacy-box-list article").filter({ hasText: "PHONE" });
+    await expect(phoneRegion).toHaveCount(1);
+    await expect(phoneRegion).toContainText("138-0013-8000");
+    const coordinates = await phoneRegion.locator("input").evaluateAll((inputs) => inputs.map((input) => Number((input as HTMLInputElement).value)));
+    await page.getByRole("button", { name: "Preview redacted result" }).click();
+    const outputImage = page.getByTestId("privacy-image-output").locator("img");
+    await expect(outputImage).toBeVisible();
+    const pixel = await outputImage.evaluate(async (image, [x, y, width, height]) => {
+      const node = image as HTMLImageElement;
+      await node.decode();
+      const canvas = document.createElement("canvas");
+      canvas.width = node.naturalWidth;
+      canvas.height = node.naturalHeight;
+      const context = canvas.getContext("2d");
+      if (!context) return [];
+      context.drawImage(node, 0, 0);
+      return [...context.getImageData(Math.round(x + width / 2), Math.round(y + height / 2), 1, 1).data];
+    }, coordinates);
+    expect(pixel.slice(0, 3)).toEqual([0, 0, 0]);
+  });
+
+  test("PDF text-layer and OCR sources merge once before burn-in", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop", "The heavy OCR merge path is exercised once.");
+    test.setTimeout(120_000);
+    await page.getByRole("tab", { name: "PDF" }).click();
+    await page.getByRole("button", { name: "Load text-layer PDF" }).click();
+    await expect(page.locator(".privacy-box-list article")).toHaveCount(3);
+    await page.getByRole("button", { name: "Scan for sensitive information" }).click();
+    await expect(page.locator(".privacy-page-method")).toContainText("Local OCR", { timeout: 100_000 });
+    await expect(page.locator(".privacy-box-list article")).toHaveCount(3);
+    expect(await page.locator('.privacy-box-list article code').filter({ hasText: "text-layer+ocr" }).count()).toBeGreaterThan(0);
+  });
+
+  test("scanned PDF overlay and exported burn-in use the same coordinates", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop", "The scanned OCR/export path is exercised once.");
+    test.setTimeout(120_000);
+    await page.getByRole("tab", { name: "PDF" }).click();
+    await page.getByRole("button", { name: "Load scanned PDF" }).click();
+    await page.getByRole("button", { name: "Scan for sensitive information" }).click();
+    await expect(page.locator(".privacy-page-method")).toContainText("Local OCR", { timeout: 100_000 });
+    const firstRegion = page.locator(".privacy-box-list article").first();
+    const [x, y, width, height] = await firstRegion.locator("input").evaluateAll((inputs) => inputs.map((input) => Number((input as HTMLInputElement).value) / 100));
+    const canvases = page.locator(".privacy-pdf-canvas-stack canvas");
+    const sizes = await canvases.evaluateAll((nodes) => nodes.map((node) => ({ width: (node as HTMLCanvasElement).width, height: (node as HTMLCanvasElement).height })));
+    expect(sizes[0]).toEqual(sizes[1]);
+    const overlayPixel = await canvases.last().evaluate((canvas, region) => {
+      const node = canvas as HTMLCanvasElement;
+      const context = node.getContext("2d");
+      if (!context) return [];
+      return [...context.getImageData(Math.floor((region.x + region.width / 2) * node.width), Math.floor((region.y + region.height / 2) * node.height), 1, 1).data];
+    }, { x, y, width, height });
+    expect(overlayPixel[3]).toBeGreaterThan(0);
+    await page.getByRole("button", { name: "Mark page reviewed" }).click();
+    await page.getByRole("button", { name: "Preview redacted result" }).click();
+    const resultCanvas = page.getByTestId("privacy-pdf-result-preview").locator("canvas");
+    await expect(resultCanvas).toBeVisible({ timeout: 100_000 });
+    await expect.poll(() => resultCanvas.evaluate((canvas, region) => {
+      const node = canvas as HTMLCanvasElement;
+      const context = node.getContext("2d");
+      if (!context || !node.width || !node.height) return false;
+      const pixel = context.getImageData(Math.floor((region.x + region.width / 2) * node.width), Math.floor((region.y + region.height / 2) * node.height), 1, 1).data;
+      return pixel[0] < 8 && pixel[1] < 8 && pixel[2] < 8 && pixel[3] > 245;
+    }, { x, y, width, height })).toBe(true);
+    const scanButton = page.getByRole("button", { name: "Scan for sensitive information" });
+    await scanButton.click();
+    await expect(scanButton).toBeDisabled();
+    await expect(page.getByTestId("privacy-pdf-output")).toHaveCount(0);
+    await expect(page.locator(".privacy-validation")).toHaveCount(0);
+    await expect(scanButton).toBeEnabled({ timeout: 100_000 });
   });
 
   test("PDF export reviews every page, rasterizes, rebuilds, and passes the fail-closed gate", async ({ page }, testInfo) => {
@@ -450,12 +611,20 @@ test.describe("Privacy Preflight Web", () => {
     await page.getByRole("button", { name: "Mark page reviewed" }).click();
     await page.getByRole("button", { name: "Preview redacted result" }).click();
     await expect(page.getByTestId("privacy-pdf-output")).toBeVisible({ timeout: 100_000 });
+    await expect(page.getByTestId("privacy-pdf-result-preview").locator("canvas")).toBeVisible();
+    await expect(page.getByTestId("privacy-pdf-result-preview").locator(".privacy-page-counter")).toContainText("1 / 2");
+    await page.getByTitle("Next preview page").click();
+    await expect(page.getByTestId("privacy-pdf-result-preview").locator(".privacy-page-counter")).toContainText("2 / 2");
     const downloadPromise = page.waitForEvent("download");
     await page.getByRole("link", { name: "Download redacted file" }).click();
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toContain("-redacted.pdf");
     await expect(page.locator(".privacy-validation.pass")).toContainText("ready to preview and download", { timeout: 100_000 });
     await expect(page.locator(".privacy-pdf-checks span")).toHaveCount(7);
+    await page.getByTitle("Previous page").click();
+    await page.getByTitle("Delete region").first().click();
+    await expect(page.getByTestId("privacy-pdf-output")).toHaveCount(0);
+    await expect(page.locator(".privacy-validation")).toHaveCount(0);
     expect(unsafeRequests).toEqual([]);
   });
 
@@ -478,8 +647,8 @@ test.describe("Privacy Preflight Web", () => {
     await expect(page.locator(".privacy-page-method")).toContainText("Local OCR", { timeout: 100_000 });
     expect(await page.locator('.privacy-box-list article code').filter({ hasText: "ocr" }).count()).toBeGreaterThan(0);
     await page.getByRole("button", { name: "Load multi-page PDF" }).click();
-    await expect(page.locator(".privacy-page-counter")).toContainText("1 / 2");
+    await expect(page.locator(".privacy-pdf-workspace > .privacy-actionbar .privacy-page-counter")).toContainText("1 / 3");
     await expect(page.locator(".privacy-page-method")).toContainText("OCR required");
-    await expect(page.locator(".privacy-benchmark-summary")).toContainText("94.7%");
+    await expect(page.locator(".privacy-benchmark-summary")).toContainText("100.0%");
   });
 });

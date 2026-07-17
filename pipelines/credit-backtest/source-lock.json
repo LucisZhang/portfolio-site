@@ -1,0 +1,34 @@
+{
+  "dataset": "Lending Club loan dataset for granting models",
+  "record_url": "https://zenodo.org/records/11295916",
+  "doi": "10.5281/zenodo.11295916",
+  "file_url": "https://zenodo.org/records/11295916/files/LC_loans_granting_model_dataset.csv?download=1",
+  "retrieved_at": "2026-07-17",
+  "version": "0.1",
+  "published_at": "2024-05-25",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "creators": [
+    "Miller Janny Ariza-Garzón (data curator)",
+    "Mario Sanz-Guerrero (data curator)",
+    "Javier Arroyo Gallardo (project leader)",
+    "Lending Club (data collector)"
+  ],
+  "selection_rationale": "The UCM-curated archive contains 1,347,681 time-stamped granted applications, only application-time features, and final fully-paid/default outcomes at realistic credit scale.",
+  "file": {
+    "name": "LC_loans_granting_model_dataset.csv",
+    "bytes": 167468415,
+    "md5": "b019384d6bc65bf2a3e839362e4ff502",
+    "sha256": "207d65b2712f775a91404496ab27c786ac0da6b0f977f849e6d5d8149e925acc"
+  },
+  "transport": {
+    "kind": "immutable public Git LFS mirror",
+    "repository": "https://github.com/j4xie/5900incred",
+    "commit": "7a5ef5b1d986eac8df9df6245f8261d1a66b7aa7",
+    "path": "data/LC_loans_granting_model_dataset.csv",
+    "lfs_oid_sha256": "207d65b2712f775a91404496ab27c786ac0da6b0f977f849e6d5d8149e925acc",
+    "note": "Zenodo is the dataset authority. The mirror is byte transport only; its LFS object exactly matches Zenodo's published MD5 and size."
+  }
+}

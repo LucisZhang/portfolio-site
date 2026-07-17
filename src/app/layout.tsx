@@ -14,9 +14,9 @@ export const metadata: Metadata = {
 };
 
 const navItems: { href: string; label: LocalizedString }[] = [
+  { href: "/ai", label: { en: "AI applications", zh: "AI 应用" } },
   { href: "/engineering", label: { en: "Engineering", zh: "数据工程" } },
   { href: "/analytics", label: { en: "Analytics", zh: "数据分析" } },
-  { href: "/ai", label: { en: "AI applications", zh: "AI 应用" } },
 ];
 
 function FooterCopy() {

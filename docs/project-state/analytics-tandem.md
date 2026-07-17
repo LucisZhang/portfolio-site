@@ -1,9 +1,11 @@
 # Project state - Analytics tandem
 
-Last updated: 2026-07-13
+Last updated: 2026-07-16
 Lane key: `analytics-tandem`
 Execution owner: Codex (GPT-5.6 Sol)
 Source notes: `~/Library/CloudStorage/OneDrive-个人/Learning/其他简历参考/Self-done Project`
+Greenfield working copies: `~/margin-control-tower` at `68ef751` and
+`~/credit-policy-lab` at `639fbc0`
 Public artifacts: Tableau `Ecommerce_RFM_and_Funnel_Analysis/Dashboard1`; HF Space and GitHub
 `Risk-Control-Portfolio`
 Status: V1 COMBINED PAGE SUPERSEDED; TWO GREENFIELD OPERABLE CASE STUDIES COMPLETE; LEGACY URL PRESERVED
@@ -26,12 +28,15 @@ synthetic fixtures and must not be described as real business or model performan
 
 ## Greenfield rebuild checkpoint
 
-- `Margin Control Tower`: 24 synthetic `week x category` rows from seed `2026071301`, ten data
-  contracts, two governed metric definitions, one explicit injected anomaly, a disclosed promotion
-  elasticity assumption, synthetic holdout prompt, and deterministic action rule.
-- `Credit Policy Lab`: 240 fictional applications from seed `2026071302`, eight data/policy
-  contracts, score-calibration-policy separation, `PD x LGD x EAD`, approve/review/decline bands,
-  analyst-capacity gating, synthetic Brier/PSI/vintage/slice monitoring, reason codes, and audit.
+- `Margin Control Tower`: 9,360 synthetic rows from seed `2026071301` across 52 weeks, 20 products,
+  five categories, three regions, and three channels; ten data contracts, governed metric
+  definitions, an explicit injected anomaly, a disclosed promotion elasticity assumption,
+  synthetic holdout prompt, and deterministic action rule.
+- `Credit Policy Lab`: 12,000 fictional applications and 9,945 booked-loan IDs from seed
+  `2026071302`, split 6,000/3,000/3,000 across train/calibration/backtest and 12 vintages; ten
+  data/policy contracts, score-calibration-policy separation, `PD x LGD x EAD`,
+  approve/review/decline bands, analyst-capacity gating, synthetic Brier/PSI/vintage/slice
+  monitoring, reason codes, and audit.
 - Every generated fixture records a SHA-256 over its rows and is regenerated during build by
   `scripts/generate-analytics-fixtures.mjs`.
 - Each project has a public README, architecture source, data or policy contract, provenance,

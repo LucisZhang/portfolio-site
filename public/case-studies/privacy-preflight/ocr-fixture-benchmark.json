@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-07-13T08:57:22.262Z",
+  "generatedAt": "2026-07-17T10:53:21.129Z",
   "fixedFixtureSet": true,
   "scope": "Synthetic local OCR fixtures only. These results are not a general OCR performance claim.",
   "preprocessing": [
-    "orientation candidates",
-    "resize",
+    "natural dimensions",
+    "portrait orientation candidate",
     "grayscale",
-    "contrast normalization",
-    "threshold",
-    "multi-pass union"
+    "canvas-equivalent contrast",
+    "178 threshold",
+    "complete multi-pass union"
   ],
   "languages": [
     "eng",
@@ -18,11 +18,11 @@
   "summary": {
     "fixtures": 7,
     "expectedCount": 19,
-    "hitCount": 18,
-    "detectedCount": 18,
-    "falsePositiveCount": 0,
-    "recall": 0.9473684210526315,
-    "precision": 1
+    "hitCount": 19,
+    "detectedCount": 21,
+    "falsePositiveCount": 2,
+    "recall": 1,
+    "precision": 0.9047619047619048
   },
   "fixtures": [
     {
@@ -50,13 +50,23 @@
       "passes": [
         {
           "rotation": 0,
-          "mode": "normalized",
+          "mode": "contrast",
           "detected": [
             "ada@example.com",
             "415-555-0188",
             "/Users/demo/Private/brief.txt"
           ],
           "recognizedText": "PRIVACY PREFLIGHT /SYNTHETIC FIXTURE\nReview before external sharing\n\nEMAIL ada@example.com\n\nPHONE 415-555-0188\n\nDRAFT PATH /Users/demo/Private/brief.txt\n\nAll details are fictional and reserved for local QA."
+        },
+        {
+          "rotation": 0,
+          "mode": "threshold",
+          "detected": [
+            "ada@example.com",
+            "415-555-0188",
+            "/Users/demo/Private/brief.txt"
+          ],
+          "recognizedText": "PRIVACY PREFLIGHT / SYNTHETIC FIXTURE\nReview before external sharing\n\nEMAIL ada@example.com\n\nPHONE 415-555-0188\n\nDRAFT PATH /Users/demo/Private/brief.txt\n\nAll details are fictional and reserved for local QA."
         }
       ],
       "boundary": null
@@ -71,25 +81,29 @@
       ],
       "detected": [
         "zhang@example.com",
-        "/Users/demo/Private/"
+        "138-0013-8000",
+        "/Users/demo/Private/中文草稿.txt",
+        "/Users/demoe/Private/中文草稿txt"
       ],
       "hits": [
         "zhang@example.com",
+        "138-0013-8000",
         "/Users/demo/Private/中文草稿.txt"
       ],
-      "misses": [
-        "138-0013-8000"
+      "misses": [],
+      "falsePositives": [
+        "/Users/demoe/Private/中文草稿txt"
       ],
-      "falsePositives": [],
-      "recall": 0.6666666666666666,
-      "precision": 1,
+      "recall": 1,
+      "precision": 0.75,
       "passes": [
         {
           "rotation": 0,
-          "mode": "normalized",
+          "mode": "contrast",
           "detected": [
             "zhang@example.com",
-            "/Users/demo/Private/"
+            "138-0013-8000",
+            "/Users/demo/Private/中文草稿.txt"
           ],
           "recognizedText": "PRIVACY PREFLIGHT /SYNTHETIC FIXTURE\n分 享 前 检查\n\n邮箱 zhang@example.com\n\n电话 138-0013-8000\n\n本 地 路 径 /Users/demo/Private/ 中 文 草稿 .txt\nAll details are fictional and reserved for local QA."
         },
@@ -98,9 +112,10 @@
           "mode": "threshold",
           "detected": [
             "zhang@example.com",
-            "/Users/demo/Private/"
+            "138-0013-8000",
+            "/Users/demoe/Private/中文草稿txt"
           ],
-          "recognizedText": "PRIVACY PREFLIGHT / SYNTHETIC FIXTURE\n分 享 前 检查\n\n邮箱 zhang@example.com\n\n电话 138-0013-8000\n\n本 地 路 径 /Users/demo/Private/ 中 文 草稿 .txt\nAll details are fictional and reserved for local QA."
+          "recognizedText": "PRIVACY PREFLIGHT /SYNTHETIC FIXTURE\n分 享 前 检查\n\n邮箱 zhang@example.com\n\n电话 138-0013-8000\n\n本 地 路 径 /Users/demoe/Private/ 中 文 草稿 txt\nAll details are fictional and reserved for local QA."
         }
       ],
       "boundary": null
@@ -114,6 +129,7 @@
       ],
       "detected": [
         "small@example.com",
+        "212-556-0199",
         "212-555-0199"
       ],
       "hits": [
@@ -121,13 +137,24 @@
         "212-555-0199"
       ],
       "misses": [],
-      "falsePositives": [],
+      "falsePositives": [
+        "212-556-0199"
+      ],
       "recall": 1,
-      "precision": 1,
+      "precision": 0.6666666666666666,
       "passes": [
         {
           "rotation": 0,
-          "mode": "normalized",
+          "mode": "contrast",
+          "detected": [
+            "small@example.com",
+            "212-556-0199"
+          ],
+          "recognizedText": "PRIVACY PREFLIGHT /SYNTHETIC FIXTURE\nSmall text\n\nEMAIL small@example.com\n\nPHONE 212-556-0199\n\nAll details are fictional and reserved for local QA."
+        },
+        {
+          "rotation": 0,
+          "mode": "threshold",
           "detected": [
             "small@example.com",
             "212-555-0199"
@@ -159,7 +186,7 @@
       "passes": [
         {
           "rotation": 0,
-          "mode": "normalized",
+          "mode": "contrast",
           "detected": [],
           "recognizedText": "PRIVACY PREFLIGHT / SYNTHETIC FIXTURE\nLow contrast\n\nEMAIL\n\nPHONE\n\nAll details are fictional and reserved for local QA."
         },
@@ -170,7 +197,7 @@
             "contrast@example.com",
             "646-555-0177"
           ],
-          "recognizedText": "PRIVACY PREFLIGHT / SYNTHETIC FIXTURE\nLow contrast\n\nEMAIL contrast@example.com\n\nPHONE 646-555-0177\n\nAll details are fictional and reserved for local QA."
+          "recognizedText": "PRIVACY PREFLIGHT /SYNTHETIC FIXTURE\nLow contrast\n\nEMAIL contrast@example.com\n\nPHONE 646-555-0177\n\nAll details are fictional and reserved for local QA."
         }
       ],
       "boundary": null
@@ -200,13 +227,23 @@
       "passes": [
         {
           "rotation": 0,
-          "mode": "normalized",
+          "mode": "contrast",
           "detected": [
             "multi@example.com",
             "202-555-0144",
             "/Users/demo/Private/multiline.txt"
           ],
-          "recognizedText": "PRIVACY PREFLIGHT /SYNTHETIC FIXTURE\nMultiple lines\n\nEMAIL multi@example.com\n\nPHONE 202-555-0144\n\nPATH /Users/demo/Private/multiline.txt\nAll details are fictional and reserved for local QA."
+          "recognizedText": "PRIVACY PREFLIGHT / SYNTHETIC FIXTURE\nMultiple lines\n\nEMAIL multi@example.com\n\nPHONE 202-555-0144\n\nPATH /Users/demo/Private/multiline. txt\nAll details are fictional and reserved for local QA."
+        },
+        {
+          "rotation": 0,
+          "mode": "threshold",
+          "detected": [
+            "multi@example.com",
+            "202-555-0144",
+            "/Users/demo/Private/multiline.txt"
+          ],
+          "recognizedText": "PRIVACY PREFLIGHT /SYNTHETIC FIXTURE\nMultiple lines\n\nEMAIL multi@example.com\n\nPHONE 202-555-0144\n\nPATH /Users/demo/Private/multiline. txt\nAll details are fictional and reserved for local QA."
         }
       ],
       "boundary": null
@@ -236,25 +273,35 @@
       "passes": [
         {
           "rotation": 0,
-          "mode": "normalized",
+          "mode": "contrast",
           "detected": [],
-          "recognizedText": "= RY 卫 m = 中\n3 = 5 E 三 A\n2 nT = <\n® OT >\n° 0) Q\nS > a.\n> ® py\na 0 m\nu\n3 一 NO —\n2 - oO = 口\n2 [7] NO =\n于 ® on = IT\n5 2 On ®) —\n8 o CD 刀 ®\n8 = :\n5 3 = 2 到\n改 3 二\n3 人 =2 —\n=. ® T\n< (@) m\n2 = —\n@ 3 o\n3\nc iL\n= >\n= =H\n® 万\nx m"
+          "recognizedText": "0 卫 m av)\n5 3 2 E 本\n四 工 三 = = 全\n= <\nH ©\n8 = 0\n2 ol ©\n: 5 卫\n2 刀\n5 2 x\n: 吓\nza [BE\n2 名 n> = T\n: I) 5\n= a 多 本\n8 Pox On @ >\n° @ = F ®\n> 3 3 g 2\ng ® = 3\n0 5) I\n= 由\n< Q m\n8 3 |\n和 9)\nE 卫\n2 c\nid 万\nEY m"
         },
         {
           "rotation": 0,
           "mode": "threshold",
           "detected": [],
-          "recognizedText": "> RY) 了 m ne)\n= >\n3 J 5 3 = ny\n2 fr = = 一\n8 i=l 3\n5 OO\n5 一 <\n2 5 T\n5 ® py)\na (In 四\n名 =~ N 3\n2 C J\n3 和 S&S 三 ©\ng @ Hh = 工\non a © =\n: gs 2 >\nQo CD\n> 3 = 5 <\nQ = 5 Z\nRY 可 工\n< O 〇 四\n= S —\nCC 3 —\n= O\n3 m\n= ><\n=: -\na -\n一 - A\nx Mm"
+          "recognizedText": "3 xT x m\n\nz z = Tu\n\n& I 到 Ec x\n\n7 m bh = <\n\nFS 已 3\n\n3 =k\n\ng 2 <\n\nFH 5 卫\n\n3 部 py)\n\n2 w mm\n\ni 己\n\n名 = IN] 3 四\n\n2\n\n3 8g 三 ®\n\ng a n 6 I\n\n= [72]\n\n: g ¢ 8 >\n\n2\n\n8 3 2 8 =<\n& >» 3 pd\n3 * 3 =\n3 © I\n< Q\nD 四 0\ng 3 局\n= Si\nFo c\n= 刀\n兰 m"
         },
         {
           "rotation": 270,
-          "mode": "normalized",
+          "mode": "contrast",
           "detected": [
             "multi@example.com",
             "202-555-0144",
             "/Users/demo/Private/multiline.txt"
           ],
-          "recognizedText": "PRIVACY PREFLIGHT /SYNTHETIC FIXTURE\nMultiple lines\n\nEMAIL multi@example.com\n\nPHONE 202-555-0144\n\nPATH /Users/demo/Private/multiline.txt\nAll details are fictional and reserved for local QA."
+          "recognizedText": "PRIVACY PREFLIGHT / SYNTHETIC FIXTURE\nMultiple lines\n\nEMAIL multi@example.com\n\nPHONE 202-555-0144\n\nPATH /Users/demo/Private/multiline. txt\nAll details are fictional and reserved for local QA."
+        },
+        {
+          "rotation": 270,
+          "mode": "threshold",
+          "detected": [
+            "multi@example.com",
+            "202-555-0144",
+            "/Users/demo/Private/multiline.txt"
+          ],
+          "recognizedText": "PRIVACY PREFLIGHT /SYNTHETIC FIXTURE\nMultiple lines\n\nEMAIL multi@example.com\n\nPHONE 202-555-0144\n\nPATH /Users/demo/Private/multiline. txt\nAll details are fictional and reserved for local QA."
         }
       ],
       "boundary": null
@@ -284,13 +331,23 @@
       "passes": [
         {
           "rotation": 0,
-          "mode": "normalized",
+          "mode": "contrast",
           "detected": [
             "ada@example.com",
             "415-555-0188",
             "/Users/demo/Private/brief.txt"
           ],
           "recognizedText": "PRIVACY PREFLIGHT /SYNTHETIC FIXTURE\nReview before external sharing\n\nEMAIL ada@example.com\n\nPHONE 415-555-0188\n\nDRAFT PATH /Users/demo/Private/brief.txt\n\nAll details are fictional and reserved for local QA."
+        },
+        {
+          "rotation": 0,
+          "mode": "threshold",
+          "detected": [
+            "ada@example.com",
+            "415-555-0188",
+            "/Users/demo/Private/brief.txt"
+          ],
+          "recognizedText": "PRIVACY PREFLIGHT / SYNTHETIC FIXTURE\nReview before external sharing\n\nEMAIL ada@example.com\n\nPHONE 415-555-0188\n\nDRAFT PATH /Users/demo/Private/brief.txt\n\nAll details are fictional and reserved for local QA."
         }
       ],
       "boundary": "The scanned-PDF fixture embeds this exact page image; browser tests exercise the PDF renderer and OCR path."

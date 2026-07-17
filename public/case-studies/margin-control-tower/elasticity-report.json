@@ -1,0 +1,16 @@
+{
+  "report_version": "elasticity-report-v1",
+  "dataset_id": "olist-margin-parquet-v1:6921b7ed7903",
+  "artifact_sha256": "6921b7ed790367fe9d9ade878a7b97e6d7c2879b9488eef51b326ad9775722fb",
+  "evaluated_at": "2026-07-17",
+  "method": "HC3 log-log OLS with category, region, and payment-channel fixed effects; fit excludes final 8 weeks",
+  "coefficient": 0.039548,
+  "confidence_interval_95": [
+    0.026085,
+    0.05301
+  ],
+  "holdout_mape": 0.758549,
+  "analysis_rows": 14313,
+  "holdout_rows": 1496,
+  "boundary": "Coefficient fit uses analysis rows only; the later eight-week holdout evaluates MAPE only. Associational observed/proxy-price estimate; no causal lift claim."
+}

@@ -27,7 +27,7 @@ const viewports = [
   { name: "mobile", width: 390, height: 844 },
 ];
 const locales = ["en", "zh"];
-const artifactExtensions = new Set([".csv", ".json", ".jpg", ".jpeg", ".md", ".mmd", ".parquet", ".pdf", ".png", ".svg"]);
+const artifactExtensions = new Set([".csv", ".json", ".jpg", ".jpeg", ".md", ".mmd", ".parquet", ".pdf", ".png", ".svg", ".txt", ".zip"]);
 
 function stablePathname(value) {
   const url = new URL(value, baseUrl);

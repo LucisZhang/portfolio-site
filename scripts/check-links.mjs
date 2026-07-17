@@ -29,6 +29,8 @@ const mimeByExtension = {
   ".pdf": ["application/pdf"],
   ".png": ["image/png"],
   ".svg": ["image/svg+xml"],
+  ".txt": ["text/plain"],
+  ".zip": ["application/zip", "application/x-zip-compressed"],
 };
 
 function addFinding(severity, category, page, message, target = "") {

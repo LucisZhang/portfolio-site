@@ -20,6 +20,7 @@ export interface Dictionary {
   navEngineering: string;
   navAnalytics: string;
   navAi: string;
+  targetRoles: string;
   paletteOpen: string;
   paletteClose: string;
   palettePlaceholder: string;
@@ -53,6 +54,7 @@ const en: Dictionary = {
   navEngineering: "Engineering",
   navAnalytics: "Analytics",
   navAi: "AI applications",
+  targetRoles: "Open to Data Analytics, Data Engineering, and AI Application Engineering roles.",
   paletteOpen: "Search",
   paletteClose: "Close search",
   palettePlaceholder: "Search projects, systems, or tools",
@@ -86,6 +88,7 @@ const zh: Dictionary = {
   navEngineering: "数据工程",
   navAnalytics: "数据分析",
   navAi: "AI 应用",
+  targetRoles: "求职方向：数据分析、数据工程与 AI 应用工程。",
   paletteOpen: "搜索",
   paletteClose: "关闭搜索",
   palettePlaceholder: "搜索项目、系统或工具",
