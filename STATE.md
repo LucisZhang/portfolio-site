@@ -56,17 +56,23 @@ datasets, or a production-deployment claim.
 
 ## Publication gates
 
-This commit intentionally makes no claim that it has already been pushed or deployed. The gates are
-separate and must remain separate:
+This commit intentionally makes no claim that it has already been pushed or deployed. Push and
+Preview remain separate owner decisions, but the current Vercel Git connection couples their
+execution: the `portfolio-site` project watches this GitHub repository, uses `main` as production,
+has no Ignored Build Step, and previously created a Preview automatically for this feature branch.
+Therefore a branch push is expected to create a new non-production Preview.
 
-1. Obtain explicit owner authorization for the exact frozen candidate SHA, then fast-forward only
+1. Obtain explicit owner authorization for the exact frozen candidate SHA and destination branch.
+2. Independently obtain explicit owner authorization for the expected automatic non-production
+   Preview before pushing. If only the push is authorized, stop; suppressing the automatic Preview
+   would itself require a separately reviewed Vercel configuration change.
+3. After both authorizations, fast-forward only
    `LucisZhang/portfolio-site:codex/portfolio-phase2`. Do not force-push or merge PR #1.
-2. Verify the branch, pipeline source links, evidence links, and downloads anonymously.
-3. Obtain a separate explicit owner authorization before creating a non-production Vercel Preview
-   from that same SHA. Do not change a production branch or alias.
-4. Run the required real-browser deployed-preview verification. A local browser pass or an older
+4. Verify the branch, pipeline source links, evidence links, and downloads anonymously. Confirm the
+   Git-triggered deployment is Preview—not production—and records the exact candidate SHA.
+5. Run the required real-browser deployed-preview verification. A local browser pass or an older
    Preview does not satisfy this gate.
-5. PR merge, production deployment, alias changes, repository-visibility changes, GitHub Releases,
+6. PR merge, production deployment, alias changes, repository-visibility changes, GitHub Releases,
    and paid actions each require their own explicit authorization.
 
 The immutable commit can record only its pre-publication boundary. Anonymous URLs, deployment ID,
