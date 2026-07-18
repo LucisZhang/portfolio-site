@@ -1,0 +1,9 @@
+flowchart LR
+  generator[Fixed-seed fictional applications] --> contract[Data and score contract]
+  contract --> scores[Synthetic raw and calibrated PD]
+  scores --> economics[EL = PD x LGD x EAD]
+  economics --> policy[Approve / review / decline policy]
+  policy --> queue[Capacity-constrained review queue]
+  queue --> backtest[Vintage backtest]
+  backtest --> monitor[PSI and descriptive slice monitoring]
+  monitor --> audit[Policy audit record]

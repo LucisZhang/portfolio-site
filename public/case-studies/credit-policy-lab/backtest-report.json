@@ -1,0 +1,34 @@
+{
+  "report_version": "credit-backtest-report-v1",
+  "dataset_id": "credit-backtest-parquet-v1:2bbc97350d28",
+  "artifact_sha256": "2bbc97350d28123a1b056e4d475cdc90000954df1e6226d54d4fa35f2e7e0b95",
+  "evaluated_at": "2026-07-17",
+  "splits": {
+    "train": 72000,
+    "calibration": 24000,
+    "backtest": 24000
+  },
+  "time_cutoffs": {
+    "train_end": "2015-12",
+    "calibration_end": "2016-10"
+  },
+  "models": {
+    "baseline_raw": {
+      "brier": 0.1618255,
+      "log_loss": 0.49908694,
+      "roc_auc": 0.67607353
+    },
+    "baseline_isotonic": {
+      "brier": 0.15928048,
+      "log_loss": 0.49340292,
+      "roc_auc": 0.67461544
+    },
+    "challenger_isotonic": {
+      "brier": 0.15925265,
+      "log_loss": 0.4943198,
+      "roc_auc": 0.67526164
+    }
+  },
+  "backtest_default_rate": 0.21816667,
+  "boundaries": "Granted-loan-only offline historical association; rejected applicants are absent; no production, causal, regulatory, or fairness claim."
+}

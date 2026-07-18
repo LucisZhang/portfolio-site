@@ -1,0 +1,9 @@
+flowchart LR
+  generator[Fixed-seed fixture generator] --> contract[Data contract]
+  contract -->|pass| metric[Metric semantics registry]
+  contract -->|fail closed| stop[No decision output]
+  metric --> diagnose[Weekly margin decomposition]
+  diagnose --> anomaly[Injected-anomaly diagnosis]
+  anomaly --> scenario[Bounded promotion scenario]
+  scenario --> holdout[Synthetic holdout verification]
+  holdout --> action[Category action record]

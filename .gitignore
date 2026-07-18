@@ -18,6 +18,11 @@
 # next.js
 /.next/
 /out/
+/public/generated/
+/public/duckdb/*
+!/public/duckdb/README.md
+!/public/duckdb/extensions/
+!/public/duckdb/extensions/**
 
 # production
 /build

@@ -4,7 +4,7 @@ import { Command } from "cmdk";
 import { Search, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { localize, useI18n } from "@/lib/i18n";
+import { localeHref, localize, useI18n } from "@/lib/i18n";
 import type { Project, Track } from "@/lib/projects";
 
 export default function CommandPalette({
@@ -52,7 +52,7 @@ export default function CommandPalette({
 
   function go(href: string) {
     setOpen(false);
-    router.push(href);
+    router.push(localeHref(href, locale));
   }
 
   return (

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "recordType": "historical-checkpoint-transcription",
+  "recordedAt": "2026-07-13T16:59:17+08:00",
+  "sourceCommit": "fca4a852b68d72d6f08769944669037e3f3954fa",
+  "sourcePath": "STATE.md",
+  "sourceLinesAtCommit": "21-23",
+  "scope": "Portfolio browser verification checkpoint across desktop, tablet, and mobile during the Privacy Web vertical slice.",
+  "results": {
+    "passed": 67,
+    "skipped": 2,
+    "failed": null,
+    "failureCountExplicitlyRecorded": false,
+    "skipReason": "Intentional duplicate heavy-OCR cases"
+  },
+  "rawReporterArtifactRetained": false,
+  "currentCandidateResult": false,
+  "limitations": [
+    "This is a transparent machine-readable transcription of the committed STATE checkpoint, not a recovered Playwright reporter file; the source sentence does not state a numeric failure count.",
+    "It must not be used as the final verification result for a later candidate; later candidates rerun the complete serialized browser suite separately."
+  ]
+}

@@ -1,17 +1,23 @@
 "use client";
 
-import { ArrowUpRight, CheckCircle2 } from "lucide-react";
-import Link from "next/link";
+import { ArrowUpRight, CheckCircle2, Github, Linkedin, Mail } from "lucide-react";
+import LocaleLink from "@/components/LocaleLink";
 import { localize, LocalizedText, useI18n } from "@/lib/i18n";
 import { featuredProjects, tracks } from "@/lib/projects";
+import { siteIdentity } from "@/lib/site-config";
 
 const status: Record<string, { en: string; zh: string }> = {
-  "release-guardian": { en: "Live eval audited", zh: "在线评估已审计" },
-  "p1-reliability-lab": { en: "Local reproduction captured", zh: "本地复现已捕获" },
-  "rag-quality-lab": { en: "C2 floor verified", zh: "C2 基线已核实" },
-  "privacy-preflight-mac": { en: "Source + demo", zh: "源码 + 演示" },
-  "analytics-tandem": { en: "Qualitative public proof", zh: "定性公开证据" },
+  "release-guardian": { en: "Live evaluation + demo", zh: "已评估运行 + 回放演示" },
+  "p1-reliability-lab": { en: "Recorded recovery replay", zh: "已记录的故障恢复回放" },
+  "rag-quality-lab": { en: "Data and test baseline", zh: "数据与测试基线已核实" },
+  "privacy-preflight-mac": { en: "Local browser workflow", zh: "浏览器本地工作区" },
+  "margin-control-tower": { en: "Interactive decision workbench", zh: "交互式决策工作台" },
+  "credit-policy-lab": { en: "Score-to-policy simulator", zh: "从评分到策略的模拟器" },
 };
+
+function MetricsChips({ value }: { value: string }) {
+  return <span className="metrics-chips">{value.split(" · ").map((metric) => <small key={metric}>{metric}</small>)}</span>;
+}
 
 export default function Home() {
   const { locale, dict } = useI18n();
@@ -19,34 +25,40 @@ export default function Home() {
     <main>
       <section className="workspace-head page-shell">
         <div>
-          <p className="eyebrow">{dict.navWork}</p>
-          <h1>{locale === "en" ? "Systems, evidence, boundaries." : "系统、证据、边界。"}</h1>
-          <p className="lede">{locale === "en" ? "Five inspectable case studies across release engineering, data reliability, RAG evaluation, privacy tooling, and analytics." : "五个可检查案例，覆盖发布工程、数据可靠性、RAG 评估、隐私工具与数据分析。"}</p>
+          <p className="eyebrow">{locale === "en" ? "AI applications · Data engineering · Data analytics" : "AI 应用 · 数据工程 · 数据分析"}</p>
+          <h1>{locale === "en" ? siteIdentity.name : siteIdentity.chineseName}</h1>
+          <p className="lede">{localize(siteIdentity.positioning, locale)}</p>
+          <p className="target-roles">{dict.targetRoles}</p>
+          <div className="identity-links" aria-label={locale === "en" ? "Contact and profiles" : "联系方式与主页"}>
+            <a href={siteIdentity.profiles.github}><Github aria-hidden="true" /><span>GitHub</span><ArrowUpRight aria-hidden="true" /></a>
+            <a href={siteIdentity.profiles.linkedin}><Linkedin aria-hidden="true" /><span>LinkedIn</span><ArrowUpRight aria-hidden="true" /></a>
+            <a href={`mailto:${siteIdentity.profiles.email}`}><Mail aria-hidden="true" /><span>Email</span></a>
+          </div>
         </div>
         <div className="workspace-index" aria-label={locale === "en" ? "Portfolio index" : "作品集索引"}>
-          <span><strong>05</strong>{locale === "en" ? "case studies" : "个案例"}</span>
+          <span><strong>06</strong>{locale === "en" ? "case studies" : "个案例"}</span>
           <span><strong>03</strong>{locale === "en" ? "disciplines" : "个方向"}</span>
-          <span><CheckCircle2 aria-hidden="true" />{locale === "en" ? "claims scoped" : "声明有边界"}</span>
+          <span><CheckCircle2 aria-hidden="true" />{locale === "en" ? "6 interactive demos" : "6 个交互式演示"}</span>
         </div>
       </section>
 
       <section className="discipline-strip" aria-label={locale === "en" ? "Disciplines" : "方向"}>
         <div className="page-shell">
-          {tracks.map((track) => <Link href={`/${track.id}`} key={track.id}><strong><LocalizedText text={track.label} /></strong><span><LocalizedText text={track.thesis} /></span></Link>)}
+          {tracks.map((track) => <LocaleLink href={`/${track.id}`} key={track.id}><strong><LocalizedText text={track.label} /></strong><span><LocalizedText text={track.thesis} /></span></LocaleLink>)}
         </div>
       </section>
 
       <section className="project-index page-shell">
-        <div className="index-heading"><h2>{dict.navWork}</h2><p>{locale === "en" ? "Open a project to inspect its architecture, evidence source, provenance, and limits." : "打开项目，检查其架构、证据来源、沿革与限制。"}</p></div>
+        <div className="index-heading"><h2>{dict.navWork}</h2><p>{locale === "en" ? "Open any project to see what I built, how it works, and what the result does not prove." : "打开任意项目，查看我做了什么、如何运作，以及结果不能说明什么。"}</p></div>
         <div className="project-table">
           {featuredProjects.map((project, index) => (
-            <Link key={project.slug} href={`/${project.track}/${project.slug}`}>
+            <LocaleLink key={project.slug} href={`/${project.track}/${project.slug}`}>
               <span className="project-number">{String(index + 1).padStart(2, "0")}</span>
               <span className="project-name"><strong>{localize(project.title, locale)}</strong><small>{localize(project.eyebrow, locale)}</small></span>
-              <span className="project-summary">{localize(project.summary, locale)}</span>
+              <span className="project-copy"><span className="project-summary">{localize(project.summary, locale)}</span><MetricsChips value={localize(project.metrics, locale)} /></span>
               <span className="project-status"><CheckCircle2 aria-hidden="true" />{status[project.slug][locale]}</span>
               <ArrowUpRight aria-label={dict.inspectProject} />
-            </Link>
+            </LocaleLink>
           ))}
         </div>
       </section>

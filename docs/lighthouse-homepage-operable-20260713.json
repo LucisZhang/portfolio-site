@@ -1,0 +1,27 @@
+{
+  "audited_at_utc": "2026-07-13T00:58:21.693Z",
+  "url": "http://127.0.0.1:4173/",
+  "mode": "production Next.js server, Lighthouse mobile defaults",
+  "tool": {
+    "lighthouse": "13.4.0",
+    "chrome": "HeadlessChrome/150.0.0.0"
+  },
+  "categories": {
+    "performance": 0.96,
+    "accessibility": 1.0,
+    "best_practices": 1.0,
+    "seo": 1.0
+  },
+  "metrics": {
+    "first_contentful_paint": "0.9 s",
+    "largest_contentful_paint": "2.8 s",
+    "total_blocking_time": "0 ms",
+    "cumulative_layout_shift": "0",
+    "speed_index": "0.9 s"
+  },
+  "run_warnings": [],
+  "gate": {
+    "homepage_performance_minimum": 0.9,
+    "passed": true
+  }
+}

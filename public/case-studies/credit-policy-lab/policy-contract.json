@@ -1,0 +1,60 @@
+{
+  "schema_version": 2,
+  "dataset": "synthetic-credit-data.json",
+  "grain": [
+    "application_id"
+  ],
+  "entities": {
+    "application_id": "fictional decision request",
+    "loan_id": "populated only for the fixed synthetic observed book",
+    "observed_default": "generated backtest outcome",
+    "model_score": "synthetic probability input",
+    "policy_decision": "computed in browser and not stored in the dataset"
+  },
+  "required_fields": [
+    "application_id",
+    "loan_id",
+    "vintage",
+    "split",
+    "utilization",
+    "late_payments",
+    "debt_to_income",
+    "bureau_age_months",
+    "income_band",
+    "audit_group",
+    "channel",
+    "raw_pd",
+    "calibrated_pd",
+    "challenger_pd",
+    "lgd",
+    "ead",
+    "observed_default",
+    "reason_codes",
+    "provenance"
+  ],
+  "policy": {
+    "decision_order": [
+      "approve",
+      "manual_review",
+      "decline"
+    ],
+    "approve_when": "selected_pd <= approve_threshold",
+    "review_when": "approve_threshold < selected_pd <= review_threshold",
+    "decline_when": "selected_pd > review_threshold",
+    "expected_loss": "selected_pd * lgd * ead",
+    "capacity_rule": "manual_review_count must not exceed selected analyst capacity"
+  },
+  "checks": [
+    "application_id unique",
+    "entity grain and split present",
+    "probabilities bounded",
+    "LGD bounded and EAD positive",
+    "approve threshold below review threshold",
+    "decision bands mutually exclusive and exhaustive",
+    "observed synthetic outcome present",
+    "reason codes populated",
+    "expected loss non-negative",
+    "provenance equals synthetic"
+  ],
+  "failure_policy": "Invalid data contracts, threshold order, or queue capacity block policy publication."
+}

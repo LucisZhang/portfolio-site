@@ -1,0 +1,117 @@
+{
+  "report_version": "detection-report-v2",
+  "dataset_id": "olist-margin-parquet-v1:6921b7ed7903",
+  "artifact_sha256": "6921b7ed790367fe9d9ade878a7b97e6d7c2879b9488eef51b326ad9775722fb",
+  "evaluated_at": "2026-07-17",
+  "method": "STL + robust z-score",
+  "label_source": "six deterministic fixed-location negative perturbations replayed on observed Mondays in a complete Monday calendar; missing weeks are zero-filled and no manually labeled real anomalies are claimed",
+  "label_source_localized": {
+    "en": "Six deterministic fixed-location negative perturbations replayed on observed Mondays in a complete Monday calendar; missing weeks are zero-filled and no manually labeled real anomalies are claimed.",
+    "zh": "在完整星期一日历中有观测的周上重放 6 个确定性固定位置负向扰动；缺失周补零，不声称存在人工标注的真实异常。"
+  },
+  "precision": 0.315789,
+  "recall": 1.0,
+  "true_positives": 6,
+  "false_positives": 13,
+  "false_negatives": 0,
+  "threshold": 3.5,
+  "stl_period_weeks": 13,
+  "evaluated_week_count": 106,
+  "calendar_frequency": "W-MON",
+  "observed_week_count": 95,
+  "missing_week_count": 11,
+  "missing_weeks": [
+    "2016-09-19",
+    "2016-10-17",
+    "2016-10-24",
+    "2016-10-31",
+    "2016-11-07",
+    "2016-11-14",
+    "2016-11-21",
+    "2016-11-28",
+    "2016-12-05",
+    "2016-12-12",
+    "2016-12-26"
+  ],
+  "missing_week_treatment": "complete Monday calendar; weeks with no derived Olist cells are zero-filled before STL",
+  "replay_week_rule": "six evenly spaced observed Mondays after 14-calendar-week boundary guards",
+  "labeled_weeks": [
+    {
+      "week": "2016-12-19",
+      "label": "deterministic fixed-location negative perturbation replay",
+      "label_localized": {
+        "en": "Deterministic fixed-location negative perturbation replay",
+        "zh": "确定性固定位置负向扰动重放"
+      },
+      "detected": true,
+      "status": "detected",
+      "injected_delta": -97603.7505,
+      "robust_z_score": -39.449775
+    },
+    {
+      "week": "2017-04-03",
+      "label": "deterministic fixed-location negative perturbation replay",
+      "label_localized": {
+        "en": "Deterministic fixed-location negative perturbation replay",
+        "zh": "确定性固定位置负向扰动重放"
+      },
+      "detected": true,
+      "status": "detected",
+      "injected_delta": -97603.7505,
+      "robust_z_score": -37.572834
+    },
+    {
+      "week": "2017-07-17",
+      "label": "deterministic fixed-location negative perturbation replay",
+      "label_localized": {
+        "en": "Deterministic fixed-location negative perturbation replay",
+        "zh": "确定性固定位置负向扰动重放"
+      },
+      "detected": true,
+      "status": "detected",
+      "injected_delta": -97603.7505,
+      "robust_z_score": -38.254863
+    },
+    {
+      "week": "2017-10-30",
+      "label": "deterministic fixed-location negative perturbation replay",
+      "label_localized": {
+        "en": "Deterministic fixed-location negative perturbation replay",
+        "zh": "确定性固定位置负向扰动重放"
+      },
+      "detected": true,
+      "status": "detected",
+      "injected_delta": -97603.7505,
+      "robust_z_score": -39.322237
+    },
+    {
+      "week": "2018-02-12",
+      "label": "deterministic fixed-location negative perturbation replay",
+      "label_localized": {
+        "en": "Deterministic fixed-location negative perturbation replay",
+        "zh": "确定性固定位置负向扰动重放"
+      },
+      "detected": true,
+      "status": "detected",
+      "injected_delta": -97603.7505,
+      "robust_z_score": -44.609422
+    },
+    {
+      "week": "2018-05-28",
+      "label": "deterministic fixed-location negative perturbation replay",
+      "label_localized": {
+        "en": "Deterministic fixed-location negative perturbation replay",
+        "zh": "确定性固定位置负向扰动重放"
+      },
+      "detected": true,
+      "status": "detected",
+      "injected_delta": -97603.7505,
+      "robust_z_score": -30.276301
+    }
+  ],
+  "boundary": "The perturbations are evaluation labels only; they are never written into the real-data Parquet artifact.",
+  "boundary_localized": {
+    "en": "Evaluation labels only; missing calendar weeks are zero-filled before STL, replay weeks are observed Mondays, and perturbations never enter the real-data Parquet.",
+    "zh": "仅作为评估标签；缺失日历周在 STL 前补零，重放周只选择有观测的星期一，扰动从不写入真实数据 Parquet。"
+  }
+}

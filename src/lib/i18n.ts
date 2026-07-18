@@ -20,6 +20,7 @@ export interface Dictionary {
   navEngineering: string;
   navAnalytics: string;
   navAi: string;
+  targetRoles: string;
   paletteOpen: string;
   paletteClose: string;
   palettePlaceholder: string;
@@ -53,6 +54,7 @@ const en: Dictionary = {
   navEngineering: "Engineering",
   navAnalytics: "Analytics",
   navAi: "AI applications",
+  targetRoles: "Open to Data Analytics, Data Engineering, and AI Application Engineering roles.",
   paletteOpen: "Search",
   paletteClose: "Close search",
   palettePlaceholder: "Search projects, systems, or tools",
@@ -61,23 +63,23 @@ const en: Dictionary = {
   paletteProjects: "Projects",
   problem: "Problem",
   audience: "Audience",
-  role: "My role",
-  verifiedOutcome: "Evidence-backed outcome",
+  role: "What I built",
+  verifiedOutcome: "Result",
   stack: "System",
-  links: "Inspect",
-  architecture: "Architecture / pipeline",
-  evidence: "Evidence surface",
-  provenance: "Provenance",
-  boundaries: "Limitations and boundaries",
+  links: "Open",
+  architecture: "How it works",
+  evidence: "Try it",
+  provenance: "How this was verified",
+  boundaries: "What this does not prove",
   backHome: "All projects",
   backToTrack: "Back to discipline",
   language: "Language",
   externalLink: "Opens external site",
-  noPublicLink: "No public link is available for this project.",
-  mediaEvidence: "Captured evidence",
-  mediaUnavailable: "Approved media is not present in this build. The written evidence and boundaries remain available.",
-  footer: "Public v1 portfolio. Evidence is scoped to the artifacts named on each project page.",
-  inspectProject: "Inspect case study",
+  noPublicLink: "Source publication is still pending.",
+  mediaEvidence: "Recorded views",
+  mediaUnavailable: "No approved image is included in this build. Run details are still available below.",
+  footer: "Public v1 portfolio. Every project explains what ran and what the result does not establish.",
+  inspectProject: "Open case study",
 };
 
 const zh: Dictionary = {
@@ -86,6 +88,7 @@ const zh: Dictionary = {
   navEngineering: "数据工程",
   navAnalytics: "数据分析",
   navAi: "AI 应用",
+  targetRoles: "求职方向：数据分析、数据工程与 AI 应用工程。",
   paletteOpen: "搜索",
   paletteClose: "关闭搜索",
   palettePlaceholder: "搜索项目、系统或工具",
@@ -94,22 +97,22 @@ const zh: Dictionary = {
   paletteProjects: "项目",
   problem: "问题",
   audience: "面向对象",
-  role: "我的角色",
-  verifiedOutcome: "证据支持的结果",
+  role: "我做了什么",
+  verifiedOutcome: "结果",
   stack: "系统组成",
-  links: "查看产物",
-  architecture: "架构 / 流程",
-  evidence: "证据界面",
-  provenance: "来源与沿革",
-  boundaries: "限制与边界",
+  links: "相关链接",
+  architecture: "工作原理",
+  evidence: "动手体验",
+  provenance: "如何验证",
+  boundaries: "这项结果不能说明什么",
   backHome: "全部项目",
   backToTrack: "返回方向",
   language: "语言",
   externalLink: "打开外部网站",
-  noPublicLink: "该项目不提供公开链接。",
-  mediaEvidence: "已捕获证据",
-  mediaUnavailable: "本次构建中尚无获批媒体；文字证据与边界说明仍可查看。",
-  footer: "公开 v1 作品集。每个项目的证据范围以页面所列产物为准。",
+  noPublicLink: "源码尚未公开发布。",
+  mediaEvidence: "已记录画面",
+  mediaUnavailable: "本次构建暂无可用图片，下方仍可查看运行详情。",
+  footer: "公开的 v1 作品集，每个项目都会说明做了什么，以及结果不能说明什么。",
   inspectProject: "查看案例",
 };
 
@@ -128,6 +131,8 @@ const I18nContext = createContext<I18nContextValue>({
 });
 
 function detectLocale(): Locale {
+  const requested = new URL(window.location.href).searchParams.get("lang");
+  if (requested === "en" || requested === "zh") return requested;
   const stored = window.localStorage.getItem("portfolio-locale");
   if (stored === "en" || stored === "zh") return stored;
   return window.navigator.language.toLowerCase().startsWith("zh") ? "zh" : "en";
@@ -153,6 +158,10 @@ function subscribeLocale(listener: () => void) {
 function setStoredLocale(next: Locale) {
   currentLocale = next;
   window.localStorage.setItem("portfolio-locale", next);
+  const url = new URL(window.location.href);
+  if (next === "zh") url.searchParams.set("lang", "zh");
+  else url.searchParams.delete("lang");
+  window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
   localeListeners.forEach((listener) => listener());
 }
 
@@ -161,6 +170,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     document.documentElement.lang = locale === "zh" ? "zh-CN" : "en";
+    const url = new URL(window.location.href);
+    if (locale === "zh") url.searchParams.set("lang", "zh");
+    else url.searchParams.delete("lang");
+    window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
   }, [locale]);
 
   const setLocale = useCallback((next: Locale) => setStoredLocale(next), []);
@@ -175,6 +188,14 @@ export function useI18n() {
 
 export function localize(text: LocalizedString, locale: Locale) {
   return text[locale];
+}
+
+export function localeHref(href: string, locale: Locale) {
+  if (/^(?:[a-z]+:|#)/i.test(href)) return href;
+  const url = new URL(href, "https://portfolio.local");
+  if (locale === "zh") url.searchParams.set("lang", "zh");
+  else url.searchParams.delete("lang");
+  return `${url.pathname}${url.search}${url.hash}`;
 }
 
 export function LocalizedText({ text, className }: { text: LocalizedString; className?: string }) {
