@@ -1,6 +1,6 @@
 # Claim-to-evidence index
 
-Updated: 2026-07-17
+Updated: 2026-07-18
 
 This index maps the portfolio's principal visible claims to inspectable evidence. “Source” means
 the implementation or reproduction path; it does not turn a synthetic fixture into measured
@@ -62,7 +62,10 @@ completed.
 
 ## Publication state
 
-The repository is public, but the current local upgrade is not yet on the public review branch.
-See [`PUBLICATION_CHECKLIST.md`](PUBLICATION_CHECKLIST.md) and
-[`github-publication-manifest.md`](github-publication-manifest.md) before describing a local source
-or artifact as anonymously public.
+This commit contains the complete upgrade evidence indexed above. At the pre-publication snapshot
+recorded on 2026-07-18 08:03 Asia/Shanghai, the public review branch still pointed to `234da138`,
+not this candidate. Anonymous availability is time-dependent and cannot be proven by this immutable
+file: verify the current remote branch and exact commit, then follow
+[`PUBLICATION_CHECKLIST.md`](PUBLICATION_CHECKLIST.md) and
+[`github-publication-manifest.md`](github-publication-manifest.md) before describing any source or
+artifact as anonymously public.

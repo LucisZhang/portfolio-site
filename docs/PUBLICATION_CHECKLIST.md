@@ -15,10 +15,12 @@ visibility change, or GitHub Release was performed while preparing it.
   `234da138c3bc6b81569da8aa6fc9a1325a4d344f`.
 - [PR #1](https://github.com/LucisZhang/portfolio-site/pull/1) is open, ready for review, and
   targets `main` from `codex/portfolio-phase2`.
-- The tested integration tree contains internal handoff/source-index material and is not a
+- At the 2026-07-18 08:03 Asia/Shanghai pre-publication snapshot, the tested integration tree
+  contained internal handoff/source-index material and was not a
   publication source. A publishable candidate must be a separate clean branch based exactly on
   `public/codex/portfolio-phase2`, with only the audited public delta applied. The current upgrade
-  and its pipeline work are **not public** until a later authorized push succeeds.
+  and its pipeline work were not yet on that public branch. After an authorized push, re-read the
+  live branch instead of treating this dated snapshot as current state.
 - The commands below use `public` as the local name of the public portfolio remote. Verify that
   remote resolves to `LucisZhang/portfolio-site` before any authorized push.
 - The current Vercel `portfolio-site` project is Git-connected to this repository with production
@@ -139,8 +141,10 @@ In a signed-out session, verify all of the following against the pushed commit S
    arm64 Mac.
 6. PR #1 shows only the intended branch commits and remains mergeable.
 
-Record the verification timestamp, commit SHA, anonymous URLs, and hash results in the publication
-manifest.
+Record the verification timestamp, commit SHA, anonymous URLs, and hash results in an owner-approved
+durable execution record. That can be an external audit record or a separately authorized,
+re-scanned post-push evidence-only commit. Do not amend or force-rewrite the frozen candidate merely
+to make its pre-publication snapshot look current.
 
 ## 6. Keep merge, production, and alias actions separately gated
 

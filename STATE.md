@@ -75,5 +75,7 @@ Therefore a branch push is expected to create a new non-production Preview.
 6. PR merge, production deployment, alias changes, repository-visibility changes, GitHub Releases,
    and paid actions each require their own explicit authorization.
 
-The immutable commit can record only its pre-publication boundary. Anonymous URLs, deployment ID,
-timestamps, and post-push hash checks must be recorded after those owner-gated actions occur.
+The immutable candidate can record only its dated pre-publication boundary. Anonymous URLs,
+deployment ID, timestamps, and post-push hash checks belong in an owner-approved durable execution
+record or a separately authorized, re-scanned post-push evidence-only commit. Do not amend or
+force-rewrite this candidate merely to update those time-dependent facts.

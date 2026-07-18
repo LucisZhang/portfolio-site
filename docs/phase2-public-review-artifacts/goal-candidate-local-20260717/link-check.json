@@ -1,0 +1,46 @@
+{
+  "generatedAt": "2026-07-18T00:09:03.290Z",
+  "baseUrl": "http://127.0.0.1:4173/",
+  "routes": [
+    "/",
+    "/ai",
+    "/ai/privacy-preflight-mac",
+    "/ai/rag-quality-lab",
+    "/ai/release-guardian",
+    "/analytics",
+    "/analytics/analytics-tandem",
+    "/analytics/credit-policy-lab",
+    "/analytics/margin-control-tower",
+    "/engineering",
+    "/engineering/p1-reliability-lab"
+  ],
+  "internalTargets": 84,
+  "externalTargets": 16,
+  "findings": [
+    {
+      "severity": "warning",
+      "category": "external rate limit",
+      "page": "external",
+      "target": "https://www.linkedin.com/in/xiangguo-zhang",
+      "message": "Automated request returned HTTP 999; verify in a normal anonymous browser."
+    },
+    {
+      "severity": "error",
+      "category": "external status",
+      "page": "external",
+      "target": "https://github.com/LucisZhang/portfolio-site/tree/codex/portfolio-phase2/pipelines/olist-margin",
+      "message": "External target returned HTTP 404."
+    },
+    {
+      "severity": "error",
+      "category": "external status",
+      "page": "external",
+      "target": "https://github.com/LucisZhang/portfolio-site/tree/codex/portfolio-phase2/pipelines/credit-backtest",
+      "message": "External target returned HTTP 404."
+    }
+  ],
+  "counts": {
+    "warning": 1,
+    "error": 2
+  }
+}
