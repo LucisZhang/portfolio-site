@@ -1,0 +1,3063 @@
+{
+  "schema_version": 1,
+  "module_file": "src/lib/structural-copy.ts",
+  "exact_cases": [
+    {
+      "en": "  Fictional support policy  ",
+      "zh": "  虚构售后政策  "
+    },
+    {
+      "en": "11,309 S1 documents",
+      "zh": "11,309 份 S1 文档"
+    },
+    {
+      "en": "130 S1-answerable questions",
+      "zh": "130 条 S1 可回答的问题"
+    },
+    {
+      "en": "68 passing tests",
+      "zh": "68项测试通过"
+    },
+    {
+      "en": "A compatibility wrapper isolates the new defaults.",
+      "zh": "兼容包装层隔离新默认值"
+    },
+    {
+      "en": "A required monitor is missing.",
+      "zh": "必需的监控项缺失，阻塞发布。"
+    },
+    {
+      "en": "A synthetic malformed-date fixture now returns the existing validation error.",
+      "zh": "合成异常日期用例现返回既有校验错误"
+    },
+    {
+      "en": "Acceptance behavior tightens; error shape remains stable",
+      "zh": "准入行为收紧，错误结构保持稳定"
+    },
+    {
+      "en": "Add new field without dropping old field",
+      "zh": "先新增字段，暂不删除旧字段"
+    },
+    {
+      "en": "Add, dual-write, backfill, compare, then remove",
+      "zh": "先添加，再双写，接着回填，然后比对，最后移除"
+    },
+    {
+      "en": "Adopt the new major version and its stricter default format checks.",
+      "zh": "采用新的主版本及其更严格的默认格式检查"
+    },
+    {
+      "en": "answer_quality_metrics must be null or an object.",
+      "zh": "answer_quality_metrics 必须为 null 或对象。"
+    },
+    {
+      "en": "Any active consumer remains",
+      "zh": "仍有活跃调用方存在"
+    },
+    {
+      "en": "Any reconciliation difference",
+      "zh": "出现任何对账差异"
+    },
+    {
+      "en": "Any signed-cookie verification mismatch",
+      "zh": "已签名 Cookie 校验出现任何不匹配"
+    },
+    {
+      "en": "api",
+      "zh": "接口"
+    },
+    {
+      "en": "API consumers only",
+      "zh": "仅影响 API 调用方"
+    },
+    {
+      "en": "API reviewer",
+      "zh": "API 评审人"
+    },
+    {
+      "en": "Apple Silicon macOS, 16 GiB RAM; Docker Desktop VM reported 10 CPUs and about 7.65 GiB memory.",
+      "zh": "Apple Silicon macOS，16 GiB 内存；Docker Desktop 虚拟机报告 10 个 CPU、约 7.65 GiB 内存。"
+    },
+    {
+      "en": "Application owner",
+      "zh": "应用负责人"
+    },
+    {
+      "en": "Application reviewer",
+      "zh": "应用审核人"
+    },
+    {
+      "en": "auth boundary",
+      "zh": "认证边界风险"
+    },
+    {
+      "en": "Authentication behavior changes",
+      "zh": "认证行为变更"
+    },
+    {
+      "en": "Authentication behavior changes; response schema does not",
+      "zh": "认证行为变更；响应结构不变"
+    },
+    {
+      "en": "automatic task restart",
+      "zh": "自动重启任务"
+    },
+    {
+      "en": "automatic task restart after checkpoint-complete callback failure",
+      "zh": "checkpoint-complete 回调失败后自动重启任务"
+    },
+    {
+      "en": "Backfill and compare",
+      "zh": "执行回填并进行数据比对"
+    },
+    {
+      "en": "Backfill check exists",
+      "zh": "回填检查已存在"
+    },
+    {
+      "en": "Backfill row counts match",
+      "zh": "回填行数一致"
+    },
+    {
+      "en": "Backfill steps present; restore section incomplete",
+      "zh": "回填步骤已具备；恢复章节尚不完整"
+    },
+    {
+      "en": "backtest",
+      "zh": "回测"
+    },
+    {
+      "en": "Backward-incompatible",
+      "zh": "后向不兼容"
+    },
+    {
+      "en": "baseline",
+      "zh": "基线模型"
+    },
+    {
+      "en": "Batch canary completes",
+      "zh": "灰度批次完成"
+    },
+    {
+      "en": "Batch canary plan ready",
+      "zh": "批量灰度计划已就绪"
+    },
+    {
+      "en": "Batch completion rate changes",
+      "zh": "批量完成率发生变化"
+    },
+    {
+      "en": "batch importer",
+      "zh": "批量导入器"
+    },
+    {
+      "en": "Beauty",
+      "zh": "美妆"
+    },
+    {
+      "en": "billing worker",
+      "zh": "计费工作进程"
+    },
+    {
+      "en": "Blocked pending restore proof",
+      "zh": "上线就绪度：因待补充恢复证明而阻塞"
+    },
+    {
+      "en": "Blocked until consumer acknowledgements",
+      "zh": "待消费方确认后方可推进"
+    },
+    {
+      "en": "boleto",
+      "zh": "boleto（巴西线下付款单）"
+    },
+    {
+      "en": "Both consumers deserialize delivery_window as required.",
+      "zh": "两个消费方均将 delivery_window 作为必填字段进行反序列化。"
+    },
+    {
+      "en": "Both readers accept old and new cookie keys during overlap.",
+      "zh": "两个读取端在重叠期内同时兼容新旧 cookie 密钥。"
+    },
+    {
+      "en": "breaking api",
+      "zh": "API 破坏性变更风险"
+    },
+    {
+      "en": "Breaking if legacy readers remain",
+      "zh": "若仍有旧版读取方存在，则属于破坏性变更"
+    },
+    {
+      "en": "build manifest",
+      "zh": "构建清单"
+    },
+    {
+      "en": "C3 closed without metrics",
+      "zh": "C3 已关闭，未产出指标"
+    },
+    {
+      "en": "calibration",
+      "zh": "校准"
+    },
+    {
+      "en": "Camp light",
+      "zh": "露营灯"
+    },
+    {
+      "en": "cancel running job and restore from latest completed checkpoint",
+      "zh": "取消正在运行的作业并从最近完成的检查点恢复"
+    },
+    {
+      "en": "challenger",
+      "zh": "挑战模型"
+    },
+    {
+      "en": "Claim registry could not be loaded.",
+      "zh": "声明注册表加载失败。"
+    },
+    {
+      "en": "Cleanser set",
+      "zh": "洁面套装"
+    },
+    {
+      "en": "code",
+      "zh": "代码"
+    },
+    {
+      "en": "Compatibility and malformed-date fixtures pass",
+      "zh": "兼容性与异常日期用例均通过"
+    },
+    {
+      "en": "Compatible only during dual-read period",
+      "zh": "仅在双读期间兼容"
+    },
+    {
+      "en": "complete",
+      "zh": "已完成"
+    },
+    {
+      "en": "Confirm rejected-request monitor normalizes",
+      "zh": "确认拒绝请求监控器恢复正常"
+    },
+    {
+      "en": "Confirm response-shape monitor",
+      "zh": "确认响应形态监控正常"
+    },
+    {
+      "en": "Confirm session recovery monitor returns to baseline",
+      "zh": "确认会话恢复监控回归基线。"
+    },
+    {
+      "en": "Consumer acknowledgements recorded",
+      "zh": "调用方确认回执已归档"
+    },
+    {
+      "en": "Consumer compatibility evidence is incomplete.",
+      "zh": "调用方兼容性佐证材料尚不完整。"
+    },
+    {
+      "en": "Consumer contract fixtures fail after removal",
+      "zh": "移除后消费方契约测试夹具失败。"
+    },
+    {
+      "en": "Consumer deprecation acknowledgement",
+      "zh": "消费方弃用确认"
+    },
+    {
+      "en": "Consumer error-rate increase possible",
+      "zh": "消费方错误率可能上升"
+    },
+    {
+      "en": "Consumer owners",
+      "zh": "消费方负责人"
+    },
+    {
+      "en": "Contract tests cover both endpoint versions",
+      "zh": "契约测试覆盖两个端点版本"
+    },
+    {
+      "en": "contribution identity",
+      "zh": "贡献额恒等式"
+    },
+    {
+      "en": "create a Flink savepoint, cancel the job, and restore from that savepoint",
+      "zh": "创建 Flink savepoint，取消作业，并从该 savepoint 恢复"
+    },
+    {
+      "en": "credit_card",
+      "zh": "信用卡"
+    },
+    {
+      "en": "critical",
+      "zh": "严重"
+    },
+    {
+      "en": "Daily serum",
+      "zh": "日用精华"
+    },
+    {
+      "en": "Data reviewer",
+      "zh": "数据审核人"
+    },
+    {
+      "en": "data/MANIFEST.json at local evidence checkpoint 6c887a1",
+      "zh": "来源：本地证据检查点 6c887a1 下的 data/MANIFEST.json"
+    },
+    {
+      "en": "Database contract unchanged",
+      "zh": "数据库契约保持不变。"
+    },
+    {
+      "en": "Dataset and adapter integrity only; not retrieval or answer quality.",
+      "zh": "仅涵盖数据集与适配器完整性；不包含检索效果或回答质量。"
+    },
+    {
+      "en": "Dataset unavailable.",
+      "zh": "数据集不可用。"
+    },
+    {
+      "en": "Day pack",
+      "zh": "日用背包"
+    },
+    {
+      "en": "debit_card",
+      "zh": "借记卡"
+    },
+    {
+      "en": "Delete the field in the next standard release without a deprecation window.",
+      "zh": "在下一个标准版本中直接删除该字段，不设弃用缓冲期。"
+    },
+    {
+      "en": "delivery_window removed from response",
+      "zh": "响应中移除 delivery_window"
+    },
+    {
+      "en": "Dependency rollback checklist available",
+      "zh": "依赖回滚检查清单可用"
+    },
+    {
+      "en": "Deploy strict signer to 10%",
+      "zh": "将严格签名器部署至 10% 流量"
+    },
+    {
+      "en": "Deploy to batch canary",
+      "zh": "部署至灰度批处理环境"
+    },
+    {
+      "en": "Deprecation window or versioned endpoint required",
+      "zh": "需提供弃用缓冲期或版本化端点"
+    },
+    {
+      "en": "Desk organizer",
+      "zh": "桌面收纳盒"
+    },
+    {
+      "en": "Desk speaker",
+      "zh": "桌面音箱"
+    },
+    {
+      "en": "Destructive column drop",
+      "zh": "存在破坏性列删除操作"
+    },
+    {
+      "en": "Destructive schema rollback is untested.",
+      "zh": "破坏性 Schema 回滚方案尚未验证，阻塞发布。"
+    },
+    {
+      "en": "direct",
+      "zh": "直销"
+    },
+    {
+      "en": "Direct",
+      "zh": "直营"
+    },
+    {
+      "en": "Document ID drift: expected SYN-DOC-001.",
+      "zh": "文档 ID 漂移：预期为 SYN-DOC-001。"
+    },
+    {
+      "en": "documents, questions, and tests_passed must be numbers.",
+      "zh": "documents、questions 与 tests_passed 必须为数值。"
+    },
+    {
+      "en": "Drop the legacy status column immediately after backfill.",
+      "zh": "回填完成后立即删除旧状态列。"
+    },
+    {
+      "en": "Dual-key canary plan ready",
+      "zh": "双密钥灰度方案已就绪。"
+    },
+    {
+      "en": "Dual-key, unsigned-cookie, and expiry fixtures pass",
+      "zh": "双密钥、未签名 Cookie 与过期场景用例均通过"
+    },
+    {
+      "en": "Dual-write both fields",
+      "zh": "对新旧两个字段同时双写"
+    },
+    {
+      "en": "edge configuration",
+      "zh": "边缘配置"
+    },
+    {
+      "en": "edge configuration -> session middleware -> fictional portal",
+      "zh": "边缘配置 -> 会话中间件 -> 虚构门户"
+    },
+    {
+      "en": "Electronics",
+      "zh": "电子"
+    },
+    {
+      "en": "Enable dual-key verification",
+      "zh": "启用双密钥校验机制"
+    },
+    {
+      "en": "Enum constraint addition",
+      "zh": "新增枚举值限制"
+    },
+    {
+      "en": "error",
+      "zh": "错误"
+    },
+    {
+      "en": "Error contract compatible; acceptance behavior differs",
+      "zh": "错误契约保持兼容；接受行为存在差异"
+    },
+    {
+      "en": "Error payload shape unchanged",
+      "zh": "错误负载结构未变更"
+    },
+    {
+      "en": "Evidence could not be loaded.",
+      "zh": "证据加载失败。"
+    },
+    {
+      "en": "exact final-eight-week holdout without leakage",
+      "zh": "最后八周留出期无泄漏"
+    },
+    {
+      "en": "Existing sessions may be re-authenticated during the overlap window.",
+      "zh": "在重叠窗口期间，现有会话可能需要重新认证。"
+    },
+    {
+      "en": "Existing synthetic sessions may re-authenticate",
+      "zh": "现有合成会话可能需要重新认证"
+    },
+    {
+      "en": "Export failure monitor",
+      "zh": "导出失败监控"
+    },
+    {
+      "en": "Export failure monitor missing",
+      "zh": "告警覆盖缺失：导出失败监控未配置"
+    },
+    {
+      "en": "Export monitor unavailable",
+      "zh": "导出监控不可用"
+    },
+    {
+      "en": "External response unchanged",
+      "zh": "对外响应保持不变"
+    },
+    {
+      "en": "Fictional API reviewer and consumer owners",
+      "zh": "虚构的 API 审核人与消费方负责人"
+    },
+    {
+      "en": "Fictional application reviewer",
+      "zh": "虚构应用审核人"
+    },
+    {
+      "en": "Fictional commerce API team",
+      "zh": "虚构电商 API 团队"
+    },
+    {
+      "en": "Fictional data services team",
+      "zh": "虚构数据服务团队"
+    },
+    {
+      "en": "Fictional data, application, and operations reviewers",
+      "zh": "需经虚构的数据、应用及运维三方评审人审批"
+    },
+    {
+      "en": "Fictional developer experience team",
+      "zh": "虚构开发者体验团队"
+    },
+    {
+      "en": "Fictional platform and security reviewers",
+      "zh": "虚构场景中的平台审核人员与安全审核人员"
+    },
+    {
+      "en": "Fictional platform team",
+      "zh": "虚构平台团队"
+    },
+    {
+      "en": "free text -> constrained enum",
+      "zh": "字段类型由自由文本改为受约束的枚举值"
+    },
+    {
+      "en": "gross revenue identity",
+      "zh": "毛收入恒等式"
+    },
+    {
+      "en": "Hash drift: normalized content SHA-256 changed.",
+      "zh": "哈希漂移：归一化内容的 SHA-256 已变更。"
+    },
+    {
+      "en": "HC3 log-log OLS with category, region, and payment-channel fixed effects; fit excludes final 8 weeks",
+      "zh": "采用 HC3 稳健标准误的 log-log OLS 模型，控制品类、地区与支付渠道固定效应；拟合时剔除最后 8 周数据"
+    },
+    {
+      "en": "high",
+      "zh": "高"
+    },
+    {
+      "en": "Home",
+      "zh": "家居"
+    },
+    {
+      "en": "home-mortgage",
+      "zh": "住房按揭"
+    },
+    {
+      "en": "home-rent",
+      "zh": "住房租赁"
+    },
+    {
+      "en": "Increase to 100% after one review window",
+      "zh": "经过一个审查窗口期后全量推至 100%"
+    },
+    {
+      "en": "Invalid JSON.",
+      "zh": "JSON 格式无效。"
+    },
+    {
+      "en": "invoice table",
+      "zh": "发票表"
+    },
+    {
+      "en": "invoice table -> billing worker -> report export",
+      "zh": "发票表 → 计费任务单元 → 报表导出"
+    },
+    {
+      "en": "irreversible schema",
+      "zh": "不可逆 Schema 风险"
+    },
+    {
+      "en": "Keyboard mat",
+      "zh": "键盘垫"
+    },
+    {
+      "en": "Kitchen kit",
+      "zh": "厨房套装"
+    },
+    {
+      "en": "Legacy field read survives after destructive drop",
+      "zh": "执行破坏性删字段后，对旧字段的读取逻辑仍未清除"
+    },
+    {
+      "en": "Linen set",
+      "zh": "亚麻套装"
+    },
+    {
+      "en": "Local CI-equivalent verification at checkpoint 6c887a1 on 2026-07-12",
+      "zh": "来源：2026-07-12 于检查点 6c887a1 执行的本地等效 CI 验证"
+    },
+    {
+      "en": "Lockfile rollback",
+      "zh": "锁文件回滚"
+    },
+    {
+      "en": "low",
+      "zh": "低"
+    },
+    {
+      "en": "major dependency",
+      "zh": "主版本依赖风险"
+    },
+    {
+      "en": "Major-version default rejects previously accepted malformed dates",
+      "zh": "主版本默认行为拒绝此前接受的异常日期"
+    },
+    {
+      "en": "Malformed dates fail with the existing error shape",
+      "zh": "日期格式验证失败，保留现有错误结构"
+    },
+    {
+      "en": "Malformed synthetic dates are rejected",
+      "zh": "异常合成日期将被拒绝"
+    },
+    {
+      "en": "Mapping code depends on both old and new database fields during transition.",
+      "zh": "过渡期间，映射代码同时依赖新旧数据库字段。"
+    },
+    {
+      "en": "Mapping fails if the old column disappears early",
+      "zh": "若旧列提前消失，映射将失败"
+    },
+    {
+      "en": "Mark field deprecated",
+      "zh": "将该字段标记为废弃"
+    },
+    {
+      "en": "marketplace",
+      "zh": "平台渠道"
+    },
+    {
+      "en": "Marketplace",
+      "zh": "平台"
+    },
+    {
+      "en": "medium",
+      "zh": "中"
+    },
+    {
+      "en": "Mineral tint",
+      "zh": "矿物彩妆"
+    },
+    {
+      "en": "missing evidence",
+      "zh": "缺失佐证材料风险"
+    },
+    {
+      "en": "Missing restore proof",
+      "zh": "缺少恢复能力证明"
+    },
+    {
+      "en": "mobile client",
+      "zh": "移动客户端"
+    },
+    {
+      "en": "Model-free tests and deterministic wrappers; not answer-quality evidence.",
+      "zh": "仅涵盖无模型测试与确定性封装；不构成回答质量证据。"
+    },
+    {
+      "en": "Monitor arm",
+      "zh": "显示器支架臂"
+    },
+    {
+      "en": "monitoring gap",
+      "zh": "监控盲区风险"
+    },
+    {
+      "en": "net revenue identity",
+      "zh": "净收入恒等式"
+    },
+    {
+      "en": "New rejection category appears",
+      "zh": "出现新的拒绝类别"
+    },
+    {
+      "en": "No checkpoint reference recorded",
+      "zh": "未记录检查点引用"
+    },
+    {
+      "en": "No database change",
+      "zh": "不涉及数据库变更"
+    },
+    {
+      "en": "No database migration",
+      "zh": "无需数据库迁移。"
+    },
+    {
+      "en": "No endpoint version required",
+      "zh": "无需端点版本控制"
+    },
+    {
+      "en": "No field removed",
+      "zh": "未移除任何字段"
+    },
+    {
+      "en": "no null dimension keys",
+      "zh": "维度键值无空值"
+    },
+    {
+      "en": "No persistent field",
+      "zh": "无持久化字段。"
+    },
+    {
+      "en": "No persistent record shape changes.",
+      "zh": "持久化记录结构无变化。"
+    },
+    {
+      "en": "No public field removed",
+      "zh": "未移除公共字段"
+    },
+    {
+      "en": "No public version; migration window required",
+      "zh": "尚无对外发布的接口版本；必须预留迁移窗口"
+    },
+    {
+      "en": "No response field removed",
+      "zh": "未移除任何响应字段"
+    },
+    {
+      "en": "No response-schema change",
+      "zh": "响应结构无变更"
+    },
+    {
+      "en": "No retrieval table, answer-quality score, judged result, or fallback metric exists.",
+      "zh": "不存在检索表、回答质量评分、判定结果或回退指标。"
+    },
+    {
+      "en": "No stored schema change",
+      "zh": "不存在已存储的结构变更"
+    },
+    {
+      "en": "No version if rejection category is accepted",
+      "zh": "接受拒绝类别时，无需指定 API 或合约版本"
+    },
+    {
+      "en": "No versioned endpoint proposed",
+      "zh": "未提出版本化端点方案"
+    },
+    {
+      "en": "None",
+      "zh": "无变更。"
+    },
+    {
+      "en": "None at the persistence layer",
+      "zh": "持久层无受影响方。"
+    },
+    {
+      "en": "North",
+      "zh": "北部"
+    },
+    {
+      "en": "not source evidence",
+      "zh": "非原始证据"
+    },
+    {
+      "en": "not_provided",
+      "zh": "未提供"
+    },
+    {
+      "en": "Notebook pack",
+      "zh": "笔记本套装"
+    },
+    {
+      "en": "Notify synthetic consumers",
+      "zh": "通知合成消费方"
+    },
+    {
+      "en": "nullable -> non-null after backfill",
+      "zh": "回填完成后，字段由可空改为非空"
+    },
+    {
+      "en": "numeric costs and revenue non-negative",
+      "zh": "数值型成本与收入非负"
+    },
+    {
+      "en": "Observe usage for one compatibility window",
+      "zh": "在一个兼容窗口期内观察使用情况"
+    },
+    {
+      "en": "Office",
+      "zh": "办公"
+    },
+    {
+      "en": "Old and new status values reconcile",
+      "zh": "新旧状态值对账一致"
+    },
+    {
+      "en": "Old and new synthetic sessions both validate during overlap",
+      "zh": "新旧合成会话在重叠期内均需校验通过"
+    },
+    {
+      "en": "Olist compact preview cannot verify its row identity in this browser.",
+      "zh": "当前浏览器无法为 Olist 精简预览校验其行标识。"
+    },
+    {
+      "en": "Olist compact preview contains rows outside its recorded strategy.",
+      "zh": "Olist 精简预览包含超出已记录策略范围的行。"
+    },
+    {
+      "en": "Olist compact preview is missing its guided row.",
+      "zh": "Olist 精简预览缺少其引导行。"
+    },
+    {
+      "en": "Olist compact preview is missing the full-artifact contract evidence.",
+      "zh": "Olist 精简预览缺少完整制品合约证据。"
+    },
+    {
+      "en": "Olist compact preview is not bound to the recorded artifact SHA-256.",
+      "zh": "Olist 精简预览未绑定到已记录的制品 SHA-256。"
+    },
+    {
+      "en": "Olist compact preview is not bound to the recorded preview-row SHA-256.",
+      "zh": "Olist 精简预览未绑定到已记录预览行的 SHA-256。"
+    },
+    {
+      "en": "Olist compact preview payload does not match its trusted SHA-256.",
+      "zh": "Olist 精简预览的负载与其可信 SHA-256 不匹配。"
+    },
+    {
+      "en": "Olist compact preview row count drifted.",
+      "zh": "Olist 精简预览的行数发生漂移。"
+    },
+    {
+      "en": "Olist compact preview row counts drifted.",
+      "zh": "Olist 精简预览的多项行数发生漂移。"
+    },
+    {
+      "en": "Olist compact preview rows do not match their trusted SHA-256.",
+      "zh": "Olist 精简预览的各行数据与其可信 SHA-256 不匹配。"
+    },
+    {
+      "en": "Olist compact preview source identity does not match the fetched artifact.",
+      "zh": "Olist 紧凑预览的源标识与获取到的产物不一致。"
+    },
+    {
+      "en": "Olist compact preview strategy drifted.",
+      "zh": "Olist 精简预览的策略发生漂移。"
+    },
+    {
+      "en": "Olist compact preview tuple fields drifted.",
+      "zh": "Olist 精简预览的元组字段发生漂移。"
+    },
+    {
+      "en": "Olist compact preview tuple width drifted.",
+      "zh": "Olist 紧凑预览的元组宽度出现漂移。"
+    },
+    {
+      "en": "Olist Parquet contains no rows.",
+      "zh": "Olist Parquet 不含任何数据行。"
+    },
+    {
+      "en": "Olist Parquet contract failed: artifact_sha256 does not match the recorded SHA-256.",
+      "zh": "Olist Parquet 合约校验失败：artifact_sha256 与记录的 SHA-256 不一致。"
+    },
+    {
+      "en": "Olist Parquet contract failed: artifact_sha256.",
+      "zh": "Olist Parquet 合约校验失败：artifact_sha256。"
+    },
+    {
+      "en": "Olist Parquet has a week assigned to multiple splits.",
+      "zh": "Olist Parquet 中同一周被划入多个数据分区。"
+    },
+    {
+      "en": "Olist Parquet has an invalid week key.",
+      "zh": "Olist Parquet 的周键无效。"
+    },
+    {
+      "en": "Olist Parquet must reserve exactly the final eight observed weeks as holdout.",
+      "zh": "Olist Parquet 须将最后 8 个观测周精确保留为留出期。"
+    },
+    {
+      "en": "Olist-derived aggregate · CC BY-NC-SA 4.0",
+      "zh": "Olist 衍生聚合数据 · CC BY-NC-SA 4.0"
+    },
+    {
+      "en": "One batch path",
+      "zh": "一条批量路径"
+    },
+    {
+      "en": "One compatibility fixture fails until dual-read is added",
+      "zh": "1个兼容性测试用例未通过，需补充双读机制后方可通过"
+    },
+    {
+      "en": "One configuration reader",
+      "zh": "一处配置读取器"
+    },
+    {
+      "en": "One producer",
+      "zh": "一个生产方"
+    },
+    {
+      "en": "One reader still references the legacy status field.",
+      "zh": "仍有 1 个读取模块引用遗留状态字段"
+    },
+    {
+      "en": "one row per week, product, region, and channel",
+      "zh": "每行对应一周、一商品、一区域及一渠道"
+    },
+    {
+      "en": "One scheduled export",
+      "zh": "1 个定时导出任务"
+    },
+    {
+      "en": "one-shot Flink operator exception on event_id=1303",
+      "zh": "在 event_id=1303 处触发一次性 Flink 算子异常"
+    },
+    {
+      "en": "Only the response contract changes.",
+      "zh": "仅响应契约发生变更"
+    },
+    {
+      "en": "operations",
+      "zh": "运维"
+    },
+    {
+      "en": "Operations reviewer",
+      "zh": "运维审核人"
+    },
+    {
+      "en": "order API",
+      "zh": "订单 API"
+    },
+    {
+      "en": "order API -> mobile client and partner adapter",
+      "zh": "订单 API → 移动客户端与合作伙伴适配器"
+    },
+    {
+      "en": "Original synthetic dataset covered by the portfolio NOTICE; no external dataset records are used.",
+      "zh": "原创合成数据集，受本作品集 NOTICE 约束；未使用任何外部数据集记录"
+    },
+    {
+      "en": "Outdoors",
+      "zh": "户外"
+    },
+    {
+      "en": "partial",
+      "zh": "部分完成"
+    },
+    {
+      "en": "partner",
+      "zh": "合作方渠道"
+    },
+    {
+      "en": "partner adapter",
+      "zh": "合作方适配器"
+    },
+    {
+      "en": "Persistence contract unchanged",
+      "zh": "持久化契约保持不变"
+    },
+    {
+      "en": "Picnic mat",
+      "zh": "野餐垫"
+    },
+    {
+      "en": "Platform reviewer",
+      "zh": "平台审核人"
+    },
+    {
+      "en": "Possible billing export availability impact",
+      "zh": "可能影响计费导出可用性"
+    },
+    {
+      "en": "Possible request acceptance-rate change",
+      "zh": "请求接受率可能发生变动"
+    },
+    {
+      "en": "Possible temporary login-success-rate impact",
+      "zh": "登录成功率可能出现短暂波动。"
+    },
+    {
+      "en": "presentation-layer derivative",
+      "zh": "表现层派生项"
+    },
+    {
+      "en": "Previous lockfile and build retained",
+      "zh": "保留先前锁文件与构建产物"
+    },
+    {
+      "en": "Previous serializer artifact tested",
+      "zh": "上一版序列化器产物已测试"
+    },
+    {
+      "en": "Previously accepted malformed synthetic dates may be rejected.",
+      "zh": "此前可被接受的异常合成日期格式可能被拒绝"
+    },
+    {
+      "en": "private local working copy",
+      "zh": "私有本地工作副本"
+    },
+    {
+      "en": "Promote after one review window",
+      "zh": "经过一个评审周期后推进发布"
+    },
+    {
+      "en": "promotion and return rates bounded",
+      "zh": "促销与退货率有界"
+    },
+    {
+      "en": "Public response unchanged; internal mapping changes",
+      "zh": "对外响应不变；内部映射调整"
+    },
+    {
+      "en": "Publish consumer migration note",
+      "zh": "发布调用方迁移说明"
+    },
+    {
+      "en": "Question adaptation and integrity only; no completed C3 evaluation.",
+      "zh": "仅涵盖问题适配与完整性；不含已完成的 C3 评估。"
+    },
+    {
+      "en": "queued",
+      "zh": "排队中"
+    },
+    {
+      "en": "Re-authentication alert remains below stop threshold",
+      "zh": "重新认证告警持续低于阻断阈值"
+    },
+    {
+      "en": "Re-authentication and signature-failure alerts defined",
+      "zh": "已定义重新认证及签名失败告警。"
+    },
+    {
+      "en": "Re-enable old readers",
+      "zh": "重新启用旧版读取端"
+    },
+    {
+      "en": "Readers that still reference the legacy column would fail after migration.",
+      "zh": "迁移后，仍引用旧列的读取端将会失败。"
+    },
+    {
+      "en": "Real backtest artifact unavailable.",
+      "zh": "真实回测产物不可用。"
+    },
+    {
+      "en": "Real-data artifact unavailable.",
+      "zh": "真实数据产物不可用。"
+    },
+    {
+      "en": "Redeploy prior build artifact",
+      "zh": "重新部署先前构建产物"
+    },
+    {
+      "en": "Redeploy response serializer with delivery_window",
+      "zh": "重新部署包含 delivery_window 的响应序列化器"
+    },
+    {
+      "en": "Rejected-request and batch-completion monitors defined",
+      "zh": "已定义拒绝请求与批量完成监控项"
+    },
+    {
+      "en": "Rejected-request monitor",
+      "zh": "拒绝请求监控器"
+    },
+    {
+      "en": "Remove a fictional delivery_window field from the public order response.",
+      "zh": "从公开订单响应中移除虚构的 delivery_window 字段。"
+    },
+    {
+      "en": "Remove old reads only after a review window",
+      "zh": "须待复核期结束后，方可停用旧版读取路径"
+    },
+    {
+      "en": "Remove only after acknowledgements",
+      "zh": "仅在收到确认回执后方可移除"
+    },
+    {
+      "en": "Replace a fictional invoice status column with a new enum-backed field.",
+      "zh": "将虚构的发票状态列替换为基于枚举的新字段"
+    },
+    {
+      "en": "report export",
+      "zh": "报表导出"
+    },
+    {
+      "en": "request validator",
+      "zh": "请求校验器"
+    },
+    {
+      "en": "Require signed session cookies for the fictional customer portal.",
+      "zh": "要求虚构客户门户使用签名会话 Cookie"
+    },
+    {
+      "en": "Required field removed without deprecation",
+      "zh": "未设弃用期即移除必填字段"
+    },
+    {
+      "en": "Required response field removed",
+      "zh": "移除了必填的响应字段"
+    },
+    {
+      "en": "Response-compatible during dual-key overlap",
+      "zh": "双密钥重叠期间保持响应兼容"
+    },
+    {
+      "en": "Response-shape monitor",
+      "zh": "响应形态监控"
+    },
+    {
+      "en": "Response-shape monitor available",
+      "zh": "响应形态监控已就绪"
+    },
+    {
+      "en": "Response-shape monitor is green",
+      "zh": "响应形态监控状态为绿色"
+    },
+    {
+      "en": "restart the Flink JobManager container after a completed checkpoint",
+      "zh": "在完成检查点后重启 Flink JobManager 容器"
+    },
+    {
+      "en": "restore from explicit Flink savepoint",
+      "zh": "从显式 Flink savepoint 恢复"
+    },
+    {
+      "en": "restore from externalized checkpoint",
+      "zh": "从外部化检查点恢复"
+    },
+    {
+      "en": "restore from latest checkpoint after JobManager container restart",
+      "zh": "JobManager 容器重启后从最新检查点恢复"
+    },
+    {
+      "en": "Restore from the pre-migration snapshot if destructive migration ran",
+      "zh": "若已执行破坏性迁移，则从迁移前快照恢复"
+    },
+    {
+      "en": "Restore previous lockfile",
+      "zh": "恢复先前锁文件"
+    },
+    {
+      "en": "Restore previous signing toggle",
+      "zh": "恢复先前签名开关状态。"
+    },
+    {
+      "en": "Restore rehearsal and export monitor are missing.",
+      "zh": "恢复演练与导出监控均缺失"
+    },
+    {
+      "en": "Retail",
+      "zh": "零售"
+    },
+    {
+      "en": "Retain dual-key verification",
+      "zh": "保留双密钥校验机制。"
+    },
+    {
+      "en": "Review rejection categories",
+      "zh": "审阅拒绝类别"
+    },
+    {
+      "en": "Rollback is tested but cannot prevent initial consumer breakage.",
+      "zh": "回滚方案已测试，但无法避免消费方在初期即发生故障。"
+    },
+    {
+      "en": "Rollback release artifact",
+      "zh": "回滚发布产物"
+    },
+    {
+      "en": "Rollback release steps documented",
+      "zh": "回滚发布步骤已文档化"
+    },
+    {
+      "en": "Rollback toggle documented",
+      "zh": "回滚开关已留档"
+    },
+    {
+      "en": "rollback untested",
+      "zh": "回滚未验证风险"
+    },
+    {
+      "en": "Run compatibility fixtures",
+      "zh": "执行兼容性测试用例"
+    },
+    {
+      "en": "sanitized",
+      "zh": "脱敏处理"
+    },
+    {
+      "en": "Sanitized deterministic replay — not connected to the private repository or a live model.",
+      "zh": "经脱敏的确定性回放 — 未接入私有仓库或线上模型。"
+    },
+    {
+      "en": "Sanitized session-rotation checklist available",
+      "zh": "脱敏后的会话轮换检查单已可用。"
+    },
+    {
+      "en": "Scheduled export reads the new field",
+      "zh": "定时导出任务读取新字段"
+    },
+    {
+      "en": "schema",
+      "zh": "结构"
+    },
+    {
+      "en": "schema fields present",
+      "zh": "schema 字段完整"
+    },
+    {
+      "en": "Scored backtest contains no rows.",
+      "zh": "评分回测不含任何数据行。"
+    },
+    {
+      "en": "Scored backtest contract failed: artifact_sha256.",
+      "zh": "评分回测合约校验未通过：artifact_sha256。"
+    },
+    {
+      "en": "Scored backtest has an invalid observed_default value.",
+      "zh": "评分回测的 observed_default 值无效。"
+    },
+    {
+      "en": "Security reviewer",
+      "zh": "安全审核人"
+    },
+    {
+      "en": "session middleware",
+      "zh": "会话中间件"
+    },
+    {
+      "en": "Session-expiry monitor defined",
+      "zh": "会话过期监控已定义。"
+    },
+    {
+      "en": "Snapshot exists; restore rehearsal missing",
+      "zh": "快照已存在；但尚未进行恢复演练"
+    },
+    {
+      "en": "source provenance present",
+      "zh": "存在源数据溯源"
+    },
+    {
+      "en": "South",
+      "zh": "南部"
+    },
+    {
+      "en": "Status fields must be booleans.",
+      "zh": "状态字段必须为布尔值。"
+    },
+    {
+      "en": "Stop dual-write deploy",
+      "zh": "停止双写部署"
+    },
+    {
+      "en": "Storage set",
+      "zh": "收纳套装"
+    },
+    {
+      "en": "support runbook",
+      "zh": "运维手册"
+    },
+    {
+      "en": "synthetic",
+      "zh": "合成数据"
+    },
+    {
+      "en": "Synthetic billing worker and export reader",
+      "zh": "合成计费任务单元与导出读取模块"
+    },
+    {
+      "en": "Synthetic billing worker and scheduled export",
+      "zh": "合成计费任务单元与定时导出任务"
+    },
+    {
+      "en": "Synthetic group A",
+      "zh": "合成组 A"
+    },
+    {
+      "en": "Synthetic group B",
+      "zh": "合成组 B"
+    },
+    {
+      "en": "Synthetic group C",
+      "zh": "合成组 C"
+    },
+    {
+      "en": "Synthetic importer inputs",
+      "zh": "合成导入方的输入数据"
+    },
+    {
+      "en": "Synthetic order serializer and two consumers",
+      "zh": "合成订单序列化器及两个消费方"
+    },
+    {
+      "en": "synthetic provenance",
+      "zh": "合成数据溯源"
+    },
+    {
+      "en": "Synthetic request validator and batch importer",
+      "zh": "合成请求校验器与批量导入器"
+    },
+    {
+      "en": "Synthetic returns are accepted within 30 days.\n",
+      "zh": "虚构文档：本合成数据集中的退货申请受理期限为30天。\n"
+    },
+    {
+      "en": "Synthetic returns are accepted within 31 days.\n",
+      "zh": "虚构文档：本合成数据集中的退货申请受理期限为31天。\n"
+    },
+    {
+      "en": "Synthetic rollback drill is marked complete.",
+      "zh": "合成回滚演练已标记为完成。"
+    },
+    {
+      "en": "Synthetic session middleware",
+      "zh": "合成会话中间件"
+    },
+    {
+      "en": "Synthetic toggle rollback rehearsed",
+      "zh": "合成开关回滚演练已完成。"
+    },
+    {
+      "en": "Task lamp",
+      "zh": "工作台灯"
+    },
+    {
+      "en": "test-only checkpoint-complete fault after event_id=9303",
+      "zh": "在 event_id=9303 之后注入仅测试用的 checkpoint-complete 故障"
+    },
+    {
+      "en": "Tested restore procedure",
+      "zh": "已测试的恢复流程"
+    },
+    {
+      "en": "The change is backward-incompatible.",
+      "zh": "该变更为向后不兼容的破坏性变更。"
+    },
+    {
+      "en": "The current public repository is baseline code and does not yet contain the local C2 checkpoints.",
+      "zh": "当前公开仓库仅包含基线代码，尚未纳入本地 C2 检查点。"
+    },
+    {
+      "en": "The job flag --checkpoint-complete-fault-event-id inserts a test-only operator immediately upstream of the Iceberg sinks. After the trigger event is observed, the operator throws once from CheckpointListener.notifyCheckpointComplete; Iceberg sink commits are driven by the same checkpoint-complete phase.",
+      "zh": "作业参数 --checkpoint-complete-fault-event-id 会在 Iceberg sink 上游紧邻位置插入一个仅测试用的算子。触发事件被观测到后，该算子从 CheckpointListener.notifyCheckpointComplete 抛出一次异常；Iceberg sink 的提交由同一 checkpoint-complete 阶段驱动。"
+    },
+    {
+      "en": "The previous lockfile and build artifact are retained.",
+      "zh": "保留先前的锁文件与构建产物"
+    },
+    {
+      "en": "The proposed migration has no shadow-column period.",
+      "zh": "该迁移方案未设置影子列过渡期"
+    },
+    {
+      "en": "Three synthetic readers",
+      "zh": "3 个合成读取模块"
+    },
+    {
+      "en": "Trail bottle",
+      "zh": "随行水壶"
+    },
+    {
+      "en": "train",
+      "zh": "训练"
+    },
+    {
+      "en": "Travel display",
+      "zh": "便携显示屏"
+    },
+    {
+      "en": "Travel kit",
+      "zh": "旅行套装"
+    },
+    {
+      "en": "Turn on strict cookie signing and shorten the acceptance overlap to 15 minutes.",
+      "zh": "启用严格 Cookie 签名，并将新旧凭据同时接受的过渡期缩短至 15 分钟。"
+    },
+    {
+      "en": "Two documented consumers still parse the field.",
+      "zh": "两个已记录的消费方仍在解析该字段。"
+    },
+    {
+      "en": "Two synthetic consumers",
+      "zh": "两个合成消费方"
+    },
+    {
+      "en": "Two synthetic consumers deserialize it as required",
+      "zh": "两个合成消费方将其作为必填字段反序列化"
+    },
+    {
+      "en": "Two synthetic middleware call sites",
+      "zh": "两处合成中间件调用点"
+    },
+    {
+      "en": "Two validator imports",
+      "zh": "两处校验器导入"
+    },
+    {
+      "en": "Unauthenticated responses remain contract-compatible.",
+      "zh": "未认证响应仍保持契约兼容。"
+    },
+    {
+      "en": "Unexpected re-authentication spike",
+      "zh": "重新认证量出现非预期激增"
+    },
+    {
+      "en": "Unsigned or stale signing keys accepted outside the overlap window",
+      "zh": "重叠窗口外接受未签名或过期签名密钥"
+    },
+    {
+      "en": "Unsigned synthetic cookie is rejected",
+      "zh": "未签名的合成 Cookie 须被拒绝"
+    },
+    {
+      "en": "Upgrade a fictional JSON validation library across one major version.",
+      "zh": "将虚构的 JSON 校验库升级一个主版本号"
+    },
+    {
+      "en": "USB-C hub",
+      "zh": "USB-C 扩展坞"
+    },
+    {
+      "en": "Valid fixtures remain accepted",
+      "zh": "有效测试样本仍被接受"
+    },
+    {
+      "en": "Validation behavior changes before persistence.",
+      "zh": "持久化前校验行为发生变更"
+    },
+    {
+      "en": "Validation changes before persistence",
+      "zh": "持久化前的校验变更"
+    },
+    {
+      "en": "validation library -> compatibility wrapper -> request and batch paths",
+      "zh": "校验库 -> 兼容包装层 -> 请求与批量路径"
+    },
+    {
+      "en": "Versioned compatibility route is absent",
+      "zh": "缺少版本化兼容路由"
+    },
+    {
+      "en": "voucher",
+      "zh": "代金券"
+    },
+    {
+      "en": "warning",
+      "zh": "警告"
+    },
+    {
+      "en": "Watch re-authentication rate",
+      "zh": "持续观察重新认证率变化趋势"
+    },
+    {
+      "en": "Web camera",
+      "zh": "网络摄像头"
+    },
+    {
+      "en": "week × product category × region × dominant payment channel",
+      "zh": "周 × 商品品类 × 区域 × 主支付渠道"
+    },
+    {
+      "en": "week-category-region-channel grain unique",
+      "zh": "周-品类-区域-渠道粒度唯一"
+    },
+    {
+      "en": "week-product-region-channel grain unique",
+      "zh": "周-商品-区域-渠道粒度唯一"
+    },
+    {
+      "en": "West",
+      "zh": "西部"
+    },
+    {
+      "en": "Withheld by publication boundary: private paths and real symbols are not shown. Impact: consumer completeness cannot be independently verified here.",
+      "zh": "受发布边界限制：私有路径及真实符号未展示。影响：此处无法独立验证消费端完整性。"
+    },
+    {
+      "en": "Withheld by publication boundary: private paths and real symbols are not shown. Impact: the public demo cannot establish the real consumer inventory.",
+      "zh": "受发布边界限制：私有路径与真实符号未予展示。影响：公开演示无法建立真实的消费方清单。"
+    },
+    {
+      "en": "Withheld by publication boundary: private paths and real symbols are not shown. Impact: this demo cannot independently prove private-code lineage.",
+      "zh": "受发布边界限制：私有路径及真实符号不予展示。影响：本演示无法独立证明私有代码谱系。"
+    },
+    {
+      "en": "Withheld by publication boundary: private paths and real symbols are not shown. Impact: transitive dependency completeness is not proven by the demo.",
+      "zh": "受发布边界限制：私有路径与真实符号未予展示。影响：演示无法证明传递依赖的完整性"
+    }
+  ],
+  "reverse_cases": [
+    {
+      "zh": "  虚构售后政策  ",
+      "en": "  Fictional support policy  "
+    },
+    {
+      "zh": "1 个定时导出任务",
+      "en": "One scheduled export"
+    },
+    {
+      "zh": "11,309 份 S1 文档",
+      "en": "11,309 S1 documents"
+    },
+    {
+      "zh": "130 条 S1 可回答的问题",
+      "en": "130 S1-answerable questions"
+    },
+    {
+      "zh": "1个兼容性测试用例未通过，需补充双读机制后方可通过",
+      "en": "One compatibility fixture fails until dual-read is added"
+    },
+    {
+      "zh": "3 个合成读取模块",
+      "en": "Three synthetic readers"
+    },
+    {
+      "zh": "68项测试通过",
+      "en": "68 passing tests"
+    },
+    {
+      "zh": "answer_quality_metrics 必须为 null 或对象。",
+      "en": "answer_quality_metrics must be null or an object."
+    },
+    {
+      "zh": "API 破坏性变更风险",
+      "en": "breaking api"
+    },
+    {
+      "zh": "API 评审人",
+      "en": "API reviewer"
+    },
+    {
+      "zh": "Apple Silicon macOS，16 GiB 内存；Docker Desktop 虚拟机报告 10 个 CPU、约 7.65 GiB 内存。",
+      "en": "Apple Silicon macOS, 16 GiB RAM; Docker Desktop VM reported 10 CPUs and about 7.65 GiB memory."
+    },
+    {
+      "zh": "boleto（巴西线下付款单）",
+      "en": "boleto"
+    },
+    {
+      "zh": "C3 已关闭，未产出指标",
+      "en": "C3 closed without metrics"
+    },
+    {
+      "zh": "checkpoint-complete 回调失败后自动重启任务",
+      "en": "automatic task restart after checkpoint-complete callback failure"
+    },
+    {
+      "zh": "documents、questions 与 tests_passed 必须为数值。",
+      "en": "documents, questions, and tests_passed must be numbers."
+    },
+    {
+      "zh": "JobManager 容器重启后从最新检查点恢复",
+      "en": "restore from latest checkpoint after JobManager container restart"
+    },
+    {
+      "zh": "JSON 格式无效。",
+      "en": "Invalid JSON."
+    },
+    {
+      "zh": "Olist Parquet 不含任何数据行。",
+      "en": "Olist Parquet contains no rows."
+    },
+    {
+      "zh": "Olist Parquet 中同一周被划入多个数据分区。",
+      "en": "Olist Parquet has a week assigned to multiple splits."
+    },
+    {
+      "zh": "Olist Parquet 合约校验失败：artifact_sha256 与记录的 SHA-256 不一致。",
+      "en": "Olist Parquet contract failed: artifact_sha256 does not match the recorded SHA-256."
+    },
+    {
+      "zh": "Olist Parquet 合约校验失败：artifact_sha256。",
+      "en": "Olist Parquet contract failed: artifact_sha256."
+    },
+    {
+      "zh": "Olist Parquet 的周键无效。",
+      "en": "Olist Parquet has an invalid week key."
+    },
+    {
+      "zh": "Olist Parquet 须将最后 8 个观测周精确保留为留出期。",
+      "en": "Olist Parquet must reserve exactly the final eight observed weeks as holdout."
+    },
+    {
+      "zh": "Olist 精简预览包含超出已记录策略范围的行。",
+      "en": "Olist compact preview contains rows outside its recorded strategy."
+    },
+    {
+      "zh": "Olist 精简预览未绑定到已记录的制品 SHA-256。",
+      "en": "Olist compact preview is not bound to the recorded artifact SHA-256."
+    },
+    {
+      "zh": "Olist 精简预览未绑定到已记录预览行的 SHA-256。",
+      "en": "Olist compact preview is not bound to the recorded preview-row SHA-256."
+    },
+    {
+      "zh": "Olist 精简预览的元组字段发生漂移。",
+      "en": "Olist compact preview tuple fields drifted."
+    },
+    {
+      "zh": "Olist 精简预览的各行数据与其可信 SHA-256 不匹配。",
+      "en": "Olist compact preview rows do not match their trusted SHA-256."
+    },
+    {
+      "zh": "Olist 精简预览的多项行数发生漂移。",
+      "en": "Olist compact preview row counts drifted."
+    },
+    {
+      "zh": "Olist 精简预览的策略发生漂移。",
+      "en": "Olist compact preview strategy drifted."
+    },
+    {
+      "zh": "Olist 精简预览的行数发生漂移。",
+      "en": "Olist compact preview row count drifted."
+    },
+    {
+      "zh": "Olist 精简预览的负载与其可信 SHA-256 不匹配。",
+      "en": "Olist compact preview payload does not match its trusted SHA-256."
+    },
+    {
+      "zh": "Olist 精简预览缺少其引导行。",
+      "en": "Olist compact preview is missing its guided row."
+    },
+    {
+      "zh": "Olist 精简预览缺少完整制品合约证据。",
+      "en": "Olist compact preview is missing the full-artifact contract evidence."
+    },
+    {
+      "zh": "Olist 紧凑预览的元组宽度出现漂移。",
+      "en": "Olist compact preview tuple width drifted."
+    },
+    {
+      "zh": "Olist 紧凑预览的源标识与获取到的产物不一致。",
+      "en": "Olist compact preview source identity does not match the fetched artifact."
+    },
+    {
+      "zh": "Olist 衍生聚合数据 · CC BY-NC-SA 4.0",
+      "en": "Olist-derived aggregate · CC BY-NC-SA 4.0"
+    },
+    {
+      "zh": "schema 字段完整",
+      "en": "schema fields present"
+    },
+    {
+      "zh": "USB-C 扩展坞",
+      "en": "USB-C hub"
+    },
+    {
+      "zh": "一个生产方",
+      "en": "One producer"
+    },
+    {
+      "zh": "一处配置读取器",
+      "en": "One configuration reader"
+    },
+    {
+      "zh": "一条批量路径",
+      "en": "One batch path"
+    },
+    {
+      "zh": "上一版序列化器产物已测试",
+      "en": "Previous serializer artifact tested"
+    },
+    {
+      "zh": "上线就绪度：因待补充恢复证明而阻塞",
+      "en": "Blocked pending restore proof"
+    },
+    {
+      "zh": "不可逆 Schema 风险",
+      "en": "irreversible schema"
+    },
+    {
+      "zh": "不存在已存储的结构变更",
+      "en": "No stored schema change"
+    },
+    {
+      "zh": "不存在检索表、回答质量评分、判定结果或回退指标。",
+      "en": "No retrieval table, answer-quality score, judged result, or fallback metric exists."
+    },
+    {
+      "zh": "不涉及数据库变更",
+      "en": "No database change"
+    },
+    {
+      "zh": "两个合成消费方",
+      "en": "Two synthetic consumers"
+    },
+    {
+      "zh": "两个合成消费方将其作为必填字段反序列化",
+      "en": "Two synthetic consumers deserialize it as required"
+    },
+    {
+      "zh": "两个已记录的消费方仍在解析该字段。",
+      "en": "Two documented consumers still parse the field."
+    },
+    {
+      "zh": "两个消费方均将 delivery_window 作为必填字段进行反序列化。",
+      "en": "Both consumers deserialize delivery_window as required."
+    },
+    {
+      "zh": "两个读取端在重叠期内同时兼容新旧 cookie 密钥。",
+      "en": "Both readers accept old and new cookie keys during overlap."
+    },
+    {
+      "zh": "两处合成中间件调用点",
+      "en": "Two synthetic middleware call sites"
+    },
+    {
+      "zh": "两处校验器导入",
+      "en": "Two validator imports"
+    },
+    {
+      "zh": "严重",
+      "en": "critical"
+    },
+    {
+      "zh": "中",
+      "en": "medium"
+    },
+    {
+      "zh": "主版本依赖风险",
+      "en": "major dependency"
+    },
+    {
+      "zh": "主版本默认行为拒绝此前接受的异常日期",
+      "en": "Major-version default rejects previously accepted malformed dates"
+    },
+    {
+      "zh": "亚麻套装",
+      "en": "Linen set"
+    },
+    {
+      "zh": "仅响应契约发生变更",
+      "en": "Only the response contract changes."
+    },
+    {
+      "zh": "仅在双读期间兼容",
+      "en": "Compatible only during dual-read period"
+    },
+    {
+      "zh": "仅在收到确认回执后方可移除",
+      "en": "Remove only after acknowledgements"
+    },
+    {
+      "zh": "仅影响 API 调用方",
+      "en": "API consumers only"
+    },
+    {
+      "zh": "仅涵盖数据集与适配器完整性；不包含检索效果或回答质量。",
+      "en": "Dataset and adapter integrity only; not retrieval or answer quality."
+    },
+    {
+      "zh": "仅涵盖无模型测试与确定性封装；不构成回答质量证据。",
+      "en": "Model-free tests and deterministic wrappers; not answer-quality evidence."
+    },
+    {
+      "zh": "仅涵盖问题适配与完整性；不含已完成的 C3 评估。",
+      "en": "Question adaptation and integrity only; no completed C3 evaluation."
+    },
+    {
+      "zh": "仍有 1 个读取模块引用遗留状态字段",
+      "en": "One reader still references the legacy status field."
+    },
+    {
+      "zh": "仍有活跃调用方存在",
+      "en": "Any active consumer remains"
+    },
+    {
+      "zh": "从公开订单响应中移除虚构的 delivery_window 字段。",
+      "en": "Remove a fictional delivery_window field from the public order response."
+    },
+    {
+      "zh": "从外部化检查点恢复",
+      "en": "restore from externalized checkpoint"
+    },
+    {
+      "zh": "从显式 Flink savepoint 恢复",
+      "en": "restore from explicit Flink savepoint"
+    },
+    {
+      "zh": "代码",
+      "en": "code"
+    },
+    {
+      "zh": "代金券",
+      "en": "voucher"
+    },
+    {
+      "zh": "会话中间件",
+      "en": "session middleware"
+    },
+    {
+      "zh": "会话过期监控已定义。",
+      "en": "Session-expiry monitor defined"
+    },
+    {
+      "zh": "低",
+      "en": "low"
+    },
+    {
+      "zh": "住房按揭",
+      "en": "home-mortgage"
+    },
+    {
+      "zh": "住房租赁",
+      "en": "home-rent"
+    },
+    {
+      "zh": "作业参数 --checkpoint-complete-fault-event-id 会在 Iceberg sink 上游紧邻位置插入一个仅测试用的算子。触发事件被观测到后，该算子从 CheckpointListener.notifyCheckpointComplete 抛出一次异常；Iceberg sink 的提交由同一 checkpoint-complete 阶段驱动。",
+      "en": "The job flag --checkpoint-complete-fault-event-id inserts a test-only operator immediately upstream of the Iceberg sinks. After the trigger event is observed, the operator throws once from CheckpointListener.notifyCheckpointComplete; Iceberg sink commits are driven by the same checkpoint-complete phase."
+    },
+    {
+      "zh": "依赖回滚检查清单可用",
+      "en": "Dependency rollback checklist available"
+    },
+    {
+      "zh": "便携显示屏",
+      "en": "Travel display"
+    },
+    {
+      "zh": "促销与退货率有界",
+      "en": "promotion and return rates bounded"
+    },
+    {
+      "zh": "保留先前的锁文件与构建产物",
+      "en": "The previous lockfile and build artifact are retained."
+    },
+    {
+      "zh": "保留先前锁文件与构建产物",
+      "en": "Previous lockfile and build retained"
+    },
+    {
+      "zh": "保留双密钥校验机制。",
+      "en": "Retain dual-key verification"
+    },
+    {
+      "zh": "信用卡",
+      "en": "credit_card"
+    },
+    {
+      "zh": "借记卡",
+      "en": "debit_card"
+    },
+    {
+      "zh": "停止双写部署",
+      "en": "Stop dual-write deploy"
+    },
+    {
+      "zh": "先新增字段，暂不删除旧字段",
+      "en": "Add new field without dropping old field"
+    },
+    {
+      "zh": "先添加，再双写，接着回填，然后比对，最后移除",
+      "en": "Add, dual-write, backfill, compare, then remove"
+    },
+    {
+      "zh": "兼容包装层隔离新默认值",
+      "en": "A compatibility wrapper isolates the new defaults."
+    },
+    {
+      "zh": "兼容性与异常日期用例均通过",
+      "en": "Compatibility and malformed-date fixtures pass"
+    },
+    {
+      "zh": "最后八周留出期无泄漏",
+      "en": "exact final-eight-week holdout without leakage"
+    },
+    {
+      "zh": "净收入恒等式",
+      "en": "net revenue identity"
+    },
+    {
+      "zh": "准入行为收紧，错误结构保持稳定",
+      "en": "Acceptance behavior tightens; error shape remains stable"
+    },
+    {
+      "zh": "出现任何对账差异",
+      "en": "Any reconciliation difference"
+    },
+    {
+      "zh": "出现新的拒绝类别",
+      "en": "New rejection category appears"
+    },
+    {
+      "zh": "创建 Flink savepoint，取消作业，并从该 savepoint 恢复",
+      "en": "create a Flink savepoint, cancel the job, and restore from that savepoint"
+    },
+    {
+      "zh": "办公",
+      "en": "Office"
+    },
+    {
+      "zh": "北部",
+      "en": "North"
+    },
+    {
+      "zh": "南部",
+      "en": "South"
+    },
+    {
+      "zh": "原创合成数据集，受本作品集 NOTICE 约束；未使用任何外部数据集记录",
+      "en": "Original synthetic dataset covered by the portfolio NOTICE; no external dataset records are used."
+    },
+    {
+      "zh": "厨房套装",
+      "en": "Kitchen kit"
+    },
+    {
+      "zh": "双密钥、未签名 Cookie 与过期场景用例均通过",
+      "en": "Dual-key, unsigned-cookie, and expiry fixtures pass"
+    },
+    {
+      "zh": "双密钥灰度方案已就绪。",
+      "en": "Dual-key canary plan ready"
+    },
+    {
+      "zh": "双密钥重叠期间保持响应兼容",
+      "en": "Response-compatible during dual-key overlap"
+    },
+    {
+      "zh": "发布调用方迁移说明",
+      "en": "Publish consumer migration note"
+    },
+    {
+      "zh": "发票表",
+      "en": "invoice table"
+    },
+    {
+      "zh": "发票表 → 计费任务单元 → 报表导出",
+      "en": "invoice table -> billing worker -> report export"
+    },
+    {
+      "zh": "取消正在运行的作业并从最近完成的检查点恢复",
+      "en": "cancel running job and restore from latest completed checkpoint"
+    },
+    {
+      "zh": "受发布边界限制：私有路径与真实符号未予展示。影响：公开演示无法建立真实的消费方清单。",
+      "en": "Withheld by publication boundary: private paths and real symbols are not shown. Impact: the public demo cannot establish the real consumer inventory."
+    },
+    {
+      "zh": "受发布边界限制：私有路径与真实符号未予展示。影响：演示无法证明传递依赖的完整性",
+      "en": "Withheld by publication boundary: private paths and real symbols are not shown. Impact: transitive dependency completeness is not proven by the demo."
+    },
+    {
+      "zh": "受发布边界限制：私有路径及真实符号不予展示。影响：本演示无法独立证明私有代码谱系。",
+      "en": "Withheld by publication boundary: private paths and real symbols are not shown. Impact: this demo cannot independently prove private-code lineage."
+    },
+    {
+      "zh": "受发布边界限制：私有路径及真实符号未展示。影响：此处无法独立验证消费端完整性。",
+      "en": "Withheld by publication boundary: private paths and real symbols are not shown. Impact: consumer completeness cannot be independently verified here."
+    },
+    {
+      "zh": "可能影响计费导出可用性",
+      "en": "Possible billing export availability impact"
+    },
+    {
+      "zh": "合作方渠道",
+      "en": "partner"
+    },
+    {
+      "zh": "合作方适配器",
+      "en": "partner adapter"
+    },
+    {
+      "zh": "合成会话中间件",
+      "en": "Synthetic session middleware"
+    },
+    {
+      "zh": "合成回滚演练已标记为完成。",
+      "en": "Synthetic rollback drill is marked complete."
+    },
+    {
+      "zh": "合成导入方的输入数据",
+      "en": "Synthetic importer inputs"
+    },
+    {
+      "zh": "合成开关回滚演练已完成。",
+      "en": "Synthetic toggle rollback rehearsed"
+    },
+    {
+      "zh": "合成异常日期用例现返回既有校验错误",
+      "en": "A synthetic malformed-date fixture now returns the existing validation error."
+    },
+    {
+      "zh": "合成数据",
+      "en": "synthetic"
+    },
+    {
+      "zh": "合成数据溯源",
+      "en": "synthetic provenance"
+    },
+    {
+      "zh": "合成组 A",
+      "en": "Synthetic group A"
+    },
+    {
+      "zh": "合成组 B",
+      "en": "Synthetic group B"
+    },
+    {
+      "zh": "合成组 C",
+      "en": "Synthetic group C"
+    },
+    {
+      "zh": "合成计费任务单元与定时导出任务",
+      "en": "Synthetic billing worker and scheduled export"
+    },
+    {
+      "zh": "合成计费任务单元与导出读取模块",
+      "en": "Synthetic billing worker and export reader"
+    },
+    {
+      "zh": "合成订单序列化器及两个消费方",
+      "en": "Synthetic order serializer and two consumers"
+    },
+    {
+      "zh": "合成请求校验器与批量导入器",
+      "en": "Synthetic request validator and batch importer"
+    },
+    {
+      "zh": "后向不兼容",
+      "en": "Backward-incompatible"
+    },
+    {
+      "zh": "启用严格 Cookie 签名，并将新旧凭据同时接受的过渡期缩短至 15 分钟。",
+      "en": "Turn on strict cookie signing and shorten the acceptance overlap to 15 minutes."
+    },
+    {
+      "zh": "启用双密钥校验机制",
+      "en": "Enable dual-key verification"
+    },
+    {
+      "zh": "告警覆盖缺失：导出失败监控未配置",
+      "en": "Export failure monitor missing"
+    },
+    {
+      "zh": "周 × 商品品类 × 区域 × 主支付渠道",
+      "en": "week × product category × region × dominant payment channel"
+    },
+    {
+      "zh": "周-品类-区域-渠道粒度唯一",
+      "en": "week-category-region-channel grain unique"
+    },
+    {
+      "zh": "周-商品-区域-渠道粒度唯一",
+      "en": "week-product-region-channel grain unique"
+    },
+    {
+      "zh": "哈希漂移：归一化内容的 SHA-256 已变更。",
+      "en": "Hash drift: normalized content SHA-256 changed."
+    },
+    {
+      "zh": "响应中移除 delivery_window",
+      "en": "delivery_window removed from response"
+    },
+    {
+      "zh": "响应形态监控",
+      "en": "Response-shape monitor"
+    },
+    {
+      "zh": "响应形态监控已就绪",
+      "en": "Response-shape monitor available"
+    },
+    {
+      "zh": "响应形态监控状态为绿色",
+      "en": "Response-shape monitor is green"
+    },
+    {
+      "zh": "响应结构无变更",
+      "en": "No response-schema change"
+    },
+    {
+      "zh": "回填完成后，字段由可空改为非空",
+      "en": "nullable -> non-null after backfill"
+    },
+    {
+      "zh": "回填完成后立即删除旧状态列。",
+      "en": "Drop the legacy status column immediately after backfill."
+    },
+    {
+      "zh": "回填检查已存在",
+      "en": "Backfill check exists"
+    },
+    {
+      "zh": "回填步骤已具备；恢复章节尚不完整",
+      "en": "Backfill steps present; restore section incomplete"
+    },
+    {
+      "zh": "回填行数一致",
+      "en": "Backfill row counts match"
+    },
+    {
+      "zh": "回测",
+      "en": "backtest"
+    },
+    {
+      "zh": "回滚发布产物",
+      "en": "Rollback release artifact"
+    },
+    {
+      "zh": "回滚发布步骤已文档化",
+      "en": "Rollback release steps documented"
+    },
+    {
+      "zh": "回滚开关已留档",
+      "en": "Rollback toggle documented"
+    },
+    {
+      "zh": "回滚方案已测试，但无法避免消费方在初期即发生故障。",
+      "en": "Rollback is tested but cannot prevent initial consumer breakage."
+    },
+    {
+      "zh": "回滚未验证风险",
+      "en": "rollback untested"
+    },
+    {
+      "zh": "在 event_id=1303 处触发一次性 Flink 算子异常",
+      "en": "one-shot Flink operator exception on event_id=1303"
+    },
+    {
+      "zh": "在 event_id=9303 之后注入仅测试用的 checkpoint-complete 故障",
+      "en": "test-only checkpoint-complete fault after event_id=9303"
+    },
+    {
+      "zh": "在一个兼容窗口期内观察使用情况",
+      "en": "Observe usage for one compatibility window"
+    },
+    {
+      "zh": "在下一个标准版本中直接删除该字段，不设弃用缓冲期。",
+      "en": "Delete the field in the next standard release without a deprecation window."
+    },
+    {
+      "zh": "在完成检查点后重启 Flink JobManager 容器",
+      "en": "restart the Flink JobManager container after a completed checkpoint"
+    },
+    {
+      "zh": "在重叠窗口期间，现有会话可能需要重新认证。",
+      "en": "Existing sessions may be re-authenticated during the overlap window."
+    },
+    {
+      "zh": "基线模型",
+      "en": "baseline"
+    },
+    {
+      "zh": "声明注册表加载失败。",
+      "en": "Claim registry could not be loaded."
+    },
+    {
+      "zh": "契约测试覆盖两个端点版本",
+      "en": "Contract tests cover both endpoint versions"
+    },
+    {
+      "zh": "字段类型由自由文本改为受约束的枚举值",
+      "en": "free text -> constrained enum"
+    },
+    {
+      "zh": "存在源数据溯源",
+      "en": "source provenance present"
+    },
+    {
+      "zh": "存在破坏性列删除操作",
+      "en": "Destructive column drop"
+    },
+    {
+      "zh": "安全审核人",
+      "en": "Security reviewer"
+    },
+    {
+      "zh": "定时导出任务读取新字段",
+      "en": "Scheduled export reads the new field"
+    },
+    {
+      "zh": "审阅拒绝类别",
+      "en": "Review rejection categories"
+    },
+    {
+      "zh": "家居",
+      "en": "Home"
+    },
+    {
+      "zh": "对外响应不变；内部映射调整",
+      "en": "Public response unchanged; internal mapping changes"
+    },
+    {
+      "zh": "对外响应保持不变",
+      "en": "External response unchanged"
+    },
+    {
+      "zh": "对新旧两个字段同时双写",
+      "en": "Dual-write both fields"
+    },
+    {
+      "zh": "导出失败监控",
+      "en": "Export failure monitor"
+    },
+    {
+      "zh": "导出监控不可用",
+      "en": "Export monitor unavailable"
+    },
+    {
+      "zh": "将严格签名器部署至 10% 流量",
+      "en": "Deploy strict signer to 10%"
+    },
+    {
+      "zh": "将虚构的 JSON 校验库升级一个主版本号",
+      "en": "Upgrade a fictional JSON validation library across one major version."
+    },
+    {
+      "zh": "将虚构的发票状态列替换为基于枚举的新字段",
+      "en": "Replace a fictional invoice status column with a new enum-backed field."
+    },
+    {
+      "zh": "将该字段标记为废弃",
+      "en": "Mark field deprecated"
+    },
+    {
+      "zh": "尚无对外发布的接口版本；必须预留迁移窗口",
+      "en": "No public version; migration window required"
+    },
+    {
+      "zh": "工作台灯",
+      "en": "Task lamp"
+    },
+    {
+      "zh": "已完成",
+      "en": "complete"
+    },
+    {
+      "zh": "已定义拒绝请求与批量完成监控项",
+      "en": "Rejected-request and batch-completion monitors defined"
+    },
+    {
+      "zh": "已定义重新认证及签名失败告警。",
+      "en": "Re-authentication and signature-failure alerts defined"
+    },
+    {
+      "zh": "已测试的恢复流程",
+      "en": "Tested restore procedure"
+    },
+    {
+      "zh": "已签名 Cookie 校验出现任何不匹配",
+      "en": "Any signed-cookie verification mismatch"
+    },
+    {
+      "zh": "平台",
+      "en": "Marketplace"
+    },
+    {
+      "zh": "平台审核人",
+      "en": "Platform reviewer"
+    },
+    {
+      "zh": "平台渠道",
+      "en": "marketplace"
+    },
+    {
+      "zh": "应用审核人",
+      "en": "Application reviewer"
+    },
+    {
+      "zh": "应用负责人",
+      "en": "Application owner"
+    },
+    {
+      "zh": "异常合成日期将被拒绝",
+      "en": "Malformed synthetic dates are rejected"
+    },
+    {
+      "zh": "当前公开仓库仅包含基线代码，尚未纳入本地 C2 检查点。",
+      "en": "The current public repository is baseline code and does not yet contain the local C2 checkpoints."
+    },
+    {
+      "zh": "当前浏览器无法为 Olist 精简预览校验其行标识。",
+      "en": "Olist compact preview cannot verify its row identity in this browser."
+    },
+    {
+      "zh": "待消费方确认后方可推进",
+      "en": "Blocked until consumer acknowledgements"
+    },
+    {
+      "zh": "必需的监控项缺失，阻塞发布。",
+      "en": "A required monitor is missing."
+    },
+    {
+      "zh": "快照已存在；但尚未进行恢复演练",
+      "en": "Snapshot exists; restore rehearsal missing"
+    },
+    {
+      "zh": "恢复先前签名开关状态。",
+      "en": "Restore previous signing toggle"
+    },
+    {
+      "zh": "恢复先前锁文件",
+      "en": "Restore previous lockfile"
+    },
+    {
+      "zh": "恢复演练与导出监控均缺失",
+      "en": "Restore rehearsal and export monitor are missing."
+    },
+    {
+      "zh": "户外",
+      "en": "Outdoors"
+    },
+    {
+      "zh": "执行兼容性测试用例",
+      "en": "Run compatibility fixtures"
+    },
+    {
+      "zh": "执行回填并进行数据比对",
+      "en": "Backfill and compare"
+    },
+    {
+      "zh": "执行破坏性删字段后，对旧字段的读取逻辑仍未清除",
+      "en": "Legacy field read survives after destructive drop"
+    },
+    {
+      "zh": "批量完成率发生变化",
+      "en": "Batch completion rate changes"
+    },
+    {
+      "zh": "批量导入器",
+      "en": "batch importer"
+    },
+    {
+      "zh": "批量灰度计划已就绪",
+      "en": "Batch canary plan ready"
+    },
+    {
+      "zh": "报表导出",
+      "en": "report export"
+    },
+    {
+      "zh": "拒绝请求监控器",
+      "en": "Rejected-request monitor"
+    },
+    {
+      "zh": "持久化前校验行为发生变更",
+      "en": "Validation behavior changes before persistence."
+    },
+    {
+      "zh": "持久化前的校验变更",
+      "en": "Validation changes before persistence"
+    },
+    {
+      "zh": "持久化契约保持不变",
+      "en": "Persistence contract unchanged"
+    },
+    {
+      "zh": "持久化记录结构无变化。",
+      "en": "No persistent record shape changes."
+    },
+    {
+      "zh": "持久层无受影响方。",
+      "en": "None at the persistence layer"
+    },
+    {
+      "zh": "持续观察重新认证率变化趋势",
+      "en": "Watch re-authentication rate"
+    },
+    {
+      "zh": "挑战模型",
+      "en": "challenger"
+    },
+    {
+      "zh": "排队中",
+      "en": "queued"
+    },
+    {
+      "zh": "接受拒绝类别时，无需指定 API 或合约版本",
+      "en": "No version if rejection category is accepted"
+    },
+    {
+      "zh": "接口",
+      "en": "api"
+    },
+    {
+      "zh": "收纳套装",
+      "en": "Storage set"
+    },
+    {
+      "zh": "数值型成本与收入非负",
+      "en": "numeric costs and revenue non-negative"
+    },
+    {
+      "zh": "数据审核人",
+      "en": "Data reviewer"
+    },
+    {
+      "zh": "数据库契约保持不变。",
+      "en": "Database contract unchanged"
+    },
+    {
+      "zh": "数据集不可用。",
+      "en": "Dataset unavailable."
+    },
+    {
+      "zh": "文档 ID 漂移：预期为 SYN-DOC-001。",
+      "en": "Document ID drift: expected SYN-DOC-001."
+    },
+    {
+      "zh": "新增枚举值限制",
+      "en": "Enum constraint addition"
+    },
+    {
+      "zh": "新旧合成会话在重叠期内均需校验通过",
+      "en": "Old and new synthetic sessions both validate during overlap"
+    },
+    {
+      "zh": "新旧状态值对账一致",
+      "en": "Old and new status values reconcile"
+    },
+    {
+      "zh": "旅行套装",
+      "en": "Travel kit"
+    },
+    {
+      "zh": "无变更。",
+      "en": "None"
+    },
+    {
+      "zh": "无持久化字段。",
+      "en": "No persistent field"
+    },
+    {
+      "zh": "无需数据库迁移。",
+      "en": "No database migration"
+    },
+    {
+      "zh": "无需端点版本控制",
+      "en": "No endpoint version required"
+    },
+    {
+      "zh": "日期格式验证失败，保留现有错误结构",
+      "en": "Malformed dates fail with the existing error shape"
+    },
+    {
+      "zh": "日用精华",
+      "en": "Daily serum"
+    },
+    {
+      "zh": "日用背包",
+      "en": "Day pack"
+    },
+    {
+      "zh": "显示器支架臂",
+      "en": "Monitor arm"
+    },
+    {
+      "zh": "有效测试样本仍被接受",
+      "en": "Valid fixtures remain accepted"
+    },
+    {
+      "zh": "未提供",
+      "en": "not_provided"
+    },
+    {
+      "zh": "未提出版本化端点方案",
+      "en": "No versioned endpoint proposed"
+    },
+    {
+      "zh": "未移除任何响应字段",
+      "en": "No response field removed"
+    },
+    {
+      "zh": "未移除任何字段",
+      "en": "No field removed"
+    },
+    {
+      "zh": "未移除公共字段",
+      "en": "No public field removed"
+    },
+    {
+      "zh": "未签名的合成 Cookie 须被拒绝",
+      "en": "Unsigned synthetic cookie is rejected"
+    },
+    {
+      "zh": "未认证响应仍保持契约兼容。",
+      "en": "Unauthenticated responses remain contract-compatible."
+    },
+    {
+      "zh": "未记录检查点引用",
+      "en": "No checkpoint reference recorded"
+    },
+    {
+      "zh": "未设弃用期即移除必填字段",
+      "en": "Required field removed without deprecation"
+    },
+    {
+      "zh": "来源：2026-07-12 于检查点 6c887a1 执行的本地等效 CI 验证",
+      "en": "Local CI-equivalent verification at checkpoint 6c887a1 on 2026-07-12"
+    },
+    {
+      "zh": "来源：本地证据检查点 6c887a1 下的 data/MANIFEST.json",
+      "en": "data/MANIFEST.json at local evidence checkpoint 6c887a1"
+    },
+    {
+      "zh": "构建清单",
+      "en": "build manifest"
+    },
+    {
+      "zh": "校准",
+      "en": "calibration"
+    },
+    {
+      "zh": "校验库 -> 兼容包装层 -> 请求与批量路径",
+      "en": "validation library -> compatibility wrapper -> request and batch paths"
+    },
+    {
+      "zh": "桌面收纳盒",
+      "en": "Desk organizer"
+    },
+    {
+      "zh": "桌面音箱",
+      "en": "Desk speaker"
+    },
+    {
+      "zh": "此前可被接受的异常合成日期格式可能被拒绝",
+      "en": "Previously accepted malformed synthetic dates may be rejected."
+    },
+    {
+      "zh": "每行对应一周、一商品、一区域及一渠道",
+      "en": "one row per week, product, region, and channel"
+    },
+    {
+      "zh": "毛收入恒等式",
+      "en": "gross revenue identity"
+    },
+    {
+      "zh": "洁面套装",
+      "en": "Cleanser set"
+    },
+    {
+      "zh": "消费方弃用确认",
+      "en": "Consumer deprecation acknowledgement"
+    },
+    {
+      "zh": "消费方负责人",
+      "en": "Consumer owners"
+    },
+    {
+      "zh": "消费方错误率可能上升",
+      "en": "Consumer error-rate increase possible"
+    },
+    {
+      "zh": "灰度批次完成",
+      "en": "Batch canary completes"
+    },
+    {
+      "zh": "状态字段必须为布尔值。",
+      "en": "Status fields must be booleans."
+    },
+    {
+      "zh": "现有合成会话可能需要重新认证",
+      "en": "Existing synthetic sessions may re-authenticate"
+    },
+    {
+      "zh": "电子",
+      "en": "Electronics"
+    },
+    {
+      "zh": "登录成功率可能出现短暂波动。",
+      "en": "Possible temporary login-success-rate impact"
+    },
+    {
+      "zh": "监控盲区风险",
+      "en": "monitoring gap"
+    },
+    {
+      "zh": "直营",
+      "en": "Direct"
+    },
+    {
+      "zh": "直销",
+      "en": "direct"
+    },
+    {
+      "zh": "真实回测产物不可用。",
+      "en": "Real backtest artifact unavailable."
+    },
+    {
+      "zh": "真实数据产物不可用。",
+      "en": "Real-data artifact unavailable."
+    },
+    {
+      "zh": "矿物彩妆",
+      "en": "Mineral tint"
+    },
+    {
+      "zh": "破坏性 Schema 回滚方案尚未验证，阻塞发布。",
+      "en": "Destructive schema rollback is untested."
+    },
+    {
+      "zh": "确认会话恢复监控回归基线。",
+      "en": "Confirm session recovery monitor returns to baseline"
+    },
+    {
+      "zh": "确认响应形态监控正常",
+      "en": "Confirm response-shape monitor"
+    },
+    {
+      "zh": "确认拒绝请求监控器恢复正常",
+      "en": "Confirm rejected-request monitor normalizes"
+    },
+    {
+      "zh": "私有本地工作副本",
+      "en": "private local working copy"
+    },
+    {
+      "zh": "移动客户端",
+      "en": "mobile client"
+    },
+    {
+      "zh": "移除了必填的响应字段",
+      "en": "Required response field removed"
+    },
+    {
+      "zh": "移除后消费方契约测试夹具失败。",
+      "en": "Consumer contract fixtures fail after removal"
+    },
+    {
+      "zh": "笔记本套装",
+      "en": "Notebook pack"
+    },
+    {
+      "zh": "经脱敏的确定性回放 — 未接入私有仓库或线上模型。",
+      "en": "Sanitized deterministic replay — not connected to the private repository or a live model."
+    },
+    {
+      "zh": "经过一个审查窗口期后全量推至 100%",
+      "en": "Increase to 100% after one review window"
+    },
+    {
+      "zh": "经过一个评审周期后推进发布",
+      "en": "Promote after one review window"
+    },
+    {
+      "zh": "结构",
+      "en": "schema"
+    },
+    {
+      "zh": "维度键值无空值",
+      "en": "no null dimension keys"
+    },
+    {
+      "zh": "缺失佐证材料风险",
+      "en": "missing evidence"
+    },
+    {
+      "zh": "缺少恢复能力证明",
+      "en": "Missing restore proof"
+    },
+    {
+      "zh": "缺少版本化兼容路由",
+      "en": "Versioned compatibility route is absent"
+    },
+    {
+      "zh": "网络摄像头",
+      "en": "Web camera"
+    },
+    {
+      "zh": "美妆",
+      "en": "Beauty"
+    },
+    {
+      "zh": "脱敏后的会话轮换检查单已可用。",
+      "en": "Sanitized session-rotation checklist available"
+    },
+    {
+      "zh": "脱敏处理",
+      "en": "sanitized"
+    },
+    {
+      "zh": "自动重启任务",
+      "en": "automatic task restart"
+    },
+    {
+      "zh": "若仍有旧版读取方存在，则属于破坏性变更",
+      "en": "Breaking if legacy readers remain"
+    },
+    {
+      "zh": "若已执行破坏性迁移，则从迁移前快照恢复",
+      "en": "Restore from the pre-migration snapshot if destructive migration ran"
+    },
+    {
+      "zh": "若旧列提前消失，映射将失败",
+      "en": "Mapping fails if the old column disappears early"
+    },
+    {
+      "zh": "虚构场景中的平台审核人员与安全审核人员",
+      "en": "Fictional platform and security reviewers"
+    },
+    {
+      "zh": "虚构平台团队",
+      "en": "Fictional platform team"
+    },
+    {
+      "zh": "虚构应用审核人",
+      "en": "Fictional application reviewer"
+    },
+    {
+      "zh": "虚构开发者体验团队",
+      "en": "Fictional developer experience team"
+    },
+    {
+      "zh": "虚构数据服务团队",
+      "en": "Fictional data services team"
+    },
+    {
+      "zh": "虚构文档：本合成数据集中的退货申请受理期限为30天。\n",
+      "en": "Synthetic returns are accepted within 30 days.\n"
+    },
+    {
+      "zh": "虚构文档：本合成数据集中的退货申请受理期限为31天。\n",
+      "en": "Synthetic returns are accepted within 31 days.\n"
+    },
+    {
+      "zh": "虚构电商 API 团队",
+      "en": "Fictional commerce API team"
+    },
+    {
+      "zh": "虚构的 API 审核人与消费方负责人",
+      "en": "Fictional API reviewer and consumer owners"
+    },
+    {
+      "zh": "表现层派生项",
+      "en": "presentation-layer derivative"
+    },
+    {
+      "zh": "西部",
+      "en": "West"
+    },
+    {
+      "zh": "要求虚构客户门户使用签名会话 Cookie",
+      "en": "Require signed session cookies for the fictional customer portal."
+    },
+    {
+      "zh": "计费工作进程",
+      "en": "billing worker"
+    },
+    {
+      "zh": "订单 API",
+      "en": "order API"
+    },
+    {
+      "zh": "订单 API → 移动客户端与合作伙伴适配器",
+      "en": "order API -> mobile client and partner adapter"
+    },
+    {
+      "zh": "认证行为变更",
+      "en": "Authentication behavior changes"
+    },
+    {
+      "zh": "认证行为变更；响应结构不变",
+      "en": "Authentication behavior changes; response schema does not"
+    },
+    {
+      "zh": "认证边界风险",
+      "en": "auth boundary"
+    },
+    {
+      "zh": "训练",
+      "en": "train"
+    },
+    {
+      "zh": "证据加载失败。",
+      "en": "Evidence could not be loaded."
+    },
+    {
+      "zh": "评分回测不含任何数据行。",
+      "en": "Scored backtest contains no rows."
+    },
+    {
+      "zh": "评分回测合约校验未通过：artifact_sha256。",
+      "en": "Scored backtest contract failed: artifact_sha256."
+    },
+    {
+      "zh": "评分回测的 observed_default 值无效。",
+      "en": "Scored backtest has an invalid observed_default value."
+    },
+    {
+      "zh": "该变更为向后不兼容的破坏性变更。",
+      "en": "The change is backward-incompatible."
+    },
+    {
+      "zh": "该迁移方案未设置影子列过渡期",
+      "en": "The proposed migration has no shadow-column period."
+    },
+    {
+      "zh": "请求接受率可能发生变动",
+      "en": "Possible request acceptance-rate change"
+    },
+    {
+      "zh": "请求校验器",
+      "en": "request validator"
+    },
+    {
+      "zh": "调用方兼容性佐证材料尚不完整。",
+      "en": "Consumer compatibility evidence is incomplete."
+    },
+    {
+      "zh": "调用方确认回执已归档",
+      "en": "Consumer acknowledgements recorded"
+    },
+    {
+      "zh": "警告",
+      "en": "warning"
+    },
+    {
+      "zh": "贡献额恒等式",
+      "en": "contribution identity"
+    },
+    {
+      "zh": "边缘配置",
+      "en": "edge configuration"
+    },
+    {
+      "zh": "边缘配置 -> 会话中间件 -> 虚构门户",
+      "en": "edge configuration -> session middleware -> fictional portal"
+    },
+    {
+      "zh": "迁移后，仍引用旧列的读取端将会失败。",
+      "en": "Readers that still reference the legacy column would fail after migration."
+    },
+    {
+      "zh": "过渡期间，映射代码同时依赖新旧数据库字段。",
+      "en": "Mapping code depends on both old and new database fields during transition."
+    },
+    {
+      "zh": "运维",
+      "en": "operations"
+    },
+    {
+      "zh": "运维审核人",
+      "en": "Operations reviewer"
+    },
+    {
+      "zh": "运维手册",
+      "en": "support runbook"
+    },
+    {
+      "zh": "通知合成消费方",
+      "en": "Notify synthetic consumers"
+    },
+    {
+      "zh": "部分完成",
+      "en": "partial"
+    },
+    {
+      "zh": "部署至灰度批处理环境",
+      "en": "Deploy to batch canary"
+    },
+    {
+      "zh": "采用 HC3 稳健标准误的 log-log OLS 模型，控制品类、地区与支付渠道固定效应；拟合时剔除最后 8 周数据",
+      "en": "HC3 log-log OLS with category, region, and payment-channel fixed effects; fit excludes final 8 weeks"
+    },
+    {
+      "zh": "采用新的主版本及其更严格的默认格式检查",
+      "en": "Adopt the new major version and its stricter default format checks."
+    },
+    {
+      "zh": "重叠窗口外接受未签名或过期签名密钥",
+      "en": "Unsigned or stale signing keys accepted outside the overlap window"
+    },
+    {
+      "zh": "重新启用旧版读取端",
+      "en": "Re-enable old readers"
+    },
+    {
+      "zh": "重新认证告警持续低于阻断阈值",
+      "en": "Re-authentication alert remains below stop threshold"
+    },
+    {
+      "zh": "重新认证量出现非预期激增",
+      "en": "Unexpected re-authentication spike"
+    },
+    {
+      "zh": "重新部署先前构建产物",
+      "en": "Redeploy prior build artifact"
+    },
+    {
+      "zh": "重新部署包含 delivery_window 的响应序列化器",
+      "en": "Redeploy response serializer with delivery_window"
+    },
+    {
+      "zh": "野餐垫",
+      "en": "Picnic mat"
+    },
+    {
+      "zh": "锁文件回滚",
+      "en": "Lockfile rollback"
+    },
+    {
+      "zh": "错误",
+      "en": "error"
+    },
+    {
+      "zh": "错误契约保持兼容；接受行为存在差异",
+      "en": "Error contract compatible; acceptance behavior differs"
+    },
+    {
+      "zh": "错误负载结构未变更",
+      "en": "Error payload shape unchanged"
+    },
+    {
+      "zh": "键盘垫",
+      "en": "Keyboard mat"
+    },
+    {
+      "zh": "随行水壶",
+      "en": "Trail bottle"
+    },
+    {
+      "zh": "零售",
+      "en": "Retail"
+    },
+    {
+      "zh": "需提供弃用缓冲期或版本化端点",
+      "en": "Deprecation window or versioned endpoint required"
+    },
+    {
+      "zh": "需经虚构的数据、应用及运维三方评审人审批",
+      "en": "Fictional data, application, and operations reviewers"
+    },
+    {
+      "zh": "露营灯",
+      "en": "Camp light"
+    },
+    {
+      "zh": "非原始证据",
+      "en": "not source evidence"
+    },
+    {
+      "zh": "须待复核期结束后，方可停用旧版读取路径",
+      "en": "Remove old reads only after a review window"
+    },
+    {
+      "zh": "高",
+      "en": "high"
+    }
+  ],
+  "template_cases": [
+    {
+      "key": "structural.margin.error.parquet-byte-budget",
+      "runtime_en": "Parquet artifact at /case-studies/example.parquet is empty or exceeds the browser byte budget.",
+      "expected_zh": "位于 /case-studies/example.parquet 的 Parquet 产物为空，或超出浏览器字节预算。"
+    },
+    {
+      "key": "structural.credit.error.duckdb-materialization",
+      "runtime_en": "DuckDB could not materialize the verified Parquet artifact at /case-studies/example.parquet.",
+      "expected_zh": "DuckDB 无法在 /case-studies/example.parquet 处物化已校验的 Parquet 产物。"
+    },
+    {
+      "key": "structural.margin.error.parquet-sha-mismatch",
+      "runtime_en": "Parquet artifact at /case-studies/example.parquet does not match its recorded SHA-256.",
+      "expected_zh": "位于 /case-studies/example.parquet 的 Parquet 产物与其记录的 SHA-256 不匹配。"
+    },
+    {
+      "key": "structural.margin.error.compact-preview.invalid-dictionary-index",
+      "runtime_en": "Olist compact preview has an invalid reason_codes dictionary index.",
+      "expected_zh": "Olist 精简预览的 reason_codes 字典索引无效。"
+    },
+    {
+      "key": "structural.margin.error.invalid-period-split",
+      "runtime_en": "Olist Parquet has an invalid period_split at row 7.",
+      "expected_zh": "Olist Parquet 在第 7 行的 period_split 无效。"
+    },
+    {
+      "key": "structural.credit.error.invalid-reason-codes",
+      "runtime_en": "Scored backtest has invalid reason_codes at row 7.",
+      "expected_zh": "评分回测第 7 行的 reason_codes 无效。"
+    },
+    {
+      "key": "structural.credit.error.invalid-split",
+      "runtime_en": "Scored backtest has an invalid split at row 7.",
+      "expected_zh": "评分回测第 7 行的 split 无效。"
+    },
+    {
+      "key": "structural.margin.error.compact-preview.invalid-value",
+      "runtime_en": "Olist compact preview has an invalid reason_codes value.",
+      "expected_zh": "Olist 精简预览的 reason_codes 值无效。"
+    },
+    {
+      "key": "structural.margin.error.compact-preview.invalid-flag",
+      "runtime_en": "Olist compact preview has an invalid reason_codes flag.",
+      "expected_zh": "Olist 精简预览的 reason_codes 标志位无效。"
+    },
+    {
+      "key": "structural.rag.error.schema-mismatch",
+      "runtime_en": "Schema mismatch. Missing: schema, provenance; extra: schema, provenance.",
+      "expected_zh": "Schema 不匹配。缺失字段：结构、provenance；多余字段：结构、provenance。"
+    },
+    {
+      "key": "structural.credit.error.check-contract",
+      "runtime_en": "Scored backtest contract failed: schema, provenance.",
+      "expected_zh": "评分回测合约校验未通过：结构、provenance。"
+    },
+    {
+      "key": "structural.rag.error.backend-contract-drift",
+      "runtime_en": "Backend contract drift: expected rag-manifest/v1.",
+      "expected_zh": "后端契约漂移：预期为 rag-manifest/v1。"
+    },
+    {
+      "key": "structural.credit.error.invalid-field",
+      "runtime_en": "Scored backtest has an invalid reason_codes.",
+      "expected_zh": "评分回测包含无效的 reason_codes。"
+    },
+    {
+      "key": "structural.margin.error.check-contract",
+      "runtime_en": "Olist Parquet contract failed: schema, provenance.",
+      "expected_zh": "Olist Parquet 合约校验未通过：结构、provenance。"
+    },
+    {
+      "key": "structural.margin.error.invalid-field",
+      "runtime_en": "Olist Parquet has an invalid reason_codes.",
+      "expected_zh": "Olist Parquet 的 reason_codes 字段无效。"
+    },
+    {
+      "key": "structural.credit.tooltip.calibration-bin",
+      "runtime_en": "0.0–0.1; n=12; predicted=8.5%; observed=9.1%",
+      "expected_zh": "0.0–0.1；样本量 n=12；预测违约率=8.5%；实际违约率=9.1%"
+    },
+    {
+      "key": "structural.release.error.scenario-http",
+      "runtime_en": "Synthetic scenarios returned 503",
+      "expected_zh": "合成场景返回 503"
+    },
+    {
+      "key": "structural.credit.error.missing-field",
+      "runtime_en": "Scored backtest is missing reason_codes.",
+      "expected_zh": "评分回测缺少 reason_codes。"
+    },
+    {
+      "key": "structural.margin.error.missing-field",
+      "runtime_en": "Olist Parquet is missing reason_codes.",
+      "expected_zh": "Olist Parquet 缺少 reason_codes 字段。"
+    },
+    {
+      "key": "structural.p1.error.result-http",
+      "runtime_en": "Result evidence returned 503",
+      "expected_zh": "结果证据返回 503"
+    },
+    {
+      "key": "structural.rag.error.contract-drift-missing",
+      "runtime_en": "Contract drift: missing schema, provenance.",
+      "expected_zh": "契约漂移：缺失 结构、provenance。"
+    },
+    {
+      "key": "structural.credit.error.synthetic-http",
+      "runtime_en": "Credit dataset returned 503",
+      "expected_zh": "Credit 数据集返回状态 503"
+    },
+    {
+      "key": "structural.margin.error.synthetic-http",
+      "runtime_en": "Margin dataset returned 503",
+      "expected_zh": "Margin 数据集返回了 503。"
+    },
+    {
+      "key": "structural.rag.error.registry-http",
+      "runtime_en": "Claim registry returned 503",
+      "expected_zh": "声明注册表返回 503"
+    },
+    {
+      "key": "structural.credit.tooltip.vintage-performance",
+      "runtime_en": "2026-Q1: PD 8.5%; observed 9.1%",
+      "expected_zh": "2026-Q1：预测违约率 PD 8.5%；实际违约率 9.1%"
+    },
+    {
+      "key": "structural.p1.error.manifest-http",
+      "runtime_en": "Manifest returned 503",
+      "expected_zh": "清单请求返回 503"
+    },
+    {
+      "key": "structural.p1.recovery.restored-job-suffix",
+      "runtime_en": "; restored job job-16",
+      "expected_zh": "；已恢复作业 job-16"
+    },
+    {
+      "key": "structural.p1.state-reference.checkpoint-template",
+      "runtime_en": "checkpoint checkpoint-3 captured; /tmp/checkpoint-3",
+      "expected_zh": "检查点 checkpoint-3 captured；/tmp/checkpoint-3"
+    },
+    {
+      "key": "structural.p1.recovery.job-suffix",
+      "runtime_en": "; job job-17",
+      "expected_zh": "；作业 job-17"
+    }
+  ],
+  "capture_cases": [
+    {
+      "value": "reason_codes at row 7",
+      "locale": "zh",
+      "expected": "第 7 行的 reason_codes"
+    },
+    {
+      "value": "schema, provenance",
+      "locale": "zh",
+      "expected": "结构、provenance"
+    }
+  ]
+}

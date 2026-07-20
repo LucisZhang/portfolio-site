@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "recorded_on": "2026-07-19",
+  "status": "GATED",
+  "scope": "Current v9 bilingual assistant live-acceptance control-plane record; this is not a model result report.",
+  "authorization": {
+    "received": true,
+    "fresh_single_message_history": true,
+    "authorized_maximum_requests": 2,
+    "automatic_retries_authorized": false,
+    "local_retention_of_passed_answers_and_non_sensitive_metadata": true
+  },
+  "packet": {
+    "grounding_tokens": 6506,
+    "grounding_content_sha256": "f413b61c9c31185c11f422e0cfc2f205031660f7aadaad9d4bb601764374544b",
+    "policy_revision": "reasoning-none-concise-bilingual-exfiltration-gate-v9",
+    "policy_file_sha256": "ba2cc01807a577b9c12ccc490b01055ea14f8c7850bcb09fa7de1cfc0f684968",
+    "requested_model": "moonshotai/kimi-k2.6",
+    "questions": [
+      "What does Release Guardian demonstrate, and what does it not prove?",
+      "隐私预检项目展示了什么？它不能证明什么？"
+    ]
+  },
+  "execution": {
+    "process_created": false,
+    "model_requests_attempted": 0,
+    "attempt_lock_present": false,
+    "result_report_present": false,
+    "automatic_retry_performed": false,
+    "outcome": "The execution safety gate denied the outbound action before process creation. No payload reached OpenRouter or its downstream model provider.",
+    "not_a_provider_failure": true
+  },
+  "boundary": "Historical v5/v6 live acceptance and current v9 offline replay remain separate records and do not convert this current v9 live gate into a pass."
+}

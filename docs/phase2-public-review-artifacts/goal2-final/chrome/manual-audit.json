@@ -1,0 +1,151 @@
+{
+  "schema_version": 3,
+  "status": "PASS",
+  "overall_candidate_status": "PARTIAL_EXTERNAL_GATE",
+  "audited_on": "2026-07-19",
+  "scope": "Exact local production runtime in installed Google Chrome. This is local candidate evidence, not a deployed Preview or anonymous-public check.",
+  "browser": {
+    "name": "Google Chrome",
+    "installed_version": "150.0.7871.128",
+    "visible_manual_session": {
+      "mode": "extension-controlled installed Chrome",
+      "viewport": {
+        "width": 1920,
+        "height": 958
+      },
+      "session_finalized": true
+    },
+    "deterministic_capture": {
+      "mode": "installed Chrome channel, headless",
+      "device_pixel_ratio": 1,
+      "viewports": [
+        {
+          "name": "desktop",
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "name": "mobile",
+          "width": 390,
+          "height": 844
+        }
+      ]
+    }
+  },
+  "candidate_binding": {
+    "exact_git_tree_hash": null,
+    "current_runtime_tree_digest": {
+      "files": 221,
+      "sha256": "d8bc84920a2c84c76109ebf6ab214cce969d5995b8c44ed76ec4b8a633bb38fd"
+    },
+    "playwright_summary": {
+      "path": "docs/phase2-public-review-artifacts/goal2-final/playwright-summary.json",
+      "sha256": "796bbbfa2d0b1a4bd8382da805a47851e06388611346c3f741deb4e76d820d35"
+    },
+    "lighthouse_summary": {
+      "path": "docs/phase2-public-review-artifacts/goal2-final/lighthouse-summary.json",
+      "sha256": "5afdbd888c145c6532418f85dc5b11ccd7b8723e8e20183ffedf3a7f4fb62949"
+    },
+    "screenshot_manifest": {
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/screenshot-manifest.json",
+      "sha256": "3495920f2655e0d8f3ce18fbfc31578dd5e8ee7ed1ba19d9b8576c426b49dab4"
+    },
+    "binary_manifest": {
+      "path": "docs/phase2-public-review-artifacts/goal2-final/binary-manifest.json",
+      "sha256": "d94e1b179ac7e6150a3564ca9c279ccf51f8f8f28481d4b95fdcce5c07f90320"
+    },
+    "assistant_v9_live_gate": {
+      "path": "docs/phase2-public-review-artifacts/goal2-final/assistant-v9-live-gate.json",
+      "sha256": "275d163b7e5c7b8c699832b943a725556cc64c00597f5cddc29d3d4aa906b406"
+    }
+  },
+  "routes": [
+    {
+      "path": "/",
+      "en_h1": "Xiangguo Zhang",
+      "zh_h1": "章向国"
+    },
+    {
+      "path": "/ai/release-guardian",
+      "en_h1": "Release Guardian",
+      "zh_h1": "发布守门人"
+    },
+    {
+      "path": "/engineering/p1-reliability-lab",
+      "en_h1": "Streaming Reliability Lab",
+      "zh_h1": "流式可靠性实验室"
+    },
+    {
+      "path": "/ai/rag-quality-lab",
+      "en_h1": "RAG Quality Lab",
+      "zh_h1": "RAG 质量实验室"
+    },
+    {
+      "path": "/ai/privacy-preflight-mac",
+      "en_h1": "Privacy Preflight Web + Mac",
+      "zh_h1": "隐私预检（网页版 + macOS 版）"
+    },
+    {
+      "path": "/analytics/margin-control-tower",
+      "en_h1": "Margin Control Tower",
+      "zh_h1": "毛利控制塔"
+    },
+    {
+      "path": "/analytics/credit-policy-lab",
+      "en_h1": "Credit Policy Lab",
+      "zh_h1": "信贷策略实验室"
+    },
+    {
+      "path": "/analytics/analytics-tandem",
+      "en_h1": "Analytics Tandem",
+      "zh_h1": "分析双项目"
+    }
+  ],
+  "checks": {
+    "all_eight_routes_in_both_locales": "PASS",
+    "homepage_identity_and_metadata_in_both_locales": "PASS",
+    "old_identity_absent": "PASS",
+    "untranslated_route_titles_absent": "PASS",
+    "horizontal_overflow_absent": "PASS",
+    "homepage_analytics_navigation_click_exact": "PASS",
+    "release_replay_before_recorded_evidence": "PASS",
+    "release_replay_geometry_inside_1440x900": "PASS",
+    "release_media_order_risk_evaluation_pipeline": "PASS",
+    "release_evidence_notes_localized": "PASS",
+    "privacy_text_image_text_pdf_scanned_pdf_and_genuine_three_page_pdf": "PASS",
+    "privacy_review_before_after_post_export_checks_and_downloads": "PASS",
+    "privacy_download_filenames_exact": "PASS",
+    "privacy_mac_hero_boundary_exact": "PASS",
+    "privacy_zh_primary_scan_button_prominence": "PASS",
+    "analytics_real_default_loaded_and_source_switching_in_both_locales": "PASS",
+    "margin_one_parquet_get_background_full_and_remount_cache_join": "PASS",
+    "credit_real_artifact_120000_rows_and_source_switching": "PASS",
+    "rag_manifest_edit_validate_and_reset": "PASS",
+    "assistant_lazy_load_and_local_off_topic_refusal": "PASS",
+    "browser_console_errors": []
+  },
+  "assistant_local_refusal": {
+    "question": "请讲一个笑话。",
+    "answer": "我只能回答章向国的已记录项目、已展示能力、工作方式或岗位匹配问题。"
+  },
+  "assistant_acceptance_boundary": {
+    "historical_v5_v6_live": "PASS",
+    "current_v9_offline_replay": "PASS",
+    "current_v9_live": "GATED",
+    "authorization_received": true,
+    "process_created": false,
+    "model_requests_attempted": 0,
+    "provider_failure": false
+  },
+  "visually_inspected_screenshots": [
+    "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-home-1440.png",
+    "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-home-1440.png",
+    "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-release-replay-1440.png",
+    "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-release-replay-1440.png",
+    "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-privacy-preflight-1440.png",
+    "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-privacy-preflight-1440.png",
+    "docs/phase2-public-review-artifacts/local-analytics/margin-desktop.png",
+    "docs/phase2-public-review-artifacts/local-analytics/credit-mobile.png"
+  ],
+  "screenshot_identity_source": "docs/phase2-public-review-artifacts/goal2-final/chrome/screenshot-manifest.json"
+}

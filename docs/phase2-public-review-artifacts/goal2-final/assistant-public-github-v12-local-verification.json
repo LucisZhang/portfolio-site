@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "recordedDate": "2026-07-19",
+  "recordedTimezone": "Asia/Shanghai",
+  "status": "PASS_LOCAL_ONLY_PARTIAL_EXTERNAL_GATE",
+  "candidate": {
+    "policyRevision": "public-github-p1-server-facts-v12",
+    "evidenceMode": "public-github-pinned-server-rendered",
+    "model": "moonshotai/kimi-k2.6",
+    "repository": "LucisZhang/p1-reliability-lab",
+    "commit": "7eab9c3fcdf73865b0ed6dd1266de1bfaccefcce",
+    "sourcePackId": "p1-public-github-20260719-v1",
+    "sourcePackSha256": "2cee646acfd39b335a94fc651097dee913eea05ff97eea2761fc9b5b13e08deb",
+    "factCatalogSha256": "804ffa4dd7e06850351af20421799903d589f259181e0618e42d40a651f59b90"
+  },
+  "publicSourceVerification": {
+    "result": "PASS",
+    "sourcesVerified": 3,
+    "sourcesExpected": 3,
+    "requirements": {
+      "exactCommitTreeEntryType": "blob",
+      "exactCommitTreeEntryMode": "100644",
+      "remoteBytesAndSha256Verified": true
+    },
+    "sources": [
+      {
+        "path": "README.md",
+        "bytes": 6458,
+        "sha256": "c42898a1ce09c0ecc54affeca5411ff1548ad047a2a0f0f209ca2cdaeefcc3ee"
+      },
+      {
+        "path": "docs/workstation-run/20260711T034018Z-local-mac/SUMMARY.md",
+        "bytes": 1663,
+        "sha256": "dd0760e06e2197d614be94ec93ef8ff8bbd6d546c85e211ecaf31c85cdd2f770"
+      },
+      {
+        "path": "docs/resume-claims-after-verification.md",
+        "bytes": 660,
+        "sha256": "c47e17c0ecea82de7ac7d248d30d4f898252a9fd8f8d9c058f6c66e7f2913dbe"
+      }
+    ]
+  },
+  "localVerification": {
+    "assistantPolicyTests": {
+      "passed": 37,
+      "total": 37,
+      "failed": 0
+    },
+    "typecheck": "PASS",
+    "lint": "PASS",
+    "productionBuild": "PASS",
+    "focusedInstalledChrome": {
+      "passed": 18,
+      "total": 18,
+      "failed": 0
+    },
+    "fullInstalledChromeE2e": {
+      "total": 261,
+      "passed": 209,
+      "intentionalSkipped": 52,
+      "failed": 0,
+      "duration": "about 6.3 minutes"
+    },
+    "evidenceVerification": "PASS",
+    "performanceBudget": "PASS",
+    "freshCurrentV12FourRouteLighthouse": {
+      "result": "PASS",
+      "runtimeTreeSha256": "a49d5abb5a9fc5c4622610e3818872562e8349b6959bd2eed64fa117ffdd03c0",
+      "lighthouseVersion": "13.4.0",
+      "installedChromeVersion": "150.0.7871.128",
+      "summaryPath": "docs/phase2-public-review-artifacts/goal2-final/lighthouse-summary-v12-local.json",
+      "summarySha256": "7a4b65a40acbad35360a1061c8968c65bc440a96c290c70c27f7a06d45f6a114",
+      "routeScores": {
+        "home": "100/100/100/100",
+        "margin": "100/100/100/100",
+        "privacy": "100/100/100/100",
+        "release": "100/100/100/100"
+      }
+    },
+    "productionDependencyAudit": {
+      "result": "PASS",
+      "vulnerabilities": 0
+    },
+    "staticClientPublicSourceHashScan": {
+      "result": "PASS",
+      "checked": [
+        "source-pack SHA-256",
+        "fact-catalog SHA-256",
+        "three full-file SHA-256 values",
+        "three excerpt SHA-256 values"
+      ],
+      "matches": 0
+    },
+    "gitDiffCheck": "PASS"
+  },
+  "runtimeDesign": {
+    "runtimeGitHubFetch": false,
+    "answerRendering": "Server-rendered bilingual facts, pinned citations, and full evidence boundary",
+    "modelOutputRole": "Select one reviewed fact identifier from a finite set"
+  },
+  "externalActions": {
+    "liveV12ModelRequests": 0,
+    "openRouterRequests": 0,
+    "gitCommitOrPushPerformed": false,
+    "pullRequestPerformed": false,
+    "previewOrDeploymentPerformed": false,
+    "publicationPerformed": false
+  },
+  "acceptanceBoundary": {
+    "status": "PARTIAL_EXTERNAL_GATE",
+    "establishes": "A local bridge grounded in three immutable public-GitHub source files at one exact commit",
+    "doesNotEstablish": [
+      "production readiness",
+      "cloud scale",
+      "multi-node behavior",
+      "general hardware compatibility",
+      "continuous operation",
+      "one-command reproduction"
+    ],
+    "recordedRunScope": "One recorded single-node Mac/Docker lab run",
+    "openGates": [
+      "live v12 model acceptance",
+      "Git commit and push",
+      "pull request and Preview",
+      "deployment and publication"
+    ]
+  }
+}

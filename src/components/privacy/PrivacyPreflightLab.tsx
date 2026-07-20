@@ -14,7 +14,7 @@ export default function PrivacyPreflightLab() {
   const [workspace, setWorkspace] = useState<Workspace>("text");
   const labels = locale === "en"
     ? { title: "Privacy Preflight Web", mode: "Synthetic Sandbox + Deterministic Verifier", local: "Local processing", note: "Your content is processed in this browser. This workspace does not upload files or text.", text: "Text", image: "Image", pdf: "PDF", steps: ["Add", "Scan", "Review", "Preview", "Download"] }
-    : { title: "Privacy Preflight Web", mode: "本地脱敏工作区", local: "本地处理", note: "内容仅在当前浏览器中处理；此工作区不会上传文件或文本。", text: "文本", image: "图片", pdf: "PDF", steps: ["添加", "扫描", "复核", "预览", "下载"] };
+    : { title: "Privacy Preflight Web（隐私预检网页版）", mode: "本地脱敏工作区", local: "本地处理", note: "内容仅在当前浏览器中处理；此工作区不会上传文件或文本。", text: "文本", image: "图片", pdf: "PDF", steps: ["添加", "扫描", "复核", "预览", "下载"] };
 
   const tabs: { id: Workspace; label: string; icon: typeof FileText }[] = [
     { id: "text", label: labels.text, icon: FileText },

@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "inputs": {
+    "candidates": {
+      "file": "goal2-native447-final-candidates-v5.json",
+      "sha256": "423c151c84d96ef3bf009a1e6f2054ce9c5064b3af37cb7d08a0ca412de718f6"
+    },
+    "structural_packet": {
+      "file": "goal2-structural-prose-final392.json",
+      "sha256": "dd2506987ffae0b66de92fed56dc2c74684d957328795a50eedf3e07486aa4f0"
+    },
+    "structural_bindings": {
+      "file": "goal2-structural-prose-final392-bindings.json",
+      "sha256": "ca42f67e0426d07712256c48e2138b87b2767771041a9356903b5c338d8907c9"
+    }
+  },
+  "validation": {
+    "structural_record_count": 392,
+    "non_structural_records_excluded": 55,
+    "binding_count": 429,
+    "bound_key_count": 392,
+    "template_count": 29,
+    "template_fixed_text_lengths_descending": true,
+    "duplicate_english_groups": [
+      {
+        "en": "critical",
+        "zh": "严重",
+        "keys": [
+          "structural.rag.display.severity.critical",
+          "structural.release.risk-level.critical"
+        ]
+      }
+    ],
+    "duplicate_english_conflicts": 0,
+    "reverse_map_entry_count": 362,
+    "reverse_map_collisions_excluded": [],
+    "raw_evidence_files_modified": 0
+  },
+  "outputs": {
+    "module": {
+      "file": "src/lib/structural-copy.ts",
+      "sha256": "8eb5e8fb86ab10f7c7a91d07f0527f183cb68909de412a4c23dce438b1d1b2f4"
+    },
+    "node_test": {
+      "file": "src/lib/structural-copy.test.mjs",
+      "sha256": "fb9e492c00fae95bea2dbeb34f993574d577a2b6dfbd3521e478157ca5374df3"
+    },
+    "test_fixture": {
+      "file": "src/lib/structural-copy.test-fixture.json",
+      "sha256": "efed0edbda670de5411ece130e3a384ebc4bf603d23ecc6df6d877b1ff0be6b3"
+    },
+    "report": {
+      "file": "src/lib/structural-copy.generation-report.json"
+    }
+  }
+}

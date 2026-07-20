@@ -1,6 +1,6 @@
 # Copyright and use notice
 
-Copyright (c) 2026 Hsiang Kuo Chang. All rights reserved.
+Copyright (c) 2026 Xiangguo Zhang. All rights reserved.
 
 This repository is publicly accessible for portfolio review and demonstration. No permission is
 granted to reproduce, redistribute, sublicense, sell, or create derivative works from its source,

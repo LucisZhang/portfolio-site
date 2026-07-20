@@ -45,7 +45,7 @@ export default function CommandPalette({
         id: project.slug,
         label: localize(project.title, locale),
         href: `/${project.track}/${project.slug}`,
-        tags: project.stack.join(" "),
+        tags: project.stack.map((item) => localize(item, locale)).join(" "),
       })),
     [locale, projects],
   );

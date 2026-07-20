@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">分享前复核的中文合成输入</title>
+  <desc id="desc">包含虚构姓名、邮箱、电话和本地路径的隐私预检合成夹具。</desc>
+  <rect width="1200" height="700" fill="#fff"/>
+  <rect width="1200" height="112" fill="#17212a"/>
+  <g font-family="Arial, PingFang SC, Microsoft YaHei, sans-serif" fill="#1d2730">
+    <text x="64" y="70" font-size="32" fill="#fff">隐私预检 / 合成夹具</text>
+    <text x="64" y="180" font-size="36">对外分享前复核</text>
+    <g font-size="20" fill="#586673">
+      <text x="64" y="260">姓名</text>
+      <text x="64" y="346">邮箱</text>
+      <text x="64" y="432">电话</text>
+      <text x="64" y="518">草稿路径</text>
+    </g>
+    <g x="300" font-size="31">
+      <text x="300" y="260">Ada Example</text>
+      <text x="300" y="346">ada@example.com</text>
+      <text x="300" y="432">415-555-0188</text>
+      <text x="300" y="518">/Users/demo/Private/brief.txt</text>
+    </g>
+    <text x="64" y="640" font-size="18" fill="#586673">以上信息均为虚构，仅供本地质量验证使用。</text>
+  </g>
+</svg>

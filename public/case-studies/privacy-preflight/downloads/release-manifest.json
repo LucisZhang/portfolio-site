@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 2,
+  "release": "0.1.0",
+  "generatedAt": "2026-07-17T23:12:00.000Z",
+  "scope": "Local unnotarized Apple-silicon preview; not a general OCR or legal-grade redaction claim.",
+  "artifacts": [
+    {
+      "path": "/case-studies/privacy-preflight/downloads/Privacy-Preflight-0.1.0-macOS-arm64-unnotarized.zip",
+      "bytes": 33930369,
+      "sha256": "360083a7fab6b60600f597b28a32c533a9df932766c21b80cba80e6c56350911"
+    },
+    {
+      "path": "/case-studies/privacy-preflight/downloads/Privacy-Preflight-0.1.0-source.zip",
+      "bytes": 202613,
+      "sha256": "4138cd3b61a17b4f7b36a5e104389aa229f5e638c3d3a019ce6aa26171624295"
+    }
+  ],
+  "bundle": {
+    "minimumMacOS": "14.0",
+    "architecture": "arm64",
+    "rawAppDiskUsageKiB": 94476,
+    "machOFiles": 37,
+    "allMachOThinArm64": true,
+    "embeddedPython": "3.12.13",
+    "compiledVisionHelper": true,
+    "signature": "ad-hoc",
+    "developerIdSigned": false,
+    "notarized": false,
+    "stapledTicket": false,
+    "staplerValidation": "kLSDataUnavailableErr (ticket validation unavailable in this environment)",
+    "gatekeeperAcceptanceEstablished": false,
+    "spctlAssessment": "Code Signing subsystem internal error; no accept/reject result"
+  },
+  "verification": {
+    "workerTests": "96 passed on the final source snapshot with the CPython 3.12.13 interpreter and application dependencies extracted from the exact app ZIP; pytest 8.4.2 frontend supplied separately as the test harness",
+    "ocrFixtureBenchmark": "19/19 exact expected values; 2 false positives across 7 fixed synthetic fixtures using the complete browser-equivalent multi-pass union",
+    "isolatedPathSmoke": "PATH=/bin; bundled Vision OCR found EMAIL, PHONE, and LOCAL_PATH in the Chinese fixture; scanned PDF produced three OCR regions",
+    "archiveSmoke": "zip extracted, deep strict codesign verified, app launched with Bundled Python 3.12, bundled worker returned health ok, and graceful quit stopped the worker",
+    "publicSafety": "runtime-matching source excludes internal coordination files, caches, and build outputs; packaging disables first-party Swift debug paths, strips symbols, and removes editable-install provenance before signing"
+  },
+  "companionFiles": [
+    {
+      "path": "/case-studies/privacy-preflight/downloads/README.md",
+      "bytes": 3356,
+      "sha256": "5ba019c833c19f77b42e69303c035e7611a7fe05637a2bcb57663293e3be5567"
+    },
+    {
+      "path": "/case-studies/privacy-preflight/downloads/PRIVACY.md",
+      "bytes": 1804,
+      "sha256": "bf83946c4cad27e36adf885c1e9d6355f53b057588b61324a7f9958384f0160e"
+    },
+    {
+      "path": "/case-studies/privacy-preflight/downloads/THIRD_PARTY_NOTICES.md",
+      "bytes": 1972,
+      "sha256": "f066cd1592311adfe23fba4c2fa8bde04e987b920a53fdf33156bf4387b98c43"
+    },
+    {
+      "path": "/case-studies/privacy-preflight/downloads/DEPENDENCIES.lock",
+      "bytes": 484,
+      "sha256": "fa911449be7d1fba47b5add8cb177da1274a9e34128eab90bf3b4cbd9eac1ed4"
+    },
+    {
+      "path": "/case-studies/privacy-preflight/downloads/CPython-LICENSE.txt",
+      "bytes": 13936,
+      "sha256": "3b2f81fe21d181c499c59a256c8e1968455d6689d269aa85373bfb6af41da3bf"
+    },
+    {
+      "path": "/case-studies/privacy-preflight/downloads/sbom.spdx.json",
+      "bytes": 18831,
+      "sha256": "58c4a257ca1783891fa1de8eaa7a29c5a13f7d3139ad687082273ab6676da174"
+    }
+  ],
+  "sbom": {
+    "path": "/case-studies/privacy-preflight/downloads/sbom.spdx.json",
+    "format": "SPDX-2.3",
+    "packages": 26,
+    "documentNamespace": "https://luciszhang.github.io/privacy-preflight/sbom/0.1.0/macos-arm64"
+  },
+  "manifestSelfIdentity": {
+    "hashExcluded": true,
+    "reason": "A file cannot contain a stable hash of its own final bytes; every distributable and companion beside it is size-and-hash identified above."
+  }
+}

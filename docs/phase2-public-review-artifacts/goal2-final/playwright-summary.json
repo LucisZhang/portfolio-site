@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "state": "complete-pass",
+  "candidate": {
+    "exactGitTreeHash": null,
+    "currentRuntimeTreeDigest": {
+      "schemaVersion": 1,
+      "algorithm": "SHA-256 of sorted lines: SHA-256(file bytes), two spaces, POSIX path, newline",
+      "excludedSelfReferentialReports": [
+        "public/case-studies/privacy-preflight/goal-candidate-e2e.json"
+      ],
+      "files": 221,
+      "sha256": "d8bc84920a2c84c76109ebf6ab214cce969d5995b8c44ed76ec4b8a633bb38fd"
+    }
+  },
+  "browser": {
+    "name": "Google Chrome",
+    "channel": "chrome",
+    "identityEvidence": "Successful Playwright launch with the configured channel; exact installed-browser version is cross-bound in chrome/manual-audit.json."
+  },
+  "sourceReport": {
+    "path": null,
+    "localOnlyBasename": "playwright-raw.json",
+    "retention": "local-only-untracked-or-ignored",
+    "sha256": "8ba5b6eb1dd31a783431e2773ddd4f6a9517281b75e01a35ab217327a2214bf8"
+  },
+  "runBinding": {
+    "path": null,
+    "localOnlyBasename": "playwright-final-binding-d8bc8492-isolated.json",
+    "retention": "local-only-outside-repository",
+    "sha256": "ee7c6e937a9c72f4e01031ff1bc1bc72e2a64770cc9ecdbae86976228e862a5b",
+    "preparedAtUtc": "2026-07-19T14:20:49.990Z"
+  },
+  "projects": [
+    "desktop",
+    "tablet",
+    "mobile"
+  ],
+  "results": {
+    "passed": 203,
+    "skipped": 52,
+    "failed": 0,
+    "flaky": 0,
+    "durationMs": 479720.844
+  }
+}

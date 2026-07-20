@@ -1,0 +1,118 @@
+{
+  "schema_version": 2,
+  "status": "SUPERSEDED_PASS",
+  "supersession": {
+    "reason": "Runtime files changed after this exact run; retain as historical evidence only.",
+    "final_runtime_rerun": "pending"
+  },
+  "scope": "Goal2 local production build on 127.0.0.1; raw reports retained in the local QA bundle",
+  "candidate": {
+    "current_runtime_tree_digest": {
+      "schemaVersion": 1,
+      "algorithm": "SHA-256 of sorted lines: SHA-256(file bytes), two spaces, POSIX path, newline",
+      "excludedSelfReferentialReports": [
+        "public/case-studies/privacy-preflight/goal-candidate-e2e.json"
+      ],
+      "files": 218,
+      "sha256": "eb08c00e4fa7fcf682a10bd4a6adf5d9cc4c43af7427ceae85de2e3987b316ea"
+    }
+  },
+  "reports": {
+    "home": {
+      "path": "/",
+      "fetch_time": "2026-07-19T10:29:07.971Z",
+      "lighthouse_version": "13.4.0",
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+      "report_sha256": "73bb9b5d1db155f0b44efc08924b49f970286ca297795670a89a3faa78a18bb9",
+      "runtime_error": null,
+      "run_warnings": [],
+      "categories": {
+        "performance": 99,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "first_contentful_paint_ms": 1055,
+        "largest_contentful_paint_ms": 2105,
+        "total_blocking_time_ms": 8,
+        "cumulative_layout_shift": 0,
+        "speed_index_ms": 1055
+      },
+      "http_status_code_score": 1,
+      "errors_in_console_score": 1
+    },
+    "margin": {
+      "path": "/analytics/margin-control-tower",
+      "fetch_time": "2026-07-19T10:29:40.907Z",
+      "lighthouse_version": "13.4.0",
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+      "report_sha256": "ce46752c29667099ccd96f09386d20f0d5430886ba278b58c812121d13d96d6e",
+      "runtime_error": null,
+      "run_warnings": [],
+      "categories": {
+        "performance": 98,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "first_contentful_paint_ms": 1354,
+        "largest_contentful_paint_ms": 2404,
+        "total_blocking_time_ms": 11,
+        "cumulative_layout_shift": 0,
+        "speed_index_ms": 1354
+      },
+      "http_status_code_score": 1,
+      "errors_in_console_score": 1
+    },
+    "privacy": {
+      "path": "/ai/privacy-preflight-mac",
+      "fetch_time": "2026-07-19T10:30:17.641Z",
+      "lighthouse_version": "13.4.0",
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+      "report_sha256": "c597ff3ce0c8e28ca84095a681229fbaddc4765b313bc248ca57ad25eb38c4a8",
+      "runtime_error": null,
+      "run_warnings": [],
+      "categories": {
+        "performance": 94,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "first_contentful_paint_ms": 1204,
+        "largest_contentful_paint_ms": 3006,
+        "total_blocking_time_ms": 11,
+        "cumulative_layout_shift": 0,
+        "speed_index_ms": 1204
+      },
+      "http_status_code_score": 1,
+      "errors_in_console_score": 1
+    },
+    "release": {
+      "path": "/ai/release-guardian",
+      "fetch_time": "2026-07-19T10:30:51.396Z",
+      "lighthouse_version": "13.4.0",
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+      "report_sha256": "48d654a1eff4c7b20c54d2d6da002d81a9d54ae6529a31c0e248c9479429ecd9",
+      "runtime_error": null,
+      "run_warnings": [],
+      "categories": {
+        "performance": 96,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "first_contentful_paint_ms": 1205,
+        "largest_contentful_paint_ms": 2783,
+        "total_blocking_time_ms": 7,
+        "cumulative_layout_shift": 0,
+        "speed_index_ms": 1205
+      },
+      "http_status_code_score": 1,
+      "errors_in_console_score": 1
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "recordType": "complete-serialized-playwright-summary",
+  "startedAt": "2026-07-17T23:32:46.153Z",
+  "completedAt": "2026-07-17T23:37:08.131Z",
+  "scope": "Clean public-candidate runtime, artifacts, tests, and build configuration across desktop, tablet, and mobile projects.",
+  "command": "PLAYWRIGHT_CHANNEL=msedge npm run test:e2e -- --workers=1 --reporter=line,json",
+  "browser": {
+    "channel": "msedge",
+    "product": "Microsoft Edge",
+    "version": "150.0.4078.65",
+    "configurationBoundary": "PLAYWRIGHT_CHANNEL overrides the local test browser only; the tracked default remains chrome and the candidate application runtime is unchanged."
+  },
+  "build": {
+    "nextVersion": "16.2.10",
+    "productionBuildPassed": true,
+    "generatedRoutes": 15
+  },
+  "runtimeTreeFingerprint": {
+    "command": "node scripts/runtime-tree-fingerprint.mjs",
+    "files": 171,
+    "sha256": "84d7c7a30c30bdae1497fb8cdd13e1f499242c792819706d510ec5214b013c91",
+    "excludedSelfReferentialReports": [
+      "public/case-studies/privacy-preflight/goal-candidate-e2e.json"
+    ]
+  },
+  "results": {
+    "configured": 165,
+    "passed": 143,
+    "skipped": 22,
+    "failed": 0,
+    "unexpected": 0,
+    "flaky": 0,
+    "durationMilliseconds": 261977.931
+  },
+  "intentionalSkips": [
+    {
+      "count": 12,
+      "reason": "Six heavy local-OCR/PDF workflows run once on desktop; responsive controls and layouts are covered separately on tablet and mobile."
+    },
+    {
+      "count": 8,
+      "reason": "Four shared keyboard, accessibility, artifact-viewer, and locale mechanics audits run once on desktop."
+    },
+    {
+      "count": 2,
+      "reason": "The full p1 graph is intentionally replaced by its step-list fallback in the two smaller viewport projects."
+    }
+  ],
+  "requiredCoverage": {
+    "analyticsArtifactPresent": true,
+    "analyticsArtifactMissingPending": true,
+    "analyticsInvalidArtifactBlocked": true,
+    "analyticsExactPublicBranchSourceLinks": true,
+    "allRequiredRoutesEnglishAndChinese": true,
+    "homepageExactSixProjectOrder": true,
+    "privacyChinesePhonePixelsBurned": true,
+    "privacyTextAndOcrRegionsMergedOnce": true,
+    "privacyScannedOverlayMatchesBurnInCoordinates": true,
+    "privacyGenuineThreePageOcrReviewBurnInAndPreview": true,
+    "privacyInPageResultPreview": true,
+    "creditDefaultBlockedAndPassingPreset": true,
+    "releaseStrictDefinitionAndHierarchy": true
+  },
+  "rawReporter": {
+    "bytes": 211354,
+    "sha256": "dea1e654515f23e6e02b188d8f797fdbd1559f136d6b701574f6b98449f09ef4",
+    "published": false,
+    "reason": "The public summary preserves exact reporter totals and identity while excluding runner-local absolute paths from the raw JSON."
+  },
+  "boundary": "This is exact local candidate evidence. It is not deployed-preview Computer Use, anonymous-download verification, a production deployment result, or authorization to push, merge, or deploy."
+}

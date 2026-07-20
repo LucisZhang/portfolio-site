@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-07-19T11:56:55Z",
+  "status": "PASS_OFFLINE_REPLAY_ONLY",
+  "current_policy": {
+    "revision": "reasoning-none-concise-bilingual-exfiltration-gate-v9",
+    "source_file": "src/lib/assistant-policy.ts",
+    "source_sha256": "ba2cc01807a577b9c12ccc490b01055ea14f8c7850bcb09fa7de1cfc0f684968",
+    "test_file": "tests/assistant/assistant-policy.test.mjs",
+    "test_file_sha256": "f6c3f42ac7d2e38ea70adb72680e569d169be468d1b61dde6e814b7de544979a"
+  },
+  "grounding": {
+    "source_dossier_sha256": "84d250557f7bbb0ad38c608311bb90eb049b4c635b822a48de487a087d74b2a5",
+    "content_sha256": "f413b61c9c31185c11f422e0cfc2f205031660f7aadaad9d4bb601764374544b",
+    "generated_module_sha256": "4db61ca28e94dcd20806e4c28731f60443121a2e2fb9bec3fcdf254c6cb2c945",
+    "approximate_tokens": 6506
+  },
+  "saved_live_replies": [
+    {
+      "locale": "en",
+      "live_policy_revision": "reasoning-none-concise-zh-gate-v5",
+      "reply_sha256": "139f4a7e4f376f2e414dd54f4fc1fb6a280cd2c0ef75a4ee7d1b59946474cab5",
+      "source_report_sha256": "81286809a5cb0caedb94dbd75f1b57f256b222a3f851d8dc03d6bed039f247b2",
+      "v9_output_gate_replay": "PASS"
+    },
+    {
+      "locale": "zh",
+      "live_policy_revision": "reasoning-none-concise-zh-gate-v6",
+      "reply_sha256": "7cabf9efc1148de9f7c28697de4a62e30edb0e1de16c703223380801b0d5e902",
+      "source_report_sha256": "7465f79beeeaf8c592ff57786b21e93f5a82c32512bc348d1229b8fcd58d8a0f",
+      "v9_output_gate_replay": "PASS",
+      "v9_privacy_boundary_replay": "PASS"
+    }
+  ],
+  "local_test_run": {
+    "command": "npm run verify:assistant",
+    "tests": 32,
+    "passed": 32,
+    "failed": 0,
+    "automatic_model_calls": 0,
+    "network_model_calls": 0,
+    "covered": [
+      "NFKC/NFKD, whitespace, combining-mark, and Unicode-control normalization",
+      "short opening/closing grounding-tag and compact sentinel rejection",
+      "exhaustive 96-character normalized and 104-character compact protected windows",
+      "bounded approximate-passage rejection with sparse inserted characters",
+      "mixed-scope override, read/print/transcribe, and grounding-exfiltration refusal",
+      "4,000-character hard response cap plus locale-specific length gates",
+      "education fact not-established response without model fetch",
+      "English and Chinese output-language gates",
+      "saved live reply output replay",
+      "rate-limit fail-closed behavior",
+      "finite bilingual runtime error copy"
+    ]
+  },
+  "acceptance_boundary": {
+    "live_v9_round_trip_performed": false,
+    "live_v9_round_trip_claimed": false,
+    "reason": "The only consented live calls ran under policy revisions v5 and v6 with the prior grounding. The v9 policy and regenerated grounding were tested locally and did not send another model request.",
+    "next_gate": "A live call bound to v9 and grounding content f413b61c... requires a new, specific model-transmission authorization."
+  }
+}

@@ -2,13 +2,13 @@
 
 ## Sources of truth
 
-- Operable-portfolio upgrade status: `docs/operable-portfolio-execution.md`
-- Analytics North Stars: `docs/fable5-analytics-direction.md`
-- Privacy Web parity: `docs/privacy-web-parity.md`
-- Published v1 evidence cutline: `docs/portfolio-direction-freeze.md`
-- Current pipeline/gates: `STATE.md` and `docs/RUNBOOK.md`
-- Project evidence boundaries: `docs/project-state/*.md`
-- Local v1 audit: `docs/v1-local-completion-report.md`
+- Recruiter entry points: `README.md`, `README.zh-CN.md`, and `docs/EVIDENCE_INDEX.md`
+- Commit-local public state and external gates: `STATE.md`, `PUBLICATION.md`, and
+  `docs/PUBLICATION_CHECKLIST.md`
+- Analytics provenance and reproducibility: `docs/analytics-real-data-audit.md` and `pipelines/*`
+- Privacy packaging boundary: `docs/privacy-macos-release-audit.md` and
+  `docs/privacy-preflight-build-from-source.md`
+- Claim cutlines: `docs/phase2-immutable-claims.md` and `docs/EVIDENCE_INDEX.md`
 
 The operable-portfolio upgrade supersedes the old v1 implementation stop, while the v1 evidence
 cutline remains authoritative for claims. Do not reintroduce fabricated
@@ -46,8 +46,10 @@ baseline is recorded at `docs/lighthouse-homepage-20260712.json`.
 - p1: separate the historical May artifacts from the July U6 local-Mac reproduction and preserve
   the environment boundary.
 - RAG: v1 is the C2 evaluation floor; C3 produced no metric. Never add a fallback comparison.
-- Privacy: fictional fixtures only; source-plus-demo, not a distributable/notarized binary.
-- Analytics: qualitative public links only; no unverified number in text or media.
+- Privacy: fictional fixtures only. Keep browser behavior, source, app packaging, ad-hoc signing,
+  notarization, and clean-Mac compatibility as separate evidence classes.
+- Analytics: keep governed synthetic fixtures separate from pipeline-derived artifacts; preserve
+  dataset licenses, exact hashes, proxy disclosures, and non-causal/non-production boundaries.
 
 ## External actions
 

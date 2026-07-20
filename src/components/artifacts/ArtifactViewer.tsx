@@ -22,14 +22,33 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Papa from "papaparse";
 import ArtifactLink from "@/components/ArtifactLink";
+import LocaleDocumentMetadata from "@/components/LocaleDocumentMetadata";
 import LocaleLink from "@/components/LocaleLink";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, type Locale, type LocalizedString } from "@/lib/i18n";
 
 type ArtifactKind = "image" | "pdf" | "json" | "csv" | "markdown" | "mermaid";
 
 const KIND_BY_EXTENSION: Record<string, ArtifactKind> = {
   png: "image", jpg: "image", jpeg: "image", svg: "image", pdf: "pdf", json: "json", csv: "csv", md: "markdown", mmd: "mermaid",
 };
+
+const PROJECT_LABEL_BY_DIRECTORY: Record<string, LocalizedString> = {
+  "analytics-tandem": { en: "Analytics Tandem", zh: "分析双项目" },
+  "credit-policy-lab": { en: "Credit Policy Lab", zh: "信贷策略实验室" },
+  "margin-control-tower": { en: "Margin Control Tower", zh: "毛利控制塔" },
+  "p1-reliability-lab": { en: "Streaming Reliability Lab", zh: "流式可靠性实验室" },
+  "privacy-preflight": { en: "Privacy Preflight Web + Mac", zh: "隐私预检（网页版 + macOS 版）" },
+  "rag-quality-lab": { en: "RAG Quality Lab", zh: "RAG 质量实验室" },
+  "release-guardian": { en: "Release Guardian", zh: "发布守门人" },
+};
+
+const artifactMetadata = {
+  title: { en: "Project file | Xiangguo Zhang", zh: "项目文件 | 章向国" },
+  description: {
+    en: "View a project file with context, search, and download controls.",
+    zh: "查看器仅增加说明与操作控件，原文件内容保持不变并可直接下载。",
+  },
+} satisfies { title: LocalizedString; description: LocalizedString };
 
 function fileName(source: string) {
   return decodeURIComponent(source.split("/").pop() || source);
@@ -40,8 +59,9 @@ function fileKind(source: string): ArtifactKind {
   return KIND_BY_EXTENSION[extension] || "markdown";
 }
 
-function friendlyProject(source: string) {
+function friendlyProject(source: string, locale: Locale) {
   const slug = source.split("/")[2] || "project";
+  if (locale === "zh") return PROJECT_LABEL_BY_DIRECTORY[slug]?.zh ?? "项目";
   return slug.split("-").map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(" ");
 }
 
@@ -131,6 +151,7 @@ function PdfViewer({ source }: { source: string }) {
         documentRef.current = document;
         setPages(document.numPages);
       } catch (reason) {
+        console.error("Artifact PDF preview could not load.", reason);
         if (active) setError(reason instanceof Error ? reason.message : "PDF load failed");
       }
     })();
@@ -155,11 +176,16 @@ function PdfViewer({ source }: { source: string }) {
       renderTask = pdfPage.render({ canvas, canvasContext: context, viewport, background: "#ffffff" });
       await renderTask.promise;
       pdfPage.cleanup();
-    })().catch((reason) => { if (!cancelled && reason?.name !== "RenderingCancelledException") setError(String(reason)); });
+    })().catch((reason) => {
+      if (!cancelled && reason?.name !== "RenderingCancelledException") {
+        console.error("Artifact PDF preview page could not render.", reason);
+        setError(String(reason));
+      }
+    });
     return () => { cancelled = true; renderTask?.cancel(); };
   }, [page, pages, scale]);
 
-  if (error) return <p className="artifact-error" role="alert">{locale === "en" ? "The PDF preview could not load. Download the original file instead." : "PDF 预览加载失败，请下载原文件。"}<small>{error}</small></p>;
+  if (error) return <p className="artifact-error" role="alert">{locale === "en" ? "The PDF preview could not load. Download the original file instead." : "PDF 预览加载失败，请下载原文件。"}{locale === "en" ? <small>{error}</small> : null}</p>;
   return (
     <div className="artifact-pdf-viewer" ref={rootRef}>
       <div className="artifact-pdf-controls">
@@ -174,6 +200,7 @@ function PdfViewer({ source }: { source: string }) {
 }
 
 function JsonNode({ value, name, depth = 0, search }: { value: unknown; name?: string; depth?: number; search: string }) {
+  const { locale } = useI18n();
   const complex = value !== null && typeof value === "object";
   const entries = complex ? Object.entries(value as Record<string, unknown>) : [];
   const matches = !search || `${name || ""} ${complex ? "" : String(value)}`.toLowerCase().includes(search.toLowerCase());
@@ -182,7 +209,10 @@ function JsonNode({ value, name, depth = 0, search }: { value: unknown; name?: s
   if (search && !childMatches && !(name || "").toLowerCase().includes(search.toLowerCase())) return null;
   return (
     <details className="json-node" open={depth < 2 || Boolean(search)}>
-      <summary><span>{name || "root"}</span><small>{Array.isArray(value) ? `${entries.length} items` : `${entries.length} keys`}</small></summary>
+      <summary>
+        <span>{name || (locale === "en" ? "root" : "根节点")}</span>
+        <small>{Array.isArray(value) ? (locale === "en" ? `${entries.length} items` : `${entries.length} 项`) : (locale === "en" ? `${entries.length} keys` : `${entries.length} 个键`)}</small>
+      </summary>
       <div>{entries.map(([key, child]) => <JsonNode key={key} name={key} value={child} depth={depth + 1} search={search} />)}</div>
     </details>
   );
@@ -270,7 +300,10 @@ function MermaidViewer({ text, source }: { text: string; source: string }) {
       mermaid.initialize({ startOnLoad: false, securityLevel: "strict", theme: "neutral", fontFamily: "Arial, sans-serif" });
       const result = await mermaid.render(`artifact-mermaid-${crypto.randomUUID()}`, text);
       if (active) setSvg(result.svg);
-    }).catch((reason) => { if (active) setError(String(reason)); });
+    }).catch((reason) => {
+      console.error("Artifact Mermaid diagram could not render.", reason);
+      if (active) setError(reason instanceof Error ? reason.message : String(reason));
+    });
     return () => { active = false; };
   }, [text]);
   const downloadSvg = useCallback(() => {
@@ -297,7 +330,7 @@ export default function ArtifactViewer({ source, from }: { source: string | null
   const { locale } = useI18n();
   const [text, setText] = useState("");
   const [bytes, setBytes] = useState(0);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(false);
   const [loading, setLoading] = useState(Boolean(source));
   const kind = source ? fileKind(source) : null;
   const name = source ? fileName(source) : "";
@@ -310,21 +343,25 @@ export default function ArtifactViewer({ source, from }: { source: string | null
       if (!active) return;
       setBytes(buffer.byteLength);
       if (kind !== "image" && kind !== "pdf") setText(new TextDecoder().decode(buffer));
-    }).catch((reason) => { if (active) setError(reason instanceof Error ? reason.message : String(reason)); }).finally(() => { if (active) setLoading(false); });
+    }).catch((reason) => {
+      console.error("Artifact file could not be opened.", reason);
+      if (active) setError(true);
+    }).finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
   }, [kind, source]);
 
   return (
     <main className="artifact-page page-shell">
+      <LocaleDocumentMetadata title={artifactMetadata.title} description={artifactMetadata.description} />
       <LocaleLink href={from} className="back-link"><ArrowLeft aria-hidden="true" />{locale === "en" ? "Back to project" : "返回项目"}</LocaleLink>
       <header className="artifact-page-header">
-        <div><p className="eyebrow">{locale === "en" ? "Project file" : "项目文件"}</p><h1>{name || (locale === "en" ? "File unavailable" : "文件不可用")}</h1><p>{source ? `${friendlyProject(source)} / ${kind?.toUpperCase()}` : ""}</p></div>
+        <div><p className="eyebrow">{locale === "en" ? "Project file" : "项目文件"}</p><h1>{name || (locale === "en" ? "File unavailable" : "文件不可用")}</h1><p>{source ? `${friendlyProject(source, locale)} / ${kind?.toUpperCase()}` : ""}</p></div>
         {source ? <div className="artifact-file-meta"><span>{formatBytes(bytes)}</span><code>{source}</code><a href={source} download={downloadName(source)}><Download aria-hidden="true" />{locale === "en" ? "Download original" : "下载原文件"}</a></div> : null}
       </header>
       <section className="artifact-viewer-shell" aria-live="polite">
         {loading ? <div className="artifact-loading"><FileText aria-hidden="true" />{locale === "en" ? "Loading project file..." : "正在加载项目文件……"}</div> : null}
         {!source ? <div className="artifact-error" role="alert"><FileText aria-hidden="true" /><div><strong>{locale === "en" ? "No valid project file was selected." : "未选择有效的项目文件。"}</strong></div></div> : null}
-        {error ? <div className="artifact-error" role="alert"><FileText aria-hidden="true" /><div><strong>{locale === "en" ? "This file could not be opened." : "无法打开该文件。"}</strong><span>{error}</span></div></div> : null}
+        {error ? <div className="artifact-error" role="alert"><FileText aria-hidden="true" /><div><strong>{locale === "en" ? "This file could not be opened." : "无法打开该文件。"}</strong>{locale === "en" ? <span>{error}</span> : null}</div></div> : null}
         {!loading && !error && source && kind === "image" ? <ImageViewer source={source} name={name} /> : null}
         {!loading && !error && source && kind === "pdf" ? <PdfViewer source={source} /> : null}
         {!loading && !error && source && kind === "json" ? <JsonViewer text={text} source={source} /> : null}

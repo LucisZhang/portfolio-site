@@ -14,11 +14,16 @@
 /coverage
 /playwright-report
 /test-results
+/docs/phase2-public-review-artifacts/goal2-final/playwright-raw.json
 
 # next.js
 /.next/
 /out/
 /public/generated/
+/public/duckdb/*
+!/public/duckdb/README.md
+!/public/duckdb/extensions/
+!/public/duckdb/extensions/**
 
 # production
 /build
@@ -46,3 +51,6 @@ next-env.d.ts
 # claude local artifacts (never commit)
 .claude/logs/
 .claude/backups/
+
+# private review source for the explicitly generated, hash-bound assistant grounding
+/docs/PROJECT_DOSSIER.md

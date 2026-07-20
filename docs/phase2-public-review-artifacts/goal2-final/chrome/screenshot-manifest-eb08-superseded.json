@@ -1,0 +1,228 @@
+{
+  "schema_version": 1,
+  "status": "IMMUTABLE_SUPERSEDED_SCREENSHOT_SET",
+  "runtime_tree_digest": "eb08c00e4fa7fcf682a10bd4a6adf5d9cc4c43af7427ceae85de2e3987b316ea",
+  "purpose": "Preserve the exact eb08 screenshot bytes before canonical final-runtime recapture paths are reused.",
+  "files": [
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-credit-policy-lab-top-1440.png",
+      "archived_path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-credit-policy-lab-top-1440-eb08-superseded.png",
+      "bytes": 124244,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "1046c9a63399b19cf68ad8843094f63ddaa41fa7fc7ec0aec59b35de1998178a"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-home-1440.png",
+      "archived_path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-home-1440-eb08-superseded.png",
+      "bytes": 124167,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "f67ddac09bf709794b34b9e493164233547100b50b70b819689d90733a098e02"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-margin-control-tower-top-1440.png",
+      "archived_path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-margin-control-tower-top-1440-eb08-superseded.png",
+      "bytes": 128406,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "cae36243f55bc4c695d3c4c3d9369fabded6f9f967691d5986c3ebbef849f3b8"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-privacy-preflight-1440.png",
+      "archived_path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-privacy-preflight-1440-eb08-superseded.png",
+      "bytes": 733932,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 5560
+      },
+      "sha256": "6ae77b87976e7e5388cffe578060276093dcfb1bfb8c16116a6b71177be63ff3"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-privacy-preflight-top-1440.png",
+      "archived_path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-privacy-preflight-top-1440-eb08-superseded.png",
+      "bytes": 135335,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "ec175db618ef615dc70a9b490c4ea01a1db130333f50d03b97f16a6f9428a416"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-release-guardian-1440.png",
+      "archived_path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-release-guardian-1440-eb08-superseded.png",
+      "bytes": 587520,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 4248
+      },
+      "sha256": "af8ed2fbc621889409fcba797d8c1fb73ccff5864523bbf936e0c7e9a4d05b1e"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-release-guardian-top-1440.png",
+      "archived_path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-release-guardian-top-1440-eb08-superseded.png",
+      "bytes": 127727,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "18bc625ef9ab25d06f05c4bc15e24d373268b134d45916ecfe44432d2cf6be54"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-release-replay-1440.png",
+      "archived_path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-release-replay-1440-eb08-superseded.png",
+      "bytes": 131437,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "138eb2d82f86ac9d8625147e0b181f5a9bb89eede0b79e31cfc11e38ad5945da"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-credit-policy-lab-top-1440.png",
+      "archived_path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-credit-policy-lab-top-1440-eb08-superseded.png",
+      "bytes": 137939,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "4e14ce99eb97aa4a3806ec7921797caf51e08dd0a3b4b322d9e3e6ab90c97a64"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-home-1440.png",
+      "archived_path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-home-1440-eb08-superseded.png",
+      "bytes": 140844,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "cbc1b140e2fee10e63c30c4846a190d1af4ed475acb3d15912450cc2a00f5426"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-margin-control-tower-top-1440.png",
+      "archived_path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-margin-control-tower-top-1440-eb08-superseded.png",
+      "bytes": 142987,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "44878e8da3d9f026284697441db201b352536c249dce46b950f9273d974b8176"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-privacy-preflight-1440.png",
+      "archived_path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-privacy-preflight-1440-eb08-superseded.png",
+      "bytes": 844522,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 5437
+      },
+      "sha256": "2c78be0bea49e5ced8c61172bff63c34feb4720a79191ffc4c0d4d5e86ebcef4"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-privacy-preflight-top-1440.png",
+      "archived_path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-privacy-preflight-top-1440-eb08-superseded.png",
+      "bytes": 160547,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "ae22301a7e2b5984bdb71711806c30ba96de487cb404063f622b51e1db023bd2"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-release-guardian-1440.png",
+      "archived_path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-release-guardian-1440-eb08-superseded.png",
+      "bytes": 655893,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 4180
+      },
+      "sha256": "88a3a22c76617914646bbaa3307c702050e529f92470e2aaaedf13d823a2783c"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-release-guardian-top-1440.png",
+      "archived_path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-release-guardian-top-1440-eb08-superseded.png",
+      "bytes": 134138,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "2020185c433cadc3040a7439f19aad72c88ee2621a9cd3596a8c2558328774a4"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-release-replay-1440.png",
+      "archived_path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-release-replay-1440-eb08-superseded.png",
+      "bytes": 134076,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "69e9eb50878f65412c5b3292d64215d9e10e680db1d80b0e45f3d9b0349798b1"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/local-analytics/credit-desktop.png",
+      "archived_path": "docs/phase2-public-review-artifacts/local-analytics/credit-desktop-eb08-superseded.png",
+      "bytes": 731570,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 5789
+      },
+      "sha256": "b9ea5c42378f6c349948835488fddbc1a2f3b0f787b9088022e81757fc099267"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/local-analytics/credit-mobile.png",
+      "archived_path": "docs/phase2-public-review-artifacts/local-analytics/credit-mobile-eb08-superseded.png",
+      "bytes": 706361,
+      "image": {
+        "format": "png",
+        "width": 390,
+        "height": 11953
+      },
+      "sha256": "59d7f86b7671ac24dfe143fdacf762ee736346ee6499a49b1ba04593d4906b06"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/local-analytics/margin-desktop.png",
+      "archived_path": "docs/phase2-public-review-artifacts/local-analytics/margin-desktop-eb08-superseded.png",
+      "bytes": 671997,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 5025
+      },
+      "sha256": "3a42b8eae98c0230706b81daf5057d01ec532f9fbb137dff0f3f13e18a51f16b"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/local-analytics/margin-mobile.png",
+      "archived_path": "docs/phase2-public-review-artifacts/local-analytics/margin-mobile-eb08-superseded.png",
+      "bytes": 623647,
+      "image": {
+        "format": "png",
+        "width": 390,
+        "height": 10047
+      },
+      "sha256": "a7a6a32900d7cfc132fd25aaca2268fc67c7a86821cc57fb6516b7c83161ae08"
+    }
+  ]
+}

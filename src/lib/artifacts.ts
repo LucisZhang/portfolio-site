@@ -1,4 +1,4 @@
-const ARTIFACT_EXTENSION = /\.(?:png|jpe?g|svg|pdf|json|csv|md|mmd)$/i;
+const ARTIFACT_EXTENSION = /\.(?:png|jpe?g|svg|pdf|json|csv|md|mmd|txt)$/i;
 
 export function isArtifactPath(href: string) {
   if (!href.startsWith("/case-studies/")) return false;

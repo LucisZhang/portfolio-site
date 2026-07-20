@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "status": "SUPERSEDED_PASS",
+  "scope": "Historical post-writeback runtime alignment at its recorded source hashes; the immutable writeback-time audit is not overwritten or relabeled",
+  "supersession": {
+    "reason": "OptionalMedia.tsx changed after this record, so its exact source binding is historical rather than current.",
+    "final_alignment_successor": "pending after the gated nine-string writeback"
+  },
+  "original_writeback_audit": {
+    "path": "docs/phase2-public-review-artifacts/goal2-final/copy-writeback-audit.json",
+    "sha256": "9aa0b41030e8bd182feda987fab36784d90e94a5c3f1b8cd7bee96621320e711",
+    "recorded_duckdb_source_sha256": "6d10ba23ba296f0a01c17eb12b82e4b194240875be929c18672efc36b030431c"
+  },
+  "recorded_runtime_alignment_sources": {
+    "src/lib/duckdb.ts": "118848c62dc894daacdbd3ec361fb30c6d685376071867202a3bfc6ffddc1931",
+    "src/components/analytics/MarginControlTower.tsx": "4bc5ed1011cabc99b871b58f25062247acd59f2b934515f0caf5b1859dc597dd",
+    "src/lib/analytics-data-cache.ts": "f67f3e98805613a04af31bbb645767e49daa757037701db52bee7ef0f2e4f1b9",
+    "tests/e2e/analytics-real-data.spec.ts": "c2bc4cfba7b80e9bddad5f522f47bd3aaf603cca4cf060117f82788957157164",
+    "src/components/OptionalMedia.tsx": "951f219d14f9a96c87793347165fac12a3fe92b42ade0349fbce2457ad0b1bb0",
+    "src/components/PrivacyProof.tsx": "9a4e65febe1ff447470969dfe5ea5b6e6310a028b84cc36f6a31a9210a259c81"
+  },
+  "reasons": [
+    "Margin same-byte one-GET verification and delayed full DuckDB-WASM materialization",
+    "Ready and in-flight cache rejoin after route remount",
+    "Promotion-depth preservation during preview-to-full promotion",
+    "Localized Privacy presentation-derivative selection and boundary labeling"
+  ],
+  "localized_copy_changed": false,
+  "authorship_boundary": "The runtime alignment reused already accepted bilingual copy and did not rewrite final English or Chinese prose."
+}

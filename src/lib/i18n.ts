@@ -20,6 +20,7 @@ export interface Dictionary {
   navEngineering: string;
   navAnalytics: string;
   navAi: string;
+  targetRoles: string;
   paletteOpen: string;
   paletteClose: string;
   palettePlaceholder: string;
@@ -48,15 +49,16 @@ export interface Dictionary {
 }
 
 const en: Dictionary = {
-  brand: "Hsiang Kuo Chang",
+  brand: "Xiangguo Zhang",
   navWork: "Selected work",
   navEngineering: "Engineering",
   navAnalytics: "Analytics",
   navAi: "AI applications",
+  targetRoles: "Open to Data Analytics, Data Engineering, and AI Application Engineering roles.",
   paletteOpen: "Search",
   paletteClose: "Close search",
   palettePlaceholder: "Search projects, systems, or tools",
-  paletteEmpty: "No matching destination.",
+  paletteEmpty: "No matches found.",
   paletteTracks: "Disciplines",
   paletteProjects: "Projects",
   problem: "Problem",
@@ -64,7 +66,7 @@ const en: Dictionary = {
   role: "What I built",
   verifiedOutcome: "Result",
   stack: "System",
-  links: "Open",
+  links: "Links",
   architecture: "How it works",
   evidence: "Try it",
   provenance: "How this was verified",
@@ -73,10 +75,10 @@ const en: Dictionary = {
   backToTrack: "Back to discipline",
   language: "Language",
   externalLink: "Opens external site",
-  noPublicLink: "Source publication is still pending.",
+  noPublicLink: "Source code isn't public yet.",
   mediaEvidence: "Recorded views",
   mediaUnavailable: "No approved image is included in this build. Run details are still available below.",
-  footer: "Public v1 portfolio. Every project explains what ran and what the result does not establish.",
+  footer: "Public v1 portfolio. Every project says what actually ran — and what the results don't prove.",
   inspectProject: "Open case study",
 };
 
@@ -86,18 +88,19 @@ const zh: Dictionary = {
   navEngineering: "数据工程",
   navAnalytics: "数据分析",
   navAi: "AI 应用",
+  targetRoles: "求职方向：数据分析、数据工程与 AI 应用工程。",
   paletteOpen: "搜索",
   paletteClose: "关闭搜索",
   palettePlaceholder: "搜索项目、系统或工具",
-  paletteEmpty: "没有匹配的目标。",
+  paletteEmpty: "未找到匹配项。",
   paletteTracks: "方向",
   paletteProjects: "项目",
   problem: "问题",
-  audience: "面向对象",
+  audience: "受众群体",
   role: "我做了什么",
   verifiedOutcome: "结果",
   stack: "系统组成",
-  links: "相关链接",
+  links: "链接",
   architecture: "工作原理",
   evidence: "动手体验",
   provenance: "如何验证",
@@ -106,10 +109,10 @@ const zh: Dictionary = {
   backToTrack: "返回方向",
   language: "语言",
   externalLink: "打开外部网站",
-  noPublicLink: "源码尚未公开发布。",
-  mediaEvidence: "已记录画面",
+  noPublicLink: "源代码尚未公开。",
+  mediaEvidence: "已记录影像",
   mediaUnavailable: "本次构建暂无可用图片，下方仍可查看运行详情。",
-  footer: "公开的 v1 作品集，每个项目都会说明做了什么，以及结果不能说明什么。",
+  footer: "公开 v1 作品集。每个项目说明实际运行了什么，以及结果不能证明什么。",
   inspectProject: "查看案例",
 };
 

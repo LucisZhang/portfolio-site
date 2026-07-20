@@ -1,0 +1,115 @@
+{
+  "report_version": "analytics-methods-v1",
+  "project": "credit",
+  "dataset": {
+    "name": "Lending Club loan dataset for granting models",
+    "source_url": "https://zenodo.org/records/11295916",
+    "license": "CC BY 4.0",
+    "retrieval_date": "2026-07-17",
+    "raw_records": 1347681,
+    "derived_rows": 120000,
+    "date_range": [
+      "2007-06",
+      "2018-12"
+    ],
+    "artifact_sha256": "2bbc97350d28123a1b056e4d475cdc90000954df1e6226d54d4fa35f2e7e0b95"
+  },
+  "acquisition_and_cleaning": {
+    "en": [
+      "Pinned the UCM-curated Zenodo archive and verified its 167,468,415 bytes plus published MD5 and locked SHA-256.",
+      "Parsed month vintages, removed 0 duplicate IDs, retained explicit no-information employment encodings, and excluded free text/ZIP from modeling.",
+      "Audited 16,657 missing titles and 1,228,582 missing descriptions; neither text field enters the model.",
+      "Selected 120,000 applications by deterministic ID hash within disjoint chronological windows so the browser artifact stays reviewable; the resulting IDs are pseudonymous and linkable within the artifact, not anonymous."
+    ],
+    "zh": [
+      "固定 UCM 精选的 Zenodo 数据档案，核验其 167,468,415 字节、公开 MD5 与锁定 SHA-256。",
+      "解析月度发放批次，删除 0 条重复 ID，保留明确的就业信息缺失编码，且邮政编码数据与自由文本均不纳入建模。",
+      "审计 16,657 个缺失标题与 1,228,582 个缺失描述；两文本字段均不进入模型。",
+      "在互斥时间窗口内按确定性 ID 哈希抽取 120,000 条申请，确保浏览器产物可审阅；所得 ID 为产物内可关联的假名标识，非匿名。"
+    ]
+  },
+  "modeling": {
+    "en": [
+      "Baseline: L2-regularized logistic regression over scaled numeric and one-hot categorical application-time features.",
+      "Nine source features enter both models: log reported income, capped DTI, log requested amount, FICO, entity-experience flag, employment months, purpose, home ownership, and state.",
+      "Challenger: 240-tree depth-4 XGBoost; both scores are independently isotonic-calibrated on the calibration window.",
+      "Score columns retain float64 precision, and AUC, Brier, log-loss, and default rate are computed after rereading the final Parquet.",
+      "Top-three reason codes are the largest absolute per-application XGBoost SHAP contributions and encode whether each contribution increases or decreases PD. EAD is requested amount; LGD is a disclosed 45% assumption.",
+      "The legacy display fields utilization, late payments, and bureau age are respectively mapped to requested-amount/income and explicit unavailable sentinels; they are not model inputs."
+    ],
+    "zh": [
+      "Baseline：基于缩放数值特征与 one-hot 申请时点类别特征，拟合 L2 正则逻辑回归。",
+      "9 项来源特征同时进入两模型：log 申报收入、截断 DTI、log 申请金额、FICO、机构经验标记、就业月数、用途、住房状态与州。",
+      "Challenger：240 棵、深度 4 的 XGBoost；两组分数各自在标定窗口内独立进行保序校准。",
+      "分数字段保留 float64 精度，AUC、Brier、log-loss 与违约率均在重新读取最终 Parquet 后计算。",
+      "每条申请的前三原因码取 XGBoost SHAP 绝对贡献最大的三个特征，并编码其对 PD 的升降方向。EAD 为申请金额；LGD 系明确披露的 45% 假设。",
+      "旧版展示字段 utilization、late payments、bureau age 分别映射为申请金额/收入及明确的不可用哨兵；均不作为模型输入。"
+    ]
+  },
+  "split_and_leakage": {
+    "en": [
+      "Train 72,000 / calibration 24,000 / backtest 24,000; time cutoffs end 2015-12 and 2016-10.",
+      "Preprocessing and DTI caps fit on train only; isotonic maps fit on calibration only; all reported metrics use later backtest outcomes."
+    ],
+    "zh": [
+      "Train 72,000 / calibration 24,000 / backtest 24,000；时间截断点为 2015-12 与 2016-10。",
+      "预处理与 DTI 截断仅拟合于 train；isotonic 映射仅拟合于 calibration；所有报告指标均使用更晚的 backtest 结果。"
+    ]
+  },
+  "labels": {
+    "en": [
+      "Observed outcome is the archive's final resolution: charged-off/default = 1 and fully paid = 0.",
+      "No transitory loan state is relabeled, and no protected-class or fairness label is inferred."
+    ],
+    "zh": [
+      "观察结果采用档案中的最终结局：charged-off/default = 1、fully paid = 0。",
+      "不重新标记任何过渡性贷款状态，亦不推断受保护类别或公平性标签。"
+    ]
+  },
+  "trust": {
+    "en": [
+      "The pipeline fails closed on the source size, MD5, SHA-256, application grain, split coverage, score bounds, outcome types, and exactly three reason codes; verification recomputes AUC, Brier, log-loss, and default rate from the exact Parquet columns.",
+      "The Parquet embeds DOI, authorship, license, hashes, time cutoffs, algorithm versions, sampling rule, metric-recomputation rule, and LGD/display-field assumptions."
+    ],
+    "zh": [
+      "源文件大小、MD5、SHA-256、申请粒度、拆分覆盖度、分数边界、结果类型或恰好三个原因码任一异常，流水线均 fail-closed（失败即拦截）；验证时从同一份 Parquet 的对应列重算 AUC、Brier、log-loss 与违约率。",
+      "Parquet 内嵌 DOI、作者、许可证、哈希、时间截断、算法版本、抽样规则、指标重算规则及 LGD/展示字段假设。"
+    ]
+  },
+  "changed": {
+    "en": "Real is the default requested source. Once scored-backtest.parquet verifies, real mode compares calibrated scores on observed later outcomes: baseline Brier 0.1593, challenger Brier 0.1593, 21.82% observed defaults. If the artifact is missing or invalid, the real path fails closed and the real-artifact state remains explicitly pending or blocked; separately, the active data falls back to the governed synthetic walkthrough.",
+    "zh": "真实数据为默认请求来源。scored-backtest.parquet 校验通过后，真实模式基于更晚的观察结果比较校准分数：基线 Brier 0.1593，挑战者 Brier 0.1593，观察违约率 21.82%。若该产物缺失或无效，真实路径直接阻断，真实产物状态明确保持为 pending 或 blocked；与此同时，当前激活数据单独回退至受约束的合成数据。"
+  },
+  "metrics": [
+    {
+      "label": {
+        "en": "Scored applications",
+        "zh": "已评分申请数"
+      },
+      "value": "120,000"
+    },
+    {
+      "label": {
+        "en": "Baseline / challenger Brier",
+        "zh": "Baseline / challenger Brier 评分"
+      },
+      "value": "0.1593 / 0.1593"
+    },
+    {
+      "label": {
+        "en": "Observed backtest defaults",
+        "zh": "观察回测违约率"
+      },
+      "value": "21.82%"
+    }
+  ],
+  "reproduction": [
+    "python3 -m venv .venv && .venv/bin/pip install -r pipelines/credit-backtest/requirements.txt",
+    ".venv/bin/python pipelines/credit-backtest/build.py --download",
+    ".venv/bin/python pipelines/credit-backtest/build.py --verify-only"
+  ],
+  "boundaries": {
+    "en": "The archive contains granted loans only, so rejected applicants and acceptance-population policy effects are not represented. No production decisioning, causal impact, regulatory validation, or fairness conclusion; home-ownership slices are descriptive only.",
+    "zh": "该档案仅含已授信贷款，未覆盖被拒申请人或受理人群的策略效果。不声称生产决策、因果影响、监管验证或公平性结论；住房状态切片仅供描述。"
+  }
+}

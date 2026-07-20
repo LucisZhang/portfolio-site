@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { readFile, readdir } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { PDFDocument } from "pdf-lib";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -18,12 +19,26 @@ async function sha256(path) {
   return createHash("sha256").update(data).digest("hex");
 }
 
+async function verifyFileRecord(record, context) {
+  const projectPath = record.path.startsWith("/")
+    ? join("public", record.path.slice(1))
+    : record.path;
+  const data = await readFile(join(root, projectPath));
+  assert(data.byteLength === record.bytes, `${context}: byte-length mismatch for ${record.path}`);
+  const actual = createHash("sha256").update(data).digest("hex");
+  assert(actual === record.sha256, `${context}: hash mismatch for ${record.path}`);
+}
+
 async function verifyManifest(manifestPath) {
   const manifest = await json(manifestPath);
   const base = dirname(manifestPath);
   for (const asset of manifest.assets) {
-    const actual = await sha256(join(base, asset.path));
+    const data = await readFile(join(root, base, asset.path));
+    const actual = createHash("sha256").update(data).digest("hex");
     assert(actual === asset.sha256, `${manifestPath}: hash mismatch for ${asset.path}`);
+    if (asset.bytes !== undefined) {
+      assert(data.byteLength === asset.bytes, `${manifestPath}: byte-length mismatch for ${asset.path}`);
+    }
   }
   return manifest;
 }
@@ -54,6 +69,133 @@ assert(reproductionGuide.includes("make eo-verify ARGS=\"--failure all\""), "p1 
 
 const privacy = await verifyManifest("public/case-studies/privacy-preflight/manifest.json");
 assert(privacy.fixture_policy.includes("fictional"), "Privacy demo fixture is not marked fictional");
+assert(!("source_commit" in privacy), "Privacy manifest must not mislabel the source snapshot as a committed source state");
+assert(!("source_base_commit" in privacy), "Privacy manifest must not expose an unrelated portfolio base as source provenance");
+assert(privacy.source_snapshot === "runtime-matching metadata-stripped public source; exact identity is the source ZIP SHA-256 in downloads/release-manifest.json", "Privacy source-snapshot identity boundary drifted");
+assert(privacy.source_sanitization === "internal coordination files, caches, build outputs, editable-install provenance, and first-party Swift debug paths are excluded", "Privacy source-sanitization boundary drifted");
+const requiredPrivacyAssets = [
+  "ocr-fixture-benchmark.json",
+  "image-example-english.png",
+  "image-example-chinese.png",
+  "ocr-fixture-small-font.png",
+  "ocr-fixture-low-contrast.png",
+  "ocr-fixture-multiline.png",
+  "ocr-fixture-rotated.png",
+  "pdf-example-text-layer.pdf",
+  "pdf-example-scanned.pdf",
+  "pdf-example-multipage.pdf",
+  "image-synthetic-redacted-zh.svg",
+  "pdf-synthetic-redacted-preview-zh.svg",
+];
+const privacyAssetsByPath = new Map(privacy.assets.map((asset) => [asset.path, asset]));
+for (const path of requiredPrivacyAssets) {
+  const asset = privacyAssetsByPath.get(path);
+  assert(asset, `Privacy manifest is missing browser fixture identity: ${path}`);
+  assert(Number.isInteger(asset.bytes) && asset.bytes > 0, `Privacy manifest is missing byte identity: ${path}`);
+  assert(/^[a-f0-9]{64}$/.test(asset.sha256), `Privacy manifest has an invalid hash identity: ${path}`);
+  assert(typeof asset.generated_at === "string" && asset.generated_at.length > 0, `Privacy manifest is missing generation date: ${path}`);
+  assert(typeof asset.source === "string" && asset.source.length > 0, `Privacy manifest is missing generation source: ${path}`);
+}
+for (const [outputPath, sourcePath] of [
+  ["image-synthetic-redacted-zh.svg", "image-synthetic-input-zh.svg"],
+  ["pdf-synthetic-redacted-preview-zh.svg", "pdf-synthetic-input-preview-zh.svg"],
+]) {
+  const asset = privacyAssetsByPath.get(outputPath);
+  assert(asset.derived_from === sourcePath, `Privacy localized proof provenance drifted: ${outputPath}`);
+  assert(asset.derived_from_sha256 === await sha256(`public/case-studies/privacy-preflight/${sourcePath}`), `Privacy localized proof source hash drifted: ${outputPath}`);
+  assert(asset.source === "scripts/generate-privacy-localized-proof-assets.mjs", `Privacy localized proof generator drifted: ${outputPath}`);
+  const presentationSvg = await readFile(join(root, "public/case-studies/privacy-preflight", outputPath), "utf8");
+  assert(presentationSvg.includes("data:image/png;base64,"), `Privacy localized proof is not a raster-backed SVG: ${outputPath}`);
+  for (const protectedValue of ["ada@example.com", "415-555-0188", "/Users/demo/Private/brief.txt"]) {
+    assert(!presentationSvg.includes(protectedValue), `Privacy localized proof retains protected fixture text: ${outputPath}`);
+  }
+}
+const privacyBenchmark = await json("public/case-studies/privacy-preflight/ocr-fixture-benchmark.json");
+assert(privacyBenchmark.fixedFixtureSet === true, "Privacy OCR benchmark fixture set must remain fixed");
+assert(privacyBenchmark.preprocessing.includes("complete multi-pass union"), "Privacy OCR benchmark no longer records the complete multi-pass union");
+assert(
+  JSON.stringify(privacyBenchmark.summary) === JSON.stringify({
+    fixtures: 7,
+    expectedCount: 19,
+    hitCount: 19,
+    detectedCount: 21,
+    falsePositiveCount: 2,
+    recall: 1,
+    precision: 0.9047619047619048,
+  }),
+  "Privacy OCR benchmark summary drifted",
+);
+for (const fixture of privacyBenchmark.fixtures) {
+  const expectedPasses = fixture.id === "rotated"
+    ? ["0:contrast", "0:threshold", "270:contrast", "270:threshold"]
+    : ["0:contrast", "0:threshold"];
+  assert(
+    JSON.stringify(fixture.passes.map((pass) => `${pass.rotation}:${pass.mode}`)) === JSON.stringify(expectedPasses),
+    `Privacy OCR benchmark pass matrix is incomplete for ${fixture.id}`,
+  );
+  const completeUnion = [...new Set(fixture.passes.flatMap((pass) => pass.detected))];
+  assert(JSON.stringify(fixture.detected) === JSON.stringify(completeUnion), `Privacy OCR benchmark did not persist the full pass union for ${fixture.id}`);
+}
+assert(
+  JSON.stringify(privacy.browser_fixture_identity?.benchmark_summary) === JSON.stringify(privacyBenchmark.summary),
+  "Privacy manifest benchmark summary does not match the benchmark artifact",
+);
+const privacyPdfPageCounts = {
+  "pdf-example-text-layer.pdf": 1,
+  "pdf-example-scanned.pdf": 1,
+  "pdf-example-multipage.pdf": 3,
+};
+for (const [path, expectedPages] of Object.entries(privacyPdfPageCounts)) {
+  const document = await PDFDocument.load(await readFile(join(root, "public/case-studies/privacy-preflight", path)));
+  assert(document.getPageCount() === expectedPages, `Privacy PDF fixture page count drifted: ${path}`);
+}
+const privacyRelease = await json("public/case-studies/privacy-preflight/downloads/release-manifest.json");
+assert(privacyRelease.schemaVersion === 2, "Privacy release manifest schema drifted");
+assert(privacyRelease.artifacts.length === 2, "Privacy release manifest must identify both app and source archives");
+const expectedPrivacyCompanions = [
+  "CPython-LICENSE.txt",
+  "DEPENDENCIES.lock",
+  "PRIVACY.md",
+  "README.md",
+  "THIRD_PARTY_NOTICES.md",
+  "sbom.spdx.json",
+];
+assert(
+  JSON.stringify(privacyRelease.companionFiles.map((record) => record.path.split("/").at(-1)).sort()) === JSON.stringify(expectedPrivacyCompanions),
+  "Privacy release companion-file inventory drifted",
+);
+for (const record of [...privacyRelease.artifacts, ...privacyRelease.companionFiles]) {
+  await verifyFileRecord(record, "Privacy release manifest");
+}
+assert(privacyRelease.verification.ocrFixtureBenchmark.includes("19/19 exact expected values; 2 false positives"), "Privacy release manifest benchmark claim drifted");
+const privacySbom = await json("public/case-studies/privacy-preflight/downloads/sbom.spdx.json");
+assert(privacySbom.spdxVersion === "SPDX-2.3", "Privacy runtime SBOM format drifted");
+assert(privacySbom.packages.length === 26 && privacySbom.relationships.length === 26, "Privacy runtime SBOM inventory is incomplete");
+const privacySbomPackages = new Map(privacySbom.packages.map((item) => [item.name, item]));
+assert(privacySbomPackages.get("CPython")?.versionInfo === "3.12.13", "Privacy runtime SBOM CPython identity drifted");
+assert(privacySbomPackages.has("pypdfium2") && privacySbomPackages.has("PDFium"), "Privacy runtime SBOM is missing the replacement PDF engine");
+assert(!privacySbomPackages.has("PyMuPDF") && !privacySbomPackages.has("fitz"), "Privacy runtime SBOM contains the removed PDF engine");
+const normalizePackageName = (value) => value.toLocaleLowerCase().replace(/[_. ]+/g, "-");
+const privacyLockedDependencies = (await readFile(join(root, "public/case-studies/privacy-preflight/downloads/DEPENDENCIES.lock"), "utf8"))
+  .trim()
+  .split(/\r?\n/)
+  .map((line) => line.split("=="));
+assert(privacyLockedDependencies.length === privacySbom.packages.length, "Privacy runtime SBOM does not cover the dependency lock");
+const normalizedSbomPackages = new Map(privacySbom.packages.map((item) => [normalizePackageName(item.name), item]));
+for (const [name, version] of privacyLockedDependencies) {
+  const item = normalizedSbomPackages.get(normalizePackageName(name));
+  assert(item?.versionInfo === version, `Privacy runtime SBOM does not match the lock for ${name}`);
+  assert(typeof item.licenseDeclared === "string" && item.licenseDeclared.length > 0, `Privacy runtime SBOM is missing license metadata for ${name}`);
+  if (normalizePackageName(name) !== "privacy-preflight-worker") {
+    assert(item.licenseDeclared !== "NOASSERTION", `Privacy runtime SBOM has no declared dependency license for ${name}`);
+  }
+}
+assert(
+  privacyRelease.sbom.path === "/case-studies/privacy-preflight/downloads/sbom.spdx.json"
+    && privacyRelease.sbom.format === privacySbom.spdxVersion
+    && privacyRelease.sbom.packages === privacySbom.packages.length,
+  "Privacy release manifest SBOM summary drifted",
+);
 const pdf = await json("public/case-studies/privacy-preflight/pdf-redaction-result.json");
 assert(pdf.validation.safe && pdf.post_export_text_layer_empty, "Privacy PDF red-line validation failed");
 const privacyWeb = await json("public/case-studies/privacy-preflight/web-implementation.json");
@@ -117,8 +259,14 @@ const sourceFiles = (await readdir(join(root, "src"), { recursive: true }))
   .filter((path) => /\.(ts|tsx|css)$/.test(path));
 const source = (await Promise.all(sourceFiles.map((path) => readFile(join(root, "src", path), "utf8")))).join("\n");
 assert((source.match(/audience:/g) ?? []).length >= 5, "Every project must define an audience");
-for (const forbidden of ["498,725", "0.809", "0.944", "Private GitHub", "Sample interface data only", "Telemetry sample"]) {
+for (const forbidden of ["498,725", "0.944", "Private GitHub", "Sample interface data only", "Telemetry sample"]) {
   assert(!source.includes(forbidden), `Forbidden stale claim remains in src: ${forbidden}`);
 }
+const ragProofSource = await readFile(join(root, "src/components/RagProof.tsx"), "utf8");
+assert(ragProofSource.includes("Historical small-scale result") && ragProofSource.includes("0.8093 → 0.9438"), "RAG historical result is missing or altered");
+assert(
+  ragProofSource.includes("Historical 12-question corpus only; does not transfer to the 11,309-document S1 checkpoint."),
+  "RAG historical result is missing its non-transfer boundary",
+);
 
 console.log("Evidence verification passed: Release, p1, RAG, Privacy, Analytics, and source claim boundaries.");

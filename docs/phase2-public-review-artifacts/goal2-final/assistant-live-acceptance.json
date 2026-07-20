@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "scope": "Goal2 local production assistant acceptance; no deployment claim",
+  "requested_model": "moonshotai/kimi-k2.6",
+  "grounding_content_sha256": "ddc731654a23f6b4d4c7ea5c15dbc4ed2d43366bbd4c79be03482a50211cf995",
+  "grounding_approximate_tokens": 6636,
+  "results": {
+    "english_release_guardian": {
+      "status": "PASS",
+      "policy_revision": "reasoning-none-concise-zh-gate-v5",
+      "question_sha256": "b8e7990a274d4e43fce8e10d0938fce0cb51ab9a6aad59a200b256c105fc98be",
+      "http_status": 200,
+      "response_model": "moonshotai/kimi-k2.6",
+      "rate_limit_mode": "upstash-redis",
+      "reply_sha256": "139f4a7e4f376f2e414dd54f4fc1fb6a280cd2c0ef75a4ee7d1b59946474cab5",
+      "checks": {
+        "aggregate_and_strict_results_separated": true,
+        "funded_live_and_deterministic_stub_separated": true,
+        "thirty_of_forty_four_strict_residual_preserved": true,
+        "website_rerun_boundary_preserved": true,
+        "protected_grounding_absent": true
+      }
+    },
+    "chinese_privacy_preflight": {
+      "status": "PASS",
+      "executed_at": "2026-07-19T07:42:26.431Z",
+      "policy_revision": "reasoning-none-concise-zh-gate-v6",
+      "question_sha256": "be3dab3a08cce844285ca95a1b831c5d1b7cb21fcf802ad31b27aa485878f5ff",
+      "consent_packet_sha256": "526bbda5fe8fb255990bce3f439b119664a68ee51e1d9d0c88d3927fa6b72d38",
+      "calls_attempted": 1,
+      "automatic_retries": 0,
+      "http_status": 200,
+      "response_model": "moonshotai/kimi-k2.6",
+      "rate_limit_mode": "upstash-redis",
+      "output_rejection": null,
+      "reply_codepoints": 121,
+      "reply_sha256": "7cabf9efc1148de9f7c28697de4a62e30edb0e1de16c703223380801b0d5e902",
+      "checks": {
+        "privacy_project_identified": true,
+        "explicit_not_proven_boundary": true,
+        "seven_fixed_synthetic_ocr_fixtures": true,
+        "browser_locality_network_deployed_assets_code_review": true,
+        "mac_preview_ad_hoc_only": true,
+        "no_developer_id_signing": true,
+        "no_notarization": true,
+        "no_apple_approval": true,
+        "no_clean_mac_compatibility": true,
+        "no_anonymous_external_availability": true,
+        "protected_grounding_absent": true
+      }
+    }
+  },
+  "historical_rejected_attempt": {
+    "status": "FAIL",
+    "policy_revision": "reasoning-none-concise-zh-gate-v5",
+    "http_status": 502,
+    "reason": "The local output guard rejected the first consented Chinese answer; the browser and acceptance report received only the generic failure reply.",
+    "superseded_by": "results.chinese_privacy_preflight"
+  },
+  "source_report_sha256": {
+    "initial_two_case_report": "81286809a5cb0caedb94dbd75f1b57f256b222a3f851d8dc03d6bed039f247b2",
+    "single_attempt_chinese_retry_report": "7465f79beeeaf8c592ff57786b21e93f5a82c32512bc348d1229b8fcd58d8a0f",
+    "upstash_rate_limit_report": "90aef073b7d8bdbca027790d415129739468fc44f430d0d268bf1fd25ab62e86"
+  },
+  "exclusions": [
+    "API keys and environment-variable values",
+    "raw grounding content",
+    "raw rejected model output",
+    "browser session data"
+  ]
+}

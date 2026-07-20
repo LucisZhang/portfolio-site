@@ -1,0 +1,421 @@
+{
+  "schema_version": 1,
+  "status": "CURRENT_FINAL_CANDIDATE_SCREENSHOT_SET",
+  "runtime_tree_digest": "d8bc84920a2c84c76109ebf6ab214cce969d5995b8c44ed76ec4b8a633bb38fd",
+  "runtime_tree_files": 221,
+  "purpose": "Bind the exact 20 canonical Chrome screenshots to the d8bc final runtime candidate after immutable eb08 history verification and staging-first promotion.",
+  "browser": {
+    "name": "Google Chrome",
+    "channel": "chrome",
+    "version": "150.0.7871.128",
+    "headless": true,
+    "device_pixel_ratio": 1
+  },
+  "base_url": "http://127.0.0.1:4173/",
+  "captured_at": "2026-07-19T14:57:05.258Z",
+  "promoted_at": "2026-07-19T14:58:03.583Z",
+  "historical_integrity": {
+    "status": "PASS",
+    "manifest_path": "docs/phase2-public-review-artifacts/goal2-final/chrome/screenshot-manifest-eb08-superseded.json",
+    "runtime_tree_digest": "eb08c00e4fa7fcf682a10bd4a6adf5d9cc4c43af7427ceae85de2e3987b316ea",
+    "files": 20
+  },
+  "files": [
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-credit-policy-lab-top-1440.png",
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-credit-policy-lab-top-1440.png",
+      "route": "/analytics/credit-policy-lab",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "capture": "viewport-top",
+      "real_default": "credit",
+      "bytes": 127318,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "5d2549d424de96589718902f3fc6c2365d75f34317f7460b5f0b0565d077b418"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-home-1440.png",
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-home-1440.png",
+      "route": "/",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "capture": "viewport-top",
+      "real_default": null,
+      "bytes": 124167,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "f67ddac09bf709794b34b9e493164233547100b50b70b819689d90733a098e02"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-margin-control-tower-top-1440.png",
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-margin-control-tower-top-1440.png",
+      "route": "/analytics/margin-control-tower",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "capture": "viewport-top",
+      "real_default": "margin",
+      "bytes": 130707,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "d47b0ec55cd31392bb9d3b1678370233cafeaed55d32f46743768e69c17e437f"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-privacy-preflight-1440.png",
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-privacy-preflight-1440.png",
+      "route": "/ai/privacy-preflight-mac",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "capture": "full-page",
+      "real_default": null,
+      "bytes": 733932,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 5560
+      },
+      "sha256": "6ae77b87976e7e5388cffe578060276093dcfb1bfb8c16116a6b71177be63ff3"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-privacy-preflight-top-1440.png",
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-privacy-preflight-top-1440.png",
+      "route": "/ai/privacy-preflight-mac",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "capture": "viewport-top",
+      "real_default": null,
+      "bytes": 137375,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "d062af8d845368ae36747f4cf43256df08892c5402c0e2060cf4fefd3cab7b54"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-release-guardian-1440.png",
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-release-guardian-1440.png",
+      "route": "/ai/release-guardian",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "capture": "full-page",
+      "real_default": null,
+      "bytes": 588412,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 4248
+      },
+      "sha256": "f264a2f526b3604a386384ec60c9c0daf6adfe55567b29a43aae19670ed3f29b"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-release-guardian-top-1440.png",
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-release-guardian-top-1440.png",
+      "route": "/ai/release-guardian",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "capture": "viewport-top",
+      "real_default": null,
+      "bytes": 127727,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "18bc625ef9ab25d06f05c4bc15e24d373268b134d45916ecfe44432d2cf6be54"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-release-replay-1440.png",
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-release-replay-1440.png",
+      "route": "/ai/release-guardian",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "capture": "viewport-replay",
+      "real_default": null,
+      "bytes": 143920,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "8c22d4145a8c97fbf93269260da794b2b64874748222ffe833fecedd4c90e526",
+      "replay_geometry": {
+        "x": 130,
+        "y": 119.8125,
+        "width": 1180,
+        "height": 660,
+        "right": 1310,
+        "bottom": 779.8125
+      }
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-credit-policy-lab-top-1440.png",
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-credit-policy-lab-top-1440.png",
+      "route": "/analytics/credit-policy-lab",
+      "locale": "zh",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "capture": "viewport-top",
+      "real_default": "credit",
+      "bytes": 141370,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "c6e057aa4968aa56420c43989eecc852cd0d01cd8e5ca07db0985431bb882d8c"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-home-1440.png",
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-home-1440.png",
+      "route": "/",
+      "locale": "zh",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "capture": "viewport-top",
+      "real_default": null,
+      "bytes": 140844,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "cbc1b140e2fee10e63c30c4846a190d1af4ed475acb3d15912450cc2a00f5426"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-margin-control-tower-top-1440.png",
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-margin-control-tower-top-1440.png",
+      "route": "/analytics/margin-control-tower",
+      "locale": "zh",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "capture": "viewport-top",
+      "real_default": "margin",
+      "bytes": 143462,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "0f92a75c6c4d4d4cfd9dcf04dfcb9a48c553c26e8624a907441e2a6ea489151c"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-privacy-preflight-1440.png",
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-privacy-preflight-1440.png",
+      "route": "/ai/privacy-preflight-mac",
+      "locale": "zh",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "capture": "full-page",
+      "real_default": null,
+      "bytes": 852733,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 5437
+      },
+      "sha256": "6d3a44217bb666a4d160ca0c0ba8ff2ce8a66854a2a66b6b58c6620e20a5c4fe"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-privacy-preflight-top-1440.png",
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-privacy-preflight-top-1440.png",
+      "route": "/ai/privacy-preflight-mac",
+      "locale": "zh",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "capture": "viewport-top",
+      "real_default": null,
+      "bytes": 162836,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "974a2842e0cca1703b3d4168739e7ba0195c6ff4c690e6534781b4662791b29a"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-release-guardian-1440.png",
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-release-guardian-1440.png",
+      "route": "/ai/release-guardian",
+      "locale": "zh",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "capture": "full-page",
+      "real_default": null,
+      "bytes": 655759,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 4180
+      },
+      "sha256": "8d9b1b69d6363c983249fb454657239396b00549893a81d220ea7fa0fe30f93c"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-release-guardian-top-1440.png",
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-release-guardian-top-1440.png",
+      "route": "/ai/release-guardian",
+      "locale": "zh",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "capture": "viewport-top",
+      "real_default": null,
+      "bytes": 134138,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "2020185c433cadc3040a7439f19aad72c88ee2621a9cd3596a8c2558328774a4"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-release-replay-1440.png",
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-release-replay-1440.png",
+      "route": "/ai/release-guardian",
+      "locale": "zh",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "capture": "viewport-replay",
+      "real_default": null,
+      "bytes": 148549,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "24cc71e3e44149fdb3bbcbcd9e2f7ace5b1050ea67aa41c35eff2b26aad0897f",
+      "replay_geometry": {
+        "x": 130,
+        "y": 119.9375,
+        "width": 1180,
+        "height": 660,
+        "right": 1310,
+        "bottom": 779.9375
+      }
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/local-analytics/credit-desktop.png",
+      "path": "docs/phase2-public-review-artifacts/local-analytics/credit-desktop.png",
+      "route": "/analytics/credit-policy-lab",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "capture": "full-page",
+      "real_default": "credit",
+      "bytes": 760963,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 5868
+      },
+      "sha256": "f4fc07b44b34bc1ddca6a7b797cb6dfd304f5a01dd20850a8738352c41785ed1"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/local-analytics/credit-mobile.png",
+      "path": "docs/phase2-public-review-artifacts/local-analytics/credit-mobile.png",
+      "route": "/analytics/credit-policy-lab",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "capture": "full-page",
+      "real_default": "credit",
+      "bytes": 730771,
+      "image": {
+        "format": "png",
+        "width": 390,
+        "height": 11914
+      },
+      "sha256": "4677b60110ae946f9c5b53b571ccbdbab3befff94e1e37cd335ef1e26633aab5"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/local-analytics/margin-desktop.png",
+      "path": "docs/phase2-public-review-artifacts/local-analytics/margin-desktop.png",
+      "route": "/analytics/margin-control-tower",
+      "locale": "en",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "capture": "full-page",
+      "real_default": "margin",
+      "bytes": 739824,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 6167
+      },
+      "sha256": "9a891bf9274c2402d94f8eac802bfbbe2af47ebc4014a32d4bbf00b7c6304332"
+    },
+    {
+      "source_path_at_capture": "docs/phase2-public-review-artifacts/local-analytics/margin-mobile.png",
+      "path": "docs/phase2-public-review-artifacts/local-analytics/margin-mobile.png",
+      "route": "/analytics/margin-control-tower",
+      "locale": "en",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "capture": "full-page",
+      "real_default": "margin",
+      "bytes": 684620,
+      "image": {
+        "format": "png",
+        "width": 390,
+        "height": 11194
+      },
+      "sha256": "6c799551439c55eb9c207b28a542bd885da885382a3f138798be49b9f7e4d8f5"
+    }
+  ]
+}

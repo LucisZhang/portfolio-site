@@ -1,62 +1,85 @@
-# Hsiang Kuo Chang - 作品集
+# Xiangguo Zhang — 可操作作品集
 
-这是一个中英文双语、可直接操作的作品集，集中展示我构建的数据系统、决策工具和 AI
-应用。网站使用 Next.js，包含三个方向、六个当前项目，以及一个用于兼容旧链接的迁移页面。
-每个当前项目都提供可操作流程、明确的源码发布状态，以及用于核对页面声明的资料。
+这是一个面向证据评审的双语作品集，覆盖 AI 应用、数据工程与决策分析。每个当前案例都
+提供可操作流程、可追溯产物，以及对“这些证据不能证明什么”的明确说明。
 
-## 当前项目
+[English README](README.md) · [证据索引](docs/EVIDENCE_INDEX.md) ·
+[公开发布检查单](docs/PUBLICATION_CHECKLIST.md)
 
-| 方向 | 项目 | 可以直接操作的内容 |
-| --- | --- | --- |
-| AI 应用 | Release Guardian | 回放四类合成变更，作出审批决定，并把当前演示与单独标注日期的历史验证资料对照查看。 |
-| 数据工程 | p1 Reliability Lab | 逐步查看五类已记录故障，检查恢复图与对账 JSON。 |
-| AI 应用 | RAG Quality Lab | 注入 manifest 和后端契约漂移，再运行确定性校验。 |
-| AI 应用 | Privacy Preflight | 在浏览器本机扫描虚构文本、图片和 PDF，复核区域并验证生成的脱敏输出。 |
-| 数据分析 | Margin Control Tower | 诊断合成毛利变化，调整促销假设，并与固定留出期比较。 |
-| 数据分析 | Credit Policy Lab | 从校准后的合成概率出发，经过预期损失、阈值、人工复核容量，生成审计记录。 |
+![章向国作品集当前中文首页](docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-home-1440.png)
 
-`/analytics/analytics-tandem` 只用于把旧链接迁移到两个重建后的分析项目，不是第七个当前项目。
+## 评审入口
 
-## Review 版本
+| 序号 | 方向 | 案例 | 可直接检查的内容 | 证据边界 |
+| --- | --- | --- | --- | --- |
+| 01 | AI 应用 | Release Guardian | 回放合成变更、检查证据并记录人工决定 | 付费在线、确定性 stub 与合成回放三类证据分开 |
+| 02 | AI 应用 | RAG Quality Lab | 注入 manifest / 后端契约漂移并运行确定性校验器 | C2 是评估下限；C3 限时运行没有产生指标 |
+| 03 | AI 应用 | Privacy Preflight | 在浏览器本机扫描虚构文本、图片和 PDF，并验证破坏式导出 | 只使用虚构夹具；打包范围与 Web 行为分开说明 |
+| 04 | 数据分析 | Margin Control Tower | 对比受治理夹具与 Olist 衍生聚合，再检查检测、弹性和有边界情景 | Olist 指标来自离线聚合与确定性扰动重放，不声明因果或真实业务结果 |
+| 05 | 数据工程 | Streaming Reliability Lab | 回放五类已记录故障并检查恢复与对账证据 | 五月历史捕获与七月本地 Mac 复现分开 |
+| 06 | 数据分析 | Credit Policy Lab | 对比受治理夹具与仅含已授信贷款的回测，再调整阈值并检查队列容量 | 仅含已授信贷款的回测不构成公平性、合规或生产结论 |
 
-Phase 2 Review 地址记录在
-[`docs/phase2-release-candidate.md`](docs/phase2-release-candidate.md)。它是公开的 Vercel
-Preview，不是生产部署。任何页面都可以通过 `?lang=zh` 固定并分享中文版本。
+`/analytics/analytics-tandem` 仅保留为两个重建分析案例的兼容入口，不是第七个项目。
 
-## 本地运行与验证
+## 架构与证据流
+
+- **展示层：** Next.js App Router、React、TypeScript；`/`、`/[track]` 与
+  `/[track]/[project]` 固定页面保持静态生成。`/artifact` 会读取请求特定的
+  `searchParams`，虽保持 Vercel 兼容，但不归类为固定静态路由。
+- **证据层：** JSON、CSV、Parquet、Markdown、Mermaid、图片与 PDF 衍生物位于
+  `public/case-studies/`，支持的格式可在站内直接检查。
+- **复现层：** `pipelines/` 记录分析产物的生成命令、输入哈希、运行环境、来源与输出校验。
+- **声明控制：** `src/lib/projects.ts`、`docs/EVIDENCE_INDEX.md` 与证据校验器共同约束可见数字、
+  来源和 limitation 文案。
+
+从 [`docs/EVIDENCE_INDEX.md`](docs/EVIDENCE_INDEX.md) 开始，可以把页面声明逐项追到精确
+产物、实现/流水线、复现路径和边界。
+
+## 当前评审截图
+
+| Release 证据层级 | Margin 真实数据决策流程 |
+| --- | --- |
+| ![发布守门人页面顶部中文评审截图](docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-release-guardian-top-1440.png) | ![毛利控制塔页面顶部中文评审截图](docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-margin-control-tower-top-1440.png) |
+
+这些 1440×900 Google Chrome 图片用于核对当前身份与页面顶部，不能替代源码或机器证据。
+历史完整截图集仍作为带日期的改造前状态保留。对已经运行的 production 候选执行
+`npm run capture:public-review`，可重新生成当前六个案例以及桌面/移动首页截图。
+
+## 本地运行与交付门禁
 
 ```sh
 npm ci
+npm run dev
+```
+
+```sh
 npm run typecheck
 npm run lint
 npm run verify:evidence
+npm run verify:assistant
 npm run build
 npm run verify:performance
-npm run test:e2e
-npm run check:localization -- --url http://127.0.0.1:3000
-npm run check:links -- --url http://127.0.0.1:3000
+npm run test:e2e -- --workers=1
+npm audit --omit=dev
 ```
 
-`verify:evidence` 检查证据清单、哈希、固定 seed 数据维度和声明边界；
-`verify:performance` 检查构建后首页的 JavaScript/CSS 体积。浏览器测试覆盖中英文、桌面、
-平板、手机视口，以及每个项目的主要交互；当前结果为 112 项通过、14 项按视口有意跳过。
-`ArtifactViewer` 支持图片、PDF、JSON、CSV、
-Markdown 和 Mermaid 的站内查看；Parquet 明确作为下载文件提供。
+当前评审 Mac 上串行执行浏览器测试，以避免主机级 Chrome 资源争用。
+[`docs/assistant-operations.md`](docs/assistant-operations.md) 记录助手的本地/Vercel 环境变量、
+已选择的 Upstash Redis 限流、缺少两项 Upstash 变量时明确披露的本地内存回退、失败即拦截
+行为与密钥边界。提交内的公开边界见
+[`STATE.md`](STATE.md)；远端分支、PR 与部署的 owner-gated 步骤见
+[`docs/PUBLICATION_CHECKLIST.md`](docs/PUBLICATION_CHECKLIST.md)。
 
-## 证据与发布边界
+## 证据纪律
 
-- Release Guardian 只包含获批的脱敏衍生包和合成演示层，不包含私有源码、原始报告、
-  prompt、私有场景、trace 或原始截图。
-- p1 Reliability Lab 将历史导出和特定环境下的工作站运行分开说明。
-- RAG Quality Lab 只报告已验证的 C2 基础，不为未执行的 C3 编造结果。
-- Privacy Preflight 只使用虚构演示数据，目前不提供已签名、已公证的 macOS 正式安装包。
-- Margin Control Tower 使用 seed `2026071301` 生成的 9,360 条合成记录。
-- Credit Policy Lab 使用 seed `2026071302` 生成的 12,000 条合成申请。
-- 两个分析项目的结果不代表真实业务、模型性能、公平性或合规结论；其候选源码仓库在单独
-  获得公开授权前保持私有。
+- Release Guardian 将 8/8 聚合门禁与付费在线 30/44 strict 残差同时呈现；strict 口径是
+  任一条件在三次 trial 的任一次失败，就标记该场景。
+- Streaming Reliability Lab 不跨历史环境与本地 Mac 环境迁移解释结果。
+- RAG Quality Lab 不为没有产出指标的 C3 限时运行添加替代结果。
+- Privacy Preflight 只使用虚构夹具；源码构建、浏览器流程、打包、签名与公证分别声明。
+- 分析案例区分固定 seed 合成夹具与流水线衍生数据，保留许可/来源信息，不声明真实运营影响。
 
 ## 权利说明
 
-本仓库及作品集内容不授予开源许可，详见 [`NOTICE.md`](NOTICE.md)。公开范围和 Release
-Guardian 精确哈希批准记录见 [`PUBLICATION.md`](PUBLICATION.md)。外部仓库与服务沿用各自
-的许可和使用条款。
+本仓库及作品集内容不授予开源许可，详见 [`NOTICE.md`](NOTICE.md)。已批准的公开范围与
+不可变证据限制记录在 [`PUBLICATION.md`](PUBLICATION.md)；外部仓库沿用各自条款。

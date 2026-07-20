@@ -22,7 +22,7 @@ export default function CaseStudyBlock({ project }: { project: Project }) {
         <h1 id="project-title"><LocalizedText text={project.title} /></h1>
         <p className="lede"><LocalizedText text={project.summary} /></p>
         <div className="tag-list" aria-label={dict.stack}>
-          {project.stack.map((item) => <span key={item}>{item}</span>)}
+          {project.stack.map((item) => <span key={item.en}><LocalizedText text={item} /></span>)}
         </div>
       </div>
 
@@ -44,13 +44,14 @@ export default function CaseStudyBlock({ project }: { project: Project }) {
                 </span>
               );
               const external = link.href.startsWith("http");
+              const download = /\.zip(?:[?#]|$)/i.test(link.href);
               if (isArtifactPath(link.href)) return (
                 <ArtifactLink key={link.href} href={link.href}>
                   <LocalizedText text={link.label} />
                 </ArtifactLink>
               );
               return (
-                <a key={link.href} href={link.href} target={external ? "_blank" : undefined} rel={external ? "noreferrer" : undefined}>
+                <a key={link.href} href={link.href} download={download || undefined} target={external ? "_blank" : undefined} rel={external ? "noreferrer" : undefined}>
                   <LocalizedText text={link.label} />
                   {external ? <><ExternalLink aria-hidden="true" /><span className="sr-only">{dict.externalLink}</span></> : null}
                 </a>

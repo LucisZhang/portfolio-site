@@ -13,7 +13,11 @@ export async function generateMetadata({ params }: { params: Promise<{ track: st
   const { track, project: slug } = await params;
   if (!isTrackId(track)) return {};
   const project = getProject(track, slug);
-  return project ? { title: `${project.title.en} | Hsiang Kuo Chang`, description: project.summary.en } : {};
+  return project ? {
+    title: `${project.title.en} | Xiangguo Zhang`,
+    description: project.summary.en,
+    ...(project.slug === "analytics-tandem" ? { robots: { index: false, follow: true } } : {}),
+  } : {};
 }
 
 export default async function ProjectPage({ params }: { params: Promise<{ track: string; project: string }> }) {

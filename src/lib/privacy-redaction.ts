@@ -21,6 +21,25 @@ export interface RedactionValidation {
   residualOriginalValues: string[];
 }
 
+export interface OcrWordBox {
+  text: string;
+  confidence?: number;
+  bbox: { x0: number; y0: number; x1: number; y1: number };
+}
+
+export interface OcrLineBox {
+  text: string;
+  confidence?: number;
+  bbox: { x0: number; y0: number; x1: number; y1: number };
+  words?: OcrWordBox[];
+}
+
+export interface SensitiveOcrMatch {
+  entity: SensitiveEntity;
+  bbox: OcrWordBox["bbox"];
+  confidence: number;
+}
+
 interface DetectionRule {
   type: string;
   regex: RegExp;
@@ -36,7 +55,7 @@ const rules: DetectionRule[] = [
   },
   {
     type: "PHONE",
-    regex: /(?:\+?\d{1,3}[\s.-]?)?(?:\(\d{3}\)|\d{3})[\s.-]?\d{3}[\s.-]?\d{4}(?:\s*(?:x|ext\.?)\s*\d{1,6})?/gi,
+    regex: /(?<!\d)(?:(?:\+?86[\s.-]?)?1[3-9]\d(?:[\s.-]?\d){8}|(?:\+?\d{1,3}[\s.-]?)?(?:\(\d{3}\)|\d{3})[\s.-]?\d{3}[\s.-]?\d{4}(?:\s*(?:x|ext\.?)\s*\d{1,6})?)(?!\d)/gi,
     reason: "Matched a phone-like pattern containing 10 to 15 digits.",
     confidenceGate: (value) => {
       const digits = value.replace(/\D/g, "").length;
@@ -151,6 +170,96 @@ export function scanSensitiveText(text: string, mode: ScanMode = "balanced") {
     if (!accepted.some((item) => overlaps(item, candidate))) accepted.push(candidate);
   }
   return accepted.map((item, index) => ({ ...item, id: `${item.id}-${index}` }));
+}
+
+/**
+ * Maps rule matches in an OCR line back to the actual word boxes. Interpolating
+ * across a whole line is inaccurate for CJK labels and proportional fonts, and
+ * scanning one OCR word at a time misses phone numbers split around separators.
+ */
+export function mapSensitiveOcrLine(line: OcrLineBox, mode: ScanMode = "strict"): SensitiveOcrMatch[] {
+  const lineText = line.text.trimEnd();
+  const directEntities = scanSensitiveText(lineText, mode);
+  const compactCharacters: string[] = [];
+  const compactToOriginal: number[] = [];
+  for (let index = 0; index < lineText.length; index += 1) {
+    if (/\s/.test(lineText[index])) continue;
+    compactCharacters.push(lineText[index]);
+    compactToOriginal.push(index);
+  }
+  const compactText = compactCharacters.join("");
+  const compactPathEntities = scanSensitiveText(compactText, mode)
+    .filter((entity) => entity.type === "LOCAL_PATH" && entity.end > entity.start)
+    .map((entity) => ({
+      ...entity,
+      start: compactToOriginal[entity.start],
+      end: compactToOriginal[entity.end - 1] + 1,
+      text: compactText.slice(entity.start, entity.end),
+    }));
+  const entities: SensitiveEntity[] = [];
+  for (const candidate of [...directEntities, ...compactPathEntities].sort((a, b) => a.start - b.start || b.end - a.end)) {
+    if (!entities.some((entity) => overlaps(entity, candidate))) entities.push(candidate);
+  }
+  if (!entities.length) return [];
+
+  const wordRanges: { word: OcrWordBox; start: number; end: number }[] = [];
+  let cursor = 0;
+  for (const word of line.words ?? []) {
+    const wordText = word.text.trim();
+    if (!wordText) continue;
+    let start = lineText.indexOf(wordText, cursor);
+    if (start < 0) start = lineText.toLocaleLowerCase().indexOf(wordText.toLocaleLowerCase(), cursor);
+    if (start < 0) {
+      while (cursor < lineText.length && /\s/.test(lineText[cursor])) cursor += 1;
+      start = cursor;
+    }
+    const end = Math.min(lineText.length, start + wordText.length);
+    wordRanges.push({ word, start, end });
+    cursor = end;
+  }
+
+  return entities.map((entity) => {
+    const overlapping = wordRanges.filter(({ start, end }) => start < entity.end && entity.start < end);
+    if (!overlapping.length) {
+      const ratioStart = entity.start / Math.max(lineText.length, 1);
+      const ratioEnd = entity.end / Math.max(lineText.length, 1);
+      const lineWidth = line.bbox.x1 - line.bbox.x0;
+      return {
+        entity,
+        bbox: {
+          x0: line.bbox.x0 + lineWidth * ratioStart,
+          y0: line.bbox.y0,
+          x1: line.bbox.x0 + lineWidth * ratioEnd,
+          y1: line.bbox.y1,
+        },
+        confidence: line.confidence ?? 0,
+      };
+    }
+
+    const boxes = overlapping.map(({ word, start, end }) => {
+      const wordLength = Math.max(1, end - start);
+      const clippedStart = Math.max(entity.start, start);
+      const clippedEnd = Math.min(entity.end, end);
+      const width = word.bbox.x1 - word.bbox.x0;
+      return {
+        x0: word.bbox.x0 + width * ((clippedStart - start) / wordLength),
+        y0: word.bbox.y0,
+        x1: word.bbox.x0 + width * ((clippedEnd - start) / wordLength),
+        y1: word.bbox.y1,
+        confidence: word.confidence ?? line.confidence ?? 0,
+      };
+    });
+    return {
+      entity,
+      bbox: {
+        x0: Math.min(...boxes.map((box) => box.x0)),
+        y0: Math.min(...boxes.map((box) => box.y0)),
+        x1: Math.max(...boxes.map((box) => box.x1)),
+        y1: Math.max(...boxes.map((box) => box.y1)),
+      },
+      confidence: Math.min(...boxes.map((box) => box.confidence)),
+    };
+  });
 }
 
 export function normalizeEntity(entity: SensitiveEntity, text: string): SensitiveEntity {

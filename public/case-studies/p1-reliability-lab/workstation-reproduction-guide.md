@@ -423,14 +423,12 @@ df -h .
 - 更新后的 `RUNBOOK.md`。
 - `sha256s.txt`。
 
-然后本地 portfolio 更新：
+然后更新公开证据：
 
-1. 复制 JSON/log/environment summary 到 `portfolio-site/public/case-studies/p1-reliability-lab/`
-   或 `portfolio-site/docs/p1-u6-attempts/` 的新 remote-linux 子目录。
-2. 更新 `portfolio-site/docs/p1-u6-attempts/RECORD.md`：把状态从
-   "not reproducible on this machine today" 改成 "reproduced on remote Linux at <date>"。
-3. 更新 `portfolio-site/STATE.md`。
-4. 只有在所有证据都齐全并校验通过后，case study 才能写：
+1. 将允许公开的 JSON、日志与 environment summary 放入
+   `public/case-studies/p1-reliability-lab/` 的新 `remote-linux` 子目录。
+2. 在 `docs/EVIDENCE_INDEX.md` 记录环境、命令、run ID、Git SHA 与产物哈希。
+3. 只有在所有证据都齐全并校验通过后，case study 才能写：
    "full heavy-stack reproduction completed on remote Linux"。
 
 ## 12. 失败时怎么记录

@@ -1,0 +1,96 @@
+{
+  "schema_version": 2,
+  "status": "SUPERSEDED_PASS",
+  "supersession": {
+    "reason": "Runtime files changed after this exact review; retain as historical evidence only.",
+    "final_runtime_rerun": "pending"
+  },
+  "audited_on": "2026-07-19",
+  "browser": {
+    "name": "Google Chrome",
+    "mode": "installed browser, headless capture",
+    "device_pixel_ratio": 1
+  },
+  "candidate_binding": {
+    "current_runtime_tree_digest": "eb08c00e4fa7fcf682a10bd4a6adf5d9cc4c43af7427ceae85de2e3987b316ea",
+    "playwright_summary_sha256": "2952334855e5c7f864cdbe9cbd036035c66553bf6150382fcbdf59f4571a2e00",
+    "lighthouse_summary_sha256": "94b98d9a7700e3efcb907df94e07bdf1baff8d5a69a455ed5ecdaed239382242",
+    "binary_manifest_sha256_at_capture": "cba4934e32447f636e55567d550febb5273d49f3baadedb925b9f55378052b7f",
+    "archived_screenshot_manifest_path": "docs/phase2-public-review-artifacts/goal2-final/chrome/screenshot-manifest-eb08-superseded.json",
+    "archived_screenshot_manifest_sha256": "1c45b9ae202d307cea9ed5133a86c65103f0951fec5ec14a42e4489d8838bd55"
+  },
+  "viewports": [
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "routes": [
+    {
+      "path": "/ai/release-guardian",
+      "en_h1": "Release Guardian",
+      "zh_h1": "发布守门人"
+    },
+    {
+      "path": "/engineering/p1-reliability-lab",
+      "en_h1": "Streaming Reliability Lab",
+      "zh_h1": "流式可靠性实验室"
+    },
+    {
+      "path": "/ai/rag-quality-lab",
+      "en_h1": "RAG Quality Lab",
+      "zh_h1": "RAG 质量实验室"
+    },
+    {
+      "path": "/ai/privacy-preflight-mac",
+      "en_h1": "Privacy Preflight Web + Mac",
+      "zh_h1": "隐私预检（网页版 + macOS 版）"
+    },
+    {
+      "path": "/analytics/margin-control-tower",
+      "en_h1": "Margin Control Tower",
+      "zh_h1": "毛利控制塔"
+    },
+    {
+      "path": "/analytics/credit-policy-lab",
+      "en_h1": "Credit Policy Lab",
+      "zh_h1": "信贷策略实验室"
+    },
+    {
+      "path": "/analytics/analytics-tandem",
+      "en_h1": "Analytics Tandem",
+      "zh_h1": "分析双项目"
+    }
+  ],
+  "checks": {
+    "homepage_en_zh_identity": "PASS",
+    "all_route_locale_combinations": "PASS",
+    "old_identity_absent": "PASS",
+    "untranslated_route_titles_absent": "PASS",
+    "horizontal_overflow_absent": "PASS",
+    "release_replay_before_recorded_evidence": "PASS",
+    "release_media_order_risk_evaluation_pipeline": "PASS",
+    "privacy_text_image_three_page_pdf_and_mac_ctas": "PASS",
+    "privacy_zh_output_assets_are_localized_and_marked_as_presentation_derivatives": "PASS",
+    "analytics_real_default_background_full_and_source_switching": "PASS",
+    "margin_one_parquet_get_and_remount_cache_join": "PASS",
+    "rag_manifest_edit_validate_and_reset": "PASS",
+    "assistant_lazy_load_and_local_guardrails": "PASS"
+  },
+  "visually_inspected_screenshots": [
+    "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-home-1440-eb08-superseded.png",
+    "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-home-1440-eb08-superseded.png",
+    "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-release-guardian-1440-eb08-superseded.png",
+    "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-release-replay-1440-eb08-superseded.png",
+    "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-privacy-preflight-1440-eb08-superseded.png",
+    "docs/phase2-public-review-artifacts/local-analytics/margin-desktop-eb08-superseded.png",
+    "docs/phase2-public-review-artifacts/local-analytics/credit-mobile-eb08-superseded.png"
+  ],
+  "screenshot_identity_source": "docs/phase2-public-review-artifacts/goal2-final/chrome/screenshot-manifest-eb08-superseded.json"
+}

@@ -40,7 +40,7 @@ export default function PrivacyOcrBenchmark({ locale }: { locale: Locale }) {
         <div><span>{locale === "en" ? "Fixtures" : "夹具"}</span><strong>{report.summary.fixtures}</strong><small>{locale === "en" ? "fixed cases" : "个固定案例"}</small></div>
       </div>
       <div className="privacy-benchmark-grid">
-        {report.fixtures.map((fixture) => <article key={fixture.id}><div>{fixture.misses.length ? <CircleAlert aria-hidden="true" /> : <Check aria-hidden="true" />}<strong>{fixture.id}</strong></div><span>{Math.round(fixture.recall * 100)}% recall / {Math.round(fixture.precision * 100)}% precision</span><small>{fixture.misses.length ? `${locale === "en" ? "Missed" : "漏检"}: ${fixture.misses.join(", ")}` : (locale === "en" ? "No expected value missed" : "未漏检预期值")}</small></article>)}
+        {report.fixtures.map((fixture) => <article key={fixture.id}><div>{fixture.misses.length ? <CircleAlert aria-hidden="true" /> : <Check aria-hidden="true" />}<strong>{fixture.id}</strong></div><span>{Math.round(fixture.recall * 100)}% {locale === "en" ? "recall" : "召回率"} / {Math.round(fixture.precision * 100)}% {locale === "en" ? "precision" : "精确率"}</span><small>{fixture.misses.length ? `${locale === "en" ? "Missed" : "漏检"}: ${fixture.misses.join(", ")}` : (locale === "en" ? "No expected value missed" : "未漏检预期值")}</small></article>)}
       </div>
     </section>
   );

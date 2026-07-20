@@ -1,0 +1,57 @@
+{
+  "schema_version": 2,
+  "status": "PASS",
+  "recorded_on": "2026-07-19",
+  "scope": "Final post-writeback runtime alignment after the separately authorized nine-string Chinese factual repair; the immutable writeback-time audit is not overwritten or relabeled",
+  "runtime_tree_digest": {
+    "files": 221,
+    "sha256": "d8bc84920a2c84c76109ebf6ab214cce969d5995b8c44ed76ec4b8a633bb38fd"
+  },
+  "original_writeback_audit": {
+    "path": "docs/phase2-public-review-artifacts/goal2-final/copy-writeback-audit.json",
+    "sha256": "9aa0b41030e8bd182feda987fab36784d90e94a5c3f1b8cd7bee96621320e711",
+    "recorded_duckdb_source_sha256": "6d10ba23ba296f0a01c17eb12b82e4b194240875be929c18672efc36b030431c"
+  },
+  "prior_alignment_record": {
+    "path": "docs/phase2-public-review-artifacts/goal2-final/copy-writeback-post-runtime-alignment-029a-superseded.json",
+    "sha256": "b334f34852ddf879a7c541c9306e197e01aa6c7975a77be1ce3861a435feaee6"
+  },
+  "factual_repair": {
+    "model": "moonshotai/kimi-k2.6",
+    "consent_packet_sha256": "6d7fd4f0342c5fa9acea32ee9e18d357e1b6da2e150d1344c30094cba5cb4029",
+    "request_sha256": "71e5c0dd90617fa301a56926e35249d51f57a498278732a174beddd0733ee363",
+    "raw_response_sha256": "156dbcf6e8e1348cb4e7386c91c6e70734d77cf631d09c75a6d34c445b8fef7e",
+    "parsed_response_sha256": "f0e5977a3be8b6e8605d9eb7cd4136680f7c23b23bdd8a317f2cf112172bdc5c",
+    "response_record_sha256": "c821ce1ebd378da00e8a61a5e6be3adcdcbed7a084b1fac0cd2db294f84246f8",
+    "attempt_lock_sha256": "dd9c759c1f7427f24c294b6b3bb7db57c962108dbbf5f3138390ecd87208858d",
+    "target_count": 9,
+    "calls_attempted": 1,
+    "automatic_retries": 0,
+    "validation": {
+      "bounded_model_response": "PASS",
+      "keys_and_order": "9/9",
+      "old_chinese_absent": "9/9",
+      "new_chinese_unique": "9/9",
+      "english_source_retained": "9/9",
+      "candidate_sha256_matches_response_record": "9/9"
+    },
+    "retention_boundary": "Only fixed hashes and counts are recorded here; the consent packet and raw model artifacts remain local and uncommitted."
+  },
+  "current_runtime_alignment_sources": {
+    "src/lib/projects.ts": "92d23e02681431e8edb8a148b0342a71c06b9d71d8dbb9739530df8e81d4e455",
+    "src/components/analytics/MarginControlTower.tsx": "9af70ce8d13142cb9aa5599ad15742b1116c35bbfe22846adc7250796d6f0253",
+    "src/lib/duckdb.ts": "118848c62dc894daacdbd3ec361fb30c6d685376071867202a3bfc6ffddc1931",
+    "src/lib/analytics-data-cache.ts": "f67f3e98805613a04af31bbb645767e49daa757037701db52bee7ef0f2e4f1b9",
+    "tests/e2e/analytics-real-data.spec.ts": "c2bc4cfba7b80e9bddad5f522f47bd3aaf603cca4cf060117f82788957157164",
+    "src/components/OptionalMedia.tsx": "76222e42a1a5fedcda6912b212307a64a242052b3ba08e91f9a0309b1244af54",
+    "src/components/PrivacyProof.tsx": "75f84799e7753cd794e8656143ef9012b9b4484a3f84a534ee998bf9582746ed"
+  },
+  "localized_privacy_derivatives": {
+    "policy": "Only -zh.svg presentation variants remain in public; no new -zh.png file is included.",
+    "image-synthetic-redacted-zh.svg": "aa81a65ffb330c6e379314918f82dc6504b6a5bc75b111873d6959ade583ea16",
+    "pdf-synthetic-redacted-preview-zh.svg": "551d0690b85a0b4146223f4087fe53b3422e2c98e416e940e32da3e2be2eeb25"
+  },
+  "localized_copy_changed": true,
+  "localized_copy_change_scope": "Exactly nine Chinese values changed from the prior alignment; every English source remained unchanged.",
+  "authorship_boundary": "The nine final Chinese values are the exact validated Kimi response applied mechanically by stable key. Codex did not author substitute English or Chinese prose."
+}

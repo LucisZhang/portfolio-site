@@ -1,0 +1,142 @@
+{
+  "schema_version": 3,
+  "status": "PASS",
+  "scope": "Goal2 exact local production runtime on 127.0.0.1; one ordered four-route run, with raw reports retained only in the local QA bundle.",
+  "candidate": {
+    "current_runtime_tree_digest": {
+      "schemaVersion": 1,
+      "algorithm": "SHA-256 of sorted lines: SHA-256(file bytes), two spaces, POSIX path, newline",
+      "excludedSelfReferentialReports": [
+        "public/case-studies/privacy-preflight/goal-candidate-e2e.json"
+      ],
+      "files": 225,
+      "sha256": "a49d5abb5a9fc5c4622610e3818872562e8349b6959bd2eed64fa117ffdd03c0"
+    }
+  },
+  "run_binding": {
+    "path": null,
+    "localOnlyBasename": "goal2-v12-lighthouse-binding.json",
+    "retention": "local-only-outside-repository",
+    "sha256": "7fe57ab924e6c64110d31905a27bbc955076430a4455e20a3f8f4458c2cd86bf",
+    "prepared_at_utc": "2026-07-19T17:47:08.218Z",
+    "installed_chrome_version": "150.0.7871.128"
+  },
+  "reports": {
+    "home": {
+      "path": "/",
+      "fetch_time": "2026-07-19T17:47:47.301Z",
+      "lighthouse_version": "13.4.0",
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+      "raw_report": {
+        "path": null,
+        "localOnlyBasename": "goal2-v12-lighthouse-home.json",
+        "retention": "local-only-outside-repository",
+        "sha256": "0b8fea74b44b14afaa94a8481b1dd5cbf4f1bdf4579b0d47ad296b3fc1368e5d"
+      },
+      "runtime_error": null,
+      "run_warnings": [],
+      "categories": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "first_contentful_paint_ms": 294,
+        "largest_contentful_paint_ms": 550,
+        "total_blocking_time_ms": 0,
+        "cumulative_layout_shift": 0,
+        "speed_index_ms": 294
+      },
+      "http_status_code_score": 1,
+      "errors_in_console_score": 1
+    },
+    "margin": {
+      "path": "/analytics/margin-control-tower",
+      "fetch_time": "2026-07-19T17:48:10.072Z",
+      "lighthouse_version": "13.4.0",
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+      "raw_report": {
+        "path": null,
+        "localOnlyBasename": "goal2-v12-lighthouse-margin.json",
+        "retention": "local-only-outside-repository",
+        "sha256": "317b1a894c9761364f0b7d5862b500956cc535983c23631f4f96ea5b50d0856b"
+      },
+      "runtime_error": null,
+      "run_warnings": [],
+      "categories": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "first_contentful_paint_ms": 287,
+        "largest_contentful_paint_ms": 654,
+        "total_blocking_time_ms": 0,
+        "cumulative_layout_shift": 0,
+        "speed_index_ms": 287
+      },
+      "http_status_code_score": 1,
+      "errors_in_console_score": 1
+    },
+    "privacy": {
+      "path": "/ai/privacy-preflight-mac",
+      "fetch_time": "2026-07-19T17:48:32.573Z",
+      "lighthouse_version": "13.4.0",
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+      "raw_report": {
+        "path": null,
+        "localOnlyBasename": "goal2-v12-lighthouse-privacy.json",
+        "retention": "local-only-outside-repository",
+        "sha256": "8d31520915ee932247d64057e086295ee3140e5fecefe8026edf0a891632f5c7"
+      },
+      "runtime_error": null,
+      "run_warnings": [],
+      "categories": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "first_contentful_paint_ms": 285,
+        "largest_contentful_paint_ms": 731,
+        "total_blocking_time_ms": 0,
+        "cumulative_layout_shift": 0,
+        "speed_index_ms": 285
+      },
+      "http_status_code_score": 1,
+      "errors_in_console_score": 1
+    },
+    "release": {
+      "path": "/ai/release-guardian",
+      "fetch_time": "2026-07-19T17:48:54.488Z",
+      "lighthouse_version": "13.4.0",
+      "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36",
+      "raw_report": {
+        "path": null,
+        "localOnlyBasename": "goal2-v12-lighthouse-release.json",
+        "retention": "local-only-outside-repository",
+        "sha256": "12454ebf2da1d31dcd644477cb37558c2bca474d6cf976c7413a5f622785dbdc"
+      },
+      "runtime_error": null,
+      "run_warnings": [],
+      "categories": {
+        "performance": 100,
+        "accessibility": 100,
+        "best-practices": 100,
+        "seo": 100
+      },
+      "metrics": {
+        "first_contentful_paint_ms": 288,
+        "largest_contentful_paint_ms": 715,
+        "total_blocking_time_ms": 0,
+        "cumulative_layout_shift": 0.009276525698275109,
+        "speed_index_ms": 288
+      },
+      "http_status_code_score": 1,
+      "errors_in_console_score": 1
+    }
+  }
+}

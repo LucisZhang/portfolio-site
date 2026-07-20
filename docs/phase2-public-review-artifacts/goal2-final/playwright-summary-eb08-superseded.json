@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "state": "superseded-complete-pass",
+  "supersession": {
+    "reason": "Runtime files changed after this exact run; retain as historical evidence only.",
+    "final_runtime_rerun": "pending"
+  },
+  "candidate": {
+    "exactGitTreeHash": null,
+    "currentRuntimeTreeDigest": {
+      "schemaVersion": 1,
+      "algorithm": "SHA-256 of sorted lines: SHA-256(file bytes), two spaces, POSIX path, newline",
+      "excludedSelfReferentialReports": [
+        "public/case-studies/privacy-preflight/goal-candidate-e2e.json"
+      ],
+      "files": 218,
+      "sha256": "eb08c00e4fa7fcf682a10bd4a6adf5d9cc4c43af7427ceae85de2e3987b316ea"
+    }
+  },
+  "browser": {
+    "name": "Google Chrome",
+    "channel": "chrome"
+  },
+  "sourceReport": {
+    "path": null,
+    "localOnlyBasename": "playwright-raw.json",
+    "retention": "ignored local QA output; not committed",
+    "sha256": "c0ef7a50a9384be07eff0ce2fc7708b3dcf5aa776f14272693e36a3a54bec715"
+  },
+  "projects": [
+    "desktop",
+    "tablet",
+    "mobile"
+  ],
+  "results": {
+    "passed": 203,
+    "skipped": 52,
+    "failed": 0,
+    "flaky": 0,
+    "durationMs": 500024.263
+  }
+}

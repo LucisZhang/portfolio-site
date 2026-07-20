@@ -3,7 +3,7 @@ import ArtifactViewer from "@/components/artifacts/ArtifactViewer";
 import { safeArtifactPath } from "@/lib/artifacts";
 
 export const metadata: Metadata = {
-  title: "Project file | Hsiang Kuo Chang",
+  title: "Project file | Xiangguo Zhang",
   description: "View a project file with context, search, and download controls.",
 };
 
@@ -15,5 +15,6 @@ export default async function ArtifactPage({
   const params = await searchParams;
   const requested = Array.isArray(params.src) ? params.src[0] : params.src;
   const from = Array.isArray(params.from) ? params.from[0] : params.from;
-  return <ArtifactViewer source={requested ? safeArtifactPath(requested) : null} from={from?.startsWith("/") ? from : "/"} />;
+  const safeSource = requested ? safeArtifactPath(requested) : null;
+  return <ArtifactViewer key={safeSource ?? "none"} source={safeSource} from={from?.startsWith("/") ? from : "/"} />;
 }

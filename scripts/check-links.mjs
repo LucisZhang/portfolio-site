@@ -3,6 +3,8 @@ import path from "node:path";
 import process from "node:process";
 import { chromium } from "@playwright/test";
 
+const browserChannel = process.env.PLAYWRIGHT_CHANNEL || "chrome";
+
 const args = process.argv.slice(2);
 function option(name, fallback = "") {
   const index = args.indexOf(name);
@@ -29,6 +31,8 @@ const mimeByExtension = {
   ".pdf": ["application/pdf"],
   ".png": ["image/png"],
   ".svg": ["image/svg+xml"],
+  ".txt": ["text/plain"],
+  ".zip": ["application/zip", "application/x-zip-compressed"],
 };
 
 function addFinding(severity, category, page, message, target = "") {
@@ -61,7 +65,7 @@ function addInternal(url, detail) {
   internalTargets.set(key, existing);
 }
 
-const browser = await chromium.launch({ channel: "chrome", headless: true });
+const browser = await chromium.launch({ channel: browserChannel, headless: true });
 try {
   const context = await browser.newContext({ serviceWorkers: "block" });
   await authorizeContext(context);

@@ -1,10 +1,11 @@
 "use client";
 
-import { Check, Download, Eye, FileImage, RotateCcw, ScanSearch, Trash2, X, ZoomIn } from "lucide-react";
+import { Check, Columns2, Download, Eye, FileImage, RotateCcw, ScanSearch, Trash2, X, ZoomIn } from "lucide-react";
 import NextImage from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { Locale } from "@/lib/i18n";
-import { scanSensitiveText } from "@/lib/privacy-redaction";
+import { privacyOcrProgressStatus, privacySourceLabel } from "@/lib/privacy-localization";
+import { mapSensitiveOcrLine } from "@/lib/privacy-redaction";
 
 interface RedactionBox {
   id: string;
@@ -55,6 +56,14 @@ function clampBox(box: RedactionBox, width: number, height: number): RedactionBo
   };
 }
 
+function localizedOcrReason(locale: Locale, type: string, confidence: number, mode: "contrast" | "threshold", rotated: boolean) {
+  if (locale === "en") {
+    return `${type} matched by local OCR; ${mode}${rotated ? ", auto-rotated" : ""}; OCR confidence ${Math.round(confidence)}%.`;
+  }
+  const modeLabel = mode === "contrast" ? "对比度增强" : "阈值处理";
+  return `本地 OCR 规则匹配 ${type}；${modeLabel}${rotated ? "，已自动旋转" : ""}；OCR 置信度 ${Math.round(confidence)}%。`;
+}
+
 function drawPreview(canvas: HTMLCanvasElement, image: HTMLImageElement, boxes: RedactionBox[], draft: RedactionBox | null) {
   const context = canvas.getContext("2d");
   if (!context) return;
@@ -80,14 +89,14 @@ function drawPreview(canvas: HTMLCanvasElement, image: HTMLImageElement, boxes: 
 export default function PrivacyImageLab({ locale }: { locale: Locale }) {
   const copy = locale === "en" ? {
     choose: "Choose image", drop: "or drop PNG/JPEG here", manual: "Local OCR + burn-in review", note: "OCR runs from same-origin worker, WASM, and language assets. Review every detected or manual region before export.",
-    boxes: "Redaction regions", none: "Draw a rectangle over sensitive pixels.", preview: "Preview redacted result", download: "Download redacted file", reset: "Reset", zoom: "Zoom", blackout: "Blackout", pixelate: "Pixelate",
+    boxes: "Redaction regions", none: "Draw a rectangle over sensitive pixels.", preview: "Confirm review and show result", download: "Download redacted file", reset: "Reset", zoom: "Zoom", blackout: "Blackout", pixelate: "Pixelate",
     invalid: "Choose a PNG or JPEG up to 15 MB and 8,000 px per side.", verify: "Export verification", pass: "Pass: a fresh PNG was decoded after burn-in; dimensions match and its SHA-256 differs from the source.",
-    fail: "Verification failed. No safe export is available.", metadata: "Canvas export rebuilds pixels into a new PNG and does not preserve source metadata.", local: "Text recognition runs locally in your browser. Your file is not uploaded.", region: "Region", delete: "Delete region", source: "source", output: "output", ocr: "Scan for sensitive information", english: "English", bilingual: "English + 简体中文", ocrIdle: "OCR not run", ocrNone: "OCR finished; no rule-matched sensitive token was found. Add regions manually if needed.", accept: "Accept", reject: "Reject", exampleEnglish: "Load English image example", exampleChinese: "Load Chinese image example", before: "Before", detected: "Detected", redacted: "Redacted", processing: "Orientation candidates, grayscale, contrast, threshold, and multi-pass OCR",
+    fail: "Verification failed. No safe export is available.", ocrError: "Local OCR could not finish. Try again or draw the regions manually.", exportError: "The safe image export could not be completed. No download was created.", metadata: "Canvas export rebuilds pixels into a new PNG and does not preserve source metadata.", local: "Text recognition runs locally in your browser. Your file is not uploaded.", region: "Region", delete: "Delete region", source: "source", output: "output", ocr: "Scan for sensitive information", english: "English", bilingual: "English + 简体中文", ocrIdle: "OCR not run", ocrNone: "OCR finished; no rule-matched sensitive token was found. Add regions manually if needed.", accept: "Accept", reject: "Reject", exampleEnglish: "Load English image example", exampleChinese: "Load Chinese image example", before: "Before", detected: "Detected", redacted: "Redacted", processing: "Orientation candidates, grayscale, contrast, threshold, and multi-pass OCR", compare: "Before / after", originalView: "Original image", redactedView: "Redacted image",
   } : {
     choose: "选择图片", drop: "或将 PNG/JPEG 拖到此处", manual: "本地 OCR + 像素烧录复核", note: "OCR 使用同源 worker、WASM 和语言包运行。导出前请复核每个自动或手动区域。",
-    boxes: "脱敏区域", none: "请在敏感像素上拖动绘制矩形。", preview: "预览脱敏结果", download: "下载脱敏文件", reset: "重置", zoom: "缩放", blackout: "黑色遮盖", pixelate: "像素化",
+    boxes: "脱敏区域", none: "请在敏感像素上拖动绘制矩形。", preview: "确认复核并显示结果", download: "下载脱敏文件", reset: "重置", zoom: "缩放", blackout: "黑色遮盖", pixelate: "像素化",
     invalid: "请选择不超过 15 MB、单边不超过 8,000 px 的 PNG 或 JPEG。", verify: "导出验证", pass: "通过：烧录后重新解码了全新 PNG；尺寸一致且 SHA-256 与原文件不同。",
-    fail: "验证失败，暂无可用的安全导出。", metadata: "Canvas 会将像素重建为新 PNG，不保留源文件 metadata。", local: "文字识别在本机浏览器中完成，文件不会上传。", region: "区域", delete: "删除区域", source: "源文件", output: "输出文件", ocr: "扫描并查找敏感信息", english: "英语", bilingual: "英语 + 简体中文", ocrIdle: "尚未运行 OCR", ocrNone: "OCR 已完成，但规则未匹配到敏感内容；如有需要请手动新增区域。", accept: "接受", reject: "拒绝", exampleEnglish: "加载英文图片示例", exampleChinese: "加载中文图片示例", before: "原始文件", detected: "检测结果", redacted: "脱敏结果", processing: "方向候选、灰度、对比度、阈值与多轮文字识别",
+    fail: "验证失败，暂无可用的安全导出。", ocrError: "本地文字识别未能完成，请重试或手动框选区域。", exportError: "无法完成安全图片导出，因此没有生成下载文件。", metadata: "Canvas 会将像素重建为新 PNG，不保留源文件元数据。", local: "文字识别在本机浏览器中完成，文件不会上传。", region: "区域", delete: "删除区域", source: "源文件", output: "输出文件", ocr: "扫描并查找敏感信息", english: "英语", bilingual: "英语 + 简体中文", ocrIdle: "尚未运行 OCR", ocrNone: "OCR 已完成，但规则未匹配到敏感内容；如有需要请手动新增区域。", accept: "接受", reject: "拒绝", exampleEnglish: "加载英文图片示例", exampleChinese: "加载中文图片示例", before: "原始文件", detected: "检测结果", redacted: "脱敏结果", processing: "方向候选、灰度、对比度、阈值与多轮文字识别", compare: "前后对照", originalView: "原始图片", redactedView: "脱敏图片",
   };
   const [image, setImage] = useState<HTMLImageElement | null>(null);
   const [fileName, setFileName] = useState("");
@@ -101,6 +110,7 @@ export default function PrivacyImageLab({ locale }: { locale: Locale }) {
   const [error, setError] = useState("");
   const [verification, setVerification] = useState<ImageVerification | null>(null);
   const [output, setOutput] = useState<ImageOutput | null>(null);
+  const [showOriginal, setShowOriginal] = useState(false);
   const [ocrLanguage, setOcrLanguage] = useState<"eng" | "eng+chi_sim">("eng");
   const [ocrStatus, setOcrStatus] = useState("");
   const [ocrProgress, setOcrProgress] = useState(0);
@@ -109,8 +119,8 @@ export default function PrivacyImageLab({ locale }: { locale: Locale }) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (image && canvasRef.current) drawPreview(canvasRef.current, image, boxes, draft);
-  }, [image, boxes, draft]);
+    if (image && canvasRef.current) drawPreview(canvasRef.current, image, output ? [] : boxes, output ? null : draft);
+  }, [image, boxes, draft, output, showOriginal]);
 
   function clearOutput() {
     setOutput((current) => {
@@ -118,13 +128,20 @@ export default function PrivacyImageLab({ locale }: { locale: Locale }) {
       return null;
     });
     setVerification(null);
+    setShowOriginal(false);
   }
 
   async function loadExample(path: string, name: string, language: "eng" | "eng+chi_sim") {
-    const response = await fetch(path);
-    if (!response.ok) throw new Error(copy.invalid);
-    setOcrLanguage(language);
-    await loadFile(new File([await response.blob()], name, { type: "image/png" }));
+    setError("");
+    try {
+      const response = await fetch(path);
+      if (!response.ok) throw new Error("Example image unavailable");
+      setOcrLanguage(language);
+      await loadFile(new File([await response.blob()], name, { type: "image/png" }));
+    } catch (cause) {
+      console.error("Privacy image example could not load.", cause);
+      setError(copy.invalid);
+    }
   }
 
   async function loadFile(file: File) {
@@ -169,7 +186,8 @@ export default function PrivacyImageLab({ locale }: { locale: Locale }) {
   }
 
   function onPointerDown(event: React.PointerEvent<HTMLCanvasElement>) {
-    if (!image) return;
+    if (!image || output) return;
+    clearOutput();
     event.currentTarget.setPointerCapture(event.pointerId);
     const point = pointFromEvent(event);
     const bounds = event.currentTarget.getBoundingClientRect();
@@ -178,7 +196,6 @@ export default function PrivacyImageLab({ locale }: { locale: Locale }) {
     if (hit) {
       const resize = Math.abs(point.x - (hit.x + hit.width)) <= tolerance && Math.abs(point.y - (hit.y + hit.height)) <= tolerance;
       boxInteraction.current = { kind: resize ? "resize" : "move", id: hit.id, start: point, original: { ...hit } };
-      setVerification(null);
       return;
     }
     setDragStart(point);
@@ -221,7 +238,7 @@ export default function PrivacyImageLab({ locale }: { locale: Locale }) {
   function updateBox(id: string, patch: Partial<RedactionBox>) {
     if (!image) return;
     setBoxes((current) => current.map((box) => box.id === id ? clampBox({ ...box, ...patch }, image.naturalWidth, image.naturalHeight) : box));
-    setVerification(null);
+    clearOutput();
   }
 
   async function runOcr() {
@@ -240,8 +257,9 @@ export default function PrivacyImageLab({ locale }: { locale: Locale }) {
         langPath: "/generated/privacy-ocr/lang",
         cacheMethod: "none",
         logger: (message) => {
-          setOcrStatus(message.status);
-          setOcrProgress(Math.round(message.progress * 100));
+          const progress = Math.round(message.progress * 100);
+          setOcrStatus(privacyOcrProgressStatus(locale, message.status, progress, copy.processing));
+          setOcrProgress(progress);
         },
       });
       try {
@@ -278,16 +296,11 @@ export default function PrivacyImageLab({ locale }: { locale: Locale }) {
           const result = await worker.recognize(canvas, {}, { blocks: true });
           const lines = result.data.blocks?.flatMap((block) => block.paragraphs.flatMap((paragraph) => paragraph.lines)) ?? [];
           for (const line of lines) {
-            const value = line.text.trim();
-            const matches = scanSensitiveText(value, "strict");
-            for (const match of matches) {
-              const ratioStart = match.start / Math.max(value.length, 1);
-              const ratioWidth = (match.end - match.start) / Math.max(value.length, 1);
-              const x0 = line.bbox.x0 + (line.bbox.x1 - line.bbox.x0) * ratioStart;
-              const x1 = x0 + (line.bbox.x1 - line.bbox.x0) * ratioWidth;
+            for (const mapped of mapSensitiveOcrLine(line)) {
+              const { entity: match, bbox } = mapped;
               const transformed = pass.rotated
-                ? { x: image.naturalWidth - line.bbox.y1, y: x0, width: line.bbox.y1 - line.bbox.y0, height: x1 - x0 }
-                : { x: x0, y: line.bbox.y0, width: x1 - x0, height: line.bbox.y1 - line.bbox.y0 };
+                ? { x: image.naturalWidth - bbox.y1, y: bbox.x0, width: bbox.y1 - bbox.y0, height: bbox.x1 - bbox.x0 }
+                : { x: bbox.x0, y: bbox.y0, width: bbox.x1 - bbox.x0, height: bbox.y1 - bbox.y0 };
               const box = clampBox({
                 id: `ocr-${passIndex}-${found.size + 1}`,
                 ...transformed,
@@ -295,9 +308,9 @@ export default function PrivacyImageLab({ locale }: { locale: Locale }) {
                 accepted: true,
                 type: match.type,
                 text: match.text,
-                reason: `${match.reason} ${pass.mode}${pass.rotated ? ", auto-rotated" : ""}.`,
+                reason: localizedOcrReason(locale, match.type, mapped.confidence, pass.mode, pass.rotated),
               }, image.naturalWidth, image.naturalHeight);
-              const key = `${box.type}-${Math.round(box.x / 12)}-${Math.round(box.y / 12)}`;
+              const key = `${box.type}-${box.text?.replace(/\s/g, "").toLocaleLowerCase()}-${Math.round(box.x / 16)}-${Math.round(box.y / 16)}`;
               if (!found.has(key)) found.set(key, box);
             }
           }
@@ -312,9 +325,9 @@ export default function PrivacyImageLab({ locale }: { locale: Locale }) {
         await worker.terminate();
       }
     } catch (cause) {
-      const message = cause instanceof Error ? `${locale === "en" ? "Local OCR failed" : "本地 OCR 失败"}: ${cause.message}` : (locale === "en" ? "Local OCR failed." : "本地 OCR 失败。");
-      setOcrStatus(message);
-      setError(message);
+      console.error("Privacy image OCR could not finish.", cause);
+      setOcrStatus(copy.ocrError);
+      setError(copy.ocrError);
     } finally {
       setIsOcrRunning(false);
     }
@@ -343,16 +356,16 @@ export default function PrivacyImageLab({ locale }: { locale: Locale }) {
   async function exportImage() {
     if (!image || !boxes.length) return;
     setError("");
-    const output = document.createElement("canvas");
-    output.width = image.naturalWidth;
-    output.height = image.naturalHeight;
-    const context = output.getContext("2d", { willReadFrequently: true });
-    if (!context) return;
-    context.drawImage(image, 0, 0);
-    boxes.filter((box) => box.accepted !== false).forEach((box) => burnIn(context, box));
-    const blob = await new Promise<Blob | null>((resolve) => output.toBlob(resolve, "image/png"));
-    if (!blob) return;
     try {
+      const output = document.createElement("canvas");
+      output.width = image.naturalWidth;
+      output.height = image.naturalHeight;
+      const context = output.getContext("2d", { willReadFrequently: true });
+      if (!context) throw new Error("Canvas unavailable");
+      context.drawImage(image, 0, 0);
+      boxes.filter((box) => box.accepted !== false).forEach((box) => burnIn(context, box));
+      const blob = await new Promise<Blob | null>((resolve) => output.toBlob(resolve, "image/png"));
+      if (!blob) throw new Error("PNG export unavailable");
       const decoded = await createImageBitmap(blob);
       const outputHash = await sha256(blob);
       const safe = decoded.width === image.naturalWidth && decoded.height === image.naturalHeight && outputHash !== originalHash;
@@ -372,8 +385,11 @@ export default function PrivacyImageLab({ locale }: { locale: Locale }) {
         if (current) URL.revokeObjectURL(current.url);
         return { url, name, size: blob.size, type: blob.type };
       });
-    } catch {
+      setShowOriginal(false);
+    } catch (cause) {
+      console.error("Privacy image safe export could not finish.", cause);
       setVerification({ safe: false, dimensions: "-", originalHash, outputHash: "-", message: copy.fail });
+      setError(copy.exportError);
     }
   }
 
@@ -395,28 +411,32 @@ export default function PrivacyImageLab({ locale }: { locale: Locale }) {
     <div className="privacy-image-workspace">
       <div className="privacy-actionbar">
         <input ref={inputRef} className="sr-only" type="file" accept="image/png,image/jpeg" onChange={(event) => { const file = event.target.files?.[0]; if (file) void loadFile(file); }} />
-        <button type="button" className="primary" onClick={() => inputRef.current?.click()}><FileImage aria-hidden="true" />{copy.choose}</button>
+        <button type="button" onClick={() => inputRef.current?.click()}><FileImage aria-hidden="true" />{copy.choose}</button>
         <button type="button" onClick={() => void loadExample("/case-studies/privacy-preflight/image-example-english.png", "privacy-english-example.png", "eng")}><FileImage aria-hidden="true" />{copy.exampleEnglish}</button>
         <button type="button" onClick={() => void loadExample("/case-studies/privacy-preflight/image-example-chinese.png", "privacy-chinese-example.png", "eng+chi_sim")}><FileImage aria-hidden="true" />{copy.exampleChinese}</button>
         <span className="privacy-file-name">{fileName || copy.drop}</span>
         <select value={ocrLanguage} onChange={(event) => setOcrLanguage(event.target.value as "eng" | "eng+chi_sim")} aria-label={locale === "en" ? "OCR language" : "OCR 语言"}><option value="eng">{copy.english}</option><option value="eng+chi_sim">{copy.bilingual}</option></select>
-        <button type="button" onClick={() => void runOcr()} disabled={!image || isOcrRunning}><ScanSearch aria-hidden="true" />{copy.ocr}</button>
-        <div className="privacy-segmented">{(["blackout", "pixelate"] as const).map((value) => <button key={value} type="button" className={style === value ? "active" : ""} onClick={() => setStyle(value)}>{value === "blackout" ? copy.blackout : copy.pixelate}</button>)}</div>
+        <button type="button" className="privacy-scan-primary" onClick={() => void runOcr()} disabled={!image || isOcrRunning}><ScanSearch aria-hidden="true" />{copy.ocr}</button>
+        <div className="privacy-segmented">{(["blackout", "pixelate"] as const).map((value) => <button key={value} type="button" className={style === value ? "active" : ""} onClick={() => { setStyle(value); clearOutput(); }}>{value === "blackout" ? copy.blackout : copy.pixelate}</button>)}</div>
         <label className="privacy-zoom"><ZoomIn aria-hidden="true" /><span>{copy.zoom}</span><input type="range" min="70" max="200" value={zoom} onChange={(event) => setZoom(Number(event.target.value))} /></label>
         <button type="button" onClick={reset} disabled={!image}><RotateCcw aria-hidden="true" />{copy.reset}</button>
       </div>
       <div className="privacy-image-grid">
-        <div className="privacy-canvas-wrap" onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); const file = event.dataTransfer.files[0]; if (file) void loadFile(file); }}>
-          {image ? <canvas ref={canvasRef} style={{ width: `${zoom}%` }} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp} aria-label={copy.manual} /> : <button type="button" className="privacy-drop-target" onClick={() => inputRef.current?.click()}><FileImage aria-hidden="true" /><strong>{copy.choose}</strong><span>{copy.drop}</span></button>}
+        <div className="privacy-canvas-wrap privacy-main-result-area" onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); const file = event.dataTransfer.files[0]; if (file) void loadFile(file); }}>
+          {image ? (output && verification?.safe && !showOriginal
+            ? <NextImage data-testid="privacy-image-redacted-view" className="privacy-inplace-image" unoptimized width={1200} height={700} src={output.url} alt={locale === "en" ? "Generated redacted PNG result" : "实时生成的脱敏 PNG 结果"} />
+            : <canvas ref={canvasRef} data-testid="privacy-image-original-view" style={{ width: `${zoom}%` }} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp} aria-label={output ? copy.originalView : copy.manual} />)
+            : <button type="button" className="privacy-drop-target" onClick={() => inputRef.current?.click()}><FileImage aria-hidden="true" /><strong>{copy.choose}</strong><span>{copy.drop}</span></button>}
+          {output && verification?.safe ? <div className="privacy-inplace-result-toolbar" data-testid="privacy-image-output"><button type="button" className="privacy-before-after-toggle" aria-pressed={showOriginal} onClick={() => setShowOriginal((current) => !current)}><Columns2 aria-hidden="true" />{copy.compare}</button><span role="status">{showOriginal ? copy.originalView : copy.redactedView}</span><a className="button-link primary" href={output.url} download={output.name}><Download aria-hidden="true" />{copy.download}</a></div> : null}
         </div>
         <aside className="privacy-image-review">
           <div><p className="eyebrow">{copy.local}</p><h4>{copy.manual}</h4><p>{copy.note}</p><small>{copy.processing}</small></div>
           <div className="privacy-output-steps" aria-label={locale === "en" ? "Redaction progress" : "脱敏进度"}><span className={image ? "done" : ""}>{copy.before}</span><span className={boxes.length ? "done" : ""}>{copy.detected}</span><span className={output ? "done" : ""}>{copy.redacted}</span></div>
-          <div className="privacy-ocr-status" aria-live="polite"><span>{ocrStatus || copy.ocrIdle}</span><progress max="100" value={ocrProgress} /></div>
-          <div className="privacy-box-list"><h5>{copy.boxes} <span>{boxes.length}</span></h5>{!boxes.length ? <p>{copy.none}</p> : boxes.map((box, index) => <article className={box.accepted === false ? "rejected" : ""} key={box.id}><div><strong>{box.type || copy.region} {index + 1}</strong><div><code>{box.source || "manual"}</code><button type="button" className="privacy-box-accept" aria-pressed={box.accepted !== false} onClick={() => updateBox(box.id, { accepted: box.accepted === false })}>{box.accepted === false ? <X aria-hidden="true" /> : <Check aria-hidden="true" />}{box.accepted === false ? copy.reject : copy.accept}</button><button type="button" className="icon-only" title={copy.delete} onClick={() => setBoxes((current) => current.filter((item) => item.id !== box.id))}><Trash2 aria-hidden="true" /></button></div></div>{box.text ? <p><code>{box.text}</code>{box.reason}</p> : null}<div className="privacy-box-fields">{(["x", "y", "width", "height"] as const).map((field) => <label key={field}>{field}<input type="number" value={box[field]} onChange={(event) => updateBox(box.id, { [field]: Number(event.target.value) })} /></label>)}</div></article>)}</div>
+          <div className="privacy-ocr-status" aria-live="polite"><span>{ocrStatus ? privacyOcrProgressStatus(locale, ocrStatus, ocrProgress, copy.processing) : copy.ocrIdle}</span><progress max="100" value={ocrProgress} /></div>
+          <div className="privacy-box-list"><h5>{copy.boxes} <span>{boxes.length}</span></h5>{!boxes.length ? <p>{copy.none}</p> : boxes.map((box, index) => <article className={box.accepted === false ? "rejected" : ""} key={box.id}><div><strong>{box.type || copy.region} {index + 1}</strong><div><code>{privacySourceLabel(locale, box.source || "manual")}</code><button type="button" className="privacy-box-accept" aria-pressed={box.accepted !== false} onClick={() => updateBox(box.id, { accepted: box.accepted === false })}>{box.accepted === false ? <X aria-hidden="true" /> : <Check aria-hidden="true" />}{box.accepted === false ? copy.reject : copy.accept}</button><button type="button" className="icon-only" title={copy.delete} onClick={() => { setBoxes((current) => current.filter((item) => item.id !== box.id)); clearOutput(); }}><Trash2 aria-hidden="true" /></button></div></div>{box.text ? <p><code>{box.text}</code>{box.reason}</p> : null}<div className="privacy-box-fields">{(["x", "y", "width", "height"] as const).map((field) => <label key={field}>{field}<input type="number" value={box[field]} onChange={(event) => updateBox(box.id, { [field]: Number(event.target.value) })} /></label>)}</div></article>)}</div>
           <p className="privacy-metadata-note">{copy.metadata}</p>
           <button type="button" className="privacy-export-button" onClick={() => void exportImage()} disabled={!image || !boxes.some((box) => box.accepted !== false)}><Eye aria-hidden="true" />{copy.preview}</button>
-          {output && verification?.safe ? <div className="privacy-generated-output" data-testid="privacy-image-output"><NextImage unoptimized width={1200} height={700} src={output.url} alt={locale === "en" ? "Generated redacted PNG preview" : "实时生成的脱敏 PNG 预览"} /><dl><div><dt>{locale === "en" ? "File" : "文件"}</dt><dd>{output.name}</dd></div><div><dt>{locale === "en" ? "Type" : "类型"}</dt><dd>{output.type}</dd></div><div><dt>{locale === "en" ? "Size" : "大小"}</dt><dd>{(output.size / 1024).toFixed(1)} KB</dd></div></dl><a className="button-link primary" href={output.url} download={output.name}><Download aria-hidden="true" />{copy.download}</a></div> : null}
+          {output && verification?.safe ? <dl className="privacy-result-meta"><div><dt>{locale === "en" ? "File" : "文件"}</dt><dd>{output.name}</dd></div><div><dt>{locale === "en" ? "Type" : "类型"}</dt><dd>{output.type}</dd></div><div><dt>{locale === "en" ? "Size" : "大小"}</dt><dd>{(output.size / 1024).toFixed(1)} KB</dd></div></dl> : null}
           {verification ? <div className={`privacy-validation ${verification.safe ? "pass" : "fail"}`}><div>{verification.safe ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}<strong>{copy.verify}</strong></div><p>{verification.message}</p><code>{verification.dimensions}</code><code>{copy.source} {verification.originalHash.slice(0, 16)}...</code><code>{copy.output} {verification.outputHash.slice(0, 16)}...</code></div> : null}
           {error ? <p className="privacy-error" role="alert">{error}</p> : null}
         </aside>

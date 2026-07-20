@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="792" viewBox="0 0 1200 792" role="img" aria-labelledby="title desc">
+  <title id="title">中文合成 PDF 输入预览</title>
+  <desc id="desc">包含虚构收件人、邮箱、电话和本地路径的单页 PDF 输入预览。</desc>
+  <rect width="1200" height="792" fill="#fff"/>
+  <g font-family="Arial, PingFang SC, Microsoft YaHei, sans-serif" fill="#111">
+    <text x="96" y="122" font-size="36">隐私预检 / 合成 PDF</text>
+    <text x="96" y="224" font-size="28">收件人：Ada Example</text>
+    <text x="96" y="300" font-size="28">邮箱：ada@example.com</text>
+    <text x="96" y="376" font-size="28">电话：415-555-0188</text>
+    <text x="96" y="452" font-size="28">草稿：/Users/demo/Private/brief.txt</text>
+    <text x="96" y="632" font-size="20">此单页文档只包含虚构的本地质量验证数据。</text>
+  </g>
+</svg>

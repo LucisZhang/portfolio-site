@@ -1,5 +1,6 @@
 "use client";
 
+import "@xyflow/react/dist/style.css";
 import {
   Background,
   Controls,
@@ -27,6 +28,8 @@ import {
 import { useEffect, useMemo, useRef, useState } from "react";
 import ArtifactLink from "@/components/ArtifactLink";
 import { useI18n } from "@/lib/i18n";
+import { localizeStructuralValue } from "@/lib/structural-copy";
+import { userFacingError } from "@/lib/user-facing-error";
 
 const EVIDENCE_ROOT = "/case-studies/p1-reliability-lab/results/u6-local-mac";
 const RESULT_URL = `${EVIDENCE_ROOT}/eo_reconciliation-all.json`;
@@ -129,6 +132,15 @@ function formatTimestamp(value: string) {
   return value.replace("T", " ").replace("Z", " UTC");
 }
 
+function localizeEvidenceValue(value: unknown, locale: "en" | "zh"): unknown {
+  if (Array.isArray(value)) return value.map((item) => localizeEvidenceValue(item, locale));
+  if (value && typeof value === "object") {
+    return Object.fromEntries(Object.entries(value as Record<string, unknown>)
+      .map(([key, child]) => [key, localizeEvidenceValue(child, locale)]));
+  }
+  return typeof value === "string" ? localizeStructuralValue(value, locale) : value;
+}
+
 export default function P1FailureReplay() {
   const { locale } = useI18n();
   const [report, setReport] = useState<Reconciliation | null>(null);
@@ -136,7 +148,7 @@ export default function P1FailureReplay() {
   const [selectedClass, setSelectedClass] = useState("task-crash");
   const [step, setStep] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(false);
   const [selectedNodeId, setSelectedNodeId] = useState("mysql");
   const [flowInstance, setFlowInstance] = useState<ReactFlowInstance | null>(null);
   const flowPanelRef = useRef<HTMLDivElement>(null);
@@ -158,7 +170,8 @@ export default function P1FailureReplay() {
       setManifest(nextManifest);
       setSelectedClass(nextReport.results[0]?.failure_class ?? "task-crash");
     }).catch((reason: unknown) => {
-      if (active) setError(reason instanceof Error ? reason.message : "Evidence could not be loaded.");
+      console.error("P1 recorded evidence could not load.", reason);
+      if (active) setError(true);
     });
     return () => { active = false; };
   }, []);
@@ -188,6 +201,9 @@ export default function P1FailureReplay() {
       : checkpoint
         ? `checkpoint ${checkpoint.id ?? "?"} ${checkpoint.status ?? "captured"}; ${checkpoint.external_path ?? "path not recorded"}`
         : "No checkpoint reference recorded";
+    const jobReference = selected.restored_job_id
+      ? `; restored job ${selected.restored_job_id}`
+      : `; job ${selected.job_id}`;
     return [
       {
         title: locale === "en" ? "Source snapshot" : "源端快照",
@@ -201,17 +217,17 @@ export default function P1FailureReplay() {
       },
       {
         title: locale === "en" ? "Recovery state captured" : "恢复状态已捕获",
-        detail: stateReference,
+        detail: localizeStructuralValue(stateReference, locale),
         evidence: { checkpoint, savepoint: selected.recovery.savepoint ?? null },
       },
       {
         title: locale === "en" ? "Failure induced" : "故障已注入",
-        detail: selected.trigger,
+        detail: localizeStructuralValue(selected.trigger, locale),
         evidence: { trigger: selected.trigger, fault_injection: selected.fault_injection ? { trigger_event_id: selected.fault_injection.trigger_event_id, mechanism: selected.fault_injection.mechanism } : null },
       },
       {
         title: locale === "en" ? "Recovery observed" : "恢复已观测",
-        detail: `${selected.recovery.mode}${selected.restored_job_id ? `; restored job ${selected.restored_job_id}` : `; job ${selected.job_id}`}${selected.recovery.taskmanager_recovery ? `; ${selected.recovery.taskmanager_recovery}` : ""}`,
+        detail: `${localizeStructuralValue(selected.recovery.mode, locale)}${localizeStructuralValue(jobReference, locale)}${selected.recovery.taskmanager_recovery ? `; ${localizeStructuralValue(selected.recovery.taskmanager_recovery, locale)}` : ""}`,
         evidence: { recovery_mode: selected.recovery.mode, original_job_id: selected.job_id, restored_job_id: selected.restored_job_id ?? null, taskmanager_recovery: selected.recovery.taskmanager_recovery ?? null },
       },
       {
@@ -279,7 +295,7 @@ export default function P1FailureReplay() {
   }
 
   if (error) {
-    return <div className="p1-replay-error"><CircleAlert aria-hidden="true" /><strong>{locale === "en" ? "Recorded evidence unavailable" : "录制证据不可用"}</strong><span>{error}</span></div>;
+    return <div className="p1-replay-error"><CircleAlert aria-hidden="true" /><strong>{locale === "en" ? "Recorded evidence unavailable" : "录制证据不可用"}</strong><span>{userFacingError("evidence", locale)}</span></div>;
   }
 
   if (!report || !manifest || !selected || stages.length === 0) {
@@ -295,8 +311,8 @@ export default function P1FailureReplay() {
       <header className="p1-replay-header">
         <div>
           <p className="eyebrow">{locale === "en" ? "Captured Run" : "已记录运行"}</p>
-          <h3 id="p1-replay-title">Failure Replay Console</h3>
-          <p>{locale === "en" ? "Step through the recorded source, recovery, sink, and reconciliation evidence for each induced failure." : "逐步查看每类注入故障的源端、恢复、sink 与对账证据。"}</p>
+          <h3 id="p1-replay-title">{locale === "en" ? "Failure Replay Console" : "故障回放控制台"}</h3>
+          <p>{locale === "en" ? "Step through the recorded source, recovery, sink, and reconciliation evidence for each induced failure." : "逐步查看每类注入故障的源端、恢复、下游提交与对账证据。"}</p>
         </div>
         <div className="p1-disclosure"><CircleAlert aria-hidden="true" /><strong>{locale === "en" ? "Recorded evidence, not a live cluster." : "这是已记录的证据，不是在线集群。"}</strong><span>{locale === "en" ? "This deterministic viewer reads the published U6 JSON package only." : "这个确定性查看器只读取已发布的 U6 JSON 包。"}</span></div>
       </header>
@@ -330,7 +346,7 @@ export default function P1FailureReplay() {
           <div className="p1-stage-count"><span>{locale === "en" ? "Recorded stage" : "录制阶段"}</span><strong>{String(step + 1).padStart(2, "0")} / 08</strong></div>
           <h4>{currentStage.title}</h4>
           <p>{currentStage.detail}</p>
-          <pre data-testid="p1-evidence-excerpt">{JSON.stringify(currentStage.evidence, null, 2)}</pre>
+          <pre data-testid="p1-evidence-excerpt">{JSON.stringify(localizeEvidenceValue(currentStage.evidence, locale), null, 2)}</pre>
           <span className="p1-not-log"><FileJson aria-hidden="true" />{locale === "en" ? "Structured excerpt from the recorded JSON; not generated logs." : "来自录制 JSON 的结构化摘录；不是生成日志。"}</span>
         </aside>
       </div>
@@ -347,13 +363,13 @@ export default function P1FailureReplay() {
       </div>
 
       <div className="p1-run-metadata">
-        <div><span>{locale === "en" ? "Export package run ID" : "导出包 Run ID"}</span><code>{manifest.run_id}</code></div>
-        <div><span>{locale === "en" ? "Reconciliation run ID" : "对账 Run ID"}</span><code>{report.run_id}</code></div>
+        <div><span>{locale === "en" ? "Export package run ID" : "导出包运行 ID"}</span><code>{manifest.run_id}</code></div>
+        <div><span>{locale === "en" ? "Reconciliation run ID" : "对账运行 ID"}</span><code>{report.run_id}</code></div>
         <div><span>{locale === "en" ? "Source evidence commit" : "源证据提交"}</span><code title={manifest.source_evidence_commit}>{compactId(manifest.source_evidence_commit)}</code></div>
         <div><span>{locale === "en" ? "Baseline / execution SHA" : "基线 / 执行 SHA"}</span><code>{compactId(manifest.baseline_commit)} / {report.git_sha}</code></div>
         <div><span>{locale === "en" ? "Recorded window" : "录制时间"}</span><code>{formatTimestamp(report.started_at)} - {formatTimestamp(report.finished_at)}</code></div>
         <div className="wide"><span>{locale === "en" ? "Recorded command" : "录制命令"}</span><code>{report.command}</code></div>
-        <div className="wide"><span>{locale === "en" ? "Environment boundary" : "环境边界"}</span><strong>{manifest.environment_boundary}</strong></div>
+        <div className="wide"><span>{locale === "en" ? "Environment boundary" : "环境边界"}</span><strong>{localizeStructuralValue(manifest.environment_boundary, locale)}</strong></div>
       </div>
       <p className="p1-limitation"><CircleAlert aria-hidden="true" /><span>{locale === "en" ? "This replay shows one recorded Apple Silicon / Docker Desktop run. It is not a live cluster and does not establish universal reproducibility." : "限制：本回放只证明一次已录制的 Apple Silicon / Docker Desktop 运行；不表示当前有集群在线，也不声明普遍可复现。"}</span><ArtifactLink href={RESULT_URL}>{locale === "en" ? "View recorded JSON" : "查看源 JSON"}</ArtifactLink></p>
     </section>

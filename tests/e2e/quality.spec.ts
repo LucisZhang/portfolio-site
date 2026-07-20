@@ -155,6 +155,69 @@ test("artifact viewer preserves the shareable Chinese locale and project return 
   await page.goto("/artifact?src=/case-studies/p1-reliability-lab/README.md&from=/engineering/p1-reliability-lab&lang=zh", { waitUntil: "networkidle" });
   await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
   await expect(page.getByRole("link", { name: "返回项目" })).toHaveAttribute("href", /engineering\/p1-reliability-lab\?lang=zh$/);
+  await expect(page.locator(".artifact-page-header > div:first-child > p:not(.eyebrow)")).toHaveText("流式可靠性实验室 / MARKDOWN");
+  await expect(page.locator(".artifact-page-header")).not.toContainText("P1 Reliability Lab");
   await page.reload({ waitUntil: "networkidle" });
   await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
+});
+
+test("Chinese artifact controls localize tree summaries while preserving source identity", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "Locale mechanics are shared across viewports.");
+  await page.goto("/artifact?src=/case-studies/rag-quality-lab/claim-registry.json&lang=zh", { waitUntil: "networkidle" });
+
+  const rootSummary = page.locator(".json-tree > .json-node > summary");
+  await expect(rootSummary.locator("span")).toHaveText("根节点");
+  await expect(rootSummary.locator("small")).toHaveText("9 个键");
+  await expect(page.locator(".json-node summary small").filter({ hasText: /^4 项$/ })).toBeVisible();
+  await expect(page.locator(".json-tree")).toContainText("project");
+  await expect(page.locator(".json-tree")).toContainText('"RAG Quality Lab"');
+  await expect(page.locator(".artifact-page-header > div:first-child > p:not(.eyebrow)")).toHaveText("RAG 质量实验室 / JSON");
+});
+
+test("Chinese artifact errors expose only controlled localized messages", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "Diagnostic presentation is shared across viewports.");
+
+  await page.goto("/artifact?src=/case-studies/rag-quality-lab/missing.json&lang=zh", { waitUntil: "domcontentloaded" });
+  await expect(page.locator(".artifact-error")).toHaveText("无法打开该文件。");
+  await expect(page.locator(".artifact-error")).not.toContainText("HTTP 404");
+
+  await page.route("**/case-studies/rag-quality-lab/broken.pdf", async (route) => {
+    await route.fulfill({ status: 200, contentType: "application/pdf", body: "not a PDF" });
+  });
+  await page.goto("/artifact?src=/case-studies/rag-quality-lab/broken.pdf&lang=zh", { waitUntil: "domcontentloaded" });
+  await expect(page.locator(".artifact-error")).toHaveText("PDF 预览加载失败，请下载原文件。", { timeout: 20_000 });
+  await expect(page.locator(".artifact-error small")).toHaveCount(0);
+
+  await page.route("**/case-studies/rag-quality-lab/broken.mmd", async (route) => {
+    await route.fulfill({ status: 200, contentType: "text/plain", body: "not a Mermaid diagram" });
+  });
+  await page.goto("/artifact?src=/case-studies/rag-quality-lab/broken.mmd&lang=zh", { waitUntil: "domcontentloaded" });
+  await expect(page.locator(".artifact-error")).toHaveText("架构图渲染失败，仍可查看下方 Mermaid 源码。", { timeout: 20_000 });
+  await expect(page.locator(".artifact-error small")).toHaveCount(0);
+});
+
+test("root, track, project, and artifact metadata follow the active locale", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "Metadata synchronization is shared across viewports.");
+  const description = page.locator('meta[name="description"]');
+
+  await page.goto("/?lang=zh", { waitUntil: "networkidle" });
+  await expect.poll(() => page.title()).toBe("章向国 | 作品集");
+  await expect.poll(() => description.evaluateAll((nodes) => nodes.length > 0 && nodes.every((node) => node.getAttribute("content") === "数据工程、决策分析与 AI 应用项目——交互式演示，并明确每项所能验证的范围。"))).toBe(true);
+  await expect(page.getByRole("navigation", { name: "主要导航" })).toBeVisible();
+
+  await page.goto("/analytics?lang=zh", { waitUntil: "networkidle" });
+  const trackTitle = await page.locator("main > header h1").innerText();
+  const trackDescription = await page.locator("main > header .lede").innerText();
+  await expect.poll(() => page.title()).toBe(`${trackTitle} | 章向国`);
+  await expect.poll(() => description.evaluateAll((nodes, expected) => nodes.every((node) => node.getAttribute("content") === expected), trackDescription)).toBe(true);
+
+  await page.goto("/ai/rag-quality-lab?lang=zh", { waitUntil: "networkidle" });
+  const projectTitle = await page.locator("#project-title").innerText();
+  const projectDescription = await page.locator(".case-title .lede").innerText();
+  await expect.poll(() => page.title()).toBe(`${projectTitle} | 章向国`);
+  await expect.poll(() => description.evaluateAll((nodes, expected) => nodes.every((node) => node.getAttribute("content") === expected), projectDescription)).toBe(true);
+
+  await page.goto("/artifact?src=/case-studies/rag-quality-lab/claim-registry.json&lang=zh", { waitUntil: "networkidle" });
+  await expect.poll(() => page.title()).toBe("项目文件 | 章向国");
+  await expect.poll(() => description.evaluateAll((nodes) => nodes.every((node) => node.getAttribute("content") === "查看器仅增加说明与操作控件，原文件内容保持不变并可直接下载。"))).toBe(true);
 });

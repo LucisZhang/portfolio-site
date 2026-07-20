@@ -1,0 +1,256 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "98496739b860ae423deabbb1d5a443e123d7e6d9",
+  "scope": "New or modified binary files in the non-ignored Git working copy relative to baseCommit; deleted files are excluded.",
+  "binaryDetection": "Known binary extension or a NUL byte in the first 8000 bytes; PNG and JPEG dimensions are parsed from file bytes.",
+  "totals": {
+    "files": 22,
+    "new": 18,
+    "modified": 4,
+    "bytes": 7230423
+  },
+  "files": [
+    {
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-credit-policy-lab-top-1440.png",
+      "status": "new",
+      "bytes": 124244,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "1046c9a63399b19cf68ad8843094f63ddaa41fa7fc7ec0aec59b35de1998178a"
+    },
+    {
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-home-1440.png",
+      "status": "new",
+      "bytes": 124167,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "f67ddac09bf709794b34b9e493164233547100b50b70b819689d90733a098e02"
+    },
+    {
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-margin-control-tower-top-1440.png",
+      "status": "new",
+      "bytes": 128406,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "cae36243f55bc4c695d3c4c3d9369fabded6f9f967691d5986c3ebbef849f3b8"
+    },
+    {
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-privacy-preflight-1440.png",
+      "status": "new",
+      "bytes": 733932,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 5560
+      },
+      "sha256": "6ae77b87976e7e5388cffe578060276093dcfb1bfb8c16116a6b71177be63ff3"
+    },
+    {
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-privacy-preflight-top-1440.png",
+      "status": "new",
+      "bytes": 135335,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "ec175db618ef615dc70a9b490c4ea01a1db130333f50d03b97f16a6f9428a416"
+    },
+    {
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-release-guardian-1440.png",
+      "status": "new",
+      "bytes": 587520,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 4248
+      },
+      "sha256": "af8ed2fbc621889409fcba797d8c1fb73ccff5864523bbf936e0c7e9a4d05b1e"
+    },
+    {
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-release-guardian-top-1440.png",
+      "status": "new",
+      "bytes": 127727,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "18bc625ef9ab25d06f05c4bc15e24d373268b134d45916ecfe44432d2cf6be54"
+    },
+    {
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/en-desktop-release-replay-1440.png",
+      "status": "new",
+      "bytes": 131437,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "138eb2d82f86ac9d8625147e0b181f5a9bb89eede0b79e31cfc11e38ad5945da"
+    },
+    {
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-credit-policy-lab-top-1440.png",
+      "status": "new",
+      "bytes": 137939,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "4e14ce99eb97aa4a3806ec7921797caf51e08dd0a3b4b322d9e3e6ab90c97a64"
+    },
+    {
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-home-1440.png",
+      "status": "new",
+      "bytes": 140844,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "cbc1b140e2fee10e63c30c4846a190d1af4ed475acb3d15912450cc2a00f5426"
+    },
+    {
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-margin-control-tower-top-1440.png",
+      "status": "new",
+      "bytes": 142987,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "44878e8da3d9f026284697441db201b352536c249dce46b950f9273d974b8176"
+    },
+    {
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-privacy-preflight-1440.png",
+      "status": "new",
+      "bytes": 844522,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 5437
+      },
+      "sha256": "2c78be0bea49e5ced8c61172bff63c34feb4720a79191ffc4c0d4d5e86ebcef4"
+    },
+    {
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-privacy-preflight-top-1440.png",
+      "status": "new",
+      "bytes": 160547,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "ae22301a7e2b5984bdb71711806c30ba96de487cb404063f622b51e1db023bd2"
+    },
+    {
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-release-guardian-1440.png",
+      "status": "new",
+      "bytes": 655893,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 4180
+      },
+      "sha256": "88a3a22c76617914646bbaa3307c702050e529f92470e2aaaedf13d823a2783c"
+    },
+    {
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-release-guardian-top-1440.png",
+      "status": "new",
+      "bytes": 134138,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "2020185c433cadc3040a7439f19aad72c88ee2621a9cd3596a8c2558328774a4"
+    },
+    {
+      "path": "docs/phase2-public-review-artifacts/goal2-final/chrome/zh-desktop-release-replay-1440.png",
+      "status": "new",
+      "bytes": 134076,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 900
+      },
+      "sha256": "69e9eb50878f65412c5b3292d64215d9e10e680db1d80b0e45f3d9b0349798b1"
+    },
+    {
+      "path": "docs/phase2-public-review-artifacts/local-analytics/credit-desktop.png",
+      "status": "modified",
+      "bytes": 731570,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 5789
+      },
+      "sha256": "b9ea5c42378f6c349948835488fddbc1a2f3b0f787b9088022e81757fc099267"
+    },
+    {
+      "path": "docs/phase2-public-review-artifacts/local-analytics/credit-mobile.png",
+      "status": "modified",
+      "bytes": 706361,
+      "image": {
+        "format": "png",
+        "width": 390,
+        "height": 11953
+      },
+      "sha256": "59d7f86b7671ac24dfe143fdacf762ee736346ee6499a49b1ba04593d4906b06"
+    },
+    {
+      "path": "docs/phase2-public-review-artifacts/local-analytics/margin-desktop.png",
+      "status": "modified",
+      "bytes": 671997,
+      "image": {
+        "format": "png",
+        "width": 1440,
+        "height": 5025
+      },
+      "sha256": "3a42b8eae98c0230706b81daf5057d01ec532f9fbb137dff0f3f13e18a51f16b"
+    },
+    {
+      "path": "docs/phase2-public-review-artifacts/local-analytics/margin-mobile.png",
+      "status": "modified",
+      "bytes": 623647,
+      "image": {
+        "format": "png",
+        "width": 390,
+        "height": 10047
+      },
+      "sha256": "a7a6a32900d7cfc132fd25aaca2268fc67c7a86821cc57fb6516b7c83161ae08"
+    },
+    {
+      "path": "public/case-studies/privacy-preflight/image-synthetic-redacted-zh.png",
+      "status": "new",
+      "bytes": 28482,
+      "image": {
+        "format": "png",
+        "width": 1200,
+        "height": 700
+      },
+      "sha256": "ed899d18c01e67ce40f68ee48d73b0f5b223a9e6b975d715a358856bf5b74e85"
+    },
+    {
+      "path": "public/case-studies/privacy-preflight/pdf-synthetic-redacted-preview-zh.png",
+      "status": "new",
+      "bytes": 24652,
+      "image": {
+        "format": "png",
+        "width": 1200,
+        "height": 792
+      },
+      "sha256": "7f31a32a8a3f04818741af175a5a6d2402ec39305eb40517bf3a17f343386b00"
+    }
+  ]
+}

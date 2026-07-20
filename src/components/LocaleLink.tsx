@@ -7,5 +7,5 @@ import { localeHref, useI18n } from "@/lib/i18n";
 export default function LocaleLink({ href, ...props }: ComponentProps<typeof Link>) {
   const { locale } = useI18n();
   const localizedHref = typeof href === "string" ? localeHref(href, locale) : href;
-  return <Link href={localizedHref} {...props} />;
+  return <Link href={localizedHref} prefetch={false} {...props} />;
 }

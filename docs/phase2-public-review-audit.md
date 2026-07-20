@@ -1,6 +1,6 @@
 # Phase 2 public Review audit
 
-Updated: 2026-07-13 18:23 Asia/Shanghai (10:23 UTC)
+Updated: 2026-07-18 08:10 Asia/Shanghai (00:10 UTC)
 
 ## Baseline
 
@@ -58,3 +58,18 @@ The link checker covered 68 internal targets and 8 external targets with zero er
 - Public access is isolated to `portfolio-site-phase2-public-review`; the existing production project and its protected Preview policy were not opened globally.
 - Privacy, Margin, and Credit repositories remain private. Their Portfolio source labels do not imply publication authorization.
 - No formal macOS binary is published; licensing, packaging, signing, notarization, and stapling gates remain open.
+
+## 2026-07-17 Goal candidate local audit — pre-deployment
+
+- Review origin: `http://127.0.0.1:4173/`; this is local evidence, not deployed-preview D4.
+- Captured: 2026-07-18 07:39 Asia/Shanghai (2026-07-17 23:39 UTC).
+- Coverage: 11 routes, 66 bilingual viewport pages, 83 artifacts, 16 external links, and 104
+  screenshots.
+- Raw report and screenshots:
+  [`goal-candidate-local-20260717/`](phase2-public-review-artifacts/goal-candidate-local-20260717/).
+- Fresh link check: 84 internal targets and 16 external targets; the only two errors are the future
+  public-branch `pipelines/olist-margin` and `pipelines/credit-backtest` URLs returning HTTP 404
+  before the owner-authorized push. LinkedIn HTTP 999 is retained as an automation warning.
+- The historical `baseline/` directory remains byte-for-byte at public checkpoint `234da138`; it
+  was not repurposed for this candidate. The candidate report's embedded `label` and browser string
+  are disclosed in its companion README rather than silently rewriting the raw report.

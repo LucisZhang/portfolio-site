@@ -35,17 +35,128 @@
     {
       "path": "swiftui-app.png",
       "sha256": "93ce48de007b1528d62290271e8e81f640534e75401e9b5f70a5232ba2395548"
+    },
+    {
+      "path": "worker-tests-goal-candidate.json",
+      "generated_at": "2026-07-17T23:11:22Z",
+      "source": "exact final app/source ZIP replay",
+      "bytes": 3061,
+      "sha256": "97b66536d10ae24186fffe4725e7f10809d0473bd87a486c8068b560ade626c4"
+    },
+    {
+      "path": "ocr-fixture-benchmark.json",
+      "generated_at": "2026-07-17T10:53:21.129Z",
+      "source": "scripts/run-privacy-ocr-benchmark.mjs",
+      "bytes": 11615,
+      "sha256": "a783351c3262b70b65a59daf04df0531e8d3756aa6b9f79e7a0f10baad52aeb9"
+    },
+    {
+      "path": "image-example-english.png",
+      "generated_at": "2026-07-17",
+      "source": "scripts/generate-privacy-examples.mjs",
+      "bytes": 47085,
+      "sha256": "3e8bc7aba47631dcecadd9d35688b36621c9ba5b02bbed340189f6fe24b0bbd1"
+    },
+    {
+      "path": "image-example-chinese.png",
+      "generated_at": "2026-07-17",
+      "source": "scripts/generate-privacy-examples.mjs",
+      "bytes": 45151,
+      "sha256": "6290975d7d7867004a4f95737f8bdcb80505f90478955ec4d90fa53d83adc292"
+    },
+    {
+      "path": "ocr-fixture-small-font.png",
+      "generated_at": "2026-07-17",
+      "source": "scripts/generate-privacy-examples.mjs",
+      "bytes": 29258,
+      "sha256": "d0cbe9861715cbe412f4bdd08394972020c902b660137cc3143dfcc305d52e6f"
+    },
+    {
+      "path": "ocr-fixture-low-contrast.png",
+      "generated_at": "2026-07-17",
+      "source": "scripts/generate-privacy-examples.mjs",
+      "bytes": 45505,
+      "sha256": "ecef639a41f26edde3c2f20a19a6b50648bd70af0832cf978f725ca8ea37d07a"
+    },
+    {
+      "path": "ocr-fixture-multiline.png",
+      "generated_at": "2026-07-17",
+      "source": "scripts/generate-privacy-examples.mjs",
+      "bytes": 41588,
+      "sha256": "39e66bd073e37bc642d6b0b7ddecd3241391d74ec68e23076613f2bd2ba37f6c"
+    },
+    {
+      "path": "ocr-fixture-rotated.png",
+      "generated_at": "2026-07-17",
+      "source": "scripts/generate-privacy-examples.mjs",
+      "bytes": 51658,
+      "sha256": "96c1a8fcfa36dfd74fa21b009b78a19590c15c19ef4ae0f14d8952de6dbdd91b"
+    },
+    {
+      "path": "pdf-example-text-layer.pdf",
+      "generated_at": "2026-07-17",
+      "source": "scripts/generate-privacy-examples.mjs",
+      "bytes": 1251,
+      "sha256": "6abb5361f22cfb4603f777022e158b352084deee120758014f50824eb84dcc67"
+    },
+    {
+      "path": "pdf-example-scanned.pdf",
+      "generated_at": "2026-07-17",
+      "source": "scripts/generate-privacy-examples.mjs",
+      "bytes": 44574,
+      "sha256": "0ae96b781593c10549b6fd165cf3ccccbb5b1d3d862fefeec45a024a55e7e261"
+    },
+    {
+      "path": "pdf-example-multipage.pdf",
+      "generated_at": "2026-07-17",
+      "source": "scripts/generate-privacy-examples.mjs",
+      "bytes": 124125,
+      "sha256": "7ac589767b3b1a3dc8cd95c2391958d48f6eb052acfdd0b067fa73ac705e748f"
+    },
+    {
+      "path": "image-synthetic-redacted-zh.svg",
+      "generated_at": "2026-07-19",
+      "source": "scripts/generate-privacy-localized-proof-assets.mjs",
+      "derived_from": "image-synthetic-input-zh.svg",
+      "derived_from_sha256": "8ef34e4bc260dea4c850cf806432a8641c40efb6adddfab777c79771144c8ac3",
+      "bytes": 38147,
+      "sha256": "aa81a65ffb330c6e379314918f82dc6504b6a5bc75b111873d6959ade583ea16"
+    },
+    {
+      "path": "pdf-synthetic-redacted-preview-zh.svg",
+      "generated_at": "2026-07-19",
+      "source": "scripts/generate-privacy-localized-proof-assets.mjs",
+      "derived_from": "pdf-synthetic-input-preview-zh.svg",
+      "derived_from_sha256": "a89ee8f2c7029040f748aee06244b68a42696c0bcf78b84eaa3bce00d26840b9",
+      "bytes": 33043,
+      "sha256": "551d0690b85a0b4146223f4087fe53b3422e2c98e416e940e32da3e2be2eeb25"
     }
   ],
   "fixture_policy": "All names and contact details are explicitly fictional.",
-  "generated_at": "2026-07-12",
-  "source_commit": "78f13d5",
+  "generated_at": "2026-07-19",
   "verification": {
     "image_export": "fresh PNG with no copied source metadata",
     "swiftui_app_capture": "development app running against local worker on 127.0.0.1:8891",
     "pdf_export": "image-only; extractable text layer empty",
     "swift_build": "passed",
-    "worker_tests": "95 passed"
+    "worker_tests": "96 passed on the final source snapshot with the exact app ZIP interpreter and runtime dependencies"
   },
-  "worker_endpoint": "127.0.0.1:8891"
+  "worker_endpoint": "127.0.0.1:8891",
+  "browser_fixture_identity": {
+    "generated_examples_source": "scripts/generate-privacy-examples.mjs",
+    "benchmark_source": "scripts/run-privacy-ocr-benchmark.mjs",
+    "benchmark_generated_at": "2026-07-17T10:53:21.129Z",
+    "benchmark_summary": {
+      "fixtures": 7,
+      "expectedCount": 19,
+      "hitCount": 19,
+      "detectedCount": 21,
+      "falsePositiveCount": 2,
+      "recall": 1,
+      "precision": 0.9047619047619048
+    },
+    "boundary": "Synthetic local OCR fixtures only. These results are not a general OCR performance claim."
+  },
+  "source_snapshot": "runtime-matching metadata-stripped public source; exact identity is the source ZIP SHA-256 in downloads/release-manifest.json",
+  "source_sanitization": "internal coordination files, caches, build outputs, editable-install provenance, and first-party Swift debug paths are excluded"
 }

@@ -1,0 +1,571 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "scope": {
+    "worktree": "Goal2 local integration candidate",
+    "candidates": {
+      "file": "goal2-native447-final-candidates-v5.json (consent-bound local audit input; not published)",
+      "sha256": "423c151c84d96ef3bf009a1e6f2054ce9c5064b3af37cb7d08a0ca412de718f6"
+    },
+    "structural_module": {
+      "file": "src/lib/structural-copy.ts",
+      "sha256": "8eb5e8fb86ab10f7c7a91d07f0527f183cb68909de412a4c23dce438b1d1b2f4"
+    },
+    "product_files_modified_by_audit": 0
+  },
+  "counts": {
+    "finalized_records": 447,
+    "eligible_records": 446,
+    "structural_records": 392,
+    "structural_records_passed": 392,
+    "structural_exact_records": 363,
+    "structural_template_records": 29,
+    "structural_bindings": 429,
+    "structural_bound_keys": 392,
+    "nonstructural_records": 55,
+    "eligible_nonstructural_records": 54,
+    "eligible_nonstructural_records_passed": 54,
+    "source_superseded_records": 1,
+    "disposition_accounted_records": 447,
+    "raw_source_hashes_checked": 11,
+    "raw_source_hashes_passed": 11,
+    "component_wiring_assertions": 77,
+    "component_wiring_assertions_passed": 77,
+    "failed_checks": 0
+  },
+  "structural": {
+    "families": {
+      "margin": 83,
+      "credit": 27,
+      "elasticity": 1,
+      "p1": 19,
+      "rag": 29,
+      "release": 233
+    },
+    "raw_source_hashes": [
+      {
+        "file": "src/lib/duckdb.ts",
+        "expected": "6d10ba23ba296f0a01c17eb12b82e4b194240875be929c18672efc36b030431c",
+        "actual": "6d10ba23ba296f0a01c17eb12b82e4b194240875be929c18672efc36b030431c",
+        "pass": true
+      },
+      {
+        "file": "src/lib/olist-margin-compact.ts",
+        "expected": "304be0b2dd682c989a035f91aaed1f5d98f38aec129c85f376bfcd5607d70478",
+        "actual": "304be0b2dd682c989a035f91aaed1f5d98f38aec129c85f376bfcd5607d70478",
+        "pass": true
+      },
+      {
+        "file": "public/case-studies/margin-control-tower/synthetic-margin-data.json",
+        "expected": "eee0e0399185240b19485e35ec30edbdbf9d919fa8f97295dc8e63d6b40b6cc4",
+        "actual": "eee0e0399185240b19485e35ec30edbdbf9d919fa8f97295dc8e63d6b40b6cc4",
+        "pass": true
+      },
+      {
+        "file": "src/lib/generated/olist-margin-compact.json",
+        "expected": "81f4a100fbdf1a2c69716868830aec56f0de2bd951033c9ede63dd067ebdce91",
+        "actual": "81f4a100fbdf1a2c69716868830aec56f0de2bd951033c9ede63dd067ebdce91",
+        "pass": true
+      },
+      {
+        "file": "public/case-studies/credit-policy-lab/synthetic-credit-data.json",
+        "expected": "17a32a1e9b90c848e3ff02ecc790e2db60f1c470034472d078e6582ad3d15a4d",
+        "actual": "17a32a1e9b90c848e3ff02ecc790e2db60f1c470034472d078e6582ad3d15a4d",
+        "pass": true
+      },
+      {
+        "file": "public/case-studies/credit-policy-lab/scored-backtest.parquet",
+        "expected": "2bbc97350d28123a1b056e4d475cdc90000954df1e6226d54d4fa35f2e7e0b95",
+        "actual": "2bbc97350d28123a1b056e4d475cdc90000954df1e6226d54d4fa35f2e7e0b95",
+        "pass": true
+      },
+      {
+        "file": "public/case-studies/margin-control-tower/elasticity-report.json",
+        "expected": "8f5cf741575d5dfe290ecb7422f304eaf7065f6157b664b4ac36b367dcc4c10d",
+        "actual": "8f5cf741575d5dfe290ecb7422f304eaf7065f6157b664b4ac36b367dcc4c10d",
+        "pass": true
+      },
+      {
+        "file": "public/case-studies/p1-reliability-lab/results/u6-local-mac/eo_reconciliation-all.json",
+        "expected": "e6c613bc1dc0be55f88c1a10cdd199cbc2d9ca6ec74cc30e5e1a361dc93bb91a",
+        "actual": "e6c613bc1dc0be55f88c1a10cdd199cbc2d9ca6ec74cc30e5e1a361dc93bb91a",
+        "pass": true
+      },
+      {
+        "file": "public/case-studies/p1-reliability-lab/results/u6-local-mac/manifest.json",
+        "expected": "74a84275a179579c74e9545027c61c38bd6b0b714efe58251170e96b2b2960f9",
+        "actual": "74a84275a179579c74e9545027c61c38bd6b0b714efe58251170e96b2b2960f9",
+        "pass": true
+      },
+      {
+        "file": "public/case-studies/rag-quality-lab/claim-registry.json",
+        "expected": "95b3380728df1c2de4df7bb69a1c525c10f0e8818f79577ab336c1c5ebc544ba",
+        "actual": "95b3380728df1c2de4df7bb69a1c525c10f0e8818f79577ab336c1c5ebc544ba",
+        "pass": true
+      },
+      {
+        "file": "public/case-studies/release-guardian/replay/synthetic-scenarios.json",
+        "expected": "9e28c710e63191ac37f9b015e52f3a41a5f848d7286dd93ed94fcb4d7d506541",
+        "actual": "9e28c710e63191ac37f9b015e52f3a41a5f848d7286dd93ed94fcb4d7d506541",
+        "pass": true
+      }
+    ],
+    "component_wiring_files": [
+      "src/components/analytics/MarginControlTower.tsx",
+      "src/components/analytics/CreditPolicyLab.tsx",
+      "src/components/analytics/ElasticityPanel.tsx",
+      "src/components/p1/P1FailureReplay.tsx",
+      "src/components/rag/RagManifestDriftLab.tsx",
+      "src/components/release/ReleaseChangeReplay.tsx"
+    ]
+  },
+  "nonstructural_direct": [
+    {
+      "key": "project.margin-control-tower.provenance.2",
+      "family": "fable3",
+      "file": "src/lib/projects.ts",
+      "locator": "project.margin-control-tower.provenance.2",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "project.credit-policy-lab.provenance.2",
+      "family": "fable3",
+      "file": "src/lib/projects.ts",
+      "locator": "project.credit-policy-lab.provenance.2",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "paired.json.methods.credit.changed",
+      "family": "fable3",
+      "file": "public/case-studies/credit-policy-lab/methods-evidence.json",
+      "locator": "/changed",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "project.privacy-preflight-mac.role",
+      "family": "static42",
+      "file": "src/lib/projects.ts",
+      "locator": "project.privacy-preflight-mac.role",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "project.privacy-preflight-mac.architecture.4.detail",
+      "family": "static42",
+      "file": "src/lib/projects.ts",
+      "locator": "project.privacy-preflight-mac.architecture.4.detail",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "project.margin-control-tower.role",
+      "family": "static42",
+      "file": "src/lib/projects.ts",
+      "locator": "project.margin-control-tower.role",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "project.margin-control-tower.architecture.2.detail",
+      "family": "static42",
+      "file": "src/lib/projects.ts",
+      "locator": "project.margin-control-tower.architecture.2.detail",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "project.margin-control-tower.boundaries.4",
+      "family": "static42",
+      "file": "src/lib/projects.ts",
+      "locator": "project.margin-control-tower.boundaries.4",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "project.margin-control-tower.boundaries.5",
+      "family": "static42",
+      "file": "src/lib/projects.ts",
+      "locator": "project.margin-control-tower.boundaries.5",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "project.credit-policy-lab.problem",
+      "family": "static42",
+      "file": "src/lib/projects.ts",
+      "locator": "project.credit-policy-lab.problem",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "project.credit-policy-lab.outcome",
+      "family": "static42",
+      "file": "src/lib/projects.ts",
+      "locator": "project.credit-policy-lab.outcome",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "project.credit-policy-lab.architecture.5.detail",
+      "family": "static42",
+      "file": "src/lib/projects.ts",
+      "locator": "project.credit-policy-lab.architecture.5.detail",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "project.credit-policy-lab.provenance.4",
+      "family": "static42",
+      "file": "src/lib/projects.ts",
+      "locator": "project.credit-policy-lab.provenance.4",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "runtime.p1proof.line-23.1.name",
+      "family": "static42",
+      "file": "src/components/P1Proof.tsx",
+      "locator": "object:23",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "runtime.p1proof.line-31.2.locale",
+      "family": "static42",
+      "file": "src/components/P1Proof.tsx",
+      "locator": "locale-conditional:31",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "runtime.p1proof.line-31.3.locale",
+      "family": "static42",
+      "file": "src/components/P1Proof.tsx",
+      "locator": "locale-conditional:31",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "runtime.p1proof.line-46.1.alt",
+      "family": "static42",
+      "file": "src/components/P1Proof.tsx",
+      "locator": "object:46",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "runtime.p1proof.line-46.2.caption",
+      "family": "static42",
+      "file": "src/components/P1Proof.tsx",
+      "locator": "object:46",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "runtime.releaseguardianproof.line-21.1.localized",
+      "family": "static42",
+      "file": "src/components/ReleaseGuardianProof.tsx",
+      "locator": "object:21",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "runtime.releaseguardianproof.line-38.1.issue",
+      "family": "static42",
+      "file": "src/components/ReleaseGuardianProof.tsx",
+      "locator": "object:38",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "runtime.releaseguardianproof.line-82.1.locale",
+      "family": "static42",
+      "file": "src/components/ReleaseGuardianProof.tsx",
+      "locator": "locale-conditional:82",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "runtime.releaseguardianproof.line-82.3.locale",
+      "family": "static42",
+      "file": "src/components/ReleaseGuardianProof.tsx",
+      "locator": "locale-conditional:82",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "runtime.releaseguardianproof.line-90.2.locale",
+      "family": "static42",
+      "file": "src/components/ReleaseGuardianProof.tsx",
+      "locator": "locale-conditional:90",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "runtime.releaseguardianproof.line-90.4.locale",
+      "family": "static42",
+      "file": "src/components/ReleaseGuardianProof.tsx",
+      "locator": "locale-conditional:90",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "runtime.releaseguardianproof.line-90.6.locale",
+      "family": "static42",
+      "file": "src/components/ReleaseGuardianProof.tsx",
+      "locator": "locale-conditional:90",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "runtime.releaseguardianproof.line-109.2.caption",
+      "family": "static42",
+      "file": "src/components/ReleaseGuardianProof.tsx",
+      "locator": "object:109",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "runtime.releaseguardianproof.line-110.1.alt",
+      "family": "static42",
+      "file": "src/components/ReleaseGuardianProof.tsx",
+      "locator": "object:110",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "runtime.releaseguardianproof.line-110.2.caption",
+      "family": "static42",
+      "file": "src/components/ReleaseGuardianProof.tsx",
+      "locator": "object:110",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "paired.ts.components.analytics.margincontroltower.33273.margincontroltower-locale-528.exact-parquet-bytes-and-",
+      "family": "static42",
+      "file": "src/components/analytics/MarginControlTower.tsx",
+      "locator": "locale-conditional:529",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "paired.ts.components.analytics.margincontroltower.34453.margincontroltower-locale-574.find-where-contribution-",
+      "family": "static42",
+      "file": "src/components/analytics/MarginControlTower.tsx",
+      "locator": "locale-conditional:575",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "paired.ts.components.analytics.margincontroltower.34780.margincontroltower-locale-576.explore-a-hash-bound-com",
+      "family": "static42",
+      "file": "src/components/analytics/MarginControlTower.tsx",
+      "locator": "locale-conditional:577",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "paired.ts.components.analytics.margincontroltower.54191.margincontroltower-locale-633.the-exact-hash-full-arti",
+      "family": "static42",
+      "file": "src/components/analytics/MarginControlTower.tsx",
+      "locator": "locale-conditional:634",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "paired.ts.components.analytics.creditpolicylab.28592.creditpolicylab-locale-515.move-from-a-synthetic-",
+      "family": "static42",
+      "file": "src/components/analytics/CreditPolicyLab.tsx",
+      "locator": "locale-conditional:516",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "paired.ts.components.analytics.creditpolicylab.28800.creditpolicylab-locale-515.apply-the-existing-score",
+      "family": "static42",
+      "file": "src/components/analytics/CreditPolicyLab.tsx",
+      "locator": "locale-conditional:516",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "runtime.rag-ragmanifestdriftlab.line-294.3.locale",
+      "family": "static42",
+      "file": "src/components/rag/RagManifestDriftLab.tsx",
+      "locator": "locale-conditional:341",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "paired.ts.components.analytics.margincontroltower.42117.margincontroltower-locale-604.recorded-at-build-time-a",
+      "family": "static42",
+      "file": "src/components/analytics/MarginControlTower.tsx",
+      "locator": "locale-conditional:605",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "paired.ts.components.analytics.margincontroltower.50779.margincontroltower-locale-628.bounded-action-scenario",
+      "family": "static42",
+      "file": "src/components/analytics/MarginControlTower.tsx",
+      "locator": "locale-conditional:629",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "paired.ts.components.analytics.creditpolicylab.40938.creditpolicylab-locale-547.artifact-currency-review",
+      "family": "static42",
+      "file": "src/components/analytics/CreditPolicyLab.tsx",
+      "locator": "locale-conditional:548",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "paired.ts.components.analytics.creditpolicylab.41883.creditpolicylab-locale-547.the-lab-opens-with-a-del",
+      "family": "static42",
+      "file": "src/components/analytics/CreditPolicyLab.tsx",
+      "locator": "locale-conditional:548",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "gap.jsx.src-components-privacyproof-tsx.start-1627",
+      "family": "static42",
+      "file": "src/components/PrivacyProof.tsx",
+      "locator": "locale-conditional:38",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "gap.jsx.src-components-privacyproof-tsx.start-1835",
+      "family": "static42",
+      "file": "src/components/PrivacyProof.tsx",
+      "locator": "locale-conditional:39",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "gap.localized.src-components-projectproof-tsx.start-959.analyticsmigrationproof-locale-27",
+      "family": "static42",
+      "file": "src/components/ProjectProof.tsx",
+      "locator": "locale-conditional:27",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "gap.localized.src-components-projectproof-tsx.start-1353.analyticsmigrationproof-locale-27",
+      "family": "static42",
+      "file": "src/components/ProjectProof.tsx",
+      "locator": "locale-conditional:27",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "paired.ts.components.analytics.margincontroltower.52837.margincontroltower-locale-628.no-later-held-out-week-f",
+      "family": "static42",
+      "file": "src/components/analytics/MarginControlTower.tsx",
+      "locator": "locale-conditional:629",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "project.credit-policy-lab.stack.1",
+      "family": "stack10",
+      "file": "src/lib/projects.ts",
+      "locator": "project.credit-policy-lab.stack.1",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "project.credit-policy-lab.stack.2",
+      "family": "stack10",
+      "file": "src/lib/projects.ts",
+      "locator": "project.credit-policy-lab.stack.2",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "project.credit-policy-lab.stack.3",
+      "family": "stack10",
+      "file": "src/lib/projects.ts",
+      "locator": "project.credit-policy-lab.stack.3",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "project.credit-policy-lab.stack.4",
+      "family": "stack10",
+      "file": "src/lib/projects.ts",
+      "locator": "project.credit-policy-lab.stack.4",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "project.margin-control-tower.stack.0",
+      "family": "stack10",
+      "file": "src/lib/projects.ts",
+      "locator": "project.margin-control-tower.stack.0",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "project.margin-control-tower.stack.1",
+      "family": "stack10",
+      "file": "src/lib/projects.ts",
+      "locator": "project.margin-control-tower.stack.1",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "project.margin-control-tower.stack.2",
+      "family": "stack10",
+      "file": "src/lib/projects.ts",
+      "locator": "project.margin-control-tower.stack.2",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "project.margin-control-tower.stack.3",
+      "family": "stack10",
+      "file": "src/lib/projects.ts",
+      "locator": "project.margin-control-tower.stack.3",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "project.rag-quality-lab.stack.2",
+      "family": "stack10",
+      "file": "src/lib/projects.ts",
+      "locator": "project.rag-quality-lab.stack.2",
+      "en_pass": true,
+      "zh_pass": true
+    },
+    {
+      "key": "project.rag-quality-lab.stack.5",
+      "family": "stack10",
+      "file": "src/lib/projects.ts",
+      "locator": "project.rag-quality-lab.stack.5",
+      "en_pass": true,
+      "zh_pass": true
+    }
+  ],
+  "source_superseded": {
+    "key": "project.p1-reliability-lab.role",
+    "current": {
+      "en": "I built all of it: the deterministic event generator, the failure harness, the reconciliation checks, the incident runbook, and the recorded-run dashboard.",
+      "zh": "我全程自建：确定性事件生成器、故障注入框架、对账检查、事故处置手册和已记录运行面板。",
+      "line": 165
+    },
+    "expected_current": {
+      "en": "I built all of it: the deterministic event generator, the failure harness, the reconciliation checks, the incident runbook, and the recorded-run dashboard.",
+      "zh": "我全程自建：确定性事件生成器、故障注入框架、对账检查、事故处置手册和已记录运行面板。"
+    },
+    "current_pair_pass": true,
+    "stale_candidate_not_written": true
+  },
+  "failures": []
+}

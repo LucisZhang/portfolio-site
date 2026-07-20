@@ -4,12 +4,20 @@ import { resolve } from "node:path";
 
 const screenshotRoot = resolve("docs/phase2-public-review-artifacts/local-analytics");
 
+test.describe.configure({ timeout: 90_000 });
+
 test.beforeAll(async () => {
   await mkdir(screenshotRoot, { recursive: true });
 });
 
 test("Margin Control Tower uses the expanded dataset for linked diagnosis and scenario recomputation", async ({ page }, testInfo) => {
+  const browserErrors: string[] = [];
+  page.on("pageerror", (error) => browserErrors.push(error.message));
   await page.goto("/analytics/margin-control-tower", { waitUntil: "networkidle" });
+  const lab = page.getByTestId("margin-control-tower");
+  await expect(lab).toHaveAttribute("data-active-source", "real", { timeout: 60_000 });
+  await lab.getByRole("button", { name: "Synthetic fixture" }).click();
+  await expect(lab).toHaveAttribute("data-active-source", "synthetic");
   await expect(page.locator(".analytics-dataset-context dd").filter({ hasText: "9,360 rows" }).first()).toBeVisible();
   await expect(page.locator(".analytics-dataset-context dd").filter({ hasText: "52 weeks" }).first()).toBeVisible();
   await expect(page.getByText("fixed-seed injected anomaly")).toBeVisible();
@@ -28,16 +36,25 @@ test("Margin Control Tower uses the expanded dataset for linked diagnosis and sc
   await page.getByRole("slider", { name: "Promotion depth" }).fill("8");
   await expect(page.locator(".margin-action code")).not.toHaveText(actionBefore ?? "");
   await expect(page.locator(".margin-before-after")).toContainText("Delta");
+  await expect(page.getByRole("img", { name: "Contribution margin waterfall" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Download full CSV" })).toHaveAttribute("href", /synthetic-margin-data\.csv$/);
-  await expect(page.getByRole("link", { name: "Download Parquet" })).toHaveAttribute("href", /synthetic-margin-data\.parquet$/);
+  await expect(page.getByRole("link", { name: "Download synthetic Parquet" })).toHaveAttribute("href", /synthetic-margin-data\.parquet$/);
+  expect(browserErrors).toEqual([]);
 
   if (testInfo.project.name !== "tablet") {
+    await page.evaluate(() => window.scrollTo(0, 0));
     await page.screenshot({ path: resolve(screenshotRoot, `margin-${testInfo.project.name}.png`), fullPage: true });
   }
 });
 
 test("Credit Policy Lab recomputes model, thresholds, capacity, queue, and audit record", async ({ page }, testInfo) => {
+  const browserErrors: string[] = [];
+  page.on("pageerror", (error) => browserErrors.push(error.message));
   await page.goto("/analytics/credit-policy-lab", { waitUntil: "networkidle" });
+  const lab = page.getByTestId("credit-policy-lab");
+  await expect(lab).toHaveAttribute("data-active-source", "real", { timeout: 60_000 });
+  await lab.getByRole("button", { name: "Synthetic fixture" }).click();
+  await expect(lab).toHaveAttribute("data-active-source", "synthetic");
   await expect(page.locator(".analytics-dataset-context dd").filter({ hasText: "12,000 applications" }).first()).toBeVisible();
   await expect(page.locator(".credit-decision-boundary")).toContainText("Model probability is not the final business decision");
 
@@ -57,8 +74,27 @@ test("Credit Policy Lab recomputes model, thresholds, capacity, queue, and audit
   await expect(page.locator(".credit-queue-grid section").first()).toContainText("Manual review queue");
   await expect(page.getByRole("link", { name: "Download full CSV" })).toHaveAttribute("href", /synthetic-credit-data\.csv$/);
   await expect(page.getByRole("link", { name: "Download Parquet" })).toHaveAttribute("href", /synthetic-credit-data\.parquet$/);
+  await expect(page.locator(".swap-set-panel article")).toHaveCount(5);
+  await expect(page.locator(".swap-set-panel")).toContainText("Challenger-only approvals");
+
+  if (testInfo.project.name === "mobile") {
+    const originalViewport = page.viewportSize();
+    await page.setViewportSize({ width: 375, height: 844 });
+    await page.getByRole("button", { name: "中", exact: true }).click();
+    await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(overflow).toBeLessThanOrEqual(1);
+    await page.getByRole("button", { name: "EN", exact: true }).click();
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+    if (originalViewport) await page.setViewportSize(originalViewport);
+  }
+
+  expect(browserErrors).toEqual([]);
 
   if (testInfo.project.name !== "tablet") {
+    await page.evaluate(() => window.scrollTo(0, 0));
     await page.screenshot({ path: resolve(screenshotRoot, `credit-${testInfo.project.name}.png`), fullPage: true });
   }
 });
