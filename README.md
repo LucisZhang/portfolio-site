@@ -1,5 +1,7 @@
 # Hsiang Kuo Chang — Portfolio
 
+[![CI](https://github.com/LucisZhang/portfolio-site/actions/workflows/ci.yml/badge.svg)](https://github.com/LucisZhang/portfolio-site/actions/workflows/ci.yml)
+
 Bilingual (English / 简体中文) portfolio covering applied AI, streaming reliability
 engineering, privacy tooling, retrieval evaluation, and analytics — built as a piece of
 evidence engineering, not just a website. Every case study is backed by a machine-checked
