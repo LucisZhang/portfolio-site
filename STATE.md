@@ -70,10 +70,10 @@ verification remain required before this status can be changed to deployed.
 ## External-action state
 
 - The current work is isolated from the user's primary checkout and untracked local inventory.
-- The public repository's `main` still reflects the earlier v1 history at the start of this work;
-  the richer public portfolio branch is on a separate history. Publication must therefore create a
-  clean normal descendant of the current public `main`, apply the audited public tree delta, and
-  use a non-force fast-forward update only after all gates pass.
+- The public repository's `main` still reflects the earlier v1 commit at the start of this work.
+  A live `git merge-base --is-ancestor` check confirmed that commit is an ancestor of this richer
+  public portfolio candidate, so publication can use an ordinary non-force fast-forward after
+  Preview passes; no unrelated-history merge or copied replacement tree is needed.
 - Preview and Production must receive the five required server secrets/values by name and target:
   OpenRouter key, Upstash URL/token, independent assistant HMAC secret, and private knowledge
   packet. Values must never be printed or committed.
