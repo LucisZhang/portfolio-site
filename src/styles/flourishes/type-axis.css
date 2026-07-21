@@ -1,0 +1,70 @@
+/* The layout-level next/font/local variable is the only font-loading hook for this module. */
+:where(
+  .workspace-head h1,
+  .index-heading h2,
+  .site-header nav a,
+  .discipline-strip a,
+  .project-name strong
+) {
+  font-family: var(--font-flourish-latin), Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+@supports (font-variation-settings: "wght" 400) {
+  @keyframes flourish-type-axis-settle {
+    from {
+      font-variation-settings: "wght" 560;
+    }
+
+    to {
+      font-variation-settings: "wght" 620;
+    }
+  }
+
+  .workspace-head h1 {
+    font-variation-settings: "wght" 620;
+    animation: flourish-type-axis-settle 400ms ease-out both;
+  }
+
+  .site-header nav a {
+    font-variation-settings: "wght" 400;
+    transition: font-variation-settings 200ms ease-out;
+  }
+
+  .discipline-strip a,
+  .project-name strong {
+    font-variation-settings: "wght" 700;
+    transition: font-variation-settings 200ms ease-out;
+  }
+
+  .site-header nav a:is(:hover, :focus-visible) {
+    font-variation-settings: "wght" 470;
+  }
+
+  .discipline-strip a:is(:hover, :focus-visible),
+  .project-table > a:is(:hover, :focus-visible) .project-name strong {
+    font-variation-settings: "wght" 770;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @supports (font-variation-settings: "wght" 400) {
+    .workspace-head h1 {
+      animation: none;
+      font-variation-settings: "wght" 620;
+    }
+
+    .site-header nav a,
+    .site-header nav a:is(:hover, :focus-visible) {
+      transition: none;
+      font-variation-settings: "wght" 400;
+    }
+
+    .discipline-strip a,
+    .discipline-strip a:is(:hover, :focus-visible),
+    .project-name strong,
+    .project-table > a:is(:hover, :focus-visible) .project-name strong {
+      transition: none;
+      font-variation-settings: "wght" 700;
+    }
+  }
+}

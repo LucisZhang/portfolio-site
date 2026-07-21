@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 import AssistantLauncher from "@/components/assistant/AssistantLauncher";
 import CommandPalette from "@/components/CommandPalette";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -8,6 +9,16 @@ import { featuredProjects, tracks } from "@/lib/projects";
 import { siteMetadata } from "@/lib/site-config";
 import "./globals.css";
 
+const flourishLatin = localFont({
+  src: "./fonts/InterVariable-Latin.woff2",
+  variable: "--font-flourish-latin",
+  weight: "100 900",
+  style: "normal",
+  display: "swap",
+  preload: false,
+  fallback: ["Arial"],
+  adjustFontFallback: "Arial",
+});
 
 export const metadata: Metadata = {
   title: siteMetadata.title.en,
@@ -26,7 +37,7 @@ function FooterCopy() {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={flourishLatin.variable}>
       <body>
         <LanguageProvider>
           <header className="site-header">
