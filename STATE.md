@@ -5,10 +5,10 @@ Updated: 2026-07-22 (Asia/Shanghai)
 This file records the recruiter-safe state of the current public-release candidate. It contains no
 credentials, raw private candidate material, local source paths, or browser-session data.
 
-Overall status: `LOCAL_VERIFIED_AWAITING_PUBLICATION`. The portfolio and bilingual hybrid-RAG
-assistant have passed local code, evidence, build, browser, dependency, performance, and direct
-live-model acceptance. Clean public-main lineage, secret scanning, Preview, and Production
-verification remain required before this status can be changed to deployed.
+Overall status: `DEPLOYED_VERIFIED`. The portfolio and bilingual hybrid-RAG assistant have passed
+local code, evidence, build, browser, dependency, performance, secret-scanning, Preview, and
+Production acceptance. The public alias is
+`https://portfolio-site-seven-murex.vercel.app/`.
 
 ## Candidate delivery
 
@@ -41,7 +41,7 @@ verification remain required before this status can be changed to deployed.
   materials. Legacy RAG corpus-size, latency, quality, and regression claims are filtered and
   forbidden by the model policy.
 
-## Local live acceptance
+## Verification and live acceptance
 
 - A direct English live request completed with HTTP-equivalent status 200 on
   `anthropic/claude-sonnet-4.6`, using 9 retrieved blocks and public plus private citations.
@@ -66,17 +66,34 @@ verification remain required before this status can be changed to deployed.
 - Lighthouse 13.4.0 scored Performance / Accessibility / Best Practices / SEO as follows: home
   `96 / 100 / 100 / 100`, Margin `96 / 100 / 100 / 100`, Privacy `91 / 100 / 100 / 100`, and
   Release `93 / 100 / 100 / 100`. The homepage remains above the required Performance floor of 90.
+- A second Lighthouse 13.4.0 run against the public Production alias scored
+  `94 / 100 / 100 / 100`, with zero cumulative layout shift and 21 ms total blocking time.
+- Production browser inspection passed in English and Chinese: the assistant launcher and dialog
+  were visible, the disclosure and prompts matched the selected locale, no horizontal overflow was
+  present, and the browser console contained no warnings or errors.
+- The final runtime acceptance completed on Production in both languages with HTTP status 200,
+  the intended locale-specific model, the Upstash limiter, 9 retrieved blocks, and the exact
+  public/private knowledge hashes. Both answers retained the verified DiDi internship evidence;
+  neither reintroduced superseded RAG metrics or a production-grade claim.
 
 ## External-action state
 
 - The current work is isolated from the user's primary checkout and untracked local inventory.
-- The public repository's `main` still reflects the earlier v1 commit at the start of this work.
-  A live `git merge-base --is-ancestor` check confirmed that commit is an ancestor of this richer
-  public portfolio candidate, so publication can use an ordinary non-force fast-forward after
-  Preview passes; no unrelated-history merge or copied replacement tree is needed.
-- Preview and Production must receive the five required server secrets/values by name and target:
-  OpenRouter key, Upstash URL/token, independent assistant HMAC secret, and private knowledge
-  packet. Values must never be printed or committed.
-- No v13 push, Preview deployment, Production deployment, alias change, tag, or release is
-  claimed by this file yet. The owner has authorized merge and deployment after successful audit;
-  a failed or ambiguous gate still blocks publication.
+- The assistant branch was published and public `main` was advanced through an ordinary
+  non-force fast-forward. The runtime release commit is
+  `7940c51eb2e6d862aa288e34a06fcd3fee38349d`.
+- Preview and Production hold the five required encrypted server values: OpenRouter key, Upstash
+  URL/token, independent assistant HMAC secret, and private knowledge packet. No value was printed
+  or committed. Their aggregate value size remains below Vercel's environment-variable limit.
+- Production deployment `dpl_4oT626287x9x1UFiA15w1hZupwKA` was independently inspected as
+  `READY`, target `production`, Git ref `main`, exact runtime release commit above, with the public
+  alias attached. All 11 fixed public routes returned status 200 with the expected security
+  headers.
+- Full-range Gitleaks reported no leaks. TruffleHog's two initial verified-looking matches were
+  independently traced to Python test-function names inside a pre-existing public Privacy source
+  archive; the text-only rerun, excluding packaged binaries and archives that the scanner could
+  not decode, reported zero verified and zero unverified secrets.
+- One Chinese Preview call received a transient upstream 502 from Kimi. The assistant correctly
+  performed no hidden automatic retry; an independent recheck and the final Production Chinese
+  acceptance both completed successfully. This remains an observable upstream availability risk,
+  not a failed release gate.
