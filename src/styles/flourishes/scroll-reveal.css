@@ -1,0 +1,37 @@
+@keyframes flourish-entry-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .discipline-strip a,
+  .project-table > a {
+    animation: flourish-entry-reveal linear both;
+    animation-timeline: view();
+  }
+
+  .discipline-strip a {
+    animation-range: entry 0% entry 12%;
+  }
+
+  .project-table > a {
+    /* Keep low-contrast transition frames at the viewport edge, outside the reading zone. */
+    animation-range: entry 0% entry 1%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .discipline-strip a,
+  .project-table > a {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
