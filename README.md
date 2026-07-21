@@ -74,6 +74,7 @@ npm run typecheck
 npm run lint
 npm run verify:evidence
 npm run verify:assistant
+npm run verify:assistant-public-sources
 npm run build
 npm run verify:performance
 npm run test:e2e -- --workers=1
@@ -81,8 +82,10 @@ npm audit --omit=dev
 ```
 
 The browser suite is serialized on the review Mac to avoid host-level Chrome resource contention.
-The assistant's local and Vercel environment-variable boundary, Upstash/fallback limiter modes,
-fail-closed behavior, and no-secret rules are documented in
+The bilingual assistant retrieves from a commit-pinned public GitHub snapshot plus reviewed private
+candidate material, then uses separate English and Chinese explanatory models through ZDR-only
+OpenRouter routing. Its environment boundary, Upstash limiter, evidence authority, fail-closed
+behavior, and no-secret rules are documented in
 [`docs/assistant-operations.md`](docs/assistant-operations.md).
 See [`STATE.md`](STATE.md) for the commit-local public boundary and
 [`docs/PUBLICATION_CHECKLIST.md`](docs/PUBLICATION_CHECKLIST.md) for the exact owner-gated steps

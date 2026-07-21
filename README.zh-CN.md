@@ -57,16 +57,18 @@ npm run typecheck
 npm run lint
 npm run verify:evidence
 npm run verify:assistant
+npm run verify:assistant-public-sources
 npm run build
 npm run verify:performance
 npm run test:e2e -- --workers=1
 npm audit --omit=dev
 ```
 
-当前评审 Mac 上串行执行浏览器测试，以避免主机级 Chrome 资源争用。
-[`docs/assistant-operations.md`](docs/assistant-operations.md) 记录助手的本地/Vercel 环境变量、
-已选择的 Upstash Redis 限流、缺少两项 Upstash 变量时明确披露的本地内存回退、失败即拦截
-行为与密钥边界。提交内的公开边界见
+当前评审 Mac 上串行执行浏览器测试，以避免主机级 Chrome 资源争用。双语助手会从固定 Git
+commit 的公开仓库快照和经审阅的私有候选人材料中检索证据，再通过仅允许零数据保留端点的
+OpenRouter 路由调用中英文不同的解说模型。
+[`docs/assistant-operations.md`](docs/assistant-operations.md) 记录其本地/Vercel 环境变量、
+Upstash Redis 限流、证据优先级、失败即拦截行为与密钥边界。提交内的公开边界见
 [`STATE.md`](STATE.md)；远端分支、PR 与部署的 owner-gated 步骤见
 [`docs/PUBLICATION_CHECKLIST.md`](docs/PUBLICATION_CHECKLIST.md)。
 

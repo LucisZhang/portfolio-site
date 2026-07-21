@@ -13,9 +13,9 @@ import {
   ASSISTANT_EVIDENCE_MODE,
   ASSISTANT_POLICY_REVISION,
   executeAssistantRequest,
+  type AssistantCitation,
   type AssistantOutputRejection,
 } from "@/lib/assistant-policy";
-import type { AssistantPublicCitation } from "@/lib/assistant-public-sources";
 import {
   createAssistantRateLimiter,
   type AssistantRateLimiter,
@@ -24,7 +24,7 @@ import {
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 30;
+export const maxDuration = 45;
 
 const assistantGlobal = globalThis as typeof globalThis & {
   __portfolioAssistantRateLimiter?: AssistantRateLimiter;
@@ -36,8 +36,10 @@ function responseHeaders(
   rate?: RateLimitDecision,
   responseReturnedModel?: string,
   outputRejection?: AssistantOutputRejection,
-  sourcePackSha256?: string,
-  factCatalogSha256?: string,
+  publicSnapshotSha256?: string,
+  privateSnapshotSha256?: string,
+  combinedSnapshotSha256?: string,
+  retrievalCount?: number,
   outboundPayloadSha256?: string,
 ) {
   const headers: Record<string, string> = {
@@ -48,8 +50,10 @@ function responseHeaders(
   };
   if (responseReturnedModel) headers["X-Assistant-Response-Model"] = responseReturnedModel;
   if (outputRejection) headers["X-Assistant-Output-Rejection"] = outputRejection;
-  if (sourcePackSha256) headers["X-Assistant-Source-Pack"] = sourcePackSha256;
-  if (factCatalogSha256) headers["X-Assistant-Fact-Catalog"] = factCatalogSha256;
+  if (publicSnapshotSha256) headers["X-Assistant-Public-Knowledge"] = publicSnapshotSha256;
+  if (privateSnapshotSha256) headers["X-Assistant-Private-Knowledge"] = privateSnapshotSha256;
+  if (combinedSnapshotSha256) headers["X-Assistant-Knowledge-Snapshot"] = combinedSnapshotSha256;
+  if (retrievalCount !== undefined) headers["X-Assistant-Retrieval-Count"] = String(retrievalCount);
   if (outboundPayloadSha256) headers["X-Assistant-Payload-SHA256"] = outboundPayloadSha256;
   if (rate) {
     headers["X-RateLimit-Remaining-Minute"] = String(rate.remainingMinute);
@@ -65,9 +69,11 @@ function assistantResponse(
   rate?: RateLimitDecision,
   responseReturnedModel?: string,
   outputRejection?: AssistantOutputRejection,
-  sources?: readonly AssistantPublicCitation[],
-  sourcePackSha256?: string,
-  factCatalogSha256?: string,
+  sources?: readonly AssistantCitation[],
+  publicSnapshotSha256?: string,
+  privateSnapshotSha256?: string,
+  combinedSnapshotSha256?: string,
+  retrievalCount?: number,
   outboundPayloadSha256?: string,
 ) {
   return NextResponse.json({ reply, ...(sources ? { sources } : {}) }, {
@@ -76,8 +82,10 @@ function assistantResponse(
       rate,
       responseReturnedModel,
       outputRejection,
-      sourcePackSha256,
-      factCatalogSha256,
+      publicSnapshotSha256,
+      privateSnapshotSha256,
+      combinedSnapshotSha256,
+      retrievalCount,
       outboundPayloadSha256,
     ),
   });
@@ -113,7 +121,9 @@ export async function POST(request: Request) {
         : key,
     ),
     apiKey: process.env.OPENROUTER_API_KEY,
-    model: process.env.ASSISTANT_MODEL,
+    modelEn: process.env.ASSISTANT_MODEL_EN,
+    modelZh: process.env.ASSISTANT_MODEL_ZH,
+    privateKnowledgeEncoded: process.env.ASSISTANT_PRIVATE_KNOWLEDGE_B64_GZIP,
   });
   return assistantResponse(
     result.reply,
@@ -122,8 +132,10 @@ export async function POST(request: Request) {
     result.responseReturnedModel,
     result.outputRejection,
     result.sources,
-    result.sourcePackSha256,
-    result.factCatalogSha256,
+    result.publicSnapshotSha256,
+    result.privateSnapshotSha256,
+    result.combinedSnapshotSha256,
+    result.retrievalCount,
     result.outboundPayloadSha256,
   );
 }

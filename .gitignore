@@ -53,4 +53,5 @@ next-env.d.ts
 .claude/backups/
 
 # private review source for the explicitly generated, hash-bound assistant grounding
+.assistant-private/
 /docs/PROJECT_DOSSIER.md

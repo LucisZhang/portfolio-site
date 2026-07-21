@@ -1,0 +1,128 @@
+{
+  "version": 1,
+  "snapshotId": "public-github-portfolio-20260721-v1",
+  "repositories": [
+    {
+      "owner": "LucisZhang",
+      "repo": "portfolio-site",
+      "commit": "2dbdcaeafe9ce0a2dd124513b9eff63c914ef220",
+      "label": { "en": "Xiangguo Zhang portfolio", "zh": "章向国作品集" },
+      "aliases": ["Xiangguo Zhang", "章向国", "XGZ", "portfolio", "作品集", "background", "个人背景", "skills", "技能", "role fit", "岗位匹配", "Release Guardian", "发布守门人"],
+      "files": [
+        "README.md",
+        "README.zh-CN.md",
+        "docs/EVIDENCE_INDEX.md",
+        "src/lib/projects.ts",
+        "src/lib/i18n.ts"
+      ]
+    },
+    {
+      "owner": "LucisZhang",
+      "repo": "p1-reliability-lab",
+      "commit": "7eab9c3fcdf73865b0ed6dd1266de1bfaccefcce",
+      "label": { "en": "Streaming Reliability Lab", "zh": "流式可靠性实验室" },
+      "aliases": ["p1", "p1 reliability lab", "streaming reliability lab", "流式可靠性实验室", "Flink", "Iceberg", "CDC", "failure injection", "故障注入"],
+      "files": [
+        "README.md",
+        "RUNBOOK.md",
+        "docs/workstation-run/20260711T034018Z-local-mac/SUMMARY.md",
+        "docs/resume-claims-after-verification.md",
+        "flink-jobs/src/main/java/com/p1/reliability/cdc/CdcToIcebergJob.java",
+        "harness/harness/eo_verify.py"
+      ]
+    },
+    {
+      "owner": "LucisZhang",
+      "repo": "rag-quality-lab",
+      "commit": "0fc14333ac743f1c9ac6f27f501a905efef62329",
+      "label": { "en": "RAG Quality Lab", "zh": "RAG 质量实验室" },
+      "aliases": ["RAG Quality Lab", "RAG 质量实验室", "retrieval", "检索", "evaluation", "评估", "BM25", "Chroma", "regression", "回归"],
+      "files": [
+        "README.md",
+        "DATA.md",
+        "src/rag_pipelines.py",
+        "src/evaluation_engine.py",
+        "src/regression_tester.py",
+        "evidence/verified-2026-07/README.md"
+      ]
+    },
+    {
+      "owner": "LucisZhang",
+      "repo": "privacy-preflight-web",
+      "commit": "0063e0f4a5c1f02478891392c4dcb10305f23eb8",
+      "label": { "en": "Privacy Preflight", "zh": "隐私预检" },
+      "aliases": ["Privacy Preflight", "隐私预检", "redaction", "脱敏", "OCR", "PDF", "fictional fixtures", "虚构夹具"],
+      "files": [
+        "README.md",
+        "docs/architecture.mmd",
+        "src/components/privacy/PrivacyPreflightLab.tsx",
+        "src/components/privacy/PrivacyPdfLab.tsx",
+        "src/lib/privacy-redaction.ts"
+      ]
+    },
+    {
+      "owner": "LucisZhang",
+      "repo": "margin-control-tower",
+      "commit": "68ef75158a2b8a317a471c5b3fa4a263393edfb7",
+      "label": { "en": "Margin Control Tower", "zh": "毛利控制塔" },
+      "aliases": ["Margin Control Tower", "毛利控制塔", "margin", "毛利", "Olist", "DuckDB", "elasticity", "弹性", "scenario", "情景"],
+      "files": [
+        "README.md",
+        "public/case-studies/margin-control-tower/README.md",
+        "public/case-studies/margin-control-tower/architecture.mmd",
+        "public/case-studies/margin-control-tower/data-contract.json",
+        "public/case-studies/margin-control-tower/metric-registry.json",
+        "src/components/analytics/MarginControlTower.tsx"
+      ]
+    },
+    {
+      "owner": "LucisZhang",
+      "repo": "credit-policy-lab",
+      "commit": "639fbc0f0b808e7fba821f46c26db3b92136d357",
+      "label": { "en": "Credit Policy Lab", "zh": "信贷策略实验室" },
+      "aliases": ["Credit Policy Lab", "信贷策略实验室", "credit", "信贷", "PD", "LGD", "EAD", "Brier", "PSI", "backtest", "回测"],
+      "files": [
+        "README.md",
+        "public/case-studies/credit-policy-lab/README.md",
+        "public/case-studies/credit-policy-lab/architecture.mmd",
+        "public/case-studies/credit-policy-lab/policy-contract.json",
+        "src/components/analytics/CreditPolicyLab.tsx"
+      ]
+    },
+    {
+      "owner": "LucisZhang",
+      "repo": "ex-solver",
+      "commit": "eae2731571fc3a30ee322bad1132505b5b47ca69",
+      "label": { "en": "Exam Solver", "zh": "考试题求解器" },
+      "aliases": ["ex-solver", "exam solver", "考试题求解器", "vision", "视觉", "ensemble", "集成", "judge", "裁决", "OpenRouter"],
+      "files": [
+        "README.md",
+        "app/schemas.py",
+        "app/pipeline/orchestrator.py",
+        "app/pipeline/rag.py",
+        "app/pipeline/judge.py"
+      ]
+    },
+    {
+      "owner": "LucisZhang",
+      "repo": "Voice-in-Security",
+      "commit": "24b7e3c97ec2158c33a21d3bd37ba233e6d1219d",
+      "label": { "en": "Voice in Security", "zh": "语音安全" },
+      "aliases": ["Voice in Security", "Voice-in-Security", "语音安全", "speaker verification", "说话人验证", "audio", "音频", "robustness", "鲁棒性"],
+      "files": [
+        "README.md",
+        "backend/app.py",
+        "backend/speaker_engine.py",
+        "backend/augmentations.py"
+      ]
+    },
+    {
+      "owner": "LucisZhang",
+      "repo": "Risk-Control-Portfolio",
+      "commit": "675980c0c411d5ae05ae15d00a859c24c9ac60f0",
+      "label": { "en": "Risk Control Portfolio", "zh": "风控作品" },
+      "aliases": ["Risk-Control-Portfolio", "risk control", "风控", "Streamlit", "credit risk", "信用风险"],
+      "files": ["app.py", "requirements.txt"]
+    }
+  ]
+}
