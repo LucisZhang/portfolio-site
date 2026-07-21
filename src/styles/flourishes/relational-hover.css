@@ -1,0 +1,30 @@
+@supports selector(:has(*)) {
+  .project-table > a {
+    transition: opacity 150ms ease-out;
+  }
+
+  .project-table:has(> a:is(:hover, :focus-visible)) > a:not(:is(:hover, :focus-visible)) {
+    opacity: 0.55 !important;
+  }
+
+  .project-table > a:is(:hover, :focus-visible) {
+    opacity: 1 !important;
+  }
+
+  .project-table > a > svg:last-child {
+    transition: transform 150ms ease-out;
+  }
+
+  .project-table > a:is(:hover, :focus-visible) > svg:last-child {
+    transform: translate(2px, -2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @supports selector(:has(*)) {
+    .project-table > a,
+    .project-table > a > svg:last-child {
+      transition-duration: 0s;
+    }
+  }
+}
