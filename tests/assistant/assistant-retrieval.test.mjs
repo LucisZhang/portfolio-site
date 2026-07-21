@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import test from "node:test";
-import { gzipSync } from "node:zlib";
+import { gunzipSync, gzipSync } from "node:zlib";
 import {
   citationsForChunkIds,
   loadPrivateAssistantKnowledge,
@@ -11,9 +11,12 @@ import {
 function privatePacket() {
   const withoutHash = {
     version: 1,
-    sourceCount: 1,
-    chunkCount: 2,
-    sources: [{ sourceId: "private-1", label: "candidate-profile", contentSha256: "a".repeat(64), chunks: 2 }],
+    sourceCount: 2,
+    chunkCount: 3,
+    sources: [
+      { sourceId: "private-1", label: "candidate-profile", contentSha256: "a".repeat(64), chunks: 2 },
+      { sourceId: "private-2", label: "internship-evidence", contentSha256: "b".repeat(64), chunks: 1 },
+    ],
     chunks: [
       {
         id: "private-1:L1-L10",
@@ -31,6 +34,14 @@ function privatePacket() {
         lineEnd: 20,
         content: "章向国重视证据、自动化和端到端交付，适合 AI 应用、数据工程与数据分析岗位。",
       },
+      {
+        id: "private-2:L1-L8",
+        sourceId: "private-2",
+        label: "internship-evidence",
+        lineStart: 1,
+        lineEnd: 8,
+        content: "DiDi Fintech AI-safety internship: red-team experiments and an automated adversarial-sample pipeline, with scope and duration stated separately.",
+      },
     ],
   };
   const payload = {
@@ -43,13 +54,18 @@ function privatePacket() {
 test("private candidate packet is bounded, hash-checked, and never exposes a path citation", () => {
   const encoded = privatePacket();
   const decoded = loadPrivateAssistantKnowledge(encoded);
-  assert.equal(decoded.chunkCount, 2);
+  assert.equal(decoded.chunkCount, 3);
   assert.match(decoded.snapshotSha256, /^[a-f0-9]{64}$/u);
-  assert.throws(() => loadPrivateAssistantKnowledge(`${encoded.slice(0, -4)}AAAA`));
+  const tampered = JSON.parse(gunzipSync(Buffer.from(encoded, "base64")).toString("utf8"));
+  tampered.chunks[0].content += " tampered";
+  assert.throws(() => loadPrivateAssistantKnowledge(
+    gzipSync(Buffer.from(JSON.stringify(tampered))).toString("base64"),
+  ));
 
   const result = retrieveAssistantKnowledge("Why should we hire Xiangguo for an Applied AI role?", encoded);
   assert.ok(result);
   assert.ok(result.chunks.some((chunk) => chunk.kind === "private-profile"));
+  assert.ok(result.chunks.some((chunk) => /DiDi Fintech AI-safety internship/u.test(chunk.content)));
   const privateChunk = result.chunks.find((chunk) => chunk.kind === "private-profile");
   assert.equal(privateChunk.citation.url, undefined);
   assert.equal(privateChunk.citation.label.en, "Verified private candidate materials");

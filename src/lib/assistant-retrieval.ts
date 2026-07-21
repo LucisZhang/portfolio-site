@@ -203,6 +203,8 @@ function rankChunks(question: string, chunks: AssistantKnowledgeChunk[]) {
       if (normalizedAlias.length > 2 && normalizedQuestion.includes(normalizedAlias)) score += 10;
     }
     if (candidateQuestion && chunk.kind === "private-profile") score += 2.5;
+    if (candidateQuestion && chunk.kind === "private-profile"
+      && /(?:didi|滴滴|internship|实习|fintech|红队|red team)/u.test(normalizedText)) score += 12;
     if (candidateQuestion && chunk.kind === "public-github" && chunk.citation.label.en.includes("src/lib/projects.ts")) score += 5;
     if (candidateQuestion && chunk.kind === "public-github" && /README(?:\.zh-CN)?\.md/u.test(chunk.citation.label.en)) score += 2;
     if (normalizedText.includes(normalizedQuestion) && normalizedQuestion.length > 5) score += 8;

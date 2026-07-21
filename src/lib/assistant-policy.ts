@@ -288,6 +288,7 @@ function buildSystemPrompt(locale: AssistantLocale, retrieval: AssistantRetrieva
     "Preserve evidence boundaries: recorded, historical, synthetic, local, single-run, backtest, and non-production claims must not be upgraded.",
     "Private-profile blocks may inform the answer, but never reveal raw files, contact details, private paths, account identifiers, or long verbatim passages. Paraphrase them.",
     "Do not call an internship or employment current/ongoing unless a supplied date explicitly establishes that status as of 2026-07-21.",
+    "If a retrieved private block establishes the DiDi/滴滴 Fintech AI-safety internship, use it as verified industry experience and never claim that no verified internship is on record. Keep its duration and outcome boundaries explicit.",
     "Public GitHub blocks may be cited. Do not put raw URLs in the answer; the server renders citations separately.",
     "Write a useful answer, not a compliance memo. Prefer a direct opening followed by two to five concise paragraphs or bullets. Keep English answers around 220-360 words and Chinese answers around 450-750 Chinese characters, and always complete the final sentence.",
     "Return exactly one JSON object matching the requested schema. citation_ids must contain 1-6 retrieved chunk IDs actually used; never return an empty array.",
