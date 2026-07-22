@@ -77,18 +77,54 @@ The site pass covers:
 - Further broad disk cleanup. The confirmed unused Chrome code-sign clones have already been
   removed; user data was not touched.
 
-## 4. Recruiter model workflow
+## 4. Fable5 two-pass review and Kimi K3 writing workflow
 
-### 4.1 Fable5 role contract
+Fable5 performs two separate tasks in sequence. The prompts, personas, evidence, output artifacts,
+and acceptance verdicts are separate so GitHub quality and recruiter value are not collapsed into
+one vague review.
 
-Every Fable5 prompt assigns the following role:
+### 4.1 Pass one: senior GitHub user and repository-homepage benchmark
+
+The first Fable5 prompt assigns this role:
+
+> You are a senior GitHub user and open-source repository maintainer. First study a small,
+> traceable set of excellent public repository homepages, with emphasis on AI application, data
+> engineering, and data analysis projects. Derive a reusable benchmark for information hierarchy,
+> writing, visual scanning, navigation, setup, proof, and maintenance signals. Then compare the
+> supplied portfolio repository against that benchmark. Do not copy reference-project prose and do
+> not reward irrelevant open-source conventions.
+
+Fable5 selects a small reference set of mature public repositories using explicit criteria rather
+than star count alone. The set should favor clear project positioning, scannable README structure,
+credible examples, usable navigation, accurate setup instructions, evidence presentation, and
+maintained repository metadata. Every reference is recorded with its public URL and the concrete
+pattern learned from it.
+
+This pass produces two distinct artifacts:
+
+1. A shared **model repository-homepage benchmark** that describes the recommended homepage
+   sequence and quality bar without copying any project's wording.
+2. A per-repository **gap matrix** that marks what is present, missing, misleading, excessive, or
+   poorly ordered, with evidence-linked recommendations.
+
+The benchmark is a decision aid, not a rigid template. A repository does not gain sections such as
+community governance, package installation, or contribution guidance unless they are truthful and
+useful for that project. Fable5 directly edits English text-heavy files for accepted homepage
+improvements. Codex implements accepted structural or code changes and verifies them.
+
+Pass one is complete only when the repository satisfies the applicable benchmark items and Fable5
+issues a senior-GitHub-user acceptance verdict.
+
+### 4.2 Pass two: target-role recruiter review
+
+Only after pass-one remediation is complete does a new Fable5 task assign the recruiter role:
 
 > You are a recruiter who screens candidates for AI application, data engineering, and data
 > analysis roles. Evaluate whether this repository communicates technical depth, business value,
 > credible evidence, and role fit within a short recruiter scan. Do not invent claims or request
 > evidence that is not present in the supplied dossier.
 
-Fable5 reviews:
+This pass reviews:
 
 - the first 30-second repository impression;
 - English README and recruiter-facing documentation;
@@ -98,16 +134,21 @@ Fable5 reviews:
 - Chinese readability and English/Chinese factual consistency; and
 - structural or code changes that would materially improve recruiter evaluation.
 
-Fable5 directly edits English text-heavy files. For structural or code recommendations, it returns
-specific guidance; Codex applies only the evidence-safe, in-scope changes and verifies them.
+The recruiter task must not reuse the senior-GitHub-user verdict as its own conclusion. It receives
+the remediated repository, evidence dossier, and bilingual content, then produces a separate
+recruiter scorecard and acceptance verdict. Fable5 directly edits English text-heavy files. For
+structural or code recommendations, it returns specific guidance; Codex applies only the
+evidence-safe, in-scope changes and verifies them.
 
-### 4.2 Kimi K3 Chinese writing contract
+### 4.3 Kimi K3 Chinese writing contract
 
-Kimi K3 receives the same evidence dossier and the final evidence-safe English content. It writes
-Chinese recruiter-facing material as natural Chinese, not as a sentence-by-sentence mechanical
-translation. It must preserve metrics, limitations, links, provenance, and role relevance.
+After the senior-GitHub-user remediation establishes the repository structure and evidence-safe
+English baseline, Kimi K3 receives the same evidence dossier, benchmark-relevant structure, and
+English content. It writes Chinese recruiter-facing material as natural Chinese, not as a
+sentence-by-sentence mechanical translation. It must preserve metrics, limitations, links,
+provenance, and role relevance.
 
-### 4.3 Chinese review loop
+### 4.4 Recruiter-to-Kimi Chinese review loop
 
 1. Kimi K3 writes or revises `README.zh-CN.md` and other approved Chinese reading material.
 2. Fable5 reviews the Chinese output from the recruiter perspective.
@@ -115,10 +156,11 @@ translation. It must preserve metrics, limitations, links, provenance, and role 
 4. Kimi K3 revises the content.
 5. Fable5 re-reviews it.
 
-The loop runs for at most three revision rounds. Acceptance requires an explicit Fable5 recruiter
-verdict plus Codex factual verification. If a requested revision would add an unsupported claim,
-the evidence dossier wins and the suggestion is rejected. If either requested model is unavailable
-or its identity cannot be verified, that repository fails closed and is not published.
+The loop runs for at most three revision rounds. Acceptance requires both Fable5 verdicts—the
+senior-GitHub-user verdict first and the target-role recruiter verdict second—plus Codex factual
+verification. If a requested revision would add an unsupported claim, the evidence dossier wins
+and the suggestion is rejected. If either requested model is unavailable or its identity cannot be
+verified, that repository fails closed and is not published.
 
 Model prompts, responses, model identifiers, and acceptance verdicts are retained as private
 execution evidence. They are not automatically committed to public repositories.
@@ -263,18 +305,20 @@ not promise zero failures; it promises bounded recovery, honest status, and a cl
 ## 7. Data and publication flow
 
 1. Inventory each public repository and establish its current default-branch truth.
-2. Build evidence dossiers and run the Fable5/Kimi K3 review workflow.
-3. Implement repository changes on isolated branches and open pull requests.
-4. Run repository-specific tests and CI; merge only accepted, green changes.
-5. Complete the repository rename and create Release Guardian at the controlled publication gate.
-6. Record final public URLs and exact commit hashes.
-7. Update the portfolio's pinned public evidence, project catalog, content, Privacy lab, and
+2. Build evidence dossiers, then run Fable5's senior-GitHub-user benchmark and gap review.
+3. Apply accepted homepage and structural remediation, have Kimi K3 write the Chinese content, and
+   run the separate Fable5 target-role recruiter review and Chinese feedback loop.
+4. Implement repository changes on isolated branches and open pull requests.
+5. Run repository-specific tests and CI; merge only accepted, green changes.
+6. Complete the repository rename and create Release Guardian at the controlled publication gate.
+7. Record final public URLs and exact commit hashes.
+8. Update the portfolio's pinned public evidence, project catalog, content, Privacy lab, and
    assistant behavior from those final repository states.
-8. Run all local portfolio gates and live-model acceptance.
-9. Deploy and inspect a Vercel Preview.
-10. Merge the portfolio pull request, deploy Production, and repeat critical tests against the
+9. Run all local portfolio gates and live-model acceptance.
+10. Deploy and inspect a Vercel Preview.
+11. Merge the portfolio pull request, deploy Production, and repeat critical tests against the
     public domain.
-11. Hand the verified Production site to the owner for manual review.
+12. Hand the verified Production site to the owner for manual review.
 
 No site deployment proceeds while any required repository, model-review, evidence, or site gate is
 unresolved.
@@ -287,7 +331,8 @@ For every repository:
 
 - the default branch exposes the final bilingual README entry points;
 - language links work from GitHub's rendered README;
-- Fable5's recruiter verdict and Kimi K3's model identity are verified;
+- Fable5's senior-GitHub-user benchmark sources, repository gap verdict, separate recruiter verdict,
+  and Kimi K3's model identity are verified;
 - English and Chinese facts match the approved evidence dossier;
 - quickstart and CI claims are executed where the host environment allows them;
 - exact links, badges, images, and repository metadata resolve;
