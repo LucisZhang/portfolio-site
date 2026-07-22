@@ -4,7 +4,7 @@
 
 **Goal:** Publish six recruiter-ready, bilingual, evidence-grounded project repositories before the portfolio site consumes their final URLs and commit hashes.
 
-**Architecture:** Use one isolated clone per repository plus a private review workspace. Fable5 runs two separate tasks in order: a senior-GitHub-user benchmark/gap pass, then a target-role recruiter pass. Kimi K3 writes Chinese between those passes and revises from Fable5 feedback. Existing repositories publish through green PRs; Release Guardian is initialized from the approved sanitized portfolio package.
+**Architecture:** Use one isolated clone per repository plus a private review workspace. In one invocation per repository, Fable5 first performs a senior-GitHub-user benchmark/gap phase and then a target-role recruiter phase on the resulting English homepage. Kimi K3 writes Chinese once from the accepted English; local deterministic checks and an independent Codex review replace post-Kimi Fable5 review and revision loops. Existing repositories publish through green PRs; Release Guardian is initialized from the approved sanitized portfolio package.
 
 **Tech Stack:** Git/GitHub CLI, Claude Code `claude-fable-5`, OpenRouter `moonshotai/kimi-k3`, Node.js 25, Python 3.11, Next.js 16, Playwright, GitHub Actions.
 
@@ -14,7 +14,9 @@
 - Existing repositories use `codex/recruiter-homepage-v2` branches and PRs; do not direct-push their default branches.
 - `README.md` is English and `README.zh-CN.md` is Simplified Chinese; both start with `[English](README.md) | [简体中文](README.zh-CN.md)`.
 - Fable5 identity must be exactly `claude-fable-5`; Kimi identity must be exactly `moonshotai/kimi-k3`. Fail closed on mismatch or unavailability.
-- Fable5 pass one and pass two use different prompts, artifacts, and verdicts. Pass two cannot inherit pass one's verdict.
+- Each repository gets one Fable5 invocation with two ordered, separately recorded English verdicts: `github_user_phase` and `recruiter_phase`. Require `COMBINED_ENGLISH_PASS_ACCEPTED` only when both pass.
+- Fable5 never edits or reviews Chinese after Kimi. Kimi writes Chinese once from final accepted English; no automatic Kimi revision or post-Kimi Fable5 call is allowed.
+- The owner's Claude monthly spend limit is USD 70. Record actual outer-runtime cost after every Fable5 call and stop before knowingly exceeding the configured limit.
 - Never alter committed evidence artifacts merely to make tests pass. Restore generated evidence noise before commit.
 - Preserve RAG C2 as the evaluation floor; C3 produced no metric.
 - Preserve Privacy's two disclosed benchmark definitions until owner reconciliation.
@@ -29,7 +31,7 @@ Private review files are never committed publicly:
 ```text
 /private/tmp/portfolio-repository-release-20260722/
   review/github-homepage-benchmark.{md,json}
-  review/receipts/{rag-quality-lab,privacy-preflight-web,streaming-reliability-lab,margin-control-tower,credit-policy-lab,release-guardian}/{github-pass,recruiter-pass,kimi-draft,kimi-revision}.json
+  review/receipts/{rag-quality-lab,privacy-preflight-web,streaming-reliability-lab,margin-control-tower,credit-policy-lab,release-guardian}/{combined-english-pass,kimi-draft,bilingual-local-review}.json
   review/scopes/{rag-quality-lab,privacy-preflight-web,streaming-reliability-lab,margin-control-tower,credit-policy-lab,release-guardian}.md
   tools/{run-kimi.mjs,run-kimi.test.mjs,verify-readme-pair.mjs}
   repos/{rag-quality-lab,privacy-preflight-web,streaming-reliability-lab,margin-control-tower,credit-policy-lab,release-guardian}/
@@ -50,7 +52,7 @@ Private review files are never committed publicly:
 
 **Interfaces:**
 - Consumes: current GitHub default branches and open PR heads.
-- Produces: clean isolated branches and evidence scopes consumed by both model passes.
+- Produces: clean isolated branches and evidence scopes consumed by the combined Fable5 English task and the single Kimi writer task.
 
 - [ ] **Step 1: Recheck capacity and remote truth**
 
@@ -214,17 +216,17 @@ Run `node --test tools/run-kimi.test.mjs`. Expected: PASS.
 - Consumes: shared benchmark, RAG scope, prior PRs #1/#2.
 - Produces: merged bilingual PR retaining C2 as the floor and stating C3 produced no metric.
 
-- [ ] **Step 1: Run Fable5 GitHub pass one**
+- [ ] **Step 1: Run the combined Fable5 English pass**
 
-Prompt Fable5 to read the benchmark, scope, current README, `DATA.md`, A1/A2 notes, and prior diffs; write a gap matrix receipt and directly edit only English text-heavy files. Require exact verdict `GITHUB_HOME_PASS_ACCEPTED`.
+Prompt one exact `claude-fable-5` invocation to read the benchmark, RAG scope, current English README, `DATA.md`, A1/A2 notes, prior diffs, and immutable evidence. Phase A acts only as a senior GitHub user and records the gap matrix before editing English. Phase B then acts only as an AI application/data engineering/data analysis recruiter and reviews the resulting English for 30-second scan, technical depth, outcome credibility, and role fit. Record `github_user_phase` and `recruiter_phase` separately in `combined-english-pass.json`; require exact terminal token `COMBINED_ENGLISH_PASS_ACCEPTED` only when both pass.
 
-- [ ] **Step 2: Generate Chinese with Kimi K3**
+- [ ] **Step 2: Reconcile the existing Kimi output once**
 
-Run the tested writer with the RAG scope and accepted English README. Apply `chinese_markdown` to `README.zh-CN.md` with `apply_patch`. Require exact Kimi model identity.
+If the combined pass leaves `README.md` byte-identical to the English input that produced the existing Kimi artifact, retain the byte-bound `README.zh-CN.md`. If English changes, run the tested writer exactly once with the RAG scope and final accepted English README, then apply `chinese_markdown` to `README.zh-CN.md` with `apply_patch`. Require exact Kimi model identity `moonshotai/kimi-k3`. Do not run a Fable5 Chinese review or Kimi revision round.
 
-- [ ] **Step 3: Run the separate Fable5 recruiter pass**
+- [ ] **Step 3: Run local bilingual and evidence review**
 
-Use a fresh call assigning only the AI application/data engineering/data analysis recruiter role. Review 30-second scan, technical depth, outcome credibility, bilingual fidelity, and role fit. Fable5 may edit English and must emit concrete Chinese feedback. Pass that feedback verbatim to Kimi, repeat at most three rounds, and require `RECRUITER_PASS_ACCEPTED`.
+Verify the exact language switch, section/table/link/path coverage, all numbers and dates, C2 evaluation-floor wording, C3 no-metric wording, historical-versus-current status, licenses, and protected hashes. Dispatch an independent Codex task reviewer. Any material defect blocks publication for owner review; do not start another paid Fable5 call automatically.
 
 - [ ] **Step 4: Verify**
 
@@ -259,13 +261,13 @@ Commit `docs: publish bilingual recruiter homepage`, push, open a PR to `main`, 
 - Consumes: shared benchmark, Privacy scope, prior PR #1.
 - Produces: merged bilingual PR preserving local-only browser and fictional-fixture claims.
 
-- [ ] **Step 1: Run Fable5 GitHub pass one**
+- [ ] **Step 1: Run the combined Fable5 English pass**
 
-Supply the benchmark, scope, repo, and PR #1 diff. Require a gap matrix and `GITHUB_HOME_PASS_ACCEPTED`; Fable5 directly edits English, while Codex applies only accepted structural guidance.
+Supply the benchmark, Privacy scope, repository, PR #1 diff, and immutable fictional-fixture evidence to one exact `claude-fable-5` invocation. Record a senior-GitHub-user gap/edit phase followed by a separate AI application/data engineering/data analysis recruiter phase on final English. Require both receipt verdicts and `COMBINED_ENGLISH_PASS_ACCEPTED`; Fable5 directly edits English, while Codex applies only accepted structural guidance.
 
-- [ ] **Step 2: Run Kimi and recruiter pass two**
+- [ ] **Step 2: Run Kimi once and review locally**
 
-Generate Chinese, then start a separate recruiter-role Fable5 call. Feed Chinese feedback to Kimi for up to three rounds. Require both exact model identities and `RECRUITER_PASS_ACCEPTED`.
+Generate Chinese once from final accepted English with exact `moonshotai/kimi-k3`. Do not invoke Fable5 after Kimi and do not revise Chinese automatically. Verify browser-local behavior, fictional fixtures, source/app/package/notarization/clean-Mac boundaries, bilingual structure, and protected case-study hashes with deterministic checks plus an independent Codex task review.
 
 - [ ] **Step 3: Verify**
 
@@ -318,13 +320,13 @@ Exclude historical logs/captures, compatibility IDs, Java package paths, and imm
 
 Expected: failures in README badge/title and dashboard headings.
 
-- [ ] **Step 3: Run Fable5 pass one and apply narrative rename**
+- [ ] **Step 3: Run the combined Fable5 English pass and apply narrative rename**
 
-Fable5 audits the repository homepage against the benchmark. Codex changes current narration to `Streaming Reliability Lab` / `流式可靠性实验室` and updates current links; compatibility/history stays byte-identical.
+One exact `claude-fable-5` invocation first audits the repository homepage as a senior GitHub user, then reviews final English as an AI application/data engineering/data analysis recruiter. Record both phase verdicts and require `COMBINED_ENGLISH_PASS_ACCEPTED`. Codex changes current narration to `Streaming Reliability Lab` / `流式可靠性实验室` and updates current links; compatibility/history stays byte-identical.
 
-- [ ] **Step 4: Generate and review Chinese**
+- [ ] **Step 4: Generate Chinese once and review locally**
 
-Kimi creates `README.zh-CN.md`. A fresh recruiter Fable5 task reviews both languages and sends feedback to Kimi until accepted or three rounds are exhausted.
+Kimi creates `README.zh-CN.md` once from final accepted English with exact `moonshotai/kimi-k3`. Do not invoke Fable5 after Kimi and do not revise Chinese automatically. The name verifier, README-pair verifier, immutable-path hashes, and an independent Codex task review must confirm bilingual fidelity and historical compatibility boundaries.
 
 - [ ] **Step 5: Verify locally**
 
@@ -367,13 +369,13 @@ Verify old-URL redirect, merge the green PR, close superseded PRs #3/#4, and upd
 - Consumes: shared benchmark, Margin scope, prior PR #1.
 - Produces: merged bilingual PR with governed-synthetic and proxy disclosures intact.
 
-- [ ] **Step 1: Run Fable5 GitHub pass one**
+- [ ] **Step 1: Run the combined Fable5 English pass**
 
-Require a gap matrix and `GITHUB_HOME_PASS_ACCEPTED`; Fable5 reads the data contract and metric registry before direct English edits.
+One exact `claude-fable-5` invocation reads the data contract and metric registry, records a senior-GitHub-user gap/edit phase, then records an AI application/data engineering/data analysis recruiter phase on final English. The recruiter phase checks analytics/business decision signal and proxy disclosures. Require both verdicts and `COMBINED_ENGLISH_PASS_ACCEPTED`.
 
-- [ ] **Step 2: Run Kimi and recruiter pass two**
+- [ ] **Step 2: Run Kimi once and review locally**
 
-Kimi writes Chinese. A new recruiter Fable5 task checks analytics/business decision signal, proxy disclosures, and bilingual fidelity; pass feedback to Kimi and require `RECRUITER_PASS_ACCEPTED`.
+Kimi writes Chinese once from final accepted English with exact `moonshotai/kimi-k3`. Do not invoke Fable5 after Kimi and do not revise Chinese automatically. Deterministic checks and an independent Codex task review verify proxy disclosures, metrics, governed-synthetic boundaries, links, and bilingual fidelity.
 
 - [ ] **Step 3: Verify**
 
@@ -410,13 +412,13 @@ Commit `docs: refine bilingual analytics homepage`, open PR, require `verify`, m
 - Consumes: shared benchmark, Credit scope, prior PR #1.
 - Produces: merged bilingual PR preserving license, granted-loan-only, non-causal, and non-production boundaries.
 
-- [ ] **Step 1: Run Fable5 GitHub pass one**
+- [ ] **Step 1: Run the combined Fable5 English pass**
 
-Require gap matrix and `GITHUB_HOME_PASS_ACCEPTED`; Fable5 reads the policy contract and cannot upgrade offline backtest evidence into live decisioning.
+One exact `claude-fable-5` invocation reads the policy contract, records a senior-GitHub-user gap/edit phase, then records an AI application/data engineering/data analysis recruiter phase on final English. The recruiter phase checks data-analysis signal and policy-decision clarity without upgrading offline backtest evidence into live decisioning. Require both verdicts and `COMBINED_ENGLISH_PASS_ACCEPTED`.
 
-- [ ] **Step 2: Run Kimi and recruiter pass two**
+- [ ] **Step 2: Run Kimi once and review locally**
 
-Kimi writes Chinese. A separate recruiter task checks data-analysis signal, policy-decision clarity, and factual equivalence; feed feedback to Kimi and require `RECRUITER_PASS_ACCEPTED`.
+Kimi writes Chinese once from final accepted English with exact `moonshotai/kimi-k3`. Do not invoke Fable5 after Kimi and do not revise Chinese automatically. Deterministic checks and an independent Codex task review verify granted-loan-only, non-causal, non-production, licensing, cutoff, metric, and bilingual-fidelity boundaries.
 
 - [ ] **Step 3: Verify**
 
@@ -490,9 +492,9 @@ Run `node --test tests/replay.test.mjs`. Expected: module-not-found failure.
 
 `scripts/verify-evidence.mjs` verifies every copied asset's SHA-256 against `evidence/manifest.json`, asserts live/stub separation, and requires both READMEs to place `30/44` beside any aggregate live-gate claim and `15/44` beside any aggregate stub-gate claim.
 
-- [ ] **Step 6: Run Fable5 pass one, Kimi, and pass two**
+- [ ] **Step 6: Run the combined Fable5 English pass, then Kimi once**
 
-Fable5 first builds the GitHub-user gap matrix and directly writes English. Kimi writes Chinese. A new recruiter Fable5 task checks AI application/release-engineering signal, truthfulness, and private-source boundaries; its Chinese feedback goes to Kimi. Require both acceptance tokens.
+One exact `claude-fable-5` invocation first builds the senior-GitHub-user gap matrix and directly writes English, then separately reviews final English as an AI application/data engineering/data analysis recruiter for AI application/release-engineering signal, truthfulness, and private-source boundaries. Require both receipt verdicts and `COMBINED_ENGLISH_PASS_ACCEPTED`. Kimi then writes Chinese once from final accepted English with exact `moonshotai/kimi-k3`; do not invoke Fable5 after Kimi and do not revise Chinese automatically. Deterministic evidence verification and an independent Codex task review validate bilingual fidelity and the sanitized-package boundary.
 
 - [ ] **Step 7: Verify**
 
