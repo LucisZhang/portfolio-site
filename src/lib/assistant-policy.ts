@@ -489,7 +489,7 @@ export async function executeAssistantRequest(
   const deadline = Date.now() + 40_000;
   let lastRejection: AssistantOutputRejection | undefined;
   let lastReturnedModel: string | undefined;
-  for (const attemptModel of attempts) {
+  for (const [attemptIndex, attemptModel] of attempts.entries()) {
     const remaining = deadline - Date.now();
     if (remaining < 1_000) break;
     const payload = buildOpenRouterPayload(attemptModel, locale, messages, retrieval);
@@ -506,7 +506,7 @@ export async function executeAssistantRequest(
         },
         body: JSON.stringify(payload),
         cache: "no-store",
-        signal: AbortSignal.timeout(Math.min(14_000, remaining)),
+        signal: AbortSignal.timeout(Math.min(attemptIndex === 0 ? 25_000 : 14_000, remaining)),
       });
     } catch {
       continue;

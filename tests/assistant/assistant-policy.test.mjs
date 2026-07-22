@@ -343,6 +343,31 @@ test("rate limiting blocks upstream calls while transient 502 failures retry onc
   assert.equal(calls, 1);
 });
 
+test("primary model can complete after fourteen seconds without being aborted", { timeout: 20_000 }, async () => {
+  let calls = 0;
+  const result = await executeAssistantRequest(rawRequest("Why should we hire Xiangguo for Applied AI?"), {
+    clientIp: "198.51.100.18",
+    checkRate: () => allowedRate,
+    apiKey: "key",
+    retrieve: () => retrieval,
+    fetcher: async (_url, init) => {
+      calls += 1;
+      if (calls > 1) return new Response("unavailable", { status: 503 });
+      await new Promise((resolve, reject) => {
+        const timer = setTimeout(resolve, 15_000);
+        init.signal.addEventListener("abort", () => {
+          clearTimeout(timer);
+          reject(init.signal.reason);
+        }, { once: true });
+      });
+      return completedResponse(answerJson());
+    },
+  });
+  assert.equal(result.status, 200);
+  assert.equal(calls, 1);
+  assert.equal(result.responseReturnedModel, DEFAULT_ASSISTANT_MODEL_EN);
+});
+
 test("client IP pseudonyms and rate-limit implementations remain bounded and fail closed", async () => {
   const headers = (values) => ({ get: (name) => values[name] ?? null });
   assert.equal(assistantClientIp(headers({ "x-vercel-forwarded-for": "2001:db8::7" })), "2001:db8::7");
