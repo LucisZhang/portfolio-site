@@ -314,7 +314,7 @@ export default function P1FailureReplay() {
           <h3 id="p1-replay-title">{locale === "en" ? "Failure Replay Console" : "故障回放控制台"}</h3>
           <p>{locale === "en" ? "Step through the recorded source, recovery, sink, and reconciliation evidence for each induced failure." : "逐步查看每类注入故障的源端、恢复、下游提交与对账证据。"}</p>
         </div>
-        <div className="p1-disclosure"><CircleAlert aria-hidden="true" /><strong>{locale === "en" ? "Recorded evidence, not a live cluster." : "这是已记录的证据，不是在线集群。"}</strong><span>{locale === "en" ? "This deterministic viewer reads the published U6 JSON package only." : "这个确定性查看器只读取已发布的 U6 JSON 包。"}</span></div>
+        <div className="p1-disclosure p1-replay-value"><ShieldCheck aria-hidden="true" /><strong>{locale === "en" ? "Recovery paths you can inspect" : "可逐步检查的恢复路径"}</strong><span>{locale === "en" ? "Replay every induced failure from source state through recovery, sink commit, and reconciliation." : "逐步回放每类注入故障，从源端状态一路查看恢复、下游提交与最终对账。"}</span></div>
       </header>
 
       <div className="p1-scenario-tabs" role="tablist" aria-label={locale === "en" ? "Failure scenario" : "故障场景"}>
@@ -328,7 +328,7 @@ export default function P1FailureReplay() {
             <div><button type="button" title={locale === "en" ? "Reset view" : "复位视图"} onClick={() => void flowInstance?.fitView({ padding: .12, duration: 250 })}><Focus aria-hidden="true" />{locale === "en" ? "Reset view" : "复位"}</button><button type="button" title={locale === "en" ? "Fullscreen graph" : "全屏查看"} onClick={() => void toggleFullscreen()}><Maximize2 aria-hidden="true" />{locale === "en" ? "Fullscreen" : "全屏"}</button><ArtifactLink href={RESULT_URL}>{locale === "en" ? "Open original JSON" : "查看原始 JSON"}</ArtifactLink><a href={RESULT_URL} download="eo_reconciliation-all.json"><Download aria-hidden="true" />{locale === "en" ? "Download" : "下载"}</a></div>
           </div>
           <div className="p1-flow-canvas">
-            <ReactFlow nodes={nodes} edges={edges} fitView fitViewOptions={{ padding: 0.12 }} onInit={setFlowInstance} onNodeClick={(_event, node) => setSelectedNodeId(node.id)} nodesConnectable={false} nodesDraggable={false} elementsSelectable zoomOnScroll zoomOnPinch panOnDrag preventScrolling proOptions={{ hideAttribution: true }} minZoom={.45} maxZoom={2.2}>
+            <ReactFlow nodes={nodes} edges={edges} fitView fitViewOptions={{ padding: 0.12 }} onInit={setFlowInstance} onNodeClick={(_event, node) => setSelectedNodeId(node.id)} nodesConnectable={false} nodesDraggable={false} elementsSelectable zoomOnScroll={false} zoomOnPinch panOnDrag preventScrolling={false} proOptions={{ hideAttribution: true }} minZoom={.45} maxZoom={2.2}>
               <Background color="#d9dedb" gap={18} size={1} />
               <Controls position="bottom-right" showInteractive={false} aria-label={locale === "en" ? "Graph zoom and fit controls" : "图形缩放与适配控制"} />
             </ReactFlow>
@@ -347,7 +347,7 @@ export default function P1FailureReplay() {
           <h4>{currentStage.title}</h4>
           <p>{currentStage.detail}</p>
           <pre data-testid="p1-evidence-excerpt">{JSON.stringify(localizeEvidenceValue(currentStage.evidence, locale), null, 2)}</pre>
-          <span className="p1-not-log"><FileJson aria-hidden="true" />{locale === "en" ? "Structured excerpt from the recorded JSON; not generated logs." : "来自录制 JSON 的结构化摘录；不是生成日志。"}</span>
+          <span className="p1-not-log"><FileJson aria-hidden="true" />{locale === "en" ? "Structured excerpt linked directly to the recorded JSON." : "直接关联录制 JSON 的结构化摘录。"}</span>
         </aside>
       </div>
 
@@ -369,9 +369,7 @@ export default function P1FailureReplay() {
         <div><span>{locale === "en" ? "Baseline / execution SHA" : "基线 / 执行 SHA"}</span><code>{compactId(manifest.baseline_commit)} / {report.git_sha}</code></div>
         <div><span>{locale === "en" ? "Recorded window" : "录制时间"}</span><code>{formatTimestamp(report.started_at)} - {formatTimestamp(report.finished_at)}</code></div>
         <div className="wide"><span>{locale === "en" ? "Recorded command" : "录制命令"}</span><code>{report.command}</code></div>
-        <div className="wide"><span>{locale === "en" ? "Environment boundary" : "环境边界"}</span><strong>{localizeStructuralValue(manifest.environment_boundary, locale)}</strong></div>
       </div>
-      <p className="p1-limitation"><CircleAlert aria-hidden="true" /><span>{locale === "en" ? "This replay shows one recorded Apple Silicon / Docker Desktop run. It is not a live cluster and does not establish universal reproducibility." : "限制：本回放只证明一次已录制的 Apple Silicon / Docker Desktop 运行；不表示当前有集群在线，也不声明普遍可复现。"}</span><ArtifactLink href={RESULT_URL}>{locale === "en" ? "View recorded JSON" : "查看源 JSON"}</ArtifactLink></p>
     </section>
   );
 }

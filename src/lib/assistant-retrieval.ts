@@ -91,8 +91,8 @@ function expandedQuery(value: string) {
     [/(?:背景|教育|学校|大学|专业|毕业)/u, "候选人 教育 北京理工大学 数据科学与大数据技术 2027届"],
     [/(?:working style|work style|collaborat|communicat|leadership)/u, "working style ownership evidence automation communication collaboration"],
     [/(?:工作方式|工作风格|协作|沟通|领导力|执行力)/u, "工作方式 主动性 证据 自动化 沟通 协作"],
-    [/(?:project|portfolio|built|architecture|technical)/u, "projects portfolio architecture implementation evidence boundaries"],
-    [/(?:项目|作品集|技术|架构|实现)/u, "项目 作品集 架构 实现 证据 边界"],
+    [/(?:project|portfolio|built|architecture|technical)/u, "projects portfolio architecture implementation outcomes workflow strengths"],
+    [/(?:项目|作品集|技术|架构|实现)/u, "项目 作品集 架构 实现 成果 工作流 优势"],
   ];
   for (const [pattern, expansion] of rules) if (pattern.test(normalized)) expansions.push(expansion);
   return `${value} ${expansions.join(" ")}`;
@@ -129,8 +129,10 @@ export function loadPrivateAssistantKnowledge(encoded: string | undefined): Priv
   return assertPrivatePayload(JSON.parse(decompressed.toString("utf8")));
 }
 
+const withdrawnPrivacyMacPattern = /(?:macOS|SwiftUI|Gatekeeper|notari[sz]|Apple Developer|Mac (?:app|download|version)|Mac 版)/iu;
+
 function publicChunks(): AssistantKnowledgeChunk[] {
-  return publicKnowledge.chunks.map((chunk) => ({
+  return publicKnowledge.chunks.filter((chunk) => !(chunk.project.en === "Privacy Preflight" && withdrawnPrivacyMacPattern.test(chunk.content))).map((chunk) => ({
     id: chunk.id,
     kind: "public-github" as const,
     repository: chunk.repository,

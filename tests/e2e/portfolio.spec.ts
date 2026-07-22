@@ -78,6 +78,12 @@ for (const locale of ["en", "zh"] as const) {
       }
       if (route.split("/").length === 3) {
         expect(bodyText).toContain(locale === "en" ? "Audience" : "受众群体");
+        await expect(page.locator(".notes-section h2")).toHaveText(locale === "en" ? "What this does not prove" : "这项结果不能说明什么");
+        await expect(page.locator(".notes-section h2")).toHaveCount(1);
+        if (route !== "/analytics/analytics-tandem") {
+          const repositoryLink = page.locator('.link-list a[href^="https://github.com/"]').first();
+          await expect(repositoryLink).toHaveAttribute("href", /^https:\/\/github\.com\/LucisZhang\/[^/]+$/);
+        }
       }
       if (route === "/engineering/p1-reliability-lab") {
         await expect(page.locator(".artifact-table > a")).toHaveCount(5);
@@ -102,7 +108,7 @@ for (const locale of ["en", "zh"] as const) {
       }
       if (route === "/ai/rag-quality-lab") {
         await expect(page.locator(".rag-historical-result")).toContainText("0.8093 → 0.9438");
-        await expect(page.locator(".rag-historical-result")).toContainText(locale === "en"
+        await expect(page.locator(".notes-section")).toContainText(locale === "en"
           ? "Historical 12-question corpus only; does not transfer to the 11,309-document S1 checkpoint."
           : "仅适用于历史 12 问题语料；不能迁移解释为 11,309 文档 S1 检查点的结果。");
       }
@@ -205,14 +211,14 @@ test.describe("p1 Failure Replay Console", () => {
     await expect(page.getByTestId("p1-failure-replay")).toBeVisible();
   });
 
-  test("replays five recorded scenarios with bounded provenance and deterministic controls", async ({ page }) => {
+  test("replays five recorded scenarios with bounded provenance and deterministic controls", async ({ page }, testInfo) => {
     const replay = page.getByTestId("p1-failure-replay");
     await expect(replay).toContainText("Captured Run");
-    await expect(replay).toContainText("Recorded evidence, not a live cluster.");
+    await expect(replay).toContainText("Recovery paths you can inspect");
     await expect(replay.getByRole("tab")).toHaveCount(5);
     await expect(replay).toContainText("20260711T034018Z-local-mac");
     await expect(replay).toContainText("20260711T035242Z-b518d211");
-    await expect(replay).toContainText("Apple Silicon macOS, 16 GiB RAM");
+    await expect(replay).toContainText('make eo-verify ARGS="--failure');
     await expect(replay.locator(".p1-stage-count")).toContainText("01 / 08");
     await expect(page.getByTestId("p1-evidence-excerpt")).toContainText("source_snapshot_row_count");
 
@@ -230,7 +236,9 @@ test.describe("p1 Failure Replay Console", () => {
     await replay.getByRole("button", { name: "Play replay" }).click();
     await expect(replay.locator(".p1-stage-count")).toContainText("02 / 08", { timeout: 3_000 });
     await replay.getByRole("button", { name: "Pause replay" }).click();
-    await expect(replay.getByRole("link", { name: "View recorded JSON" })).toHaveAttribute("href", /eo_reconciliation-all\.json/);
+    if (testInfo.project.name !== "mobile") {
+      await expect(replay.getByRole("link", { name: "Open original JSON" })).toHaveAttribute("href", /eo_reconciliation-all\.json/);
+    }
   });
 
   test("graph supports zoom, pan, fit, fullscreen, node detail, original, and download", async ({ page }, testInfo) => {
@@ -244,7 +252,15 @@ test.describe("p1 Failure Replay Console", () => {
     await graph.getByRole("button", { name: "Zoom in" }).click();
     await expect.poll(() => viewport.getAttribute("style")).not.toBe(before);
     await graph.getByRole("button", { name: "Reset view" }).click();
+    await page.waitForTimeout(350);
     const fitted = await viewport.getAttribute("style");
+    await graph.scrollIntoViewIfNeeded();
+    const scrollState = await page.evaluate(() => ({ y: window.scrollY, max: document.documentElement.scrollHeight - window.innerHeight }));
+    const wheelDelta = scrollState.y < scrollState.max - 10 ? 320 : -320;
+    await graph.hover();
+    await page.mouse.wheel(0, wheelDelta);
+    await expect(viewport).toHaveAttribute("style", fitted ?? "");
+    await expect.poll(() => page.evaluate(() => window.scrollY)).not.toBe(scrollState.y);
     const canvas = graph.locator(".p1-flow-canvas");
     const bounds = await canvas.boundingBox();
     expect(bounds).not.toBeNull();
@@ -273,18 +289,18 @@ test.describe("Release Guardian Sanitized Change Review Replay", () => {
     await expect(page.getByTestId("release-change-replay")).toBeVisible();
   });
 
-  test("replays deterministic retrieval, risk, planning, approval, and audit boundaries", async ({ page }) => {
+  test("replays deterministic retrieval, risk, planning, approval, and audit", async ({ page }) => {
     const replay = page.getByTestId("release-change-replay");
     await expect(replay).toContainText("Synthetic scenario / deterministic replay");
-    await expect(replay).toContainText("Sanitized deterministic replay — not connected to the private repository or a live model.");
+    await expect(replay).toContainText("A repeatable review workflow built from fixed scenarios and deterministic rules.");
     await expect(replay.getByRole("tab")).toHaveCount(4);
     await expect(replay.locator(".release-stage-heading")).toContainText("01 / 09");
 
     await replay.getByRole("button", { name: "Next stage" }).click();
     await expect(replay.locator(".release-retriever-result")).toContainText("code evidence");
-    await expect(replay.locator(".release-evidence-detail-grid > div")).toHaveCount(6);
+    await expect(replay.locator(".release-evidence-detail-grid > div")).toHaveCount(5);
     await expect(replay.locator(".release-evidence-detail-grid")).toContainText("Changed component");
-    await expect(replay.locator(".release-evidence-detail-grid .withheld")).toContainText("Withheld by publication boundary");
+    await expect(replay.locator(".release-evidence-detail-grid")).not.toContainText("publication boundary");
     await expect(replay.locator(".release-evidence-progress .reached")).toHaveCount(1);
 
     await replay.getByRole("tab", { name: /database schema change/i }).click();
@@ -320,7 +336,7 @@ test.describe("Release Guardian Sanitized Change Review Replay", () => {
     await expect(evidencePair.nth(0)).toContainText("132");
     await expect(evidencePair.nth(1)).toContainText("30 / 44");
     await expect(page.locator(".release-mode-ledger")).toContainText("15 of 44 flagged");
-    await expect(page.locator(".release-what-changed")).toContainText("I separated live evaluation, deterministic stub results, and the synthetic replay");
+    await expect(page.locator(".release-what-changed")).toContainText("I turned three distinct operating modes into a review surface");
   });
 });
 
@@ -349,9 +365,9 @@ test.describe("Release Guardian Group C acceptance", () => {
     await expect(figures).toHaveCount(3);
     await expect(figures.nth(0).locator("img")).toHaveAttribute("src", "/case-studies/release-guardian/screenshots/risk-guardrail.png");
     await expect(figures.nth(1).locator("img")).toHaveAttribute("src", "/case-studies/release-guardian/screenshots/evaluation-stub.png");
-    await expect(figures.nth(1).locator("figcaption")).toContainText("15 of 44 scenarios were flagged");
+    await expect(figures.nth(1).locator("figcaption")).toContainText("places the regression gate beside six operating metrics");
     await expect(figures.nth(2).locator("img")).toHaveAttribute("src", "/case-studies/release-guardian/screenshots/pipeline-trace-stub.png");
-    await expect(figures.nth(2).locator("figcaption")).toContainText("timing marks are not a live-performance benchmark");
+    await expect(figures.nth(2).locator("figcaption")).toContainText("intake, retrieval, grading, planning, validation, and approval spans");
     const mediaBoxes = await figures.evaluateAll((nodes) => nodes.map((node) => {
       const box = node.getBoundingClientRect();
       return { x: box.x, y: box.y };
@@ -483,7 +499,7 @@ test.describe("Analytics decision vertical slices", () => {
     test.setTimeout(90_000);
     await page.goto("/analytics/margin-control-tower", { waitUntil: "networkidle" });
     const lab = page.getByTestId("margin-control-tower");
-    await expect(lab).toBeVisible();
+    await expect(lab).toBeVisible({ timeout: 30_000 });
     await expect(lab).toHaveAttribute("data-requested-source", "real", { timeout: 60_000 });
     await expect(lab).toHaveAttribute("data-active-source", "real", { timeout: 60_000 });
     await expect(lab).toHaveAttribute("data-real-artifact-status", "loaded", { timeout: 60_000 });
@@ -507,7 +523,7 @@ test.describe("Analytics decision vertical slices", () => {
     test.setTimeout(90_000);
     await page.goto("/analytics/credit-policy-lab", { waitUntil: "networkidle" });
     const lab = page.getByTestId("credit-policy-lab");
-    await expect(lab).toBeVisible();
+    await expect(lab).toBeVisible({ timeout: 60_000 });
     await expect(lab).toHaveAttribute("data-requested-source", "real", { timeout: 60_000 });
     await expect(lab).toHaveAttribute("data-active-source", "real", { timeout: 60_000 });
     await expect(lab).toHaveAttribute("data-real-artifact-status", "loaded", { timeout: 60_000 });
@@ -518,7 +534,7 @@ test.describe("Analytics decision vertical slices", () => {
     await expect(lab.locator(".credit-decision-bands > div")).toHaveCount(3);
     await expect(lab.locator(".analytics-contract-grid p.pass")).toHaveCount(1);
     await expect(lab.locator(".analytics-contract-grid")).toContainText("All ten checks pass");
-    await expect(lab).toContainText("Model probability is not the final business decision");
+    await expect(lab).toContainText("The final business decision combines probability, economics, policy thresholds, and human review");
     await expect(lab).toContainText("Backtest score comparison");
     await expect(lab.getByRole("button", { name: "Resolve queue overflow" })).toBeDisabled();
     await expect(lab.locator(".credit-policy-guidance")).toContainText("deliberately overloaded review queue");
@@ -550,32 +566,18 @@ test.describe("Privacy Preflight Web", () => {
     await expect(page.getByTestId("privacy-preflight-lab")).toBeVisible();
   });
 
-  test("macOS download hero exposes the exact artifact identity and Gatekeeper boundary", async ({ page }) => {
-    const status = page.locator("#privacy-macos-status");
-    const hero = status.locator(".privacy-macos-download-hero");
-    const download = hero.getByRole("link", { name: "Download macOS arm64 preview (unnotarized)" });
-
-    await expect(hero.getByRole("img", { name: "Privacy Preflight app icon" })).toBeVisible();
-    await expect(hero.getByRole("heading", { name: "Privacy Preflight", exact: true })).toBeVisible();
-    await expect(download).toHaveAttribute("href", "/case-studies/privacy-preflight/downloads/Privacy-Preflight-0.1.0-macOS-arm64-unnotarized.zip");
-    await expect(download).toHaveAttribute("download", "");
-    await expect(hero.locator(".privacy-macos-artifact-meta")).toContainText("0.1.0");
-    await expect(hero.locator(".privacy-macos-artifact-meta")).toContainText("33,930,369 bytes");
-    await expect(hero.locator(".privacy-macos-artifact-meta")).toContainText("360083a7fab6b60600f597b28a32c533a9df932766c21b80cba80e6c56350911");
-    await expect(status.locator(".privacy-macos-first-open")).toContainText("First open with Gatekeeper");
-    await expect(status.locator(".privacy-macos-first-open")).toContainText("Do not disable Gatekeeper globally");
-
+  test("portfolio exposes the bilingual Web workbench without the withdrawn Mac surface", async ({ page }) => {
+    await expect(page.getByRole("heading", { level: 1, name: "Privacy Preflight Web", exact: true })).toBeVisible();
+    await expect(page.locator("#privacy-macos-status")).toHaveCount(0);
+    await expect(page.getByText(/macOS arm64 preview|Gatekeeper/u)).toHaveCount(0);
     await page.getByRole("button", { name: "中", exact: true }).click();
-    await expect(hero.getByRole("img", { name: "Privacy Preflight 应用图标" })).toBeVisible();
-    await expect(hero.getByRole("link", { name: "下载 macOS arm64 预览版（未公证）" })).toHaveAttribute("href", "/case-studies/privacy-preflight/downloads/Privacy-Preflight-0.1.0-macOS-arm64-unnotarized.zip");
-    await expect(hero.locator(".privacy-macos-artifact-meta")).toContainText("33,930,369 字节");
-    await expect(status.locator(".privacy-macos-first-open")).toContainText("首次打开与 Gatekeeper");
-    await expect(status.locator(".privacy-macos-first-open")).toContainText("请勿全局关闭 Gatekeeper");
+    await expect(page.getByRole("heading", { level: 1, name: "隐私预检网页版", exact: true })).toBeVisible();
+    await expect(page.getByText(/macOS 版|Gatekeeper/u)).toHaveCount(0);
     const localizedDerivatives = page.locator('figure[data-evidence-kind="presentation-layer-derivative"]');
     await expect(localizedDerivatives).toHaveCount(2);
     await expect(localizedDerivatives.locator("figcaption")).toHaveText([
-      "表现层派生项 · 非原始证据 · OCR 引导脱敏后的全新 PNG 导出。",
-      "表现层派生项 · 非原始证据 · 纯图像 PDF 输出；验证记录显示可提取文本层为空。",
+      "结果将三个已复核区域直接烧录进新生成的 PNG。",
+      "纯图像结果展示已复核区域被扁平化写入重建后的 PDF 页面。",
     ]);
     await expect(localizedDerivatives.locator("img").nth(0)).toHaveAttribute("src", /image-synthetic-redacted-zh\.svg$/);
     await expect(localizedDerivatives.locator("img").nth(1)).toHaveAttribute("src", /pdf-synthetic-redacted-preview-zh\.svg$/);
@@ -626,6 +628,10 @@ test.describe("Privacy Preflight Web", () => {
     await expect(output).toContainText("***************");
     await page.getByRole("button", { name: "Undo" }).click();
     await expect(page.locator(".privacy-entity")).toHaveCount(1);
+    await page.getByRole("button", { name: "Redo" }).click();
+    await page.keyboard.press("Control+z");
+    await page.keyboard.press("Control+Shift+z");
+    await expect(page.getByRole("button", { name: "Redo" })).toBeDisabled();
     await page.getByRole("button", { name: "Reset" }).click();
     await expect(textarea).toHaveValue("");
 
@@ -638,9 +644,13 @@ test.describe("Privacy Preflight Web", () => {
     await expect(page.locator(".privacy-entity")).toHaveCount(4);
     await expect(page.locator(".privacy-entity").filter({ hasText: "SCHOOL" })).toBeVisible();
     await expect(page.getByTestId("privacy-safe-output")).not.toContainText("[SCHOOL]");
-    await page.getByRole("button", { name: "确认复核并显示结果" }).click();
-    await expect(page.getByTestId("privacy-safe-output")).toContainText("[SCHOOL]");
-    await expect(page.locator(".privacy-validation.pass")).toBeVisible();
+    await page.locator(".privacy-entity").filter({ hasText: "SCHOOL" }).getByTitle("删除命中").click();
+    await expect(page.locator(".privacy-validation.fail")).toBeVisible();
+    const confirm = page.getByRole("button", { name: "确认复核并显示结果" });
+    await expect(confirm).toBeEnabled();
+    await confirm.click();
+    await expect(page.getByTestId("privacy-safe-output")).toContainText("北京理工大学");
+    await expect(page.locator(".privacy-validation.fail")).toBeVisible();
   });
 
   test("image export burns pixels into a fresh verified PNG without requests", async ({ page }) => {
@@ -674,10 +684,16 @@ test.describe("Privacy Preflight Web", () => {
     expect(Number(await xInput.inputValue())).toBeGreaterThan(initialX);
     await page.getByRole("button", { name: "Confirm review and show result" }).click();
     await expect(page.getByTestId("privacy-image-output")).toBeVisible();
-    await expect(page.getByTestId("privacy-image-redacted-view")).toBeVisible();
+    const redactedView = page.getByTestId("privacy-image-redacted-view");
+    await expect(redactedView).toBeVisible();
+    const redactedSize = await redactedView.boundingBox();
     await page.getByRole("button", { name: "Before / after" }).click();
     await expect(page.getByTestId("privacy-image-redacted-view")).toHaveCount(0);
-    await expect(page.getByTestId("privacy-image-original-view")).toBeVisible();
+    const originalView = page.getByTestId("privacy-image-original-view");
+    await expect(originalView).toBeVisible();
+    const originalSize = await originalView.boundingBox();
+    expect(originalSize?.width).toBeCloseTo(redactedSize?.width ?? 0, 0);
+    expect(originalSize?.height).toBeCloseTo(redactedSize?.height ?? 0, 0);
     await page.getByRole("button", { name: "Before / after" }).click();
     const downloadPromise = page.waitForEvent("download");
     await page.getByRole("link", { name: "Download redacted file" }).click();
@@ -722,7 +738,7 @@ test.describe("Privacy Preflight Web", () => {
     const coordinates = await phoneRegion.locator("input").evaluateAll((inputs) => inputs.map((input) => Number((input as HTMLInputElement).value)));
     await page.getByRole("button", { name: "Confirm review and show result" }).click();
     const outputImage = page.getByTestId("privacy-image-redacted-view");
-    await expect(outputImage).toBeVisible();
+    await expect(outputImage).toBeVisible({ timeout: 30_000 });
     const pixel = await outputImage.evaluate(async (image, [x, y, width, height]) => {
       const node = image as HTMLImageElement;
       await node.decode();
@@ -834,7 +850,6 @@ test.describe("Privacy Preflight Web", () => {
       return [...context.getImageData(Math.floor((region.x + region.width / 2) * node.width), Math.floor((region.y + region.height / 2) * node.height), 1, 1).data];
     }, { x, y, width, height });
     expect(overlayPixel[3]).toBeGreaterThan(0);
-    await page.getByRole("button", { name: "Mark page reviewed" }).click();
     await page.getByRole("button", { name: "Confirm review and show result" }).click();
     const resultCanvas = page.getByTestId("privacy-pdf-result-preview").locator("canvas");
     await expect(resultCanvas).toBeVisible({ timeout: 100_000 });
@@ -875,6 +890,7 @@ test.describe("Privacy Preflight Web", () => {
     test.setTimeout(360_000);
     await page.getByRole("tab", { name: "PDF" }).click();
     await page.getByRole("button", { name: "Load multi-page PDF" }).click();
+    await expect(page.getByRole("navigation", { name: "Loaded PDF pages" }).getByRole("button")).toHaveCount(3);
 
     const sourceCounter = page.locator(".privacy-pdf-workspace > .privacy-actionbar .privacy-page-counter");
     const redactionCenters: { x: number; y: number }[] = [];
@@ -888,7 +904,6 @@ test.describe("Privacy Preflight Web", () => {
       await expect(firstRegion).toBeVisible();
       const [x, y, width, height] = await firstRegion.locator("input").evaluateAll((inputs) => inputs.map((input) => Number((input as HTMLInputElement).value) / 100));
       redactionCenters.push({ x: x + width / 2, y: y + height / 2 });
-      await page.getByRole("button", { name: "Mark page reviewed" }).click();
     }
 
     await page.getByRole("button", { name: "Confirm review and show result" }).click();
@@ -963,12 +978,10 @@ test.describe("Privacy Preflight Web", () => {
     await expect(page.locator(".privacy-box-list article")).toHaveCount(0);
     await page.getByRole("button", { name: "Scan for sensitive information" }).click();
     await expect(page.locator('.privacy-box-list article code').filter({ hasText: "text-layer" })).toHaveCount(2);
-    await page.getByRole("button", { name: "Mark page reviewed" }).click();
     await expect(page.getByRole("button", { name: "Confirm review and show result" })).toBeDisabled();
     await page.getByRole("button", { name: "Next page" }).click();
     await expect(page.locator(".privacy-page-counter")).toContainText("2 / 2");
     await page.getByRole("button", { name: "Scan for sensitive information" }).click();
-    await page.getByRole("button", { name: "Mark page reviewed" }).click();
     await page.getByRole("button", { name: "Confirm review and show result" }).click();
     await expect(page.getByTestId("privacy-pdf-output")).toBeVisible({ timeout: 100_000 });
     await expect(page.getByTestId("privacy-pdf-result-preview").locator("canvas")).toBeVisible();

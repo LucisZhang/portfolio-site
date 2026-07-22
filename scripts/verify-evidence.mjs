@@ -264,9 +264,10 @@ for (const forbidden of ["498,725", "0.944", "Private GitHub", "Sample interface
 }
 const ragProofSource = await readFile(join(root, "src/components/RagProof.tsx"), "utf8");
 assert(ragProofSource.includes("Historical small-scale result") && ragProofSource.includes("0.8093 → 0.9438"), "RAG historical result is missing or altered");
+const projectSource = await readFile(join(root, "src/lib/projects.ts"), "utf8");
 assert(
-  ragProofSource.includes("Historical 12-question corpus only; does not transfer to the 11,309-document S1 checkpoint."),
-  "RAG historical result is missing its non-transfer boundary",
+  projectSource.includes("Historical 12-question corpus only; does not transfer to the 11,309-document S1 checkpoint."),
+  "RAG historical result is missing its bottom-section non-transfer boundary",
 );
 
 console.log("Evidence verification passed: Release, p1, RAG, Privacy, Analytics, and source claim boundaries.");

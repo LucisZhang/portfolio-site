@@ -48,8 +48,7 @@ function Notes({ project }: { project: Project }) {
   const { dict } = useI18n();
   return (
     <section className="notes-section">
-      <div className="page-shell notes-grid">
-        <div><h2>{dict.provenance}</h2><ul>{project.provenance.map((item) => <li key={item.en}><LocalizedText text={item} /></li>)}</ul></div>
+      <div className="page-shell notes-grid notes-grid-single">
         <div><h2>{dict.boundaries}</h2><ul>{project.boundaries.map((item) => <li key={item.en}><LocalizedText text={item} /></li>)}</ul></div>
       </div>
     </section>

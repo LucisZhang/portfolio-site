@@ -78,7 +78,7 @@ const en: Dictionary = {
   noPublicLink: "Source code isn't public yet.",
   mediaEvidence: "Recorded views",
   mediaUnavailable: "No approved image is included in this build. Run details are still available below.",
-  footer: "Public v1 portfolio. Every project says what actually ran — and what the results don't prove.",
+  footer: "A bilingual portfolio of applied AI, data systems, and decision tools built by Xiangguo Zhang.",
   inspectProject: "Open case study",
 };
 
@@ -112,7 +112,7 @@ const zh: Dictionary = {
   noPublicLink: "源代码尚未公开。",
   mediaEvidence: "已记录影像",
   mediaUnavailable: "本次构建暂无可用图片，下方仍可查看运行详情。",
-  footer: "公开 v1 作品集。每个项目说明实际运行了什么，以及结果不能证明什么。",
+  footer: "章向国的双语作品集：聚焦应用 AI、数据系统与决策工具。",
   inspectProject: "查看案例",
 };
 

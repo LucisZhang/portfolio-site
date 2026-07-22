@@ -56,7 +56,7 @@ test("Credit Policy Lab recomputes model, thresholds, capacity, queue, and audit
   await lab.getByRole("button", { name: "Synthetic fixture" }).click();
   await expect(lab).toHaveAttribute("data-active-source", "synthetic");
   await expect(page.locator(".analytics-dataset-context dd").filter({ hasText: "12,000 applications" }).first()).toBeVisible();
-  await expect(page.locator(".credit-decision-boundary")).toContainText("Model probability is not the final business decision");
+  await expect(page.locator(".credit-decision-boundary")).toContainText("The final business decision combines probability, economics, policy thresholds, and human review");
 
   await page.getByRole("tab", { name: "Quality checks" }).click();
   await expect(page.locator(".analytics-quality-list .pass")).toHaveCount(10);

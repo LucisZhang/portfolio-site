@@ -54,9 +54,9 @@ Then require all of the following:
 - Fixed routes remain statically generated; only `/api/assistant` and the intended artifact route
   are dynamic.
 
-## 3. Verify assistant v13 locally
+## 3. Verify assistant v14 locally
 
-Require policy `hybrid-portfolio-rag-v13`, evidence mode
+Require policy `hybrid-portfolio-rag-v14`, evidence mode
 `pinned-github-plus-private-candidate-rag`, and public snapshot SHA-256
 `b8cc614034bb0b0fc4b878553d08141471a8cb548698809f70f8f1819d97a777`.
 
@@ -73,7 +73,8 @@ Check that:
    `moonshotai/kimi-k3`. Overrides, if any, must be explicit valid provider/model identifiers.
 5. Every outbound model request enforces `data_collection: deny`, `zdr: true`, and
    `require_parameters: true`, contains only retrieved evidence plus at most 6 recent messages,
-   uses a 35-second timeout, and has zero automatic retries.
+   stays inside the 40-second request deadline, retries the primary once after transient/network
+   failures, and then advances through the configured locale-specific fallback order.
 6. Output JSON is server-validated. Unknown/duplicate citation IDs, sensitive output, long copied
    evidence, malformed JSON, non-stop completion, returned-model mismatch, and oversized upstream
    bodies fail closed.
@@ -105,6 +106,7 @@ Before a Preview build, verify variable name and target only—never print value
 - `ASSISTANT_RATE_LIMIT_HMAC_SECRET` (independent, at least 32 UTF-8 bytes)
 - `ASSISTANT_PRIVATE_KNOWLEDGE_B64_GZIP`
 - optional `ASSISTANT_MODEL_EN` and `ASSISTANT_MODEL_ZH`
+- optional `ASSISTANT_FALLBACK_MODELS_EN` and `ASSISTANT_FALLBACK_MODELS_ZH`
 
 Check the aggregate deployment-environment size before upload. Use the deployment provider's secret
 input/API mechanism so values never appear in process arguments, shell history, Git, CI output, or

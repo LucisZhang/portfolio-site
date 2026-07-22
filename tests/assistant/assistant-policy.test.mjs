@@ -5,6 +5,8 @@ import {
   ASSISTANT_POLICY_REVISION,
   DEFAULT_ASSISTANT_MODEL_EN,
   DEFAULT_ASSISTANT_MODEL_ZH,
+  DEFAULT_ASSISTANT_FALLBACK_MODELS_EN,
+  DEFAULT_ASSISTANT_FALLBACK_MODELS_ZH,
   MAX_INPUT_CHARACTERS,
   buildOpenRouterPayload,
   completedOpenRouterCompletion,
@@ -12,6 +14,7 @@ import {
   parseAssistantBody,
   protectAssistantOutput,
   resolveAssistantModel,
+  resolveAssistantFallbackModels,
   scopeDecision,
 } from "../../src/lib/assistant-policy.ts";
 import {
@@ -88,12 +91,16 @@ function completedResponse(content, model = DEFAULT_ASSISTANT_MODEL_EN) {
 }
 
 test("hybrid RAG policy and bilingual model defaults are code-bound", () => {
-  assert.equal(ASSISTANT_POLICY_REVISION, "hybrid-portfolio-rag-v13");
+  assert.equal(ASSISTANT_POLICY_REVISION, "hybrid-portfolio-rag-v14");
   assert.equal(ASSISTANT_EVIDENCE_MODE, "pinned-github-plus-private-candidate-rag");
   assert.equal(resolveAssistantModel("en"), DEFAULT_ASSISTANT_MODEL_EN);
   assert.equal(resolveAssistantModel("zh"), DEFAULT_ASSISTANT_MODEL_ZH);
   assert.equal(resolveAssistantModel("en", "anthropic/claude-sonnet-5"), "anthropic/claude-sonnet-5");
+  assert.deepEqual(resolveAssistantFallbackModels("en"), [...DEFAULT_ASSISTANT_FALLBACK_MODELS_EN]);
+  assert.deepEqual(resolveAssistantFallbackModels("zh"), [...DEFAULT_ASSISTANT_FALLBACK_MODELS_ZH]);
+  assert.deepEqual(resolveAssistantFallbackModels("en", "openai/gpt-5.4, qwen/qwen3.5-397b-a17b"), [...DEFAULT_ASSISTANT_FALLBACK_MODELS_EN]);
   assert.throws(() => resolveAssistantModel("en", "bad model"), /invalid/u);
+  assert.throws(() => resolveAssistantFallbackModels("en", "bad model"), /invalid/u);
 });
 
 test("request parser accepts bounded conversation history and rejects oversized or malformed input", () => {
@@ -190,6 +197,7 @@ test("completion and output checks require one exact model response with valid g
     "not-json",
     JSON.stringify({ answer: "claim", citation_ids: ["unknown"], confidence: "supported" }),
     JSON.stringify({ answer: "candidate@example.com", citation_ids: [chunks[0].id], confidence: "supported" }),
+    JSON.stringify({ answer: "Privacy Preflight also has a macOS app.", citation_ids: [chunks[0].id], confidence: "supported" }),
     JSON.stringify({ answer: "claim", citation_ids: [chunks[0].id], confidence: "certain" }),
   ]) assert.equal(protectAssistantOutput(content, chunks).ok, false, content);
 });
@@ -280,7 +288,7 @@ test("local refusals, missing knowledge, missing configuration, and limiter fail
   assert.equal(rateCalls, 1);
 });
 
-test("rate limiting blocks upstream calls and upstream/output failures never retry", async () => {
+test("rate limiting blocks upstream calls while transient 502 failures retry once and then fall back", async () => {
   let calls = 0;
   const limited = await executeAssistantRequest(rawRequest("Tell me about Xiangguo."), {
     clientIp: "198.51.100.14",
@@ -292,22 +300,47 @@ test("rate limiting blocks upstream calls and upstream/output failures never ret
   assert.equal(limited.status, 429);
   assert.equal(calls, 0);
 
-  for (const fetcher of [
-    async () => new Response("unavailable", { status: 503 }),
-    async () => new Response("not-json", { status: 200 }),
-    async () => completedResponse(JSON.stringify({ answer: "claim", citation_ids: ["unknown"], confidence: "supported" })),
-  ]) {
-    calls = 0;
-    const result = await executeAssistantRequest(rawRequest("Tell me about Xiangguo."), {
-      clientIp: "198.51.100.15",
-      checkRate: () => allowedRate,
-      apiKey: "key",
-      retrieve: () => retrieval,
-      fetcher: async (...args) => { calls += 1; return fetcher(...args); },
-    });
-    assert.equal(result.status, 502);
-    assert.equal(calls, 1);
-  }
+  const models = [];
+  const recovered = await executeAssistantRequest(rawRequest("Tell me about Xiangguo."), {
+    clientIp: "198.51.100.15",
+    checkRate: () => allowedRate,
+    apiKey: "key",
+    retrieve: () => retrieval,
+    fetcher: async (_url, init) => {
+      const model = JSON.parse(init.body).model;
+      models.push(model);
+      if (models.length < 3) return new Response("bad gateway", { status: 502 });
+      return completedResponse(answerJson(), model);
+    },
+  });
+  assert.equal(recovered.status, 200);
+  assert.deepEqual(models, [DEFAULT_ASSISTANT_MODEL_EN, DEFAULT_ASSISTANT_MODEL_EN, DEFAULT_ASSISTANT_FALLBACK_MODELS_EN[0]]);
+  assert.equal(recovered.responseReturnedModel, DEFAULT_ASSISTANT_FALLBACK_MODELS_EN[0]);
+
+  calls = 0;
+  const exhausted = await executeAssistantRequest(rawRequest("Tell me about Xiangguo."), {
+    clientIp: "198.51.100.16",
+    checkRate: () => allowedRate,
+    apiKey: "key",
+    retrieve: () => retrieval,
+    fetcher: async () => { calls += 1; return new Response("unavailable", { status: 503 }); },
+  });
+  assert.equal(exhausted.status, 502);
+  assert.equal(calls, 2 + DEFAULT_ASSISTANT_FALLBACK_MODELS_EN.length);
+
+  calls = 0;
+  const unsafe = await executeAssistantRequest(rawRequest("Tell me about Xiangguo."), {
+    clientIp: "198.51.100.17",
+    checkRate: () => allowedRate,
+    apiKey: "key",
+    retrieve: () => retrieval,
+    fetcher: async () => {
+      calls += 1;
+      return completedResponse(JSON.stringify({ answer: "candidate@example.com", citation_ids: [chunks[0].id], confidence: "supported" }));
+    },
+  });
+  assert.equal(unsafe.status, 502);
+  assert.equal(calls, 1);
 });
 
 test("client IP pseudonyms and rate-limit implementations remain bounded and fail closed", async () => {

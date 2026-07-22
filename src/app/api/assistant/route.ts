@@ -123,6 +123,8 @@ export async function POST(request: Request) {
     apiKey: process.env.OPENROUTER_API_KEY,
     modelEn: process.env.ASSISTANT_MODEL_EN,
     modelZh: process.env.ASSISTANT_MODEL_ZH,
+    fallbackModelsEn: process.env.ASSISTANT_FALLBACK_MODELS_EN,
+    fallbackModelsZh: process.env.ASSISTANT_FALLBACK_MODELS_ZH,
     privateKnowledgeEncoded: process.env.ASSISTANT_PRIVATE_KNOWLEDGE_B64_GZIP,
   });
   return assistantResponse(

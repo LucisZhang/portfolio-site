@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useI18n, type LocalizedString } from "@/lib/i18n";
-import { localizeStructuralValue } from "@/lib/structural-copy";
 
 interface MediaCandidate {
   src: string | LocalizedString;
@@ -35,9 +34,7 @@ export default function OptionalMedia({ candidates, layout = "default" }: { cand
       {/* The native element lets late-arriving public assets render without build-time coupling. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={item.resolvedSrc} alt={item.alt[locale]} onError={() => markFailed(item.resolvedSrc)} style={wide ? { maxHeight: "none" } : undefined} />
-      <figcaption>{isLocalizedDerivative
-        ? `${localizeStructuralValue("presentation-layer derivative", locale)} · ${localizeStructuralValue("not source evidence", locale)} · ${item.caption[locale]}`
-        : item.caption[locale]}</figcaption>
+      <figcaption>{item.caption[locale]}</figcaption>
     </figure>
     );
   };

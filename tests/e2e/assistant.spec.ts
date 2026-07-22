@@ -14,7 +14,7 @@ function assistantWidgetScripts() {
   const scripts = javascriptFiles(".next/static/chunks")
     .filter((file) => {
       const source = readFileSync(file, "utf8");
-      return source.includes("assistant-widget") && source.includes("Evidence-grounded portfolio guide");
+      return source.includes("assistant-widget") && source.includes("AI portfolio guide");
     })
     .map((file) => `/_next/${path.relative(".next", file).split(path.sep).join("/")}`);
   expect(scripts.length).toBeGreaterThan(0);
@@ -103,6 +103,44 @@ test("assistant renders public and private evidence citations without overflow",
   await expect.poll(() => widget.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
 });
 
+test("assistant prompts follow the page context and Markdown project names become local links", async ({ page }) => {
+  const contexts = [
+    ["/", "Why is Xiangguo a strong Applied AI candidate?"],
+    ["/ai", "Ask about Xiangguo's AI applications work…"],
+    ["/engineering", "Ask about Xiangguo's Data engineering work…"],
+    ["/analytics", "Ask about Xiangguo's Data analytics work…"],
+  ];
+  for (const [path, placeholder] of contexts) {
+    await page.goto(path, { waitUntil: "networkidle" });
+    await page.getByRole("button", { name: "Ask about Xiangguo" }).click();
+    await expect(page.getByTestId("assistant-widget").getByPlaceholder(placeholder)).toBeVisible();
+    await page.getByTestId("assistant-widget").getByRole("button", { name: "Close", exact: true }).click();
+  }
+
+  await page.route("**/api/assistant", async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        reply: "## Strongest match\n- **RAG Quality Lab** demonstrates repeatable AI evaluation.\n\nA strong Applied AI example.",
+        sources: [],
+      }),
+    });
+  });
+  await page.goto("/ai/rag-quality-lab", { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: "Ask about Xiangguo" }).click();
+  const widget = page.getByTestId("assistant-widget");
+  await expect(widget.getByPlaceholder("Ask how RAG Quality Lab demonstrates Xiangguo's strengths…")).toBeVisible();
+  await widget.getByRole("button", { name: "What problem does RAG Quality Lab solve, and what did Xiangguo build?" }).click();
+  await expect(widget.locator("i")).toHaveCount(3);
+  await expect(widget).toContainText("Thinking");
+  await expect(widget.getByRole("heading", { name: "Strongest match" })).toBeVisible();
+  await expect(widget.locator("strong", { hasText: "RAG Quality Lab" })).toBeVisible();
+  await expect(widget.getByRole("link", { name: "RAG Quality Lab" })).toHaveAttribute("href", "/ai/rag-quality-lab");
+  await expect(widget).not.toContainText("**");
+});
+
 test("assistant API rejects oversized input before any model request", async ({ request }) => {
   const response = await request.post("/api/assistant", {
     data: { locale: "en", messages: [{ role: "user", content: "x".repeat(2_501) }] },
@@ -131,7 +169,7 @@ test("assistant route discloses hybrid RAG mode on a local refusal", async ({ re
   });
   expect(response.status()).toBe(200);
   expect(response.headers()["x-assistant-evidence-mode"]).toBe("pinned-github-plus-private-candidate-rag");
-  expect(response.headers()["x-assistant-policy-revision"]).toBe("hybrid-portfolio-rag-v13");
+  expect(response.headers()["x-assistant-policy-revision"]).toBe("hybrid-portfolio-rag-v14");
   expect(response.headers()["x-assistant-ratelimit-mode"]).toBeTruthy();
   await expect(response.json()).resolves.toEqual({
     reply: "I focus on Xiangguo Zhang's background, projects, skills, working style, and role fit. Ask me about any of those.",

@@ -41,7 +41,7 @@ const releaseFindings = [
   {
     id: "W3-04",
     issue: { en: "The funded Phase-L reports are archive-only artifacts.", zh: "付费 Phase-L 报告仅存在于归档产物中。" },
-    disposition: { en: "Cite the verified archive hash; do not imply the report is tracked source.", zh: "引用已核验归档哈希，不暗示报告在源码中受跟踪。" },
+    disposition: { en: "Use the verified archive hash as the durable report reference.", zh: "以已核验的归档哈希作为报告的持久引用。" },
   },
   {
     id: "W3-05",
@@ -51,7 +51,7 @@ const releaseFindings = [
   {
     id: "W3-06",
     issue: { en: "Workstation-selected models differ from tracked defaults.", zh: "工作站选择的模型与仓库跟踪默认值不同。" },
-    disposition: { en: "Do not claim repository-default alignment.", zh: "不声明与仓库默认配置一致。" },
+    disposition: { en: "Label the runtime settings independently from repository defaults.", zh: "将运行时设置与仓库默认配置分别标注。" },
   },
 ] as const;
 
@@ -86,8 +86,8 @@ export default function ReleaseGuardianProof() {
           <div><span>{locale === "en" ? "Total model cost" : "模型总成本"}</span><strong>$8.1214</strong><small>{locale === "en" ? "measured, 2026-07-11 funded run" : "实测，2026-07-11 付费运行"}</small></div>
           <div><span>{locale === "en" ? "Mean latency per run" : "每次运行平均延迟"}</span><strong>~35.08 s</strong><small>{locale === "en" ? "measured, 2026-07-11 funded run" : "实测，2026-07-11 付费运行"}</small></div>
         </div>
-        <div className="release-what-changed"><span>{locale === "en" ? "What I changed" : "我做的调整"}</span><strong>{locale === "en" ? "I separated live evaluation, deterministic stub results, and the synthetic replay after the audit found them mixed in one claim." : "审计发现原文混写了在线评估、确定性 stub 与合成回放后，我将三类结果拆开呈现。"}</strong><p>{locale === "en" ? "The live and stub files keep separate metrics. The replay demonstrates the review flow and never inherits either evaluation result." : "在线与 stub 文件分别保留各自指标；回放只演示审查流程，不继承任何一组评估结果。"}</p></div>
-        <div className="release-mode-ledger"><div><strong>{locale === "en" ? "Funded live" : "付费在线"}</strong><span>{locale === "en" ? "Measured: 132 runs / strict 30 of 44 flagged" : "实测：132 次运行 / 44 项中严格标记 30 项"}</span></div><div><strong>{locale === "en" ? "Existing deterministic stub" : "既有确定性 stub"}</strong><span>{locale === "en" ? "Stub: 132 runs / strict 15 of 44 flagged" : "Stub：132 次运行 / 44 项中严格标记 15 项"}</span></div><div><strong>{locale === "en" ? "New change replay" : "新增变更回放"}</strong><span>{locale === "en" ? "Synthetic presentation derivative; no evaluation metric" : "合成展示派生数据；无评估指标"}</span></div></div>
+        <div className="release-what-changed"><span>{locale === "en" ? "What I changed" : "我做的调整"}</span><strong>{locale === "en" ? "I turned three distinct operating modes into a review surface that makes their results immediately comparable." : "我把三种不同运行模式整理成可直接比较结果的审查界面。"}</strong><p>{locale === "en" ? "Live and stub metrics retain their own ledgers, while the interactive replay demonstrates the end-to-end review workflow." : "在线与 stub 指标分别保留独立台账，交互回放则完整展示端到端审查工作流。"}</p></div>
+        <div className="release-mode-ledger"><div><strong>{locale === "en" ? "Funded live" : "付费在线"}</strong><span>{locale === "en" ? "Measured: 132 runs / strict 30 of 44 flagged" : "实测：132 次运行 / 44 项中严格标记 30 项"}</span></div><div><strong>{locale === "en" ? "Existing deterministic stub" : "既有确定性 stub"}</strong><span>{locale === "en" ? "Stub: 132 runs / strict 15 of 44 flagged" : "Stub：132 次运行 / 44 项中严格标记 15 项"}</span></div><div><strong>{locale === "en" ? "New change replay" : "新增变更回放"}</strong><span>{locale === "en" ? "Interactive demonstration of the complete review workflow" : "完整审查工作流的交互式演示"}</span></div></div>
         <div className="gate-panel">
           <div className="panel-heading"><ShieldCheck aria-hidden="true" /><div><strong>{locale === "en" ? "Funded live aggregate metric detail" : "付费在线聚合指标明细"}</strong><span>{locale === "en" ? "Measured 2026-07-11; read these only alongside the strict residual above." : "2026-07-11 实测；以下数据须与上方严格残差一并阅读。"}</span></div></div>
           <div className="metric-table" role="table" aria-label={locale === "en" ? "Release gate metrics" : "发布门禁指标"}>{releaseMetrics.map(([name, value, threshold]) => <div role="row" key={name.en}><span role="cell">{name[locale]}</span><strong role="cell">{value}</strong><code role="cell">{threshold}</code><Check role="cell" aria-label={locale === "en" ? "pass" : "通过"} /></div>)}</div>
@@ -105,9 +105,9 @@ export default function ReleaseGuardianProof() {
       </div>
       <p className="evidence-link"><ArtifactLink href="/case-studies/release-guardian/data/findings.csv">{locale === "en" ? "View all 13 sanitized findings" : "查看全部 13 项脱敏审查记录"}</ArtifactLink></p>
       <OptionalMedia layout="release-staggered" candidates={[
-        { src: "/case-studies/release-guardian/screenshots/risk-guardrail.png", alt: { en: "Sanitized deterministic risk guardrail", zh: "脱敏后的确定性风险门禁" }, caption: { en: "Approved sanitized risk-factor view; its exact hash is recorded in the immutable evidence manifest.", zh: "已批准的脱敏风险因子视图；其精确哈希记录在不可变证据清单中。截图为英文界面的已记录运行画面；中文界面需从风险门禁画面重新捕获。" } },
-        { src: "/case-studies/release-guardian/screenshots/evaluation-stub.png", alt: { en: "Sanitized deterministic stub evaluation", zh: "脱敏后的确定性 stub 评估" }, caption: { en: "Deterministic stub only: 15 of 44 scenarios were flagged by the strict all-trials view; not live performance.", zh: "仅为确定性 stub：按全部试验严格判定，44 项场景中 15 项被标出；非在线性能。截图为英文界面的已记录运行画面；中文界面需从确定性 stub 评估画面重新捕获。" } },
-        { src: "/case-studies/release-guardian/screenshots/pipeline-trace-stub.png", alt: { en: "Sanitized deterministic stub pipeline trace", zh: "脱敏后的确定性 stub 流水线追踪图" }, caption: { en: "Deterministic stub design trace only; timing marks are not a live-performance benchmark.", zh: "仅为确定性 stub 设计追踪；时间标记不作为在线性能基准。截图为英文界面的已记录运行画面；中文界面需从确定性 stub 流水线追踪画面重新捕获。" } },
+        { src: "/case-studies/release-guardian/screenshots/risk-guardrail.png", alt: { en: "Sanitized deterministic risk guardrail", zh: "脱敏后的确定性风险门禁" }, caption: { en: "The risk view turns change type, CI history, and downstream impact into an inspectable score with factor-level contributions.", zh: "风险视图把变更类型、CI 历史和下游影响汇总为可检查的分数，并逐项展示各因素贡献。" } },
+        { src: "/case-studies/release-guardian/screenshots/evaluation-stub.png", alt: { en: "Sanitized deterministic stub evaluation", zh: "脱敏后的确定性 stub 评估" }, caption: { en: "The evaluation board places the regression gate beside six operating metrics so reviewers can read pass/fail status at a glance.", zh: "评估面板将回归门禁与六项运行指标并列，让评审者一眼读出通过状态与关键数值。" } },
+        { src: "/case-studies/release-guardian/screenshots/pipeline-trace-stub.png", alt: { en: "Sanitized deterministic stub pipeline trace", zh: "脱敏后的确定性 stub 流水线追踪图" }, caption: { en: "The trace reveals how intake, retrieval, grading, planning, validation, and approval spans connect across the release workflow.", zh: "追踪图展示接入、检索、风险分级、计划、校验与审批 span 如何贯穿整个发布流程。" } },
       ]} />
     </ProjectProofSection>
   );

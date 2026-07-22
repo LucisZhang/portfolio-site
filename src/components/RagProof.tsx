@@ -35,9 +35,7 @@ export default function RagProof() {
           <div><span>{locale === "en" ? "P95 latency" : "P95 延迟"}</span><strong>37.39 ms → 188.41 ms</strong><small>{locale === "en" ? "Pipeline A → Pipeline B" : "Pipeline A → Pipeline B"}</small></div>
         </div>
         <p className="rag-historical-scale"><strong>{locale === "en" ? "Historical indexing measurement:" : "历史索引测量："}</strong> 50,000 {locale === "en" ? "documents" : "份文档"} / 56,039 {locale === "en" ? "vectors" : "个向量"} · 691.17 s.</p>
-        <p className="rag-historical-boundary">{locale === "en" ? "Historical 12-question corpus only; does not transfer to the 11,309-document S1 checkpoint." : "仅适用于历史 12 问题语料；不能迁移解释为 11,309 文档 S1 检查点的结果。"}</p>
       </aside>
-      <div className="not-claimed"><CircleAlert aria-hidden="true" /><p><strong>{locale === "en" ? "The time-boxed retrieval evaluation ended without metrics." : "限时检索评估已结束，未产生指标。"}</strong>{locale === "en" ? " The real hybrid dependencies and uncached reranker were unavailable inside the offline timebox; no toy fallback was substituted." : " 离线限时内缺少真实混合检索依赖与未缓存重排器；没有使用玩具替代方案。"}</p></div>
     </ProjectProofSection>
   );
 }

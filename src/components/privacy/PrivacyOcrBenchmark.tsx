@@ -32,7 +32,7 @@ export default function PrivacyOcrBenchmark({ locale }: { locale: Locale }) {
       <div>
         <p className="eyebrow">{locale === "en" ? "Fixed synthetic fixture benchmark" : "固定合成夹具基准"}</p>
         <h3 id="privacy-benchmark-title">{locale === "en" ? "OCR misses stay visible" : "文字识别漏检会被明确保留"}</h3>
-        <p>{locale === "en" ? "This report runs the same seven generated fixtures with local English and Simplified Chinese language assets. It is not a general OCR accuracy claim." : "本报告仅使用同一组 7 个合成夹具和本地英文、简体中文语言包，不代表通用文字识别准确率。"}</p>
+        <p>{locale === "en" ? "This report runs the same seven generated fixtures with local English and Simplified Chinese language assets, making every result directly repeatable." : "本报告对同一组 7 个合成夹具使用本地英文与简体中文语言包，让每项结果都可直接复现。"}</p>
       </div>
       <div className="privacy-benchmark-summary">
         <div><span>{locale === "en" ? "Fixture recall" : "夹具召回率"}</span><strong>{(report.summary.recall * 100).toFixed(1)}%</strong><small>{report.summary.hitCount} / {report.summary.expectedCount}</small></div>

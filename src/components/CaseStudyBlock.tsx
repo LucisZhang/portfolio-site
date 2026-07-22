@@ -22,7 +22,7 @@ export default function CaseStudyBlock({ project }: { project: Project }) {
         <h1 id="project-title"><LocalizedText text={project.title} /></h1>
         <p className="lede"><LocalizedText text={project.summary} /></p>
         <div className="tag-list" aria-label={dict.stack}>
-          {project.stack.map((item) => <span key={item.en}><LocalizedText text={item} /></span>)}
+          {project.stack.map((item) => <LocalizedText className="tag" key={item.en} text={item} />)}
         </div>
       </div>
 

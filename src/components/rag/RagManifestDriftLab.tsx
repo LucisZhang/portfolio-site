@@ -320,14 +320,13 @@ export default function RagManifestDriftLab() {
   return (
     <section className="rag-drift-lab" data-testid="rag-drift-lab" aria-labelledby="rag-drift-title">
       <header className="rag-lab-header">
-        <div><p className="eyebrow">{locale === "en" ? "Deterministic verifier" : "确定性校验"}</p><h3 id="rag-drift-title">{locale === "en" ? "Manifest & Drift Lab" : "清单与漂移实验室"}</h3><p>{locale === "en" ? "Compare a candidate public-claim manifest against the locked C2/C3 evidence boundary." : "将候选公开声明清单与锁定的 C2/C3 证据边界进行比较。"}</p></div>
-        <div className="rag-lab-disclosure"><ScanSearch aria-hidden="true" /><strong>{locale === "en" ? "Browser-only manifest comparison" : "仅浏览器内清单对比"}</strong><span>{locale === "en" ? "This verifier does not run retrieval, generation, or an LLM judge." : "本校验器不运行检索、生成或 LLM 裁判。"}</span></div>
+        <div><p className="eyebrow">{locale === "en" ? "Deterministic verifier" : "确定性校验"}</p><h3 id="rag-drift-title">{locale === "en" ? "Manifest & Drift Lab" : "清单与漂移实验室"}</h3><p>{locale === "en" ? "Compare a candidate public-claim manifest against the locked C2/C3 evaluation record." : "将候选公开声明清单与锁定的 C2/C3 评估记录进行比较。"}</p></div>
+        <div className="rag-lab-disclosure"><ScanSearch aria-hidden="true" /><strong>{locale === "en" ? "Instant browser verification" : "浏览器即时校验"}</strong><span>{locale === "en" ? "Load a scenario and see every manifest difference highlighted deterministically." : "载入情景，即时查看确定性标出的每一项清单差异。"}</span></div>
       </header>
 
       <div className="rag-version-strip">
         <div><span>{locale === "en" ? "Public baseline" : "公开基线"}</span><code>{registry.public_repository.baseline_commit}</code><strong>{locale === "en" ? "C2 sync pending" : "C2 同步待完成"}</strong></div>
         <div><span>{locale === "en" ? "Evidence checkpoint" : "证据检查点"}</span><code>{registry.evidence_checkpoint.commit}</code><strong>{localizeStructuralValue(registry.evidence_checkpoint.visibility, locale)}</strong></div>
-        <p><CircleAlert aria-hidden="true" />{localizeStructuralValue(registry.public_repository.boundary, locale)}</p>
       </div>
 
       <div className="rag-scenario-bar" aria-label={locale === "en" ? "Candidate manifest scenarios" : "候选清单场景"}>
@@ -366,9 +365,8 @@ export default function RagManifestDriftLab() {
 
       <div className="rag-claim-registry">
         <div className="rag-registry-head"><strong>{locale === "en" ? "Current result registry" : "当前声明注册表"}</strong><ArtifactLink href={REGISTRY_URL}>{locale === "en" ? "View JSON" : "查看 JSON"}</ArtifactLink></div>
-        {registry.claims.map((claim) => <article key={claim.id}><div><code>{claim.id}</code><strong>{localizeStructuralValue(claim.display, locale)}</strong></div><span>{localizeStructuralValue(claim.source, locale)}</span><p>{localizeStructuralValue(claim.boundary, locale)}</p></article>)}
+        {registry.claims.map((claim) => <article key={claim.id}><div><code>{claim.id}</code><strong>{localizeStructuralValue(claim.display, locale)}</strong></div><span>{localizeStructuralValue(claim.source, locale)}</span></article>)}
       </div>
-      <p className="rag-current-boundary"><CircleAlert aria-hidden="true" /><span>{locale === "en" ? "Current boundary: C2 verifies dataset/evaluation infrastructure, not answer quality. C3 produced no metrics and used no fallback substitute." : "当前边界：C2 只核验数据集与评估基础设施，不证明答案质量；C3 未生成指标，也未使用回退替代方案。"}</span></p>
     </section>
   );
 }

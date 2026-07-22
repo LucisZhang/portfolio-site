@@ -37,7 +37,7 @@ const PROJECT_LABEL_BY_DIRECTORY: Record<string, LocalizedString> = {
   "credit-policy-lab": { en: "Credit Policy Lab", zh: "信贷策略实验室" },
   "margin-control-tower": { en: "Margin Control Tower", zh: "毛利控制塔" },
   "p1-reliability-lab": { en: "Streaming Reliability Lab", zh: "流式可靠性实验室" },
-  "privacy-preflight": { en: "Privacy Preflight Web + Mac", zh: "隐私预检（网页版 + macOS 版）" },
+  "privacy-preflight": { en: "Privacy Preflight Web", zh: "隐私预检网页版" },
   "rag-quality-lab": { en: "RAG Quality Lab", zh: "RAG 质量实验室" },
   "release-guardian": { en: "Release Guardian", zh: "发布守门人" },
 };

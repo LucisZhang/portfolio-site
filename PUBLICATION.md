@@ -31,10 +31,12 @@ traces, datasets, original screenshots, or any substituted asset hash.
 
 ## Current feature-branch candidate
 
-The current delivery is prepared for `codex/portfolio-phase2` and remains a review candidate. It
-adds six current case studies, bilingual localization, contextual artifact viewers, the two
-derived-only real-data Analytics pipelines, and the arm64 Privacy Preflight app/source package.
-The legacy Analytics Tandem URL remains a migration page.
+The current delivery is prepared on `codex/portfolio-site-fixes-20260722` and remains a review
+candidate until exact-commit Preview and Production acceptance finish. It retains six bilingual
+case studies, contextual artifact viewers, two pipeline-backed Analytics workflows, the Web-only
+Privacy Preflight workspace, and the legacy Analytics Tandem migration route. Assistant policy
+`hybrid-portfolio-rag-v14` adds one primary retry for transient failures, locale-specific fallback
+models, page-aware prompts, Markdown rendering, and local project links.
 
 Commit-local evidence is indexed in [`docs/EVIDENCE_INDEX.md`](docs/EVIDENCE_INDEX.md); the
 publication gates are in [`docs/PUBLICATION_CHECKLIST.md`](docs/PUBLICATION_CHECKLIST.md). Merely
@@ -43,5 +45,5 @@ creating this candidate does not:
 - change or alias the production deployment;
 - modify any approved Release Guardian asset or hash;
 - publish a private candidate repository;
-- establish anonymous availability of the staged unnotarized macOS download;
+- restore or republish any withdrawn Mac application surface;
 - merge a public repository pull request.

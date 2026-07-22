@@ -12,12 +12,16 @@ The browser never receives the full knowledge stores or any provider credential.
 快照和可选的私有候选人材料包中检索少量相关证据，仅把命中的片段、有限的最近对话和当前问题
 发送给 OpenRouter。浏览器不会获得完整知识库，也不会获得任何模型或 Redis 凭证。
 
-## Current v13 architecture
+## Current v14 architecture
 
-- Policy revision: `hybrid-portfolio-rag-v13`
+- Policy revision: `hybrid-portfolio-rag-v14`
 - Evidence mode: `pinned-github-plus-private-candidate-rag`
 - English default: `anthropic/claude-sonnet-4.6`
 - Chinese default: `moonshotai/kimi-k3`
+- English fallback order: retry Sonnet once, then `openai/gpt-5.4`, then
+  `qwen/qwen3.5-397b-a17b`.
+- Chinese fallback order: retry Kimi K3 once, then `qwen/qwen3.5-397b-a17b`, then
+  `openai/gpt-5.4`.
 - Public snapshot: 9 repositories, 44 reviewed files, 364 bounded chunks
 - Public snapshot SHA-256:
   `b8cc614034bb0b0fc4b878553d08141471a8cb548698809f70f8f1819d97a777`
@@ -82,6 +86,8 @@ Server-only variables:
 | `ASSISTANT_PRIVATE_KNOWLEDGE_B64_GZIP` | Yes for hybrid private RAG | Reviewed private packet |
 | `ASSISTANT_MODEL_EN` | Optional | Overrides the code-bound English default |
 | `ASSISTANT_MODEL_ZH` | Optional | Overrides the code-bound Chinese default |
+| `ASSISTANT_FALLBACK_MODELS_EN` | Optional | Comma-separated English fallback order after one same-model retry |
+| `ASSISTANT_FALLBACK_MODELS_ZH` | Optional | Comma-separated Chinese fallback order after one same-model retry |
 
 None may use the `NEXT_PUBLIC_` prefix. Preview and Production must each have a dedicated HMAC
 secret; do not reuse the Upstash token. Validate variable names and deployment targets without
@@ -121,7 +127,8 @@ Never paste the value into a tracked file, shell history, issue, PR, or verifica
   explicit off-topic work are refused locally.
 - Request body: 24,000 streamed bytes, 28,000 parsed characters, 3-second total read deadline.
 - Response: at most 900 model tokens, 6,000 displayed characters, 64,000 upstream bytes.
-- Model timeout: 35 seconds; automatic retries: zero.
+- Model deadline: 40 seconds; each attempt is capped at 14 seconds. A transient/network failure
+  retries the locale's primary model once, then advances through the configured fallback order.
 - Rate limits: 10 requests/minute and 50 requests/day per HMAC pseudonym.
 - Production/model-key environments fail closed if Upstash or the dedicated HMAC secret is absent,
   invalid, or unavailable. Raw IP addresses are not sent to Upstash.

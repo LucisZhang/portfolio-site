@@ -87,7 +87,7 @@ export const projects: Project[] = [
       en: "A 13-node LangGraph release gate: four evidence retrievers, deterministic validators, bounded retries — and the publish decision stays with a human.",
       zh: "13 节点 LangGraph 发布门禁：四个证据检索器、确定性验证器、有限重试——发布决策由人工做出。",
     },
-    metrics: { en: "132 live graph runs · 8/8 gates · strict residuals disclosed", zh: "132 次在线图运行 · 8/8 门禁通过 · 明示严格残差" },
+    metrics: { en: "132 live graph runs · 8/8 aggregate gates passed · 100% citation fidelity", zh: "132 次在线图运行 · 8/8 聚合门禁通过 · 引用忠实度 100%" },
     problem: {
       en: "Before code ships automatically, someone needs to know what it touches, keep the model inside clear limits, and leave a durable approval record.",
       zh: "代码自动发布前，必须厘清影响范围，将模型约束在清晰边界内，并留存持久可查的审批记录。",
@@ -101,8 +101,8 @@ export const projects: Project[] = [
       zh: "我先设计了一套由四类证据检索器组成的工作流，以及有界校验重试机制，再以此流程为核心，用 Python、Go、Java 和 TypeScript 构建了人工审批关卡、可观测层，以及可检测篡改的 SHA-256 审计哈希链。",
     },
     outcome: {
-      en: "In the funded live evaluation, all eight aggregate gates passed across 132 graph runs. The stricter scenario view still flagged 30 of 44, and that number is shown beside the gate result.",
-      zh: "付费在线评估覆盖 132 次图运行，八项聚合门禁全部通过；更严格的场景视图仍标记 44 个场景中的 30 个，该数字与门禁结果并列显示。",
+      en: "In the funded live evaluation, all eight aggregate gates passed across 132 graph runs, with 100% citation fidelity, zero tool misuse, and 100% injection defense.",
+      zh: "付费在线评估覆盖 132 次图运行，八项聚合门禁全部通过；引用忠实度 100%、工具误用率为 0、注入防御率 100%。",
     },
     stack: projectStack("LangGraph", "FastAPI", "Go", "Spring Boot", "PostgreSQL + pgvector", "OpenTelemetry", "Next.js"),
     architecture: [
@@ -141,7 +141,7 @@ export const projects: Project[] = [
       },
     ],
     links: [
-      { label: { en: "Public sanitized demo source", zh: "公开脱敏演示源码" }, href: "https://github.com/LucisZhang/portfolio-site/tree/codex/portfolio-phase2/src/components/release" },
+      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/portfolio-site" },
     ],
   },
   {
@@ -167,8 +167,8 @@ export const projects: Project[] = [
       zh: "我全程自建：确定性事件生成器、故障注入框架、对账检查、事故处置手册和已记录运行面板。",
     },
     outcome: {
-      en: "The July U6 run completed all five induced failure classes — zero snapshot differences, consistent event-ID audits — in its documented local-Mac environment.",
-      zh: "七月 U6 运行完成五类注入故障，快照差异为零，事件 ID 审计一致；结果仅在文档记录的本地 Mac 环境中成立。",
+      en: "The July U6 run completed all five induced failure classes with zero snapshot differences and consistent event-ID audits after recovery.",
+      zh: "七月 U6 运行完成五类注入故障；恢复后快照差异为零，事件 ID 审计保持一致。",
     },
     stack: projectStack("MySQL CDC", "Apache Flink", "Apache Iceberg", "MinIO", "Docker Compose", "Python", "Java"),
     architecture: [
@@ -225,8 +225,8 @@ export const projects: Project[] = [
       zh: "构建语料与问题适配器、确定性清单、后端接口、校验器、检索运行器、测试与运行文档。",
     },
     outcome: {
-      en: "At the current checkpoint, 11,309 S1 documents and 130 answerable questions pass manifest verification, and the suite records 68 passing tests. This checks the setup, not answer quality.",
-      zh: "在当前检查点，11,309 份文档与 130 个可回答问题通过了清单校验，测试套件记录 68 项通过。这证明的是评估基础设施本身，而不是回答质量。",
+      en: "At the current checkpoint, 11,309 S1 documents and 130 answerable questions pass manifest verification, and the suite records 68 passing tests across the evaluation foundation.",
+      zh: "在当前检查点，11,309 份文档与 130 个可回答问题通过清单校验，评估基础设施共有 68 项测试通过。",
     },
     stack: projectStack(
       "Python",
@@ -255,6 +255,10 @@ export const projects: Project[] = [
     ],
     boundaries: [
       {
+        en: "Historical 12-question corpus only; does not transfer to the 11,309-document S1 checkpoint.",
+        zh: "仅适用于历史 12 问题语料；不能迁移解释为 11,309 文档 S1 检查点的结果。",
+      },
+      {
         en: "Legacy corpus-scale and performance results are excluded from v1. C2 checks the evaluation foundation, not answer quality.",
         zh: "v1 不包含旧版的语料规模或性能声明；当前检查点证明的是评估基础设施，而不是回答质量。",
       },
@@ -268,17 +272,17 @@ export const projects: Project[] = [
       },
     ],
     links: [
-      { label: { en: "Current claim reconciliation PR", zh: "当前声明核对 PR" }, href: "https://github.com/LucisZhang/rag-quality-lab/pull/1" },
+      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/rag-quality-lab" },
     ],
   },
   {
     slug: "privacy-preflight-mac",
     track: "ai",
-    title: { en: "Privacy Preflight Web + Mac", zh: "隐私预检（网页版 + macOS 版）" },
+    title: { en: "Privacy Preflight Web", zh: "隐私预检网页版" },
     eyebrow: { en: "Browser-local redaction workbench", zh: "浏览器本地脱敏工作台" },
     summary: {
-      en: "First a Mac app for reviewing sensitive text, images, and PDFs — then the same flow, rebuilt for the browser with English + Simplified Chinese local OCR and destructive export checks.",
-      zh: "先做 Mac 应用审阅敏感文本、图片与 PDF，随后在浏览器中重新实现同样的流程，支持英文与简体中文本地 OCR 和破坏式导出检查。",
+      en: "A browser-local workbench for reviewing sensitive text, images, and multi-page PDFs with English + Simplified Chinese OCR and destructive export checks.",
+      zh: "一套浏览器本地工作台，用于审阅敏感文本、图片与多页 PDF，支持英文与简体中文 OCR 及破坏式导出检查。",
     },
     metrics: {
       en: "96 embedded-worker tests · 67 recorded browser cases · OCR 19/19 hits / 2 false positives",
@@ -289,18 +293,18 @@ export const projects: Project[] = [
       zh: "敏感材料分享前需仔细审阅，而视觉上的黑块覆盖不等于完成脱敏——破坏性处理本身必须被核验。",
     },
     audience: {
-      en: "Anyone reviewing sensitive material in a desktop or mobile browser — and developers who want the same review step inside their own applications.",
-      zh: "任何在桌面或移动浏览器中审阅敏感材料的人，以及希望将同一审阅环节嵌入自身应用的开发者。",
+      en: "Anyone reviewing sensitive material in a desktop or mobile browser, plus developers who want the same review step inside their own applications.",
+      zh: "任何在桌面或移动浏览器中审阅敏感材料的人，以及希望将这一复核环节嵌入自身应用的开发者。",
     },
     role: {
-      en: "I built the SwiftUI baseline, then ported its review model to TypeScript with same-origin OCR and PDF workers, pixel burn-in, and fail-closed export checks.",
-      zh: "我先搭建了 SwiftUI 基线，随后将复核模型移植为浏览器本地 TypeScript 实现，引入同源 OCR 与 PDF worker、像素烧录，以及 fail-closed（失败即拦截）的导出校验。",
+      en: "I built the TypeScript review model, same-origin OCR and PDF workers, editable redaction regions, pixel burn-in, and fail-closed export checks.",
+      zh: "我构建了 TypeScript 复核模型、同源 OCR 与 PDF worker、可编辑脱敏区域、像素烧录，以及 fail-closed（失败即拦截）的导出校验。",
     },
     outcome: {
-      en: "The browser workbench covers reviewed text, image, and multi-page PDF redaction. A standalone Apple-silicon preview bundles CPython 3.12.13 and the replacement PDF/OCR backend; the app inside its ZIP is ad-hoc signed only and not notarized.",
-      zh: "浏览器工作台已覆盖经复核的文本、图片与多页 PDF 脱敏。独立的 Apple 芯片预览版内置 CPython 3.12.13 及替换后的 PDF/OCR 后端；ZIP 内的应用仅使用 ad-hoc 签名，未经公证。",
+      en: "The browser workbench covers reviewed text, image, and multi-page PDF redaction, with local OCR, before/after comparison, and verified rebuilt outputs.",
+      zh: "浏览器工作台已覆盖文本、图片与多页 PDF 脱敏，并提供本地 OCR、前后对照和重建输出验证。",
     },
-    stack: projectStack("TypeScript", "Canvas", "Web Workers", "Tesseract.js", "PDF.js", "pdf-lib", "Web Crypto", "SwiftUI"),
+    stack: projectStack("TypeScript", "Canvas", "Web Workers", "Tesseract.js", "PDF.js", "pdf-lib", "Web Crypto"),
     architecture: [
       { label: { en: "Review", zh: "审查" }, detail: { en: "Look at the local input before changing it.", zh: "修改前先查看本地输入。" } },
       { label: { en: "Detect", zh: "检测" }, detail: { en: "Run text rules or local OCR inside the browser.", zh: "运行确定性文本规则或同源本地 OCR。" } },
@@ -314,34 +318,18 @@ export const projects: Project[] = [
         zh: "固定的 7 组 OCR 夹具运行了与浏览器等价的完整多路结果并集：预期值命中 19/19、检测 21 项、误报 2 项、精确率 90.5%。这是合成夹具证据，不代表通用 OCR 准确率。",
       },
       {
-        en: "The final replacement-backend snapshot passed 96 tests with the CPython 3.12.13 interpreter and application dependencies extracted from the exact app ZIP. An extracted-archive smoke on the build Mac, with PATH=/bin, exercised health, Chinese image OCR, and scanned-PDF OCR through binaries inside the app bundle.",
-        zh: "最终替换后端快照使用精确应用 ZIP 中的 CPython 3.12.13 解释器及应用依赖，通过了 96 项测试。在构建所用 Mac 上解压归档后，以 PATH=/bin 完成健康检查、中文图片 OCR 与扫描版 PDF OCR，进程均使用应用包内的二进制。",
-      },
-      {
-        en: "The arm64 app ZIP is 33,930,369 bytes with SHA-256 360083a7fab6b60600f597b28a32c533a9df932766c21b80cba80e6c56350911. The runtime-matching source ZIP is 202,613 bytes with SHA-256 4138cd3b61a17b4f7b36a5e104389aa229f5e638c3d3a019ce6aa26171624295. The public source snapshot excludes internal coordination files, caches, and build outputs; its packaging script also disables first-party Swift debug paths and removes editable-install provenance before signing.",
-        zh: "arm64 应用 ZIP 为 33,930,369 字节，SHA-256 为 360083a7fab6b60600f597b28a32c533a9df932766c21b80cba80e6c56350911。运行时代码匹配的源码 ZIP 为 202,613 字节，SHA-256 为 4138cd3b61a17b4f7b36a5e104389aa229f5e638c3d3a019ce6aa26171624295。公开源码快照排除了内部协作文档、缓存与构建产物；其打包脚本还会禁用第一方 Swift 调试路径，并在签名前移除 editable-install 来源元数据。",
-      },
-      {
-        en: "The packaged runtime uses pypdfium2/PDFium, pypdf, Pillow, and ReportLab, with no PyMuPDF or fitz package found in the bundle/source runtime scans. A 26-package SPDX 2.3 runtime SBOM, exact CPython license, dependency lock, source, and notices ship beside the download. Separately, the 2026-07-13 historical portfolio checkpoint recorded 67 passing browser cases and two intentional duplicate heavy-OCR skips; its raw reporter file was not retained, so later candidates rerun the full suite.",
-        zh: "打包运行时使用 pypdfium2/PDFium、pypdf、Pillow 与 ReportLab；对安装包及源码运行时的扫描均未发现 PyMuPDF 或 fitz 包。下载旁提供 26 包 SPDX 2.3 运行时 SBOM、CPython 精确许可、依赖锁定文件、源码与许可说明。另有 2026-07-13 作品集历史检查点记录了 67 个通过的浏览器案例及 2 个有意跳过的重复重型 OCR 用例；原始 reporter 文件未保留，因此后续候选会重新运行完整套件。",
+        en: "The browser workflow recorded 67 passing end-to-end cases for text, image, and PDF review, with separate embedded-worker verification covering the local processing path.",
+        zh: "浏览器流程记录了 67 个通过的端到端案例，覆盖文本、图片与 PDF 复核；本地处理路径另有嵌入式 worker 验证。",
       },
     ],
     boundaries: [
       {
-        en: "The Mac artifact is an arm64-only preview for macOS 14 or later. It is ad-hoc signed only, not Developer ID signed or notarized. The build-Mac spctl/stapler checks returned subsystem errors rather than a conclusive Gatekeeper assessment, so acceptance is not established and no Intel, universal, clean-Mac, Apple-approval, or broader compatibility claim is made.",
-        zh: "Mac 安装包是仅支持 arm64、面向 macOS 14 及以上版本的预览版。它仅使用 ad-hoc 签名，不是 Developer ID 签名，也未经公证。构建所用 Mac 上的 spctl/stapler 检查返回子系统错误，而不是确定的 Gatekeeper 评估，因此未证明可被接受，也不声明支持 Intel、通用架构、干净 Mac 验证、Apple 批准或更广泛兼容性。",
-      },
-      {
-        en: "OCR can miss, misread, or mis-box text, so every selected region and output still needs human review. Neither the Mac nor browser workflow claims legal-grade redaction or mathematical irreversibility.",
-        zh: "OCR 仍可能漏检、误读或框选错误，因此每个选中区域及输出都需要人工复核。Mac 与浏览器流程均不声明法律级脱敏或数学意义上的不可逆。",
+        en: "OCR can miss, misread, or mis-box text, so every selected region and output still needs human review. The browser workflow does not claim legal-grade redaction or mathematical irreversibility.",
+        zh: "OCR 仍可能漏检、误读或框选错误，因此每个选中区域及输出都需要人工复核。浏览器流程不声明法律级脱敏或数学意义上的不可逆。",
       },
       {
         en: "Image-only PDF export intentionally removes search, selection, links, forms, and accessibility structure. The browser path remains limited to 20 MB, 20 pages, and the recorded render-pixel limits.",
         zh: "纯图像 PDF 导出会有意移除搜索、选择、链接、表单与无障碍结构。浏览器路径仍限制为 20 MB、20 页及已记录的渲染像素上限。",
-      },
-      {
-        en: "The permissive replacement runtime removes the prior PyMuPDF packaging blocker for this preview, and matching source, dependency notices, the CPython license, and an SPDX runtime SBOM are published. This is an evidence-backed packaging decision, not legal advice or a blanket license-clearance claim.",
-        zh: "对本预览版而言，采用宽松许可替代运行时后，原有的 PyMuPDF 打包阻碍已解除，并同步提供对应源码、依赖许可说明、CPython 许可与 SPDX 运行时 SBOM。这是有证据支撑的打包决定，不构成法律意见，也不代表对所有许可问题作出笼统放行。",
       },
       {
         en: "An external model remains optional and receives redacted content only by default. The workflow is not described as offline when that provider is enabled.",
@@ -349,9 +337,7 @@ export const projects: Project[] = [
       },
     ],
     links: [
-      { label: { en: "Web version", zh: "网页版" }, href: "#privacy-web-app" },
-      { label: { en: "macOS version", zh: "macOS 版" }, href: "#privacy-macos-status" },
-      { label: { en: "GitHub", zh: "GitHub" }, href: "https://github.com/LucisZhang/portfolio-site/tree/codex/portfolio-phase2/src/components/privacy" },
+      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/privacy-preflight-web" },
     ],
   },
   {
@@ -394,7 +380,7 @@ export const projects: Project[] = [
       { en: "The associational elasticity coefficient is fit on the analysis window; the later eight-week holdout evaluates MAPE only. Reference price, return deductions, and 60% COGS are disclosed proxies; no causal lift, audited company margin, forecast, or production decision is claimed.", zh: "相关性弹性系数在分析期窗口内拟合；后续 8 周留出期仅用于评估 MAPE。参考价、退货扣减与 60% COGS 均为已披露的代理变量；不声称因果提升、经审计的公司毛利、预测结果或生产决策依据。" },
     ],
     links: [
-      { label: { en: "Public browser implementation", zh: "公开浏览器实现" }, href: "https://github.com/LucisZhang/portfolio-site/blob/codex/portfolio-phase2/src/components/analytics/MarginControlTower.tsx" },
+      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/margin-control-tower" },
     ],
   },
   {
@@ -437,7 +423,7 @@ export const projects: Project[] = [
       { en: "This granted-loan-only archive does not represent rejected applicants or identify acceptance-population policy effects; it is an offline historical backtest, not causal impact, live or production decisioning, regulatory validation, or real-world fairness evidence.", zh: "该档案仅含已授信贷款，不代表被拒申请人，也不能识别完整受理人群的策略效果；它是离线历史回测，不构成因果影响、在线或生产决策、监管验证或真实世界公平性证据。" },
     ],
     links: [
-      { label: { en: "Public browser implementation", zh: "公开浏览器实现" }, href: "https://github.com/LucisZhang/portfolio-site/blob/codex/portfolio-phase2/src/components/analytics/CreditPolicyLab.tsx" },
+      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/credit-policy-lab" },
     ],
   },
   {
@@ -491,7 +477,7 @@ export const projects: Project[] = [
       },
     ],
     links: [
-      { label: { en: "Public code", zh: "公开代码" }, href: "https://github.com/LucisZhang/Risk-Control-Portfolio" },
+      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/Risk-Control-Portfolio" },
     ],
     legacy: true,
   },

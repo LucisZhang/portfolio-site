@@ -143,20 +143,20 @@ function localizedPdfOcrReason(locale: Locale, type: string, confidence: number)
 
 export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
   const copy = locale === "en" ? {
-    choose: "Choose PDF", reset: "Reset", local: "Text recognition runs locally in your browser. Your file is not uploaded.", page: "Page", previous: "Previous page", next: "Next page", reviewed: "Page reviewed", unreviewed: "Mark page reviewed",
+    choose: "Choose PDF", reset: "Reset", local: "Text recognition runs locally in your browser. Your file is not uploaded.", page: "Page", previous: "Previous page", next: "Next page",
     ocr: "Scan for sensitive information", english: "English", bilingual: "English + 简体中文", review: "Per-page redaction review", note: "Text-layer pages are scanned first. Use local OCR for scanned pages, then review every page.",
     regions: "Page regions", none: "No regions on this page. Draw a rectangle or run local OCR.", accept: "Accept", reject: "Reject", delete: "Delete region", preview: "Preview redacted result", download: "Download redacted file",
     invalid: "Choose a readable PDF up to 20 MB and 20 pages.", loading: "Loading local PDF", render: "Rendering page", renderError: "This PDF page could not be rendered locally. Try a smaller or simpler PDF.", loadError: "This PDF could not be opened locally. Choose another readable PDF.", ocrError: "Local OCR could not finish on this page. Try again or draw the regions manually.", exportError: "The safe PDF export could not be completed. No download was created.", ocrIdle: "OCR not run on this page", ocrNone: "OCR finished; no rule-matched token was found.",
     gate: "Fail-closed export gate", gateBody: "The original PDF is never modified. Accepted regions are burned into newly rendered page pixels, then a new image-only PDF is built and reopened for verification.",
-    needReview: "Scan and review every page, then accept at least one redaction region.", verification: "Post-export verification", safe: "Safe image-only PDF is ready to preview and download.", unsafe: "Verification failed; no safe PDF is available.", exampleText: "Load text-layer PDF", exampleScan: "Load scanned PDF", exampleMulti: "Load multi-page PDF", method: "Page method", textLayer: "Text layer", ocrRequired: "OCR required", ocrMethod: "Local OCR", before: "Before", detected: "Detected", redacted: "Redacted", scanNext: "Clean preview loaded. Scan this page next; detection regions stay hidden until scanning finishes.", compare: "Before / after", originalView: "Original PDF", redactedView: "Redacted PDF", confirm: "Confirm review and show result",
+    needReview: "Scan every page and accept at least one redaction region before confirming the review.", verification: "Post-export verification", safe: "Safe image-only PDF is ready to preview and download.", unsafe: "Verification failed; no safe PDF is available.", exampleText: "Load text-layer PDF", exampleScan: "Load scanned PDF", exampleMulti: "Load multi-page PDF", method: "Page method", textLayer: "Text layer", ocrRequired: "OCR required", ocrMethod: "Local OCR", before: "Before", detected: "Detected", redacted: "Redacted", scanNext: "Clean preview loaded. Scan this page next; detection regions stay hidden until scanning finishes.", compare: "Before / after", originalView: "Original PDF", redactedView: "Redacted PDF", confirm: "Confirm review and show result",
     checks: { pageCount: "Page count", dimensions: "Page dimensions", textLayerEmpty: "Extractable text empty", annotationsEmpty: "No annotations", knownTermsAbsent: "Known terms absent", metadataClean: "Original metadata absent", burnInVerified: "Black pixels burned in" },
   } : {
-    choose: "选择 PDF", reset: "重置", local: "文字识别在本机浏览器中完成，文件不会上传。", page: "页", previous: "上一页", next: "下一页", reviewed: "本页已复核", unreviewed: "标记本页已复核",
+    choose: "选择 PDF", reset: "重置", local: "文字识别在本机浏览器中完成，文件不会上传。", page: "页", previous: "上一页", next: "下一页",
     ocr: "扫描并查找敏感信息", english: "英语", bilingual: "英语 + 简体中文", review: "逐页脱敏复核", note: "优先扫描文字层；扫描页再使用本地 OCR，最后逐页人工复核。",
     regions: "本页区域", none: "本页尚无区域，请框选或运行本地文字识别。", accept: "接受", reject: "拒绝", delete: "删除区域", preview: "预览脱敏结果", download: "下载脱敏文件",
     invalid: "请选择可读取、不超过 20 MB 且不超过 20 页的 PDF。", loading: "正在本地载入 PDF", render: "正在渲染页面", renderError: "无法在本地渲染此 PDF 页面，请尝试更小或结构更简单的 PDF。", loadError: "无法在本地打开此 PDF，请选择其他可读取的 PDF。", ocrError: "本页的本地文字识别未能完成，请重试或手动框选区域。", exportError: "无法完成安全 PDF 导出，因此没有生成下载文件。", ocrIdle: "本页尚未运行 OCR", ocrNone: "OCR 已完成，但没有匹配规则的敏感词项。",
     gate: "fail-closed（失败即拦截）导出门禁", gateBody: "原 PDF 不会被修改。已接受区域会烧录进重新渲染的页面像素，再重建纯图像 PDF 并重新打开验证。",
-    needReview: "请先扫描并复核所有页面，并至少接受一个脱敏区域。", verification: "导出后验证", safe: "安全的纯图像 PDF 已可预览和下载。", unsafe: "验证失败，暂无可用的安全 PDF。", exampleText: "加载文字层 PDF", exampleScan: "加载扫描版 PDF", exampleMulti: "加载多页 PDF", method: "本页方法", textLayer: "文字层", ocrRequired: "需要文字识别", ocrMethod: "本地文字识别", before: "原始文件", detected: "检测结果", redacted: "脱敏结果", scanNext: "已载入干净预览。下一步请扫描本页；扫描完成前不会显示检测框。", compare: "前后对照", originalView: "原始 PDF", redactedView: "脱敏 PDF", confirm: "确认复核并显示结果",
+    needReview: "确认复核前，请扫描所有页面并至少接受一个脱敏区域。", verification: "导出后验证", safe: "安全的纯图像 PDF 已可预览和下载。", unsafe: "验证失败，暂无可用的安全 PDF。", exampleText: "加载文字层 PDF", exampleScan: "加载扫描版 PDF", exampleMulti: "加载多页 PDF", method: "本页方法", textLayer: "文字层", ocrRequired: "需要文字识别", ocrMethod: "本地文字识别", before: "原始文件", detected: "检测结果", redacted: "脱敏结果", scanNext: "已载入干净预览。下一步请扫描本页；扫描完成前不会显示检测框。", compare: "前后对照", originalView: "原始 PDF", redactedView: "脱敏 PDF", confirm: "确认复核并显示结果",
     checks: { pageCount: "页数", dimensions: "页面尺寸", textLayerEmpty: "可提取文本为空", annotationsEmpty: "无注释", knownTermsAbsent: "已知词项不存在", metadataClean: "不含原始元数据", burnInVerified: "黑色像素已烧录" },
   };
 
@@ -175,7 +175,6 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState({ width: 0, height: 0 });
   const [regions, setRegions] = useState<PdfRegion[]>([]);
-  const [reviewedPages, setReviewedPages] = useState<number[]>([]);
   const [draft, setDraft] = useState<PdfRegion | null>(null);
   const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
   const regionInteraction = useRef<{ kind: "move" | "resize"; id: string; start: { x: number; y: number }; original: PdfRegion } | null>(null);
@@ -194,9 +193,8 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
 
   const currentRegions = regions.filter((region) => region.pageIndex === pageIndex);
   const acceptedRegions = regions.filter((region) => region.accepted);
-  const allPagesReviewed = pageCount > 0 && reviewedPages.length === pageCount;
   const allPagesScanned = pageCount > 0 && scannedPages.length === pageCount;
-  const canExport = allPagesScanned && allPagesReviewed && acceptedRegions.length > 0 && !isLoading && !isOcrRunning && !isExporting;
+  const canExport = allPagesScanned && acceptedRegions.length > 0 && !isLoading && !isOcrRunning && !isExporting;
 
   useEffect(() => {
     const activeDocument = activeDocumentRef.current;
@@ -279,7 +277,6 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
     setPageCount(0);
     setPageIndex(0);
     setRegions([]);
-    setReviewedPages([]);
     setScannedPages([]);
     setPageMethods([]);
     clearOutput();
@@ -311,7 +308,6 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
     setPageIndex(0);
     setPageSize({ width: 0, height: 0 });
     setRegions([]);
-    setReviewedPages([]);
     setScannedPages([]);
     setDraft(null);
     setOcrStatus("");
@@ -408,7 +404,6 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
       setPageIndex(0);
       setRegions([]);
       setPageMethods(methods);
-      setReviewedPages([]);
       setScannedPages([]);
       setOcrStatus(copy.scanNext);
       setOcrProgress(0);
@@ -480,11 +475,6 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
     clearOutput();
   }
 
-  function togglePageReviewed() {
-    setReviewedPages((current) => current.includes(pageIndex) ? current.filter((value) => value !== pageIndex) : [...current, pageIndex].sort((a, b) => a - b));
-    clearOutput();
-  }
-
   async function runOcr() {
     const activeDocument = activeDocumentRef.current;
     if (!activeDocument || !pageCount || isOcrRunning || isExporting) return;
@@ -492,7 +482,6 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
     const scanPageIndex = pageIndex;
     const stagedTextRegions = activeDocument.textLayerRegions.filter((region) => region.pageIndex === scanPageIndex);
     clearOutput();
-    setReviewedPages((current) => current.filter((value) => value !== scanPageIndex));
     setScannedPages((current) => current.filter((value) => value !== scanPageIndex));
     setRegions((current) => current.filter((region) => region.pageIndex !== scanPageIndex || region.source === "manual"));
     setIsOcrRunning(true);
@@ -702,7 +691,6 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
     setPageIndex(0);
     setPageSize({ width: 0, height: 0 });
     setRegions([]);
-    setReviewedPages([]);
     setScannedPages([]);
     setDraft(null);
     setOcrStatus("");
@@ -740,6 +728,7 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
         <button type="button" className="privacy-scan-primary" onClick={() => void runOcr()} disabled={!pageCount || isLoading || isOcrRunning || isExporting}><ScanSearch aria-hidden="true" />{copy.ocr}</button>
         <button type="button" onClick={() => void reset()} disabled={!pageCount && !fileName}><RotateCcw aria-hidden="true" />{copy.reset}</button>
       </div>
+      {pageCount > 1 ? <nav className="privacy-page-tabs" aria-label={locale === "en" ? "Loaded PDF pages" : "已载入的 PDF 页面"}>{Array.from({ length: pageCount }, (_, index) => <button key={index} type="button" aria-current={pageIndex === index ? "page" : undefined} onClick={() => setPageIndex(index)}>{copy.page} {index + 1}</button>)}</nav> : null}
       <div className="privacy-pdf-grid">
         <div className="privacy-pdf-canvas-wrap privacy-main-result-area" aria-busy={isLoading}>
           {pageCount ? (hasCurrentOutput && !showOriginal && output
@@ -756,7 +745,6 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
           <p>{copy.note}</p>
           <div className="privacy-output-steps" aria-label={locale === "en" ? "Redaction progress" : "脱敏进度"}><span className={pageCount ? "done" : ""}>{copy.before}</span><span className={scannedPages.length ? "done" : ""}>{copy.detected}</span><span className={hasCurrentOutput ? "done" : ""}>{copy.redacted}</span></div>
           <p className="privacy-page-method"><strong>{copy.method}:</strong> {pageMethods[pageIndex] === "text-layer" ? copy.textLayer : pageMethods[pageIndex] === "ocr" ? copy.ocrMethod : copy.ocrRequired}</p>
-          <button type="button" className={`privacy-page-review ${reviewedPages.includes(pageIndex) ? "reviewed" : ""}`} onClick={togglePageReviewed} disabled={!pageCount || !currentPageScanned}>{reviewedPages.includes(pageIndex) ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}{reviewedPages.includes(pageIndex) ? copy.reviewed : copy.unreviewed}</button>
           <div className="privacy-ocr-status" aria-live="polite"><span>{isOcrRunning ? (ocrStatus ? privacyOcrProgressStatus(locale, ocrStatus, ocrProgress, copy.ocr) : copy.ocr) : currentPageScanned ? (ocrStatus ? privacyOcrProgressStatus(locale, ocrStatus, 100, copy.ocr) : copy.ocrNone) : copy.scanNext}</span><progress max="100" value={isOcrRunning ? ocrProgress : currentPageScanned ? 100 : ocrProgress} /></div>
           <div className="privacy-box-list"><h5>{copy.regions} <span>{currentRegions.length}</span></h5>{!currentRegions.length ? <p>{currentPageScanned ? copy.none : copy.scanNext}</p> : currentRegions.map((region, index) => <article className={region.accepted ? "" : "rejected"} key={region.id}><div><strong>{region.type} {index + 1}</strong><div><code>{privacySourceLabel(locale, region.source)}</code><button type="button" className="privacy-box-accept" aria-pressed={region.accepted} onClick={() => updateRegion(region.id, { accepted: !region.accepted })}>{region.accepted ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}{region.accepted ? copy.accept : copy.reject}</button><button type="button" className="icon-only" title={copy.delete} onClick={() => { setRegions((current) => current.filter((item) => item.id !== region.id)); clearOutput(); }}><Trash2 aria-hidden="true" /></button></div></div>{region.text ? <p><code>{region.text}</code>{region.reason}</p> : null}<div className="privacy-box-fields">{(["x", "y", "width", "height"] as const).map((field) => <label key={field}>{field} %<input type="number" min="0" max="100" step="0.1" value={Number((region[field] * 100).toFixed(1))} onChange={(event) => updateRegion(region.id, { [field]: Number(event.target.value) / 100 })} /></label>)}</div></article>)}</div>
           <div className="privacy-pdf-explanation"><strong>{copy.gate}</strong><p>{copy.gateBody}</p>{!canExport ? <p>{copy.needReview}</p> : null}</div>

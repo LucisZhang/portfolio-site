@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, Clipboard, Columns2, Download, Plus, Redo2, RotateCcw, ScanSearch, Trash2, Undo2, X } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   applyRedactions,
   normalizeEntity,
@@ -31,7 +31,7 @@ function cloneEntities(entities: SensitiveEntity[]) {
 
 export default function PrivacyTextLab({ locale }: { locale: Locale }) {
   const copy = locale === "en" ? {
-    load: "Load synthetic example", scan: "Scan for sensitive information", undo: "Undo", reset: "Reset", balanced: "Balanced", strict: "Strict",
+    load: "Load synthetic example", scan: "Scan for sensitive information", undo: "Undo", redo: "Redo", reset: "Reset", balanced: "Balanced", strict: "Strict",
     input: "Input", inputHint: "Paste text here. It remains in this browser tab.", highlighted: "Highlighted source", detections: "Review detections",
     output: "Safe preview", copy: "Copy", download: "Download .txt", add: "Add selected text", empty: "No detections yet.",
     accept: "Accept", reject: "Reject", removeHit: "Delete detection", start: "Start", end: "End", replacement: "Replacement", action: "Action",
@@ -40,7 +40,7 @@ export default function PrivacyTextLab({ locale }: { locale: Locale }) {
     original: "Residual original values", types: "Remaining detectable types", manualHelp: "Select text in the input, then add a manual detection.",
     copied: "Copied", downloaded: "Downloaded", noSelection: "Select a non-empty range in the input first.", confirm: "Confirm review and show result", compare: "Before / after", pending: "Confirm the reviewed detections to reveal the final redacted text.", originalView: "Showing original text", redactedView: "Showing redacted text",
   } : {
-    load: "载入合成示例", scan: "扫描并查找敏感信息", undo: "撤销", reset: "重置", balanced: "平衡", strict: "严格",
+    load: "载入合成示例", scan: "扫描并查找敏感信息", undo: "撤销", redo: "重做", reset: "重置", balanced: "平衡", strict: "严格",
     input: "输入", inputHint: "在此粘贴文本，内容仅保留在当前浏览器标签页。", highlighted: "高亮原文", detections: "逐项复核",
     output: "安全预览", copy: "复制", download: "下载 .txt", add: "新增所选文本", empty: "尚无检测结果。",
     accept: "接受", reject: "拒绝", removeHit: "删除命中", start: "起点", end: "终点", replacement: "替换值", action: "动作",
@@ -54,6 +54,7 @@ export default function PrivacyTextLab({ locale }: { locale: Locale }) {
   const [entities, setEntities] = useState<SensitiveEntity[]>([]);
   const [mode, setMode] = useState<ScanMode>("balanced");
   const [history, setHistory] = useState<Snapshot[]>([]);
+  const [future, setFuture] = useState<Snapshot[]>([]);
   const [notice, setNotice] = useState("");
   const [reviewConfirmed, setReviewConfirmed] = useState(false);
   const [showOriginal, setShowOriginal] = useState(false);
@@ -63,6 +64,7 @@ export default function PrivacyTextLab({ locale }: { locale: Locale }) {
 
   function remember() {
     setHistory((current) => [...current.slice(-19), { input, entities: cloneEntities(entities), mode }]);
+    setFuture([]);
   }
 
   function invalidateReview() {
@@ -96,6 +98,7 @@ export default function PrivacyTextLab({ locale }: { locale: Locale }) {
   function undo() {
     const previous = history.at(-1);
     if (!previous) return;
+    setFuture((current) => [...current.slice(-19), { input, entities: cloneEntities(entities), mode }]);
     setInput(previous.input);
     setEntities(cloneEntities(previous.entities));
     setMode(previous.mode);
@@ -103,6 +106,37 @@ export default function PrivacyTextLab({ locale }: { locale: Locale }) {
     setNotice("");
     invalidateReview();
   }
+
+  function redo() {
+    const next = future.at(-1);
+    if (!next) return;
+    setHistory((current) => [...current.slice(-19), { input, entities: cloneEntities(entities), mode }]);
+    setInput(next.input);
+    setEntities(cloneEntities(next.entities));
+    setMode(next.mode);
+    setFuture((current) => current.slice(0, -1));
+    setNotice("");
+    invalidateReview();
+  }
+
+  useEffect(() => {
+    function handleHistoryShortcut(event: KeyboardEvent) {
+      if (!(event.metaKey || event.ctrlKey) || event.altKey) return;
+      const key = event.key.toLocaleLowerCase();
+      if (key === "z" && event.shiftKey) {
+        if (future.length) event.preventDefault();
+        redo();
+      } else if (key === "z") {
+        if (history.length) event.preventDefault();
+        undo();
+      } else if (key === "y" && event.ctrlKey) {
+        if (future.length) event.preventDefault();
+        redo();
+      }
+    }
+    window.addEventListener("keydown", handleHistoryShortcut);
+    return () => window.removeEventListener("keydown", handleHistoryShortcut);
+  });
 
   function reset() {
     remember();
@@ -189,6 +223,7 @@ export default function PrivacyTextLab({ locale }: { locale: Locale }) {
         </div>
         <button type="button" className="privacy-scan-primary" onClick={rescan} disabled={!input.trim()}><ScanSearch aria-hidden="true" />{copy.scan}</button>
         <button type="button" onClick={undo} disabled={!history.length} title={copy.undo}><Undo2 aria-hidden="true" /><span>{copy.undo}</span></button>
+        <button type="button" onClick={redo} disabled={!future.length} title={copy.redo}><Redo2 aria-hidden="true" /><span>{copy.redo}</span></button>
         <button type="button" onClick={reset} disabled={!input && !entities.length} title={copy.reset}><RotateCcw aria-hidden="true" /><span>{copy.reset}</span></button>
       </div>
 
@@ -224,7 +259,7 @@ export default function PrivacyTextLab({ locale }: { locale: Locale }) {
         <section className="privacy-pane privacy-output-pane">
           <div className="privacy-pane-heading"><h4>{copy.output}</h4><div>{reviewConfirmed ? <button type="button" className="privacy-before-after-toggle" aria-pressed={showOriginal} onClick={() => setShowOriginal((current) => !current)}><Columns2 aria-hidden="true" />{copy.compare}</button> : null}<button type="button" onClick={copyOutput} disabled={!reviewConfirmed || !validation.safe}><Clipboard aria-hidden="true" />{copy.copy}</button><button type="button" onClick={downloadOutput} disabled={!reviewConfirmed || !validation.safe}><Download aria-hidden="true" />{copy.download}</button></div></div>
           <pre data-testid="privacy-safe-output" data-review-confirmed={reviewConfirmed ? "true" : "false"} data-view={showOriginal ? "original" : "redacted"}>{reviewConfirmed ? (showOriginal ? input : output) : copy.pending}</pre>
-          <button type="button" className="privacy-confirm-review" onClick={() => { setReviewConfirmed(true); setShowOriginal(false); }} disabled={!validation.safe}><Check aria-hidden="true" />{copy.confirm}</button>
+          <button type="button" className="privacy-confirm-review" onClick={() => { setReviewConfirmed(true); setShowOriginal(false); }} disabled={validation.appliedCount === 0}><Check aria-hidden="true" />{copy.confirm}</button>
           {reviewConfirmed ? <p className="privacy-result-view-status" role="status">{showOriginal ? copy.originalView : copy.redactedView}</p> : null}
           <div className={`privacy-validation ${validation.safe ? "pass" : "fail"}`} aria-live="polite">
             <div>{validation.safe ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}<strong>{copy.validation}</strong></div>

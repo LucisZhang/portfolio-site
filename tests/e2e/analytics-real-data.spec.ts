@@ -67,12 +67,12 @@ test.describe("analytics real-data evidence", () => {
       await page.goto(route, { waitUntil: "networkidle" });
       const methods = page.getByTestId(`analytics-methods-${project}`);
       await expect(methods).toBeVisible();
-      await expect(methods).toContainText("Methods / Evidence / What changed with real data");
+      await expect(methods).toContainText("Methods / Results / Real-data analysis");
       await expect(methods).toContainText("Acquire and clean");
       await expect(methods).toContainText("Train and estimate");
       await expect(methods).toContainText("Split and prevent leakage");
       await expect(methods).toContainText("Outcome / anomaly labels");
-      await expect(methods).toContainText("Why this evidence is trustworthy");
+      await expect(methods).toContainText("Quality controls");
       await expect(methods).toContainText("What changed with real data");
       await expect(methods).toContainText("Reproduce");
       await expect(methods.locator("code[title]")).toHaveText(/^[a-f0-9]{64}$/);
@@ -365,7 +365,7 @@ test.describe("analytics real-data evidence", () => {
       await page.route(`**/case-studies/margin-control-tower/${artifact}`, (route) => route.fulfill({ status: 404 }));
     }
     await page.goto("/analytics/margin-control-tower", { waitUntil: "networkidle" });
-    await expect(page.getByTestId("analytics-methods-margin")).toContainText("Methods evidence is pending");
+    await expect(page.getByTestId("analytics-methods-margin")).toContainText("The methods report is being prepared with the real-data artifact.");
     const margin = page.getByTestId("margin-control-tower");
     await expect(margin).toHaveAttribute("data-requested-source", "real");
     await expect(margin).toHaveAttribute("data-active-source", "synthetic");
@@ -391,7 +391,7 @@ test.describe("analytics real-data evidence", () => {
       await page.route(`**/case-studies/credit-policy-lab/${artifact}`, (route) => route.fulfill({ status: 404 }));
     }
     await page.goto("/analytics/credit-policy-lab", { waitUntil: "networkidle" });
-    await expect(page.getByTestId("analytics-methods-credit")).toContainText("Methods evidence is pending");
+    await expect(page.getByTestId("analytics-methods-credit")).toContainText("The methods report is being prepared with the real-data artifact.");
     const credit = page.getByTestId("credit-policy-lab");
     await expect(credit).toHaveAttribute("data-requested-source", "real");
     await expect(credit).toHaveAttribute("data-active-source", "synthetic");

@@ -92,6 +92,7 @@ test("retrieval refuses unrelated questions and citation mapping accepts only re
   assert.equal(retrieveAssistantKnowledge("What is the weather on Neptune tomorrow?"), null);
   const result = retrieveAssistantKnowledge("Tell me about Privacy Preflight.");
   assert.ok(result);
+  assert.equal(result.chunks.some((chunk) => /macOS|SwiftUI|Gatekeeper|notari[sz]|Mac (?:app|download|version)|Mac 版/iu.test(chunk.content)), false);
   const citations = citationsForChunkIds(result.chunks, [result.chunks[0].id, "unknown", result.chunks[0].id]);
   assert.equal(citations.length, 1);
 });

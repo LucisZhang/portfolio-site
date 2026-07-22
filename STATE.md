@@ -5,95 +5,56 @@ Updated: 2026-07-22 (Asia/Shanghai)
 This file records the recruiter-safe state of the current public-release candidate. It contains no
 credentials, raw private candidate material, local source paths, or browser-session data.
 
-Overall status: `DEPLOYED_VERIFIED`. The portfolio and bilingual hybrid-RAG assistant have passed
-local code, evidence, build, browser, dependency, performance, secret-scanning, Preview, and
-Production acceptance. The public alias is
-`https://portfolio-site-seven-murex.vercel.app/`.
+Overall status: `V14_RELEASE_CANDIDATE`. The bilingual portfolio and hybrid-RAG assistant have
+passed local code, evidence, build, browser, dependency, and performance verification. Preview and
+Production acceptance must be repeated against the exact release commit before this status changes
+to `DEPLOYED_VERIFIED`.
 
 ## Candidate delivery
 
 - Xiangguo Zhang / 章向国 / XGZ is used consistently across the bilingual runtime identity.
-  Six bilingual project pages and the legacy Analytics compatibility route remain available.
-- Release Guardian preserves funded-live, deterministic-stub, synthetic, and 30/44 strict-residual
-  boundaries. RAG Quality Lab keeps C2 as the evaluation floor and reports no C3 metric. Privacy
-  Preflight keeps browser behavior, source, app packaging, ad-hoc signing, notarization, and clean-
-  Mac compatibility as distinct evidence classes. Analytics keeps licensed pipeline derivatives
-  separate from governed synthetic fallback fixtures.
-- The assistant is no longer the v12 one-project selector pilot. Current policy
-  `hybrid-portfolio-rag-v13` performs bilingual retrieval over a server-only public snapshot plus
-  an optional reviewed private candidate packet, then asks a locale-specific explanatory model to
-  produce persuasive but evidence-bounded recruiter-facing copy.
+- Six bilingual project pages and the legacy Analytics compatibility route remain available.
+- Project pages keep one consolidated bottom section for limitations while the main narrative,
+  media captions, and interactive surfaces focus on the candidate's work, decisions, and results.
+- Privacy Preflight is presented as a Web-only project. The withdrawn Mac application, download,
+  packaging, signing, notarization, and Gatekeeper surfaces are not linked or rendered.
+- Every primary project link opens the corresponding GitHub repository homepage.
 
 ## Assistant candidate state
 
+- Policy: `hybrid-portfolio-rag-v14`.
 - Evidence mode: `pinned-github-plus-private-candidate-rag`.
-- English default model: `anthropic/claude-sonnet-4.6`.
-- Chinese default model: `moonshotai/kimi-k3`.
-- Public knowledge: 9 exact-commit GitHub repositories, 44 reviewed files, 364 chunks; SHA-256
+- English primary model: `anthropic/claude-sonnet-4.6`; default fallbacks:
+  `openai/gpt-5.4`, then `qwen/qwen3.5-397b-a17b`.
+- Chinese primary model: `moonshotai/kimi-k3`; default fallbacks:
+  `qwen/qwen3.5-397b-a17b`, then `openai/gpt-5.4`.
+- Transient and network failures retry the primary once, then advance through the configured
+  locale-specific fallback list inside one bounded request deadline.
+- Public knowledge remains pinned to 9 exact-commit GitHub repositories, 44 reviewed files, and
+  364 chunks with SHA-256
   `b8cc614034bb0b0fc4b878553d08141471a8cb548698809f70f8f1819d97a777`.
-- Current local private packet: 7 owner-selected files and 74 redacted chunks. The packet is ignored
-  by Git, capped before decoding/decompression, and represented to the browser only by a generic
-  private-evidence citation.
-- Runtime requests never fetch GitHub. At most 9 diverse chunks and 6 recent conversation messages
-  are sent to OpenRouter. Routing requires `data_collection: deny`, `zdr: true`, and
-  `require_parameters: true`; automatic retries remain disabled.
-- Current public project evidence overrides any conflicting or superseded metric in private
-  materials. Legacy RAG corpus-size, latency, quality, and regression claims are filtered and
-  forbidden by the model policy.
+- Private candidate material remains Git-ignored and server-only. Browser citations describe it
+  generically, and withdrawn Privacy Mac material is filtered from retrieval and output.
+- The assistant uses page-specific prompts, renders bounded Markdown, links recognized project
+  names to local project pages, and keeps recruiter-facing answers concise and persuasive.
 
-## Verification and live acceptance
+## Local verification
 
-- A direct English live request completed with HTTP-equivalent status 200 on
-  `anthropic/claude-sonnet-4.6`, using 9 retrieved blocks and public plus private citations.
-- A direct Chinese live request completed with status 200 on `moonshotai/kimi-k3`, using 9
-  retrieved blocks and public plus private citations. It connected the candidate's DiDi AI-safety
-  internship and automation work to the public evidence discipline without overstating the RAG
-  Quality Lab boundary.
-- A production-build `/api/assistant` English request completed through the real Upstash limiter
-  with policy/evidence headers, 9 retrieved blocks, and exact public/private knowledge hashes.
-  A Chinese system-prompt/knowledge-exfiltration request was refused locally without retrieval or
-  model metadata.
-- An additional stale-metric audit found a legacy `498K` wording in an earlier private resume
-  block. That smoke result is rejected as acceptance evidence. The private builder and authority
-  prompt were tightened, the packet was rebuilt, and the legacy claim patterns are absent from the
-  rebuilt packet. Final route and browser acceptance must use only this rebuilt packet.
-- Final assistant policy/unit verification passed 30/30. The complete Playwright run passed 209
-  cases, intentionally skipped 52 device-inapplicable cases, and failed 0 across 261 cases. The
-  assistant subset passed 18/18 across desktop, tablet, and mobile.
-- TypeScript, ESLint with zero warnings, evidence verification, public-source exact rebuild,
-  production build, performance budget, client static leak scan, `git diff --check`, and production
-  dependency audit all passed; the dependency audit reported 0 vulnerabilities.
-- Lighthouse 13.4.0 scored Performance / Accessibility / Best Practices / SEO as follows: home
-  `96 / 100 / 100 / 100`, Margin `96 / 100 / 100 / 100`, Privacy `91 / 100 / 100 / 100`, and
-  Release `93 / 100 / 100 / 100`. The homepage remains above the required Performance floor of 90.
-- A second Lighthouse 13.4.0 run against the public Production alias scored
-  `94 / 100 / 100 / 100`, with zero cumulative layout shift and 21 ms total blocking time.
-- Production browser inspection passed in English and Chinese: the assistant launcher and dialog
-  were visible, the disclosure and prompts matched the selected locale, no horizontal overflow was
-  present, and the browser console contained no warnings or errors.
-- The final runtime acceptance completed on Production in both languages with HTTP status 200,
-  the intended locale-specific model, the Upstash limiter, 9 retrieved blocks, and the exact
-  public/private knowledge hashes. Both answers retained the verified DiDi internship evidence;
-  neither reintroduced superseded RAG metrics or a production-grade claim.
+- Assistant policy/unit verification: 30 passed, 0 failed.
+- Complete Playwright run: 212 passed, 52 intentional device-inapplicable skips, 0 failed.
+- TypeScript, ESLint, evidence verification, production build, performance budget,
+  `git diff --check`, and production dependency audit passed; the audit reported 0 vulnerabilities.
+- Local homepage Lighthouse 13.4.0: Performance 97, FCP 1.4 s, LCP 2.6 s, TBT 10 ms, CLS 0.
+- Browser regression covers English and Chinese, desktop/tablet/mobile layouts, contextual assistant
+  prompts, Markdown and project links, P1 scroll behavior, and the Web-only Privacy workflows.
 
 ## External-action state
 
-- The current work is isolated from the user's primary checkout and untracked local inventory.
-- The assistant branch was published and public `main` was advanced through an ordinary
-  non-force fast-forward. The runtime release commit is
-  `7940c51eb2e6d862aa288e34a06fcd3fee38349d`.
-- Preview and Production hold the five required encrypted server values: OpenRouter key, Upstash
-  URL/token, independent assistant HMAC secret, and private knowledge packet. No value was printed
-  or committed. Their aggregate value size remains below Vercel's environment-variable limit.
-- Production deployment `dpl_4oT626287x9x1UFiA15w1hZupwKA` was independently inspected as
-  `READY`, target `production`, Git ref `main`, exact runtime release commit above, with the public
-  alias attached. All 11 fixed public routes returned status 200 with the expected security
-  headers.
-- Full-range Gitleaks reported no leaks. TruffleHog's two initial verified-looking matches were
-  independently traced to Python test-function names inside a pre-existing public Privacy source
-  archive; the text-only rerun, excluding packaged binaries and archives that the scanner could
-  not decode, reported zero verified and zero unverified secrets.
-- One Chinese Preview call received a transient upstream 502 from Kimi. The assistant correctly
-  performed no hidden automatic retry; an independent recheck and the final Production Chinese
-  acceptance both completed successfully. This remains an observable upstream availability risk,
-  not a failed release gate.
+- Public `main` is still `ff31909fb62b7defd088ea7eb0a6f37e54515ae0` at the time this
+  candidate state was written.
+- The release candidate is isolated on `codex/portfolio-site-fixes-20260722`; the user's primary
+  checkout and untracked inventory remain untouched.
+- Preview and Production must retain the five encrypted server values already required by v13.
+  Optional fallback-model variables may override the validated defaults but must remain server-only.
+- No force push, history rewrite, repository visibility change, tag, release, or unrelated-branch
+  mutation is authorized by this candidate.
