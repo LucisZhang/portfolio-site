@@ -275,6 +275,10 @@ test("completion and output checks require one exact model response with valid g
     protectAssistantOutput(answerJson("A production-grade workflow."), chunks).answer,
     "A production-oriented workflow.",
   );
+  assert.equal(
+    protectAssistantOutput(answerJson("**Evidence:** run `verify-evidence.mjs`."), chunks).answer,
+    "Evidence: run verify-evidence.mjs.",
+  );
   for (const content of [
     "not-json",
     answerJson("claim", ["unknown"]),
