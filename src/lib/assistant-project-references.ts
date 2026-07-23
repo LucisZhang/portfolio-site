@@ -43,6 +43,21 @@ const catalog: Record<AssistantProjectId, {
 };
 
 const projectIds = new Set<string>(ASSISTANT_PROJECT_IDS);
+const projectAliases = Object.entries(catalog).flatMap(([id, entry]) => [...new Set([
+  id,
+  entry.label.en,
+  entry.label.zh,
+])].map((alias) => ({ alias, id: id as AssistantProjectId })));
+const projectIdByAlias = new Map(projectAliases.map(({ alias, id }) => [alias.toLocaleLowerCase("en-US"), id]));
+const projectMentionPattern = new RegExp(projectAliases
+  .sort((left, right) => right.alias.length - left.alias.length)
+  .map(({ alias }) => {
+    const escaped = alias.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
+    return /^[\x00-\x7f]+$/u.test(alias)
+      ? `(?<![A-Za-z0-9])${escaped}(?![A-Za-z0-9])`
+      : escaped;
+  })
+  .join("|"), "giu");
 
 export function projectReference(id: string, locale: "en" | "zh"): AssistantProjectReference | null {
   if (!projectIds.has(id)) return null;
@@ -96,6 +111,42 @@ export function validateAssistantAnswerBlocks(value: unknown, locale: "en" | "zh
     blocks.push({ type: candidate.type as AssistantAnswerBlockType, segments });
   }
   return flattenedLength > 0 && flattenedLength <= 6_000 ? blocks : null;
+}
+
+function canonicalizeTextSegment(segment: Extract<AssistantAnswerSegment, { type: "text" }>) {
+  const segments: AssistantAnswerSegment[] = [];
+  let cursor = 0;
+  for (const match of segment.text.matchAll(projectMentionPattern)) {
+    const index = match.index ?? 0;
+    if (index > cursor) segments.push({
+      type: "text",
+      text: segment.text.slice(cursor, index),
+      ...(segment.strong === true ? { strong: true } : {}),
+    });
+    const projectId = projectIdByAlias.get(match[0].toLocaleLowerCase("en-US"));
+    if (projectId) segments.push({
+      type: "project",
+      projectId,
+      ...(segment.strong === true ? { strong: true } : {}),
+    });
+    else segments.push({ type: "text", text: match[0], ...(segment.strong === true ? { strong: true } : {}) });
+    cursor = index + match[0].length;
+  }
+  if (cursor < segment.text.length) segments.push({
+    type: "text",
+    text: segment.text.slice(cursor),
+    ...(segment.strong === true ? { strong: true } : {}),
+  });
+  return segments.length ? segments : [segment];
+}
+
+export function canonicalizeAssistantProjectMentions(blocks: readonly AssistantAnswerBlock[]) {
+  return blocks.map((block) => {
+    const segments = block.segments.flatMap((segment) => segment.type === "text"
+      ? canonicalizeTextSegment(segment)
+      : [segment]);
+    return { ...block, segments: segments.length <= 24 ? segments : block.segments };
+  });
 }
 
 export function flattenAssistantAnswerBlocks(blocks: readonly AssistantAnswerBlock[], locale: "en" | "zh") {
