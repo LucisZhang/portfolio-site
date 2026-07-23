@@ -130,10 +130,10 @@ Never paste the value into a tracked file, shell history, issue, PR, or verifica
   configured models receive at most 900 model tokens. All responses remain capped at 6,000
   displayed characters and 64,000 upstream bytes. Typed answers allow at most 20 blocks and 24
   segments per block.
-- Model deadline: 58 seconds. The primary gets 38 seconds, the first fallback 12 seconds, and the
-  second fallback 7 seconds. A transient/network failure or model-route 404 advances to the next distinct
-  model; a retryable total failure gives the visitor a fresh Retry action without duplicating the
-  visible question.
+- Model deadline: 58 seconds. Kimi K3 gets 48 seconds, followed by 7- and 2-second fallback
+  windows; other primary models get 38 seconds, followed by 12- and 7-second fallback windows. A
+  transient/network failure or model-route 404 advances to the next distinct model; a retryable
+  total failure gives the visitor a fresh Retry action without duplicating the visible question.
 - Rate limits: 10 requests/minute and 50 requests/day per HMAC pseudonym.
 - Production/model-key environments fail closed if Upstash or the dedicated HMAC secret is absent,
   invalid, or unavailable. Raw IP addresses are not sent to Upstash.

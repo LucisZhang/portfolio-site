@@ -113,6 +113,11 @@ test("hybrid RAG policy and bilingual model defaults are code-bound", () => {
     { model: DEFAULT_ASSISTANT_FALLBACK_MODELS_EN[0], timeoutMs: 12_000 },
     { model: DEFAULT_ASSISTANT_FALLBACK_MODELS_EN[1], timeoutMs: 7_000 },
   ]);
+  assert.deepEqual(assistantAttemptPlan(DEFAULT_ASSISTANT_MODEL_ZH, DEFAULT_ASSISTANT_FALLBACK_MODELS_ZH), [
+    { model: DEFAULT_ASSISTANT_MODEL_ZH, timeoutMs: 48_000 },
+    { model: DEFAULT_ASSISTANT_FALLBACK_MODELS_ZH[0], timeoutMs: 7_000 },
+    { model: DEFAULT_ASSISTANT_FALLBACK_MODELS_ZH[1], timeoutMs: 2_000 },
+  ]);
 });
 
 test("request parser accepts bounded conversation history and rejects oversized or malformed input", () => {

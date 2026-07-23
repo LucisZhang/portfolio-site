@@ -320,9 +320,13 @@ export function resolveAssistantFallbackModels(locale: AssistantLocale, configur
 }
 
 export function assistantAttemptPlan(primary: string, fallbacks: readonly string[]): AssistantAttemptPlan[] {
+  const kimiPrimary = primary === DEFAULT_ASSISTANT_MODEL_ZH;
   return [
-    { model: primary, timeoutMs: 38_000 },
-    ...fallbacks.slice(0, 2).map((model, index) => ({ model, timeoutMs: index === 0 ? 12_000 : 7_000 })),
+    { model: primary, timeoutMs: kimiPrimary ? 48_000 : 38_000 },
+    ...fallbacks.slice(0, 2).map((model, index) => ({
+      model,
+      timeoutMs: kimiPrimary ? (index === 0 ? 7_000 : 2_000) : (index === 0 ? 12_000 : 7_000),
+    })),
   ];
 }
 
