@@ -1,6 +1,6 @@
 # Portfolio v1 publication record
 
-Published: 2026-07-12
+Published: 2026-07-23
 
 - Production site: <https://portfolio-site-seven-murex.vercel.app>
 - Public source: <https://github.com/LucisZhang/portfolio-site>
@@ -29,10 +29,10 @@ records package chronology; it is not the current publication status.
 Approval does not extend to the private source repository, raw reports, prompts, scenarios,
 traces, datasets, original screenshots, or any substituted asset hash.
 
-## Current authorized feature-branch candidate
+## Current verified release
 
-The current delivery is prepared on `codex/portfolio-site-fixes2-20260722` and remains a review
-candidate until exact-commit Preview and Production acceptance finish. It retains six bilingual
+Runtime merge commit `468f31ba1ce196348caa5e30a76b11ed46a609d4` is deployed to Production as
+`dpl_8U7hHXby6Az4iwLrM81n84Ga2CcP`. It retains six bilingual
 case studies, contextual artifact viewers, two pipeline-backed Analytics workflows, the Web-only
 Privacy Preflight workspace, and the legacy Analytics Tandem migration route. Assistant policy
 `hybrid-portfolio-rag-v14` uses a bounded distinct-model fallback budget, page-aware prompts,
@@ -42,14 +42,23 @@ is pinned to 9 repositories, 49 files, and 344 chunks with SHA-256
 
 On 2026-07-23 the owner authorized the branch push, ready PR, exact-SHA Preview, bounded live model
 acceptance (including the retrieved private-candidate excerpt boundary), normal merge, and
-Production deployment. Preview acceptance remains a required stop gate before merge.
+Production deployment. PRs #3 and #4 were merged normally; no direct push to `main` occurred.
+Exact-SHA Preview and Production acceptance passed for both `anthropic/claude-sonnet-4.6` and
+`moonshotai/kimi-k3` through OpenRouter ZDR.
+
+The final Production browser audit passed at desktop and mobile sizes with automatic locale
+detection, manual language switching, representative project workflows, assistant privacy
+disclosure, and no console warnings or errors. All 11 public routes returned HTTP 200 for both
+language variants. Lighthouse 13.4.1 scored 98 Performance and 100 for Accessibility, Best
+Practices, and SEO; the public-safe receipt is in
+[`docs/lighthouse-homepage-20260723.md`](docs/lighthouse-homepage-20260723.md).
 
 Commit-local evidence is indexed in [`docs/EVIDENCE_INDEX.md`](docs/EVIDENCE_INDEX.md); the
-publication gates are in [`docs/PUBLICATION_CHECKLIST.md`](docs/PUBLICATION_CHECKLIST.md). Merely
-creating this candidate does not:
+publication gates are in [`docs/PUBLICATION_CHECKLIST.md`](docs/PUBLICATION_CHECKLIST.md). This
+publication does not:
 
-- change or alias the production deployment;
 - modify any approved Release Guardian asset or hash;
 - publish a private candidate repository;
 - restore or republish any withdrawn Mac application surface;
-- merge a public repository pull request.
+- authorize force pushes, history rewrites, visibility changes, tags, releases, or unrelated
+  repository mutations.

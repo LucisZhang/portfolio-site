@@ -1,13 +1,14 @@
 # Public Portfolio state
 
-Updated: 2026-07-23 16:06 (Asia/Shanghai) / 2026-07-23 08:06 UTC
+Updated: 2026-07-23 16:56 (Asia/Shanghai) / 2026-07-23 08:56 UTC
 
 This file records the recruiter-safe state of the current public release. It contains no
 credentials, raw private candidate material, local source paths, or browser-session data.
 
-Overall status: `V15_RELEASE_CANDIDATE`. Production remains the previously verified runtime release
-`0cbc90edd57b06e3fed42a946b1f5009f5160026`; the current candidate has not yet been merged or
-attached to the Production alias.
+Overall status: `V15_DEPLOYED_VERIFIED`. The verified runtime release is merge commit
+`468f31ba1ce196348caa5e30a76b11ed46a609d4`, deployed as
+`dpl_8U7hHXby6Az4iwLrM81n84Ga2CcP` and attached to the Production alias
+<https://portfolio-site-seven-murex.vercel.app>.
 
 The owner explicitly authorized the current branch push, ready pull request, exact-SHA Preview,
 normal PR merge to public `main`, and exact-SHA Production deployment. For this portfolio release
@@ -47,39 +48,42 @@ non-ZDR route, another provider, raw-file, credential, full-packet, or unrelated
 
 ## Verification
 
-- Assistant policy/unit verification: 35 passed, 0 failed, including a regression test proving that
-  the primary model can complete after 14 seconds without being aborted.
+- Assistant policy/unit verification: 36 passed, 0 failed, including a regression test proving that
+  the primary model can complete after 14 seconds without being aborted and canonicalization tests
+  for known project names returned as plain text.
 - Complete Playwright run: 218 passed, 52 intentional device-inapplicable skips, 0 failed.
 - TypeScript, ESLint, evidence verification, production build, performance budget,
   `git diff --check`, and production dependency audit passed; the audit reported 0 vulnerabilities.
 - The public knowledge snapshot reproduced exactly from the nine commit-pinned remote repositories.
-- Vercel Sensitive variables intentionally cannot be downloaded as plaintext. The local live probe
-  therefore failed closed at limiter configuration before retrieval or any model request; exact
-  live acceptance is required on the candidate's Vercel Preview before merge.
-
-The remaining receipts in this section describe the previous Production baseline only; they are
-not acceptance evidence for the current candidate:
-
-- Production homepage Lighthouse 13.4.0: Performance 99, Accessibility 100, Best Practices 100,
-  SEO 100, FCP 1.30 s, LCP 2.20 s, TBT 39 ms, CLS 0. Report SHA-256:
-  `f3f33262471b7d856838b07cb0009482cc41246be911995d6d255d6360f43b2c`.
-- Browser regression covers English and Chinese, desktop/tablet/mobile layouts, contextual assistant
-  prompts, Markdown and project links, P1 scroll behavior, and the Web-only Privacy workflows.
-- Preview deployment `dpl_CRMf61ED9QD4MQvgSV4ohSWT2XMm` passed protected-deployment acceptance.
-- Production deployment `dpl_4uVnBKvHSxKRiAAC1QtwNBLTm3bN` was Ready and attached to
-  `https://portfolio-site-seven-murex.vercel.app`; all 11 public routes returned HTTP 200 with the
-  expected security headers.
-- Bounded Production model acceptance returned HTTP 200 from `anthropic/claude-sonnet-4.6` in
-  English and `moonshotai/kimi-k3` in Chinese. Both used the v14 policy, Upstash rate limiting, nine
-  retrieved chunks, grounded citations, and exposed no system marker, private path, or contact data.
+- Exact-SHA protected Preview
+  <https://portfolio-site-nt23qsn3s-luciszhangs-projects.vercel.app> passed one bounded English
+  Claude Sonnet 4.6 request and one bounded Chinese Kimi K3 request. Both returned HTTP 200 on the
+  expected model with Upstash limiting, nine retrieved chunks, validated citations, all knowledge
+  and payload hashes, and no sensitive-output exposure.
+- Production deployment `dpl_8U7hHXby6Az4iwLrM81n84Ga2CcP` is Ready. Its `/api/assistant`
+  function has the intended 60-second timeout, and the three Production aliases resolve to it.
+- Final Production acceptance returned HTTP 200 in one attempt from exact model
+  `anthropic/claude-sonnet-4.6` in English and exact model `moonshotai/kimi-k3` in Chinese. Both used
+  policy v14, Upstash limiting, nine retrieved chunks, complete typed answers, grounded citations,
+  public/private/combined/payload hashes, and exposed no system marker, private path, secret, or
+  contact data.
+- Browser acceptance verified the desktop and 390 × 844 mobile layouts, automatic Chinese locale,
+  manual English/Chinese switching, the Streaming Reliability Lab wording, Web-only Privacy media
+  and multi-page PDF workflow, assistant ZDR disclosure, and a clean warning/error console.
+- All 11 public routes returned HTTP 200 in both English and Chinese. The Production response
+  includes CSP, HSTS, `nosniff`, `DENY` framing, referrer, and permissions-policy headers.
+- Production homepage Lighthouse 13.4.1: Performance 98, Accessibility 100, Best Practices 100,
+  SEO 100, FCP 1.3 s, LCP 2.2 s, TBT 50 ms, CLS 0, Speed Index 2.1 s. Report SHA-256:
+  `669b7fee14bb7ff7fb0f7a43343446b27cc489639847c84127b5b6a9bd486fbd`; see
+  [`docs/lighthouse-homepage-20260723.md`](docs/lighthouse-homepage-20260723.md).
 
 ## Publication state
 
-- The currently deployed public `main` was fast-forwarded without force from
-  `ff31909fb62b7defd088ea7eb0a6f37e54515ae0` to the verified runtime release
-  `0cbc90edd57b06e3fed42a946b1f5009f5160026`.
-- The current release branch is `codex/portfolio-site-fixes2-20260722`; the user's primary checkout and
-  untracked inventory remain untouched.
+- Runtime changes reached public `main` through normal pull-request merges: PR #3 established the
+  release and PR #4 added deterministic canonical project-link rendering and the fresh-request
+  retry behavior. No direct push to `main` was used.
+- The release branch is `codex/portfolio-site-fixes2-20260722`; the user's primary checkout and
+  untracked inventory remained untouched.
 - Preview and Production retain the five encrypted server values already required by v13.
   Optional fallback-model variables may override the validated defaults but must remain server-only.
 - No force push, history rewrite, repository visibility change, tag, release, or unrelated-branch
