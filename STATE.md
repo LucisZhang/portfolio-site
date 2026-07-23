@@ -1,13 +1,21 @@
 # Public Portfolio state
 
-Updated: 2026-07-22 12:40 (Asia/Shanghai) / 2026-07-22 04:40 UTC
+Updated: 2026-07-23 16:06 (Asia/Shanghai) / 2026-07-23 08:06 UTC
 
 This file records the recruiter-safe state of the current public release. It contains no
 credentials, raw private candidate material, local source paths, or browser-session data.
 
-Overall status: `DEPLOYED_VERIFIED`. The bilingual portfolio and hybrid-RAG assistant passed local,
-Preview, and Production acceptance for runtime release commit
-`0cbc90edd57b06e3fed42a946b1f5009f5160026`.
+Overall status: `V15_RELEASE_CANDIDATE`. Production remains the previously verified runtime release
+`0cbc90edd57b06e3fed42a946b1f5009f5160026`; the current candidate has not yet been merged or
+attached to the Production alias.
+
+The owner explicitly authorized the current branch push, ready pull request, exact-SHA Preview,
+normal PR merge to public `main`, and exact-SHA Production deployment. For this portfolio release
+task, the owner also granted standing authorization for all English Claude Sonnet 4.6 and Chinese
+Kimi K3 calls necessary to complete Preview and Production acceptance, without per-call
+reconfirmation. That authorization includes sending only the retrieved, bounded private-candidate
+excerpts to OpenRouter's ZDR route and the selected Claude/Kimi provider. It does not authorize a
+non-ZDR route, another provider, raw-file, credential, full-packet, or unrelated-task disclosure.
 
 ## Candidate delivery
 
@@ -27,23 +35,31 @@ Preview, and Production acceptance for runtime release commit
   `openai/gpt-5.4`, then `qwen/qwen3.5-397b-a17b`.
 - Chinese primary model: `moonshotai/kimi-k3`; default fallbacks:
   `qwen/qwen3.5-397b-a17b`, then `openai/gpt-5.4`.
-- Transient and network failures retry the primary once, then advance through the configured
-  locale-specific fallback list inside one bounded request deadline.
-- Public knowledge remains pinned to 9 exact-commit GitHub repositories, 44 reviewed files, and
-  364 chunks with SHA-256
-  `b8cc614034bb0b0fc4b878553d08141471a8cb548698809f70f8f1819d97a777`.
+- Transient, timeout, model-route 404, malformed-JSON, and model-mismatch failures advance through
+  distinct models inside one 58-second request deadline; permanent or unsafe failures stop immediately.
+- Public knowledge is pinned to 9 exact-commit GitHub repositories, 49 reviewed files, and 344
+  chunks with SHA-256
+  `43628d6deaae5f0d24db05a35c40ae27e2321be0f3b9ea4878baa4dbd59eb660`.
 - Private candidate material remains Git-ignored and server-only. Browser citations describe it
   generically, and withdrawn Privacy Mac material is filtered from retrieval and output.
-- The assistant uses page-specific prompts, renders bounded Markdown, links recognized project
-  names to local project pages, and keeps recruiter-facing answers concise and persuasive.
+- The assistant uses page-specific prompts and server-validated typed answer segments. Recognized
+  project IDs resolve only to canonical local or reviewed GitHub destinations.
 
 ## Verification
 
-- Assistant policy/unit verification: 31 passed, 0 failed, including a regression test proving that
+- Assistant policy/unit verification: 35 passed, 0 failed, including a regression test proving that
   the primary model can complete after 14 seconds without being aborted.
-- Complete Playwright run: 212 passed, 52 intentional device-inapplicable skips, 0 failed.
+- Complete Playwright run: 218 passed, 52 intentional device-inapplicable skips, 0 failed.
 - TypeScript, ESLint, evidence verification, production build, performance budget,
   `git diff --check`, and production dependency audit passed; the audit reported 0 vulnerabilities.
+- The public knowledge snapshot reproduced exactly from the nine commit-pinned remote repositories.
+- Vercel Sensitive variables intentionally cannot be downloaded as plaintext. The local live probe
+  therefore failed closed at limiter configuration before retrieval or any model request; exact
+  live acceptance is required on the candidate's Vercel Preview before merge.
+
+The remaining receipts in this section describe the previous Production baseline only; they are
+not acceptance evidence for the current candidate:
+
 - Production homepage Lighthouse 13.4.0: Performance 99, Accessibility 100, Best Practices 100,
   SEO 100, FCP 1.30 s, LCP 2.20 s, TBT 39 ms, CLS 0. Report SHA-256:
   `f3f33262471b7d856838b07cb0009482cc41246be911995d6d255d6360f43b2c`.
@@ -59,10 +75,10 @@ Preview, and Production acceptance for runtime release commit
 
 ## Publication state
 
-- Public `main` was fast-forwarded without force from
+- The currently deployed public `main` was fast-forwarded without force from
   `ff31909fb62b7defd088ea7eb0a6f37e54515ae0` to the verified runtime release
   `0cbc90edd57b06e3fed42a946b1f5009f5160026`.
-- The release branch is `codex/portfolio-site-fixes-20260722`; the user's primary checkout and
+- The current release branch is `codex/portfolio-site-fixes2-20260722`; the user's primary checkout and
   untracked inventory remain untouched.
 - Preview and Production retain the five encrypted server values already required by v13.
   Optional fallback-model variables may override the validated defaults but must remain server-only.

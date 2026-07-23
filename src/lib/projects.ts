@@ -141,7 +141,7 @@ export const projects: Project[] = [
       },
     ],
     links: [
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/portfolio-site" },
+      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/release-guardian" },
     ],
   },
   {
@@ -199,7 +199,7 @@ export const projects: Project[] = [
       },
     ],
     links: [
-      { label: { en: "GitHub repository", zh: "公开源码仓库" }, href: "https://github.com/LucisZhang/p1-reliability-lab" },
+      { label: { en: "GitHub repository", zh: "公开源码仓库" }, href: "https://github.com/LucisZhang/streaming-reliability-lab" },
     ],
   },
   {

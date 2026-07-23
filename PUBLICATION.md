@@ -29,14 +29,20 @@ records package chronology; it is not the current publication status.
 Approval does not extend to the private source repository, raw reports, prompts, scenarios,
 traces, datasets, original screenshots, or any substituted asset hash.
 
-## Current feature-branch candidate
+## Current authorized feature-branch candidate
 
-The current delivery is prepared on `codex/portfolio-site-fixes-20260722` and remains a review
+The current delivery is prepared on `codex/portfolio-site-fixes2-20260722` and remains a review
 candidate until exact-commit Preview and Production acceptance finish. It retains six bilingual
 case studies, contextual artifact viewers, two pipeline-backed Analytics workflows, the Web-only
 Privacy Preflight workspace, and the legacy Analytics Tandem migration route. Assistant policy
-`hybrid-portfolio-rag-v14` adds one primary retry for transient failures, locale-specific fallback
-models, page-aware prompts, Markdown rendering, and local project links.
+`hybrid-portfolio-rag-v14` uses a bounded distinct-model fallback budget, page-aware prompts,
+server-validated typed answer segments, and canonical local/GitHub project links. The public corpus
+is pinned to 9 repositories, 49 files, and 344 chunks with SHA-256
+`43628d6deaae5f0d24db05a35c40ae27e2321be0f3b9ea4878baa4dbd59eb660`.
+
+On 2026-07-23 the owner authorized the branch push, ready PR, exact-SHA Preview, bounded live model
+acceptance (including the retrieved private-candidate excerpt boundary), normal merge, and
+Production deployment. Preview acceptance remains a required stop gate before merge.
 
 Commit-local evidence is indexed in [`docs/EVIDENCE_INDEX.md`](docs/EVIDENCE_INDEX.md); the
 publication gates are in [`docs/PUBLICATION_CHECKLIST.md`](docs/PUBLICATION_CHECKLIST.md). Merely

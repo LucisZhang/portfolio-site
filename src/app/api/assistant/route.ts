@@ -14,8 +14,10 @@ import {
   ASSISTANT_POLICY_REVISION,
   executeAssistantRequest,
   type AssistantCitation,
+  type AssistantFailureReason,
   type AssistantOutputRejection,
 } from "@/lib/assistant-policy";
+import type { AssistantAnswerBlock } from "@/lib/assistant-project-references";
 import {
   createAssistantRateLimiter,
   type AssistantRateLimiter,
@@ -24,7 +26,7 @@ import {
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 45;
+export const maxDuration = 60;
 
 const assistantGlobal = globalThis as typeof globalThis & {
   __portfolioAssistantRateLimiter?: AssistantRateLimiter;
@@ -41,6 +43,9 @@ function responseHeaders(
   combinedSnapshotSha256?: string,
   retrievalCount?: number,
   outboundPayloadSha256?: string,
+  attemptCount?: number,
+  failureReason?: AssistantFailureReason,
+  upstreamStatus?: number,
 ) {
   const headers: Record<string, string> = {
     "Cache-Control": "no-store, max-age=0",
@@ -55,6 +60,9 @@ function responseHeaders(
   if (combinedSnapshotSha256) headers["X-Assistant-Knowledge-Snapshot"] = combinedSnapshotSha256;
   if (retrievalCount !== undefined) headers["X-Assistant-Retrieval-Count"] = String(retrievalCount);
   if (outboundPayloadSha256) headers["X-Assistant-Payload-SHA256"] = outboundPayloadSha256;
+  if (attemptCount !== undefined) headers["X-Assistant-Attempt-Count"] = String(attemptCount);
+  if (failureReason) headers["X-Assistant-Failure-Reason"] = failureReason;
+  if (upstreamStatus !== undefined) headers["X-Assistant-Upstream-Status"] = String(upstreamStatus);
   if (rate) {
     headers["X-RateLimit-Remaining-Minute"] = String(rate.remainingMinute);
     headers["X-RateLimit-Remaining-Day"] = String(rate.remainingDay);
@@ -66,6 +74,9 @@ function responseHeaders(
 function assistantResponse(
   reply: string,
   status: number,
+  blocks?: readonly AssistantAnswerBlock[],
+  retryable?: boolean,
+  failureReason?: AssistantFailureReason,
   rate?: RateLimitDecision,
   responseReturnedModel?: string,
   outputRejection?: AssistantOutputRejection,
@@ -75,8 +86,16 @@ function assistantResponse(
   combinedSnapshotSha256?: string,
   retrievalCount?: number,
   outboundPayloadSha256?: string,
+  attemptCount?: number,
+  upstreamStatus?: number,
 ) {
-  return NextResponse.json({ reply, ...(sources ? { sources } : {}) }, {
+  return NextResponse.json({
+    reply,
+    ...(blocks ? { blocks } : {}),
+    ...(sources ? { sources } : {}),
+    ...(retryable !== undefined ? { retryable } : {}),
+    ...(failureReason ? { failureReason } : {}),
+  }, {
     status,
     headers: responseHeaders(
       rate,
@@ -87,6 +106,9 @@ function assistantResponse(
       combinedSnapshotSha256,
       retrievalCount,
       outboundPayloadSha256,
+      attemptCount,
+      failureReason,
+      upstreamStatus,
     ),
   });
 }
@@ -130,6 +152,9 @@ export async function POST(request: Request) {
   return assistantResponse(
     result.reply,
     result.status,
+    result.blocks,
+    result.retryable,
+    result.failureReason,
     result.rate,
     result.responseReturnedModel,
     result.outputRejection,
@@ -139,5 +164,7 @@ export async function POST(request: Request) {
     result.combinedSnapshotSha256,
     result.retrievalCount,
     result.outboundPayloadSha256,
+    result.attemptCount,
+    result.upstreamStatus,
   );
 }

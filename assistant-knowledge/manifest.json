@@ -1,29 +1,30 @@
 {
   "version": 1,
-  "snapshotId": "public-github-portfolio-20260721-v1",
+  "snapshotId": "public-github-portfolio-20260723-v1",
   "repositories": [
     {
       "owner": "LucisZhang",
-      "repo": "portfolio-site",
-      "commit": "2dbdcaeafe9ce0a2dd124513b9eff63c914ef220",
-      "label": { "en": "Xiangguo Zhang portfolio", "zh": "章向国作品集" },
-      "aliases": ["Xiangguo Zhang", "章向国", "XGZ", "portfolio", "作品集", "background", "个人背景", "skills", "技能", "role fit", "岗位匹配", "Release Guardian", "发布守门人"],
+      "repo": "release-guardian",
+      "commit": "10b2a69406cc826d8215b25bcaafb3c564a0bda3",
+      "label": { "en": "Release Guardian", "zh": "发布守门人" },
+      "aliases": ["Release Guardian", "发布守门人", "release gate", "发布门禁", "LangGraph", "human approval", "人工审批"],
       "files": [
         "README.md",
         "README.zh-CN.md",
-        "docs/EVIDENCE_INDEX.md",
-        "src/lib/projects.ts",
-        "src/lib/i18n.ts"
+        "evidence/manifest.json",
+        "docs/architecture.mmd",
+        "scripts/replay.mjs"
       ]
     },
     {
       "owner": "LucisZhang",
-      "repo": "p1-reliability-lab",
-      "commit": "7eab9c3fcdf73865b0ed6dd1266de1bfaccefcce",
+      "repo": "streaming-reliability-lab",
+      "commit": "2fade314617c9ce55f92cc34da7e140806048cf0",
       "label": { "en": "Streaming Reliability Lab", "zh": "流式可靠性实验室" },
-      "aliases": ["p1", "p1 reliability lab", "streaming reliability lab", "流式可靠性实验室", "Flink", "Iceberg", "CDC", "failure injection", "故障注入"],
+      "aliases": ["streaming reliability lab", "流式可靠性实验室", "Flink", "Iceberg", "CDC", "failure injection", "故障注入", "p1-reliability-lab (historical repository name)", "p1 可靠性实验室（历史名称）"],
       "files": [
         "README.md",
+        "README.zh-CN.md",
         "RUNBOOK.md",
         "docs/workstation-run/20260711T034018Z-local-mac/SUMMARY.md",
         "docs/resume-claims-after-verification.md",
@@ -34,11 +35,12 @@
     {
       "owner": "LucisZhang",
       "repo": "rag-quality-lab",
-      "commit": "0fc14333ac743f1c9ac6f27f501a905efef62329",
+      "commit": "8691ab82b4db40a828de8bf890688e66ce6c46a8",
       "label": { "en": "RAG Quality Lab", "zh": "RAG 质量实验室" },
       "aliases": ["RAG Quality Lab", "RAG 质量实验室", "retrieval", "检索", "evaluation", "评估", "BM25", "Chroma", "regression", "回归"],
       "files": [
         "README.md",
+        "README.zh-CN.md",
         "DATA.md",
         "src/rag_pipelines.py",
         "src/evaluation_engine.py",
@@ -49,11 +51,12 @@
     {
       "owner": "LucisZhang",
       "repo": "privacy-preflight-web",
-      "commit": "0063e0f4a5c1f02478891392c4dcb10305f23eb8",
+      "commit": "f7ca9c4062cc05a619c226f986f9abd57586db75",
       "label": { "en": "Privacy Preflight", "zh": "隐私预检" },
       "aliases": ["Privacy Preflight", "隐私预检", "redaction", "脱敏", "OCR", "PDF", "fictional fixtures", "虚构夹具"],
       "files": [
         "README.md",
+        "README.zh-CN.md",
         "docs/architecture.mmd",
         "src/components/privacy/PrivacyPreflightLab.tsx",
         "src/components/privacy/PrivacyPdfLab.tsx",
@@ -63,11 +66,12 @@
     {
       "owner": "LucisZhang",
       "repo": "margin-control-tower",
-      "commit": "68ef75158a2b8a317a471c5b3fa4a263393edfb7",
+      "commit": "fe8f793209547c8b9167e65e722a3f3b3bc85df1",
       "label": { "en": "Margin Control Tower", "zh": "毛利控制塔" },
       "aliases": ["Margin Control Tower", "毛利控制塔", "margin", "毛利", "Olist", "DuckDB", "elasticity", "弹性", "scenario", "情景"],
       "files": [
         "README.md",
+        "README.zh-CN.md",
         "public/case-studies/margin-control-tower/README.md",
         "public/case-studies/margin-control-tower/architecture.mmd",
         "public/case-studies/margin-control-tower/data-contract.json",
@@ -78,11 +82,12 @@
     {
       "owner": "LucisZhang",
       "repo": "credit-policy-lab",
-      "commit": "639fbc0f0b808e7fba821f46c26db3b92136d357",
+      "commit": "5330e2a6b365079b932d2e70ed2b6ec33b962441",
       "label": { "en": "Credit Policy Lab", "zh": "信贷策略实验室" },
       "aliases": ["Credit Policy Lab", "信贷策略实验室", "credit", "信贷", "PD", "LGD", "EAD", "Brier", "PSI", "backtest", "回测"],
       "files": [
         "README.md",
+        "README.zh-CN.md",
         "public/case-studies/credit-policy-lab/README.md",
         "public/case-studies/credit-policy-lab/architecture.mmd",
         "public/case-studies/credit-policy-lab/policy-contract.json",

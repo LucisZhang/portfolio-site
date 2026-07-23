@@ -56,6 +56,9 @@ for (const locale of ["en", "zh"] as const) {
         await expect(page.locator('a[href="mailto:HsiangKuoChang@outlook.com"]')).toBeVisible();
         await expect(page.locator('a[href="/resume.pdf"]')).toHaveCount(0);
         await expect(page.locator(".workspace-index")).toContainText(locale === "en" ? "6 interactive demos" : "6 个交互式演示");
+        await expect(page.locator(".index-heading p")).toHaveText(locale === "en"
+          ? "Open any project to see what I built, how it works, and how to verify it."
+          : "打开任意项目，了解我做了什么、项目如何运作，以及如何验证结果。");
         const projectLinks = page.locator(".project-table > a");
         await expect(projectLinks).toHaveCount(6);
         await expect(projectLinks.nth(0)).toHaveAttribute("href", /^\/ai\/release-guardian(?:\?lang=zh)?$/);
@@ -86,6 +89,7 @@ for (const locale of ["en", "zh"] as const) {
         }
       }
       if (route === "/engineering/p1-reliability-lab") {
+        await expect(page.locator('a[href="https://github.com/LucisZhang/streaming-reliability-lab"]')).toBeVisible();
         await expect(page.locator(".artifact-table > a")).toHaveCount(5);
         await expect(page.locator('a[href^="/artifact?"][href*="workstation-reproduction-guide.md"]')).toHaveCount(0);
         await expect(page.locator(".p1-pressure-evidence")).toContainText("55 ms → 19,022 ms");
@@ -98,6 +102,7 @@ for (const locale of ["en", "zh"] as const) {
         );
       }
       if (route === "/ai/release-guardian") {
+        await expect(page.locator('a[href="https://github.com/LucisZhang/release-guardian"]')).toBeVisible();
         await expect(page.locator(".finding-table > div:not(.finding-head)")).toHaveCount(5);
         await expect(page.locator(".release-funded-stats")).toContainText("$8.1214");
         await expect(page.locator(".release-funded-stats")).toContainText("~35.08 s");
@@ -583,6 +588,29 @@ test.describe("Privacy Preflight Web", () => {
     await expect(localizedDerivatives.locator("img").nth(1)).toHaveAttribute("src", /pdf-synthetic-redacted-preview-zh\.svg$/);
   });
 
+  test("before and after evidence stays paired in both locales and responsive layouts", async ({ page }, testInfo) => {
+    const comparison = page.locator(".privacy-comparison-grid");
+    const items = comparison.locator(".privacy-comparison-item");
+    await expect(items).toHaveCount(4);
+    await expect(items.locator(":scope > strong")).toHaveText(["Before", "After", "Before", "After"]);
+    const boxes = await items.evaluateAll((nodes) => nodes.map((node) => {
+      const box = node.getBoundingClientRect();
+      return { x: box.x, y: box.y };
+    }));
+    if (testInfo.project.name === "mobile") {
+      expect(boxes[0].y).toBeLessThan(boxes[1].y);
+      expect(boxes[1].y).toBeLessThan(boxes[2].y);
+      expect(boxes[2].y).toBeLessThan(boxes[3].y);
+    } else {
+      expect(Math.abs(boxes[0].y - boxes[1].y)).toBeLessThan(2);
+      expect(Math.abs(boxes[2].y - boxes[3].y)).toBeLessThan(2);
+      expect(boxes[0].x).toBeLessThan(boxes[1].x);
+      expect(boxes[2].x).toBeLessThan(boxes[3].x);
+    }
+    await page.getByRole("button", { name: "中", exact: true }).click();
+    await expect(items.locator(":scope > strong")).toHaveText(["处理前", "处理后", "处理前", "处理后"]);
+  });
+
   test("text review is deterministic, editable, undoable, and does not send content", async ({ page }) => {
     const requests: string[] = [];
     page.on("request", (request) => {
@@ -766,7 +794,7 @@ test.describe("Privacy Preflight Web", () => {
       return context.getImageData(0, 0, node.width, node.height).data.some((value, index) => index % 4 === 3 && value > 0) ? 1 : 0;
     });
     expect(overlayBeforeScan).toBe(0);
-    await page.getByRole("button", { name: "Scan for sensitive information" }).click();
+    await page.getByRole("button", { name: "Scan entire PDF" }).click();
     await expect(page.locator(".privacy-page-method")).toContainText("Local OCR", { timeout: 100_000 });
     await expect(page.locator(".privacy-box-list article")).toHaveCount(3);
     expect(await page.locator('.privacy-box-list article code').filter({ hasText: "text-layer+ocr" }).count()).toBeGreaterThan(0);
@@ -790,7 +818,7 @@ test.describe("Privacy Preflight Web", () => {
     await expect(page.locator(".privacy-pdf-canvas-wrap")).toHaveAttribute("aria-busy", "false");
     await expect(page.locator(".privacy-error")).toContainText("This PDF page could not be rendered locally");
 
-    const scanButton = page.getByRole("button", { name: "Scan for sensitive information" });
+    const scanButton = page.getByRole("button", { name: "Scan entire PDF" });
     await expect(scanButton).toBeEnabled();
     await scanButton.click();
     await expect(page.locator(".privacy-error")).toContainText("Local OCR could not finish on this page");
@@ -818,7 +846,7 @@ test.describe("Privacy Preflight Web", () => {
     await page.getByRole("tab", { name: "PDF" }).click();
     await page.locator('input[type="file"]').setInputFiles(fixturePath);
     await expect(page.locator(".privacy-box-list article")).toHaveCount(0);
-    await page.getByRole("button", { name: "Scan for sensitive information" }).click();
+    await page.getByRole("button", { name: "Scan entire PDF" }).click();
     await expect(page.locator(".privacy-page-method")).toContainText("Local OCR", { timeout: 100_000 });
     const sources = await page.locator(".privacy-box-list article code").allTextContents();
     expect(sources).toContain("text-layer+ocr");
@@ -831,7 +859,7 @@ test.describe("Privacy Preflight Web", () => {
     test.setTimeout(120_000);
     await page.getByRole("tab", { name: "PDF" }).click();
     await page.getByRole("button", { name: "Load scanned PDF" }).click();
-    const scanButton = page.getByRole("button", { name: "Scan for sensitive information" });
+    const scanButton = page.getByRole("button", { name: "Scan entire PDF" });
     await expect(page.locator(".privacy-page-counter")).toContainText("1 / 1");
     await expect(page.locator(".privacy-page-method")).toContainText("OCR required");
     await expect(page.locator(".privacy-pdf-canvas-wrap")).toHaveAttribute("aria-busy", "false");
@@ -874,7 +902,7 @@ test.describe("Privacy Preflight Web", () => {
     await page.getByRole("button", { name: "Load text-layer PDF" }).click();
     await expect(page.locator(".privacy-file-name")).toContainText("privacy-text-layer-example.pdf");
     await expect(page.locator(".privacy-pdf-canvas-wrap")).toHaveAttribute("aria-busy", "false");
-    const switchedCanvas = page.getByTestId("privacy-pdf-review-view").locator("canvas").first();
+    const switchedCanvas = page.getByTestId("privacy-pdf-source-pages").locator("canvas").first();
     await expect(switchedCanvas).toBeVisible();
     const switchedSize = await switchedCanvas.evaluate((canvas) => ({ width: (canvas as HTMLCanvasElement).width, height: (canvas as HTMLCanvasElement).height }));
     expect(switchedSize).not.toEqual(sizes[0]);
@@ -885,21 +913,23 @@ test.describe("Privacy Preflight Web", () => {
     await expect(page.locator(".privacy-validation")).toHaveCount(0);
   });
 
-  test("the genuine three-page PDF is OCR-reviewed, burned in, and previewed page by page", async ({ page }, testInfo) => {
+  test("the genuine three-page PDF is scanned once, burned in, and previewed continuously", async ({ page }, testInfo) => {
     test.skip(testInfo.project.name !== "desktop", "The three-page OCR/export path is exercised once.");
     test.setTimeout(360_000);
     await page.getByRole("tab", { name: "PDF" }).click();
     await page.getByRole("button", { name: "Load multi-page PDF" }).click();
-    await expect(page.getByRole("navigation", { name: "Loaded PDF pages" }).getByRole("button")).toHaveCount(3);
+    const sourcePages = page.getByTestId("privacy-pdf-source-pages").locator("[data-pdf-page]");
+    await expect(sourcePages).toHaveCount(3);
+    await expect(page.locator(".privacy-page-tabs")).toHaveCount(0);
 
     const sourceCounter = page.locator(".privacy-pdf-workspace > .privacy-actionbar .privacy-page-counter");
+    await page.getByRole("button", { name: "Scan entire PDF" }).click();
+    await expect(page.getByTestId("privacy-pdf-scan-progress")).toContainText("3 / 3", { timeout: 300_000 });
     const redactionCenters: { x: number; y: number }[] = [];
     for (let index = 0; index < 3; index += 1) {
-      if (index > 0) await page.getByTitle("Next page").click();
+      await sourcePages.nth(index).click();
       await expect(sourceCounter).toContainText(`${index + 1} / 3`);
-      await page.getByRole("button", { name: "Scan for sensitive information" }).click();
       await expect(page.locator(".privacy-page-method")).toContainText("Local OCR", { timeout: 100_000 });
-      await expect(page.locator(".privacy-ocr-status")).toContainText(/rule-matched regions/, { timeout: 100_000 });
       const firstRegion = page.locator(".privacy-box-list article").first();
       await expect(firstRegion).toBeVisible();
       const [x, y, width, height] = await firstRegion.locator("input").evaluateAll((inputs) => inputs.map((input) => Number((input as HTMLInputElement).value) / 100));
@@ -908,19 +938,12 @@ test.describe("Privacy Preflight Web", () => {
 
     await page.getByRole("button", { name: "Confirm review and show result" }).click();
     const result = page.getByTestId("privacy-pdf-result-preview");
-    const resultCounter = result.locator(".privacy-result-page-counter");
-    const resultCanvas = result.locator("canvas");
-    await expect(resultCanvas).toBeVisible({ timeout: 100_000 });
+    const resultPages = result.locator("[data-pdf-page]");
+    const resultCanvases = resultPages.locator("canvas");
+    await expect(resultPages).toHaveCount(3, { timeout: 100_000 });
     for (let index = 0; index < 3; index += 1) {
-      let previousFrame = "";
-      if (index > 0) {
-        previousFrame = await resultCanvas.evaluate((canvas) => (canvas as HTMLCanvasElement).toDataURL());
-        await page.getByTitle("Next page").click();
-      }
-      await expect(resultCounter).toContainText(`${index + 1} / 3`);
-      if (index > 0) {
-        await expect.poll(() => resultCanvas.evaluate((canvas) => (canvas as HTMLCanvasElement).toDataURL())).not.toBe(previousFrame);
-      }
+      const resultCanvas = resultCanvases.nth(index);
+      await resultCanvas.scrollIntoViewIfNeeded();
       await expect.poll(() => resultCanvas.evaluate((canvas, center) => {
         const node = canvas as HTMLCanvasElement;
         const context = node.getContext("2d");
@@ -937,11 +960,11 @@ test.describe("Privacy Preflight Web", () => {
     await compareButton.click();
     await expect(result).toHaveCount(0);
     await expect(page.getByTestId("privacy-pdf-original-view")).toBeVisible();
-    await expect(sourceCounter).toContainText("3 / 3");
+    await expect(page.getByTestId("privacy-pdf-original-view").locator("[data-pdf-page]")).toHaveCount(3);
     await expect(outputToolbar).toContainText("Original PDF");
     await compareButton.click();
     await expect(page.getByTestId("privacy-pdf-result-preview")).toBeVisible();
-    await expect(page.getByTestId("privacy-pdf-result-preview").locator(".privacy-result-page-counter")).toContainText("3 / 3");
+    await expect(page.getByTestId("privacy-pdf-result-pages").locator("[data-pdf-page]")).toHaveCount(3);
     await expect(outputToolbar).toContainText("Redacted PDF");
 
     const downloadPromise = page.waitForEvent("download");
@@ -976,25 +999,21 @@ test.describe("Privacy Preflight Web", () => {
     await expect(page.locator(".privacy-page-counter")).toContainText("1 / 2");
     await expect(page.locator(".privacy-page-method")).toContainText("Text layer");
     await expect(page.locator(".privacy-box-list article")).toHaveCount(0);
-    await page.getByRole("button", { name: "Scan for sensitive information" }).click();
+    await page.getByRole("button", { name: "Scan entire PDF" }).click();
+    await expect(page.getByTestId("privacy-pdf-scan-progress")).toContainText("2 / 2", { timeout: 100_000 });
+    await page.getByTestId("privacy-pdf-source-pages").locator('[data-pdf-page="1"]').click();
     await expect(page.locator('.privacy-box-list article code').filter({ hasText: "text-layer" })).toHaveCount(2);
-    await expect(page.getByRole("button", { name: "Confirm review and show result" })).toBeDisabled();
-    await page.getByRole("button", { name: "Next page" }).click();
-    await expect(page.locator(".privacy-page-counter")).toContainText("2 / 2");
-    await page.getByRole("button", { name: "Scan for sensitive information" }).click();
     await page.getByRole("button", { name: "Confirm review and show result" }).click();
     await expect(page.getByTestId("privacy-pdf-output")).toBeVisible({ timeout: 100_000 });
-    await expect(page.getByTestId("privacy-pdf-result-preview").locator("canvas")).toBeVisible();
-    await expect(page.getByTestId("privacy-pdf-result-preview").locator(".privacy-result-page-counter")).toContainText("1 / 2");
-    await page.getByTitle("Next page").click();
-    await expect(page.getByTestId("privacy-pdf-result-preview").locator(".privacy-result-page-counter")).toContainText("2 / 2");
+    await expect(page.getByTestId("privacy-pdf-result-pages").locator("[data-pdf-page]")).toHaveCount(2);
     const downloadPromise = page.waitForEvent("download");
     await page.getByRole("link", { name: "Download redacted file" }).click();
     const download = await downloadPromise;
     expect(download.suggestedFilename()).toContain("-redacted.pdf");
     await expect(page.locator(".privacy-validation.pass")).toContainText("ready to preview and download", { timeout: 100_000 });
     await expect(page.locator(".privacy-pdf-checks span")).toHaveCount(7);
-    await page.getByTitle("Previous page").click();
+    await page.getByTestId("privacy-pdf-output").getByRole("button", { name: "Before / after" }).click();
+    await page.getByTestId("privacy-pdf-original-view").locator('[data-pdf-page="1"]').click();
     await page.getByTitle("Delete region").first().click();
     await expect(page.getByTestId("privacy-pdf-output")).toHaveCount(0);
     await expect(page.locator(".privacy-validation")).toHaveCount(0);
@@ -1021,11 +1040,13 @@ test.describe("Privacy Preflight Web", () => {
     await expect(page.locator(".privacy-box-list article")).toHaveCount(0);
     const scannedSize = await page.locator(".privacy-pdf-canvas-stack canvas").first().evaluate((canvas) => ({ width: (canvas as HTMLCanvasElement).width, height: (canvas as HTMLCanvasElement).height }));
     expect(scannedSize).not.toEqual(textLayerSize);
-    await page.getByRole("button", { name: "Scan for sensitive information" }).click();
+    await page.getByRole("button", { name: "Scan entire PDF" }).click();
     await expect(page.locator(".privacy-page-method")).toContainText("Local OCR", { timeout: 100_000 });
     expect(await page.locator('.privacy-box-list article code').filter({ hasText: "ocr" }).count()).toBeGreaterThan(0);
     await page.getByRole("button", { name: "Load multi-page PDF" }).click();
     await expect(page.locator(".privacy-pdf-workspace > .privacy-actionbar .privacy-page-counter")).toContainText("1 / 3");
+    await expect(page.getByTestId("privacy-pdf-source-pages").locator("[data-pdf-page]")).toHaveCount(3);
+    await expect(page.locator(".privacy-page-tabs")).toHaveCount(0);
     await expect(page.locator(".privacy-page-method")).toContainText("OCR required");
     await expect(page.locator(".privacy-box-list article")).toHaveCount(0);
     await expect(page.locator(".privacy-benchmark-summary")).toContainText("100.0%");

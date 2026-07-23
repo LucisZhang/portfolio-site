@@ -48,6 +48,8 @@
 .richAnswer ul { display: grid; gap: 6px; margin: 0; padding-left: 18px; }
 .richAnswer li { overflow-wrap: anywhere; font-size: 11px; line-height: 1.55; }
 .richAnswer a { color: var(--green); font-weight: 700; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+.retry { margin-top: 8px; border: 1px solid var(--green); border-radius: 3px; background: var(--white); padding: 5px 9px; color: var(--green); cursor: pointer; font-size: 9px; font-weight: 700; }
+.retry:disabled { opacity: .48; cursor: not-allowed; }
 .pending { width: fit-content; display: inline-flex; align-items: center; gap: 4px; margin-top: 10px; border-radius: 999px; background: var(--paper); padding: 8px 10px; color: var(--muted); font-size: 10px; }
 .pending span { margin-right: 2px; }
 .pending i { width: 4px; height: 4px; border-radius: 50%; background: currentColor; animation: assistant-thinking 1.15s ease-in-out infinite; }

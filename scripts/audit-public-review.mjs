@@ -255,7 +255,7 @@ async function runInteraction(page, route, locale, viewport, pdfFixture, report)
           await page.mouse.move(bounds.x + bounds.width * 0.66, bounds.y + bounds.height * 0.4, { steps: 5 });
           await page.mouse.up();
         }
-        await lab.getByRole("button", { name: "Preview redacted result" }).click();
+        await lab.getByRole("button", { name: "Confirm review and show result" }).click();
         const imageOutput = lab.getByTestId("privacy-image-output");
         await imageOutput.waitFor({ state: "visible" });
         const [downloadedImage] = await Promise.all([

@@ -1,6 +1,6 @@
 # Portfolio assistant operations
 
-Updated: 2026-07-21 (Asia/Shanghai)
+Updated: 2026-07-23 (Asia/Shanghai)
 
 The built-in assistant is a bilingual, recruiter-facing hybrid RAG service. It retrieves a small
 set of relevant evidence from a commit-pinned public GitHub snapshot and an optional encrypted-at-
@@ -18,13 +18,11 @@ The browser never receives the full knowledge stores or any provider credential.
 - Evidence mode: `pinned-github-plus-private-candidate-rag`
 - English default: `anthropic/claude-sonnet-4.6`
 - Chinese default: `moonshotai/kimi-k3`
-- English fallback order: retry Sonnet once, then `openai/gpt-5.4`, then
-  `qwen/qwen3.5-397b-a17b`.
-- Chinese fallback order: retry Kimi K3 once, then `qwen/qwen3.5-397b-a17b`, then
-  `openai/gpt-5.4`.
-- Public snapshot: 9 repositories, 44 reviewed files, 364 bounded chunks
+- English fallback order: `openai/gpt-5.4`, then `qwen/qwen3.5-397b-a17b`.
+- Chinese fallback order: `qwen/qwen3.5-397b-a17b`, then `openai/gpt-5.4`.
+- Public snapshot: 9 repositories, 49 reviewed files, 344 bounded chunks
 - Public snapshot SHA-256:
-  `b8cc614034bb0b0fc4b878553d08141471a8cb548698809f70f8f1819d97a777`
+  `43628d6deaae5f0d24db05a35c40ae27e2321be0f3b9ea4878baa4dbd59eb660`
 - Current local private packet: 7 reviewed source files, 74 chunks; it is ignored by Git and its
   hash is reported at runtime without exposing its content or local source paths.
 - Retrieval: deterministic bilingual lexical scoring, alias/query expansion, per-source diversity,
@@ -71,7 +69,9 @@ public portfolio evidence has authority over project metrics and claim boundarie
 may add background and project stories, but cannot revive superseded RAG corpus, latency, quality,
 or regression metrics. The output is strict JSON with an answer, retrieved citation IDs, and a
 bounded confidence value. Unknown citation IDs, sensitive output, very long copied passages,
-malformed JSON, model mismatch, or an incomplete upstream response fail closed with no retry.
+malformed JSON, model mismatch, or an incomplete upstream response fail closed. Timeout,
+transient HTTP, invalid JSON, and model mismatch failures may advance to the next planned model;
+permanent HTTP, invalid output, and unsafe output stop immediately.
 
 ## Environment variables
 
@@ -86,8 +86,8 @@ Server-only variables:
 | `ASSISTANT_PRIVATE_KNOWLEDGE_B64_GZIP` | Yes for hybrid private RAG | Reviewed private packet |
 | `ASSISTANT_MODEL_EN` | Optional | Overrides the code-bound English default |
 | `ASSISTANT_MODEL_ZH` | Optional | Overrides the code-bound Chinese default |
-| `ASSISTANT_FALLBACK_MODELS_EN` | Optional | Comma-separated English fallback order after one same-model retry |
-| `ASSISTANT_FALLBACK_MODELS_ZH` | Optional | Comma-separated Chinese fallback order after one same-model retry |
+| `ASSISTANT_FALLBACK_MODELS_EN` | Optional | Comma-separated English fallback order |
+| `ASSISTANT_FALLBACK_MODELS_ZH` | Optional | Comma-separated Chinese fallback order |
 
 None may use the `NEXT_PUBLIC_` prefix. Preview and Production must each have a dedicated HMAC
 secret; do not reuse the Upstash token. Validate variable names and deployment targets without
@@ -126,9 +126,14 @@ Never paste the value into a tracked file, shell history, issue, PR, or verifica
 - Prompt-injection, requests for system/knowledge exfiltration, secret/contact disclosure, and
   explicit off-topic work are refused locally.
 - Request body: 24,000 streamed bytes, 28,000 parsed characters, 3-second total read deadline.
-- Response: at most 900 model tokens, 6,000 displayed characters, 64,000 upstream bytes.
-- Model deadline: 40 seconds; each attempt is capped at 14 seconds. A transient/network failure
-  retries the locale's primary model once, then advances through the configured fallback order.
+- Response: Claude Sonnet 4.6 receives at most 1,600 model tokens with reasoning disabled; other
+  configured models receive at most 900 model tokens. All responses remain capped at 6,000
+  displayed characters and 64,000 upstream bytes. Typed answers allow at most 20 blocks and 24
+  segments per block.
+- Model deadline: 58 seconds. Kimi K3 gets 48 seconds, followed by 7- and 2-second fallback
+  windows; other primary models get 38 seconds, followed by 12- and 7-second fallback windows. A
+  transient/network failure or model-route 404 advances to the next distinct model; a retryable
+  total failure gives the visitor a fresh Retry action without duplicating the visible question.
 - Rate limits: 10 requests/minute and 50 requests/day per HMAC pseudonym.
 - Production/model-key environments fail closed if Upstash or the dedicated HMAC secret is absent,
   invalid, or unavailable. Raw IP addresses are not sent to Upstash.
@@ -153,7 +158,9 @@ npm audit --omit=dev
 git diff --check
 ```
 
-Then perform one bounded live request per locale with the exact candidate configuration. Require:
+Then perform one bounded live request per locale with the exact candidate configuration. If Vercel
+marks the required values Sensitive, do not attempt to extract them: run the exact live checks on
+the candidate's Vercel Preview before merge. Require:
 
 1. HTTP 200 and exact returned model equality.
 2. A persuasive, complete answer grounded in both candidate and project evidence where relevant.

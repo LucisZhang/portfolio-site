@@ -1,10 +1,12 @@
 "use client";
 
-import { Fragment, type FormEvent, type KeyboardEvent as ReactKeyboardEvent, type ReactNode, useEffect, useId, useRef, useState } from "react";
+import { type FormEvent, type KeyboardEvent as ReactKeyboardEvent, useEffect, useId, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useI18n } from "@/lib/i18n";
 import type { AssistantCitation, AssistantMessage } from "@/lib/assistant-policy";
+import { validateAssistantAnswerBlocks, type AssistantAnswerBlock } from "@/lib/assistant-project-references";
 import { getTrack, projects } from "@/lib/projects";
+import AssistantRichAnswer from "./AssistantRichAnswer";
 import styles from "./AssistantWidget.module.css";
 
 const MAX_INPUT_CHARACTERS = 2_500;
@@ -20,6 +22,7 @@ const copy = {
     close: "Close",
     empty: "Ask one question about the candidate, a project, or role fit.",
     failed: "The portfolio assistant is unavailable right now. The project pages and public sources remain available.",
+    retry: "Retry",
     disclosure: "Your question is sent only to a zero-data-retention external AI service. Do not enter credentials or private contact details.",
     prompts: ["Why should a team hire Xiangguo for an Applied AI role?", "How do his RAG and data-engineering projects reinforce each other?", "What is his working style?"],
     user: "You",
@@ -36,6 +39,7 @@ const copy = {
     close: "关闭",
     empty: "请询问候选人、具体项目或岗位匹配。",
     failed: "作品集助手暂时不可用，项目页面和公开来源仍可查看。",
+    retry: "重试",
     disclosure: "你的问题仅会发送到采用零数据保留策略的外部 AI 服务。请勿输入凭据或私人联系方式。",
     prompts: ["为什么团队应该在 AI 应用岗位上选择章向国？", "他的 RAG 与数据工程项目如何相互印证？", "他的工作方式有什么特点？"],
     user: "你",
@@ -43,11 +47,6 @@ const copy = {
     sources: "相关来源",
   },
 } as const;
-
-const projectDestinations = projects.filter((project) => !project.legacy).flatMap((project) => [
-  { label: project.title.en, href: `/${project.track}/${project.slug}` },
-  { label: project.title.zh, href: `/${project.track}/${project.slug}` },
-]);
 
 function contextualCopy(pathname: string, locale: "en" | "zh", defaults: typeof copy.en | typeof copy.zh) {
   const segments = pathname.split("/").filter(Boolean);
@@ -92,61 +91,17 @@ function contextualCopy(pathname: string, locale: "en" | "zh", defaults: typeof 
   return { placeholder: defaults.placeholder, prompts: [...defaults.prompts] };
 }
 
-function renderProjectLinks(text: string, locale: "en" | "zh", keyPrefix: string): ReactNode[] {
-  const labels = [...projectDestinations].sort((left, right) => right.label.length - left.label.length);
-  const pattern = new RegExp(`(${labels.map(({ label }) => label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`, "g");
-  return text.split(pattern).filter(Boolean).map((part, index) => {
-    const target = labels.find(({ label }) => label === part);
-    return target
-      ? <a key={`${keyPrefix}-project-${index}`} href={`${target.href}${locale === "zh" ? "?lang=zh" : ""}`}>{part}</a>
-      : <Fragment key={`${keyPrefix}-text-${index}`}>{part}</Fragment>;
-  });
-}
-
-function renderInline(text: string, locale: "en" | "zh", keyPrefix: string) {
-  return text.split(/(\*\*[^*]+\*\*)/gu).filter(Boolean).map((part, index) => {
-    const bold = part.startsWith("**") && part.endsWith("**");
-    const content = bold ? part.slice(2, -2) : part;
-    const rendered = renderProjectLinks(content, locale, `${keyPrefix}-${index}`);
-    return bold ? <strong key={`${keyPrefix}-bold-${index}`}>{rendered}</strong> : <Fragment key={`${keyPrefix}-plain-${index}`}>{rendered}</Fragment>;
-  });
-}
-
-function RichAnswer({ content, locale }: { content: string; locale: "en" | "zh" }) {
-  const lines = content.replace(/\r/gu, "").split("\n");
-  const blocks: ReactNode[] = [];
-  let bullets: string[] = [];
-  const flushBullets = () => {
-    if (!bullets.length) return;
-    const current = bullets;
-    bullets = [];
-    blocks.push(<ul key={`list-${blocks.length}`}>{current.map((line, index) => <li key={`${line}-${index}`}>{renderInline(line, locale, `list-${blocks.length}-${index}`)}</li>)}</ul>);
-  };
-  lines.forEach((rawLine) => {
-    const line = rawLine.trim();
-    const bullet = line.match(/^[-*]\s+(.+)$/u);
-    if (bullet) {
-      bullets.push(bullet[1]);
-      return;
-    }
-    flushBullets();
-    if (!line) return;
-    const heading = line.match(/^#{1,4}\s+(.+)$/u);
-    blocks.push(heading
-      ? <h3 key={`heading-${blocks.length}`}>{renderInline(heading[1], locale, `heading-${blocks.length}`)}</h3>
-      : <p key={`paragraph-${blocks.length}`}>{renderInline(line, locale, `paragraph-${blocks.length}`)}</p>);
-  });
-  flushBullets();
-  return <div className={styles.richAnswer}>{blocks}</div>;
-}
-
 interface DisplayMessage extends AssistantMessage {
   id: string;
   sources?: AssistantCitation[];
+  blocks?: AssistantAnswerBlock[];
+  retryable?: boolean;
+  retryQuestion?: string;
 }
 
-function replyFromUnknown(value: unknown) {
+function replyFromUnknown(value: unknown, locale: "en" | "zh") {
   if (typeof value !== "object" || value === null || !("reply" in value) || typeof value.reply !== "string") return null;
+  const blocks = "blocks" in value ? validateAssistantAnswerBlocks(value.blocks, locale) : null;
   const sources = "sources" in value && Array.isArray(value.sources)
     ? value.sources.filter((source): source is AssistantCitation => (
       typeof source === "object"
@@ -166,7 +121,8 @@ function replyFromUnknown(value: unknown) {
         || (typeof source.url === "string" && /^https:\/\/github\.com\/LucisZhang\/[A-Za-z0-9._-]+\/blob\/[a-f0-9]{40}\//.test(source.url)))
     ))
     : [];
-  return { reply: value.reply, sources };
+  const retryable = "retryable" in value && value.retryable === true;
+  return { reply: value.reply, sources, ...(blocks ? { blocks } : {}), retryable };
 }
 
 export default function AssistantWidget({ onClose }: { onClose: () => void }) {
@@ -197,6 +153,37 @@ export default function AssistantWidget({ onClose }: { onClose: () => void }) {
     logRef.current?.scrollTo({ top: logRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, busy]);
 
+  async function requestConversation(conversation: DisplayMessage[], question: string) {
+    setBusy(true);
+
+    try {
+      const response = await fetch("/api/assistant", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          locale,
+          messages: conversation.map(({ role, content: messageContent }) => ({ role, content: messageContent })),
+        }),
+      });
+      const payload: unknown = await response.json();
+      const parsedReply = replyFromUnknown(payload, locale);
+      setMessages((current) => [...current, {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        content: parsedReply?.reply ?? labels.failed,
+        sources: parsedReply?.sources,
+        blocks: parsedReply?.blocks,
+        retryable: parsedReply?.retryable,
+        retryQuestion: parsedReply?.retryable ? question : undefined,
+      }]);
+    } catch {
+      setMessages((current) => [...current, { id: crypto.randomUUID(), role: "assistant", content: labels.failed }]);
+    } finally {
+      setBusy(false);
+      requestAnimationFrame(() => inputRef.current?.focus());
+    }
+  }
+
   async function send(content: string) {
     const question = content.trim();
     if (!question) {
@@ -210,31 +197,15 @@ export default function AssistantWidget({ onClose }: { onClose: () => void }) {
     setMessages(conversation);
     setDraft("");
     setNotice("");
-    setBusy(true);
+    await requestConversation(conversation, question);
+  }
 
-    try {
-      const response = await fetch("/api/assistant", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          locale,
-          messages: conversation.map(({ role, content: messageContent }) => ({ role, content: messageContent })),
-        }),
-      });
-      const payload: unknown = await response.json();
-      const parsedReply = replyFromUnknown(payload);
-      setMessages((current) => [...current, {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content: parsedReply?.reply ?? labels.failed,
-        sources: parsedReply?.sources,
-      }]);
-    } catch {
-      setMessages((current) => [...current, { id: crypto.randomUUID(), role: "assistant", content: labels.failed }]);
-    } finally {
-      setBusy(false);
-      requestAnimationFrame(() => inputRef.current?.focus());
-    }
+  function retry(message: DisplayMessage) {
+    const question = message.retryQuestion;
+    if (!question || busy) return;
+    const conversation = messages.filter((candidate) => candidate.id !== message.id).slice(-6);
+    setMessages(conversation);
+    void requestConversation(conversation, question);
   }
 
   function submit(event: FormEvent<HTMLFormElement>) {
@@ -271,7 +242,11 @@ export default function AssistantWidget({ onClose }: { onClose: () => void }) {
         {messages.map((message) => (
           <article key={message.id} className={message.role === "user" ? styles.userMessage : styles.assistantMessage}>
             <strong>{message.role === "user" ? labels.user : labels.assistant}</strong>
-            {message.role === "assistant" ? <RichAnswer content={message.content} locale={locale} /> : <p>{message.content}</p>}
+            {message.role === "assistant"
+              ? message.blocks
+                ? <AssistantRichAnswer blocks={message.blocks} locale={locale} />
+                : <p>{message.content}</p>
+              : <p>{message.content}</p>}
             {message.role === "assistant" && message.sources?.length ? (
               <div className={styles.sources}>
                 <span>{labels.sources}</span>
@@ -285,6 +260,9 @@ export default function AssistantWidget({ onClose }: { onClose: () => void }) {
                   ))}
                 </ul>
               </div>
+            ) : null}
+            {message.role === "assistant" && message.retryable ? (
+              <button className={styles.retry} type="button" onClick={() => retry(message)} disabled={busy}>{labels.retry}</button>
             ) : null}
           </article>
         ))}
