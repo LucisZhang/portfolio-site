@@ -387,8 +387,6 @@ export function buildOpenRouterPayload(
           properties: {
             blocks: {
               type: "array",
-              minItems: 1,
-              maxItems: 8,
               items: {
                 type: "object",
                 additionalProperties: false,
@@ -396,8 +394,6 @@ export function buildOpenRouterPayload(
                   type: { type: "string", enum: ["paragraph", "heading", "bullet"] },
                   segments: {
                     type: "array",
-                    minItems: 1,
-                    maxItems: 12,
                     items: {
                       anyOf: [
                         {
@@ -405,7 +401,7 @@ export function buildOpenRouterPayload(
                           additionalProperties: false,
                           properties: {
                             type: { type: "string", const: "text" },
-                            text: { type: "string", minLength: 1, maxLength: 1_500 },
+                            text: { type: "string" },
                             strong: { type: "boolean" },
                           },
                           required: ["type", "text", "strong"],

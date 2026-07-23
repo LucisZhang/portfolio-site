@@ -163,6 +163,9 @@ test("payload uses locale-specific model, ZDR routing, structured citations, and
   const segmentSchemas = payload.response_format.json_schema.schema.properties.blocks.items.properties.segments.items.anyOf;
   assert.deepEqual(segmentSchemas[0].required, ["type", "text", "strong"]);
   assert.deepEqual(segmentSchemas[1].required, ["type", "projectId", "strong"]);
+  assert.equal("maxItems" in payload.response_format.json_schema.schema.properties.blocks, false);
+  assert.equal("maxItems" in payload.response_format.json_schema.schema.properties.blocks.items.properties.segments, false);
+  assert.deepEqual(segmentSchemas[0].properties.text, { type: "string" });
   assert.deepEqual(payload.response_format.json_schema.schema.properties.blocks.items.properties.segments.items.anyOf[1].properties.projectId.enum, [
     "release-guardian", "streaming-reliability-lab", "rag-quality-lab", "privacy-preflight-web",
     "margin-control-tower", "credit-policy-lab", "ex-solver", "Voice-in-Security", "Risk-Control-Portfolio",
