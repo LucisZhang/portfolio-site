@@ -1,4 +1,4 @@
-# Portfolio v1 publication record
+# Portfolio publication record
 
 Published: 2026-07-23
 
@@ -29,10 +29,43 @@ records package chronology; it is not the current publication status.
 Approval does not extend to the private source repository, raw reports, prompts, scenarios,
 traces, datasets, original screenshots, or any substituted asset hash.
 
-## Current verified release
+## Current verified release — fixes3
+
+Runtime merge commit `0fccdcc4929718600f053221bdcef31faebd102f` is deployed to Production as
+`dpl_3w3vvQfFnuzFUBqhsnvjx5zxGMro`. Website PR #6 and all project-repository PRs merged through the
+normal GitHub workflow; no direct push to `main` occurred.
+
+The release preserves six bilingual case studies and makes the recruiter-facing evidence surface
+more explicit: every project closes with separate verification and limitation columns; track-page
+project navigation supports relational hover, keyboard focus, sibling de-emphasis, and reduced
+motion; and the footer names the Applied AI, data engineering, and data analytics fit. Privacy
+Preflight's verified multi-page result now occupies the full left main preview region while the
+right review rail remains available. Margin Control Tower and Credit Policy Lab open on verified
+real-data artifacts, with synthetic data retained only as a labeled fixture path.
+
+Assistant policy `hybrid-portfolio-rag-v17-claim-contradiction-guard` uses an independent exact
+Claude Haiku 4.5 fail-closed scope guard before retrieval. English generation uses exact Claude
+Sonnet 4.6 and Chinese generation uses exact Kimi K3 through authorized OpenRouter ZDR routes. The
+public corpus is pinned to 9 repositories, 66 files, and 532 chunks with SHA-256
+`99127978b4aeb74d182610ad0ae3554181b1dbd81392dae520a41bf4468978a3`.
+
+Production acceptance passed for both locales with 9 bounded retrieved chunks and the expected
+exact models. The three-page Privacy PDF workflow completed scan, review, verified raster export,
+and download on the canonical Production alias. Fixed routes were static prerenders with the
+expected security headers. Lighthouse scored 99 Performance and 100 for Accessibility, Best
+Practices, and SEO. The complete browser matrix finished with 218 passed, 52 intentional skips,
+and zero errors; assistant verification passed 37 tests.
+
+Release Guardian, Margin Control Tower, and Credit Policy Lab each received one source-aware
+Fable 5 pass combining senior GitHub-user review with Applied AI/data engineering/data analytics
+recruiter review. Release, Margin, Credit, and RAG then received one Kimi K3 Chinese pass. The RAG
+repository publishes the C2 adapters, 11,309-document manifest path, 130-question evaluation path,
+runner, and tests without publishing the generated knowledge base or claiming a C3 metric.
+
+## Previous verified release — v15
 
 Runtime merge commit `468f31ba1ce196348caa5e30a76b11ed46a609d4` is deployed to Production as
-`dpl_8U7hHXby6Az4iwLrM81n84Ga2CcP`. It retains six bilingual
+`dpl_8U7hHXby6Az4iwLrM81n84Ga2CcP` in the historical record. It retained six bilingual
 case studies, contextual artifact viewers, two pipeline-backed Analytics workflows, the Web-only
 Privacy Preflight workspace, and the legacy Analytics Tandem migration route. Assistant policy
 `hybrid-portfolio-rag-v14` uses a bounded distinct-model fallback budget, page-aware prompts,
@@ -46,7 +79,7 @@ Production deployment. PRs #3 and #4 were merged normally; no direct push to `ma
 Exact-SHA Preview and Production acceptance passed for both `anthropic/claude-sonnet-4.6` and
 `moonshotai/kimi-k3` through OpenRouter ZDR.
 
-The final Production browser audit passed at desktop and mobile sizes with automatic locale
+That Production browser audit passed at desktop and mobile sizes with automatic locale
 detection, manual language switching, representative project workflows, assistant privacy
 disclosure, and no console warnings or errors. All 11 public routes returned HTTP 200 for both
 language variants. Lighthouse 13.4.1 scored 98 Performance and 100 for Accessibility, Best
