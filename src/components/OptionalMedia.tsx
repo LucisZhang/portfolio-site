@@ -44,7 +44,15 @@ export default function OptionalMedia({ candidates, layout = "default" }: { cand
   }
 
   if (layout === "privacy-comparison") {
-    return <div className="media-grid">{figure(available[0])}<span className="media-spacer" aria-hidden="true" />{available.slice(1).map((item) => figure(item))}</div>;
+    return <div className="privacy-comparison-grid">{available.map((item, index) => {
+      const before = index % 2 === 0;
+      return (
+        <div className="privacy-comparison-item" data-phase={before ? "before" : "after"} key={item.resolvedSrc}>
+          <strong>{locale === "en" ? before ? "Before" : "After" : before ? "处理前" : "处理后"}</strong>
+          {figure(item)}
+        </div>
+      );
+    })}</div>;
   }
 
   return <div className="media-grid">{available.map((item, index) => figure(item, layout === "p1-readable" && index === 0))}</div>;

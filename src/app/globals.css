@@ -1063,6 +1063,12 @@ svg { flex: none; }
 .media-grid figure { margin: 0; min-width: 0; }
 .media-grid img { width: 100%; max-height: 420px; border: 1px solid var(--line); object-fit: contain; background: var(--paper); }
 .media-grid figcaption { margin-top: 8px; color: var(--muted); font-size: 10px; }
+.privacy-comparison-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 14px; margin-top: 24px; }
+.privacy-comparison-item { min-width: 0; display: grid; grid-template-rows: auto 1fr; gap: 7px; }
+.privacy-comparison-item > strong { color: var(--green); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+.privacy-comparison-item figure { min-width: 0; display: grid; grid-template-rows: minmax(0, 1fr) auto; margin: 0; }
+.privacy-comparison-item img { width: 100%; max-height: 420px; border: 1px solid var(--line); object-fit: contain; background: var(--paper); }
+.privacy-comparison-item figcaption { margin-top: 8px; color: var(--muted); font-size: 10px; }
 .media-fallback { margin: 24px 0 0; border-left: 3px solid var(--line-dark); padding: 8px 12px; color: var(--muted); font-size: 11px; line-height: 1.55; }
 .notes-section { border-top: 1px solid var(--line); padding-block: 58px 76px; background: #edf0ec; }
 .notes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
@@ -1434,7 +1440,7 @@ footer .page-shell { min-height: 58px; display: flex; align-items: center; justi
   .credit-decision-bands > div, .credit-economics > div, .credit-score-chain > div, .credit-monitor-grid > div { border-right: 0; border-bottom: 1px solid var(--line); }
   .credit-economics > p { grid-column: auto; }
   .media-grid { grid-template-columns: 1fr; }
-  .media-spacer { display: none; }
+  .privacy-comparison-grid { grid-template-columns: 1fr; }
   .notes-grid { gap: 42px; }
   footer .page-shell { align-items: flex-start; flex-direction: column; justify-content: center; padding-block: 15px; }
 }

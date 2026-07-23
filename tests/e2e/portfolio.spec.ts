@@ -588,6 +588,29 @@ test.describe("Privacy Preflight Web", () => {
     await expect(localizedDerivatives.locator("img").nth(1)).toHaveAttribute("src", /pdf-synthetic-redacted-preview-zh\.svg$/);
   });
 
+  test("before and after evidence stays paired in both locales and responsive layouts", async ({ page }, testInfo) => {
+    const comparison = page.locator(".privacy-comparison-grid");
+    const items = comparison.locator(".privacy-comparison-item");
+    await expect(items).toHaveCount(4);
+    await expect(items.locator(":scope > strong")).toHaveText(["Before", "After", "Before", "After"]);
+    const boxes = await items.evaluateAll((nodes) => nodes.map((node) => {
+      const box = node.getBoundingClientRect();
+      return { x: box.x, y: box.y };
+    }));
+    if (testInfo.project.name === "mobile") {
+      expect(boxes[0].y).toBeLessThan(boxes[1].y);
+      expect(boxes[1].y).toBeLessThan(boxes[2].y);
+      expect(boxes[2].y).toBeLessThan(boxes[3].y);
+    } else {
+      expect(Math.abs(boxes[0].y - boxes[1].y)).toBeLessThan(2);
+      expect(Math.abs(boxes[2].y - boxes[3].y)).toBeLessThan(2);
+      expect(boxes[0].x).toBeLessThan(boxes[1].x);
+      expect(boxes[2].x).toBeLessThan(boxes[3].x);
+    }
+    await page.getByRole("button", { name: "中", exact: true }).click();
+    await expect(items.locator(":scope > strong")).toHaveText(["处理前", "处理后", "处理前", "处理后"]);
+  });
+
   test("text review is deterministic, editable, undoable, and does not send content", async ({ page }) => {
     const requests: string[] = [];
     page.on("request", (request) => {
