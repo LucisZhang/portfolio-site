@@ -12,8 +12,8 @@ import {
   validateAssistantPublicSourcePack,
 } from "../../src/lib/assistant-public-sources.ts";
 
-const PINNED_COMMIT = "7eab9c3fcdf73865b0ed6dd1266de1bfaccefcce";
-const STABLE_PACK_SHA256 = "2cee646acfd39b335a94fc651097dee913eea05ff97eea2761fc9b5b13e08deb";
+const PINNED_COMMIT = "2fade314617c9ce55f92cc34da7e140806048cf0";
+const STABLE_PACK_SHA256 = "b1cda2e27708efbc078b14e221bd39aae674d0b611bbd4ba50cdfdb0fbf6ddc2";
 
 function sha256(value) {
   return createHash("sha256").update(value, "utf8").digest("hex");
@@ -27,7 +27,7 @@ test("bundled public source pack is pinned, bounded, hashed, and deeply frozen",
   assert.equal(validateAssistantPublicSourcePack(), ASSISTANT_PUBLIC_SOURCE_PACK);
   assert.equal(ASSISTANT_PUBLIC_SOURCE_PACK.project.id, ASSISTANT_PUBLIC_PROJECT_ID);
   assert.equal(ASSISTANT_PUBLIC_SOURCE_PACK.project.owner, "LucisZhang");
-  assert.equal(ASSISTANT_PUBLIC_SOURCE_PACK.project.repo, "p1-reliability-lab");
+  assert.equal(ASSISTANT_PUBLIC_SOURCE_PACK.project.repo, "streaming-reliability-lab");
   assert.equal(ASSISTANT_PUBLIC_SOURCE_PACK.project.commit, PINNED_COMMIT);
   assert.match(ASSISTANT_PUBLIC_SOURCE_PACK.project.commit, /^[a-f0-9]{40}$/u);
   assert.equal(ASSISTANT_PUBLIC_SOURCE_PACK.sources.length, 3);
@@ -48,23 +48,22 @@ test("bundled public source pack is pinned, bounded, hashed, and deeply frozen",
 });
 
 test("project resolver recognizes reviewed English and Chinese aliases only", () => {
-  const p1Cases = [
-    "What does P1 demonstrate?",
+  const streamingCases = [
     "Explain the Streaming Reliability Lab.",
     "How does the MySQL CDC Flink Iceberg pipeline recover?",
     "请介绍流式可靠性实验室。",
-    "P1 可靠性实验室证明了什么？",
     "这个可靠性实验室有哪些边界？",
+    "Explain p1-reliability-lab (historical repository name).",
   ];
-  for (const question of p1Cases) {
+  for (const question of streamingCases) {
     assert.equal(resolveAssistantPublicProject(question), ASSISTANT_PUBLIC_PROJECT_ID, question);
   }
-  assert.equal(resolveAssistantPublicProject("Compare p1 with RAG Quality Lab."), "ambiguous");
-  assert.equal(resolveAssistantPublicProject("Tell me about p1 and release-guardian."), "ambiguous");
-  assert.equal(resolveAssistantPublicProject("Tell me about p1 and rag_quality_lab."), "ambiguous");
-  assert.equal(resolveAssistantPublicProject("Tell me about p1 and privacy-preflight."), "ambiguous");
+  assert.equal(resolveAssistantPublicProject("Compare Streaming Reliability Lab with RAG Quality Lab."), "ambiguous");
+  assert.equal(resolveAssistantPublicProject("Tell me about Streaming Reliability Lab and release-guardian."), "ambiguous");
+  assert.equal(resolveAssistantPublicProject("Tell me about Streaming Reliability Lab and rag_quality_lab."), "ambiguous");
+  assert.equal(resolveAssistantPublicProject("Tell me about Streaming Reliability Lab and privacy-preflight."), "ambiguous");
   assert.equal(resolveAssistantPublicProject("比较流式可靠性实验室和隐私预检。"), "ambiguous");
-  assert.equal(resolveAssistantPublicProject("What does p10 do?"), null);
+  assert.equal(resolveAssistantPublicProject("What does p1 do?"), null);
   assert.equal(resolveAssistantPublicProject("Assess role fit from the whole portfolio."), null);
   assert.equal(resolveAssistantPublicProject("请介绍发布守门人。"), null);
   assert.equal(resolveAssistantPublicProject("p1".repeat(600)), null);
@@ -90,16 +89,16 @@ test("grounding is deterministic, bounded to reviewed excerpts, and carries the 
 });
 
 test("citations are constructed from the pinned server-side source map", () => {
-  const ids = ["p1-local-mac-reproduction", "p1-resume-claim-gate"];
+  const ids = ["streaming-local-mac-reproduction", "streaming-resume-claim-gate"];
   const citations = citationsForAssistantSourceIds(ids);
   assert.deepEqual(citations.map((citation) => citation.sourceId), ids);
   assert.equal(Object.isFrozen(citations), true);
   for (const citation of citations) {
     assert.equal(citation.owner, "LucisZhang");
-    assert.equal(citation.repo, "p1-reliability-lab");
+    assert.equal(citation.repo, "streaming-reliability-lab");
     assert.equal(citation.commit, PINNED_COMMIT);
     assert.equal(citation.url,
-      `https://github.com/LucisZhang/p1-reliability-lab/blob/${PINNED_COMMIT}/${citation.path}#L${citation.lineStart}-L${citation.lineEnd}`);
+      `https://github.com/LucisZhang/streaming-reliability-lab/blob/${PINNED_COMMIT}/${citation.path}#L${citation.lineStart}-L${citation.lineEnd}`);
     assert.equal(citation.url.includes("/main/"), false);
   }
   assert.throws(() => citationsForAssistantSourceIds(["unknown"]), /unknown public source id/u);

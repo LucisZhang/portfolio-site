@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 
-export const ASSISTANT_PUBLIC_PROJECT_ID = "p1-reliability-lab" as const;
+export const ASSISTANT_PUBLIC_PROJECT_ID = "streaming-reliability-lab" as const;
 export const ASSISTANT_PUBLIC_SOURCE_EXCERPT_BYTE_CAP = 6_000;
 export const ASSISTANT_PUBLIC_SOURCE_FILE_BYTE_CAP = 65_536;
 
@@ -21,7 +21,7 @@ export interface AssistantPublicSourceRecord {
 
 export interface AssistantPublicSourcePack {
   version: 1;
-  packId: "p1-public-github-20260719-v1";
+  packId: "streaming-public-github-20260723-v1";
   excerptByteCap: number;
   fileByteCap: number;
   project: {
@@ -31,8 +31,8 @@ export interface AssistantPublicSourcePack {
       zh: "流式可靠性实验室";
     };
     owner: "LucisZhang";
-    repo: "p1-reliability-lab";
-    commit: "7eab9c3fcdf73865b0ed6dd1266de1bfaccefcce";
+    repo: "streaming-reliability-lab";
+    commit: "2fade314617c9ce55f92cc34da7e140806048cf0";
     aliases: {
       en: readonly string[];
       zh: readonly string[];
@@ -49,8 +49,8 @@ export interface AssistantPublicCitation {
     zh: string;
   };
   owner: "LucisZhang";
-  repo: "p1-reliability-lab";
-  commit: "7eab9c3fcdf73865b0ed6dd1266de1bfaccefcce";
+  repo: "streaming-reliability-lab";
+  commit: "2fade314617c9ce55f92cc34da7e140806048cf0";
   path: string;
   lineStart: number;
   lineEnd: number;
@@ -64,40 +64,27 @@ export type AssistantPublicProjectResolution =
 
 const EXPECTED_PROJECT = Object.freeze({
   owner: "LucisZhang",
-  repo: "p1-reliability-lab",
-  commit: "7eab9c3fcdf73865b0ed6dd1266de1bfaccefcce",
+  repo: "streaming-reliability-lab",
+  commit: "2fade314617c9ce55f92cc34da7e140806048cf0",
 });
 
 const EXPECTED_ALIASES = Object.freeze({
   en: Object.freeze([
-    "p1",
-    "p1 reliability lab",
-    "p1-reliability-lab",
     "streaming reliability lab",
     "reliability lab",
     "mysql cdc flink iceberg",
+    "p1-reliability-lab (historical repository name)",
   ]),
   zh: Object.freeze([
-    "p1",
-    "p1 可靠性实验室",
     "流式可靠性实验室",
     "流式可靠性项目",
     "可靠性实验室",
     "mysql cdc flink iceberg",
+    "p1 可靠性实验室（历史名称）",
   ]),
 });
 
 const README_EXCERPT = [
-  "A single-node **reliability lab** for a real-time data pipeline:",
-  "`MySQL CDC → Flink 1.20 → Apache Iceberg v2 (upsert)`.",
-  "",
-  "The point is not wiring components together — it is **reproducible evidence of",
-  "correctness under failure**. A Python harness induces real failures in the running",
-  "pipeline and proves exactly-once delivery by reconciling the final MySQL source",
-  "snapshot against the final Iceberg snapshot, row by row, through a correctness-safe",
-  "reader. Every claim is backed by a committed, machine-checkable JSON artifact with",
-  "full provenance (`run_id`, `git_sha`, exact command, logs).",
-  "",
   "## Verified claims",
   "",
   "Claims are **gated**: a claim is added to",
@@ -107,7 +94,17 @@ const README_EXCERPT = [
   "",
   "| Claim | Evidence |",
   "| --- | --- |",
-  "| Exactly-once final-state reconciliation across **five induced failure classes** — task crash, retained-checkpoint restore, JobManager restart, savepoint restore, and a deterministic checkpoint-complete sink-commit fault — with **zero snapshot diff** in every class. | [`showcase/results/eo_reconciliation.json`](showcase/results/eo_reconciliation.json) (run `20260527T151754Z-ef73a5a5`), incident log in [`RUNBOOK.md`](RUNBOOK.md) |",
+  "| Exactly-once final-state reconciliation across **five induced failure classes** — task crash, retained-checkpoint restore, JobManager restart, savepoint restore, and a deterministic checkpoint-complete sink-commit fault — with **zero snapshot diff and consistent event-ID audits** in every class. | [`showcase/results/eo_reconciliation.json`](showcase/results/eo_reconciliation.json) (run `20260711T035242Z-b518d211`), incident log in [`RUNBOOK.md`](RUNBOOK.md) |",
+  "| CDC correctness smoke: source-vs-Iceberg final-state parity including updates and deletes, changelog audit counts, and equality-delete file metadata evidence. | [`showcase/results/phase-1.2-cdc-smoke.json`](showcase/results/phase-1.2-cdc-smoke.json) |",
+  "| Iceberg small-file maintenance: `rewrite_data_files` + manifest rewrite compacted **48 data files to 2**, cut planned scan tasks 48 → 2, raised median file size 2,809 → 6,614.5 bytes, and lowered measured `planFiles()` latency 54.92 ms → 44.57 ms across seven repetitions. | [`showcase/results/iceberg_small_file_rewrite.json`](showcase/results/iceberg_small_file_rewrite.json), chart in [`showcase/media/`](showcase/media/) |",
+  "| Checkpoint behavior under load: real Prometheus-reporter metrics show max checkpoint duration rising **55 ms → 19,022 ms** under a deterministic input spike, max alignment time ~5 ms → 16,882 ms, one recorded checkpoint failure, backpressure appearing, and Iceberg commit lag growing to **320 events and recovering to zero**. | [`showcase/results/checkpoint_metrics.json`](showcase/results/checkpoint_metrics.json), chart in [`showcase/media/`](showcase/media/) |",
+  "",
+  "**Scale honesty.** This is a correctness lab, not a throughput benchmark. Each visible failure",
+  "result is intentionally tiny — three final rows, nine changelog rows, six distinct expected",
+  "event IDs — so a diff is exhaustively checkable. The recorded heavy run executed on Apple",
+  "Silicon macOS (16 GiB host RAM; the Docker VM reported 10 CPUs and ~7.65 GiB). There is no",
+  "production-throughput, terabyte-table, long-duration, or cross-cloud result, and no claim of",
+  "one.",
 ].join("\n") + "\n";
 
 const LOCAL_MAC_EXCERPT = [
@@ -158,19 +155,19 @@ const RESUME_CLAIMS_EXCERPT = [
   "",
   "| Claim | Gate |",
   "| --- | --- |",
-  "| Verified exactly-once final-state reconciliation for `MySQL CDC -> Flink -> Iceberg` across task crash, retained-checkpoint restore, JobManager restart, savepoint restore, and deterministic checkpoint-complete sink-commit fault. | Phase 2.1 passed: `make eo-verify ARGS=\"--failure all\"` produced `showcase/results/eo_reconciliation.json` run `20260527T151754Z-ef73a5a5` with zero snapshot diff across all five classes. |",
+  "| Verified exactly-once final-state reconciliation for `MySQL CDC -> Flink -> Iceberg` across task crash, retained-checkpoint restore, JobManager restart, savepoint restore, and deterministic checkpoint-complete sink-commit fault. | Phase 2.1 passed: `make eo-verify ARGS=\"--failure all\"` run `20260527T151754Z-ef73a5a5` showed zero snapshot diff across all five classes; the committed `showcase/results/eo_reconciliation.json` now carries the recorded Apple Silicon macOS re-run `20260711T035242Z-b518d211` (zero snapshot diff, consistent event-ID audits). |",
 ].join("\n") + "\n";
 
 const SOURCE_EXPECTATIONS = Object.freeze({
-  "p1-overview-and-gated-claims": Object.freeze({
+  "streaming-overview-and-gated-claims": Object.freeze({
     path: "README.md",
-    byteLength: 6_458,
-    fileSha256: "c42898a1ce09c0ecc54affeca5411ff1548ad047a2a0f0f209ca2cdaeefcc3ee",
-    lineStart: 5,
-    lineEnd: 24,
-    excerptSha256: "e1373a035c0d374cfd3f3ac2e48ed3c2295ef1058e989f4f304ac4797d2bd0f0",
+    byteLength: 8_121,
+    fileSha256: "9cad1af359f62603d9a43abb70baf251b103644949588588eddcd042ea4384ed",
+    lineStart: 33,
+    lineEnd: 52,
+    excerptSha256: "896c464dd5109c5fedb20ed4c9d7a245d16d7ee152d85a9212208072b8f8ab48",
   }),
-  "p1-local-mac-reproduction": Object.freeze({
+  "streaming-local-mac-reproduction": Object.freeze({
     path: "docs/workstation-run/20260711T034018Z-local-mac/SUMMARY.md",
     byteLength: 1_663,
     fileSha256: "dd0760e06e2197d614be94ec93ef8ff8bbd6d546c85e211ecaf31c85cdd2f770",
@@ -178,32 +175,32 @@ const SOURCE_EXPECTATIONS = Object.freeze({
     lineEnd: 38,
     excerptSha256: "84726952a50e510e2162e3293207870c85234e18ed4f42084ff78b0f9eed2cf0",
   }),
-  "p1-resume-claim-gate": Object.freeze({
+  "streaming-resume-claim-gate": Object.freeze({
     path: "docs/resume-claims-after-verification.md",
-    byteLength: 660,
-    fileSha256: "c47e17c0ecea82de7ac7d248d30d4f898252a9fd8f8d9c058f6c66e7f2913dbe",
+    byteLength: 797,
+    fileSha256: "098a232c85feb57ae09bf190f8acbc569c9b05a05bec411cfe6680d031d13f37",
     lineStart: 1,
     lineEnd: 7,
-    excerptSha256: "c47e17c0ecea82de7ac7d248d30d4f898252a9fd8f8d9c058f6c66e7f2913dbe",
+    excerptSha256: "098a232c85feb57ae09bf190f8acbc569c9b05a05bec411cfe6680d031d13f37",
   }),
 });
 
 const SOURCE_ORDER = Object.freeze([
-  "p1-overview-and-gated-claims",
-  "p1-local-mac-reproduction",
-  "p1-resume-claim-gate",
+  "streaming-overview-and-gated-claims",
+  "streaming-local-mac-reproduction",
+  "streaming-resume-claim-gate",
 ]);
 
 const SOURCE_LABELS = Object.freeze({
-  "p1-overview-and-gated-claims": Object.freeze({
+  "streaming-overview-and-gated-claims": Object.freeze({
     en: "Architecture and gated claims",
     zh: "架构与受门禁约束的结论",
   }),
-  "p1-local-mac-reproduction": Object.freeze({
+  "streaming-local-mac-reproduction": Object.freeze({
     en: "July local-Mac reproduction",
     zh: "7 月本地 Mac 复现",
   }),
-  "p1-resume-claim-gate": Object.freeze({
+  "streaming-resume-claim-gate": Object.freeze({
     en: "Verified resume-claim gate",
     zh: "已核验的简历结论门禁",
   }),
@@ -211,7 +208,7 @@ const SOURCE_LABELS = Object.freeze({
 
 const RAW_ASSISTANT_PUBLIC_SOURCE_PACK = {
   version: 1,
-  packId: "p1-public-github-20260719-v1",
+  packId: "streaming-public-github-20260723-v1",
   excerptByteCap: ASSISTANT_PUBLIC_SOURCE_EXCERPT_BYTE_CAP,
   fileByteCap: ASSISTANT_PUBLIC_SOURCE_FILE_BYTE_CAP,
   project: {
@@ -225,22 +222,22 @@ const RAW_ASSISTANT_PUBLIC_SOURCE_PACK = {
   },
   sources: [
     {
-      id: "p1-overview-and-gated-claims",
-      ...SOURCE_EXPECTATIONS["p1-overview-and-gated-claims"],
+      id: "streaming-overview-and-gated-claims",
+      ...SOURCE_EXPECTATIONS["streaming-overview-and-gated-claims"],
       excerpt: README_EXCERPT,
-      label: SOURCE_LABELS["p1-overview-and-gated-claims"],
+      label: SOURCE_LABELS["streaming-overview-and-gated-claims"],
     },
     {
-      id: "p1-local-mac-reproduction",
-      ...SOURCE_EXPECTATIONS["p1-local-mac-reproduction"],
+      id: "streaming-local-mac-reproduction",
+      ...SOURCE_EXPECTATIONS["streaming-local-mac-reproduction"],
       excerpt: LOCAL_MAC_EXCERPT,
-      label: SOURCE_LABELS["p1-local-mac-reproduction"],
+      label: SOURCE_LABELS["streaming-local-mac-reproduction"],
     },
     {
-      id: "p1-resume-claim-gate",
-      ...SOURCE_EXPECTATIONS["p1-resume-claim-gate"],
+      id: "streaming-resume-claim-gate",
+      ...SOURCE_EXPECTATIONS["streaming-resume-claim-gate"],
       excerpt: RESUME_CLAIMS_EXCERPT,
-      label: SOURCE_LABELS["p1-resume-claim-gate"],
+      label: SOURCE_LABELS["streaming-resume-claim-gate"],
     },
   ],
 } satisfies AssistantPublicSourcePack;
@@ -331,7 +328,7 @@ export function validateAssistantPublicSourcePack(
 ): AssistantPublicSourcePack {
   if (!isRecord(pack)) throw new Error("public source pack must be an object");
   assertExactKeys(pack, ["version", "packId", "excerptByteCap", "fileByteCap", "project", "sources"], "public source pack");
-  if (pack.version !== 1 || pack.packId !== "p1-public-github-20260719-v1") {
+  if (pack.version !== 1 || pack.packId !== "streaming-public-github-20260723-v1") {
     throw new Error("public source pack revision is not reviewed");
   }
   if (pack.excerptByteCap !== ASSISTANT_PUBLIC_SOURCE_EXCERPT_BYTE_CAP

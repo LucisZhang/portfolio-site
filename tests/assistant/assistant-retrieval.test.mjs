@@ -2,11 +2,34 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import test from "node:test";
 import { gunzipSync, gzipSync } from "node:zlib";
+import { readFileSync } from "node:fs";
 import {
   citationsForChunkIds,
   loadPrivateAssistantKnowledge,
   retrieveAssistantKnowledge,
 } from "../../src/lib/assistant-retrieval.ts";
+
+const finalRepositoryCommits = new Map([
+  ["LucisZhang/release-guardian", "10b2a69406cc826d8215b25bcaafb3c564a0bda3"],
+  ["LucisZhang/rag-quality-lab", "8691ab82b4db40a828de8bf890688e66ce6c46a8"],
+  ["LucisZhang/privacy-preflight-web", "f7ca9c4062cc05a619c226f986f9abd57586db75"],
+  ["LucisZhang/streaming-reliability-lab", "2fade314617c9ce55f92cc34da7e140806048cf0"],
+  ["LucisZhang/margin-control-tower", "fe8f793209547c8b9167e65e722a3f3b3bc85df1"],
+  ["LucisZhang/credit-policy-lab", "5330e2a6b365079b932d2e70ed2b6ec33b962441"],
+]);
+
+test("generated public knowledge is pinned to all six final repository releases", () => {
+  const snapshot = JSON.parse(readFileSync("src/data/assistant-knowledge.generated.json", "utf8"));
+  for (const [repository, commit] of finalRepositoryCommits) {
+    const files = snapshot.files.filter((file) => file.repository === repository);
+    assert.ok(files.length >= 2, repository);
+    assert.ok(files.every((file) => file.commit === commit), repository);
+    assert.ok(files.some((file) => file.path === "README.md"), repository);
+    assert.ok(files.some((file) => file.path === "README.zh-CN.md"), repository);
+  }
+  assert.equal(snapshot.files.some((file) => file.repository === "LucisZhang/p1-reliability-lab"), false);
+  assert.equal(snapshot.files.some((file) => file.repository === "LucisZhang/portfolio-site"), false);
+});
 
 function privatePacket() {
   const withoutHash = {
