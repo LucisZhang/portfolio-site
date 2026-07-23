@@ -2,7 +2,7 @@
 
 Updated: 2026-07-23 (Asia/Shanghai)
 
-This is the release procedure for the complete portfolio and the v13 bilingual hybrid-RAG
+This is the release procedure for the complete portfolio and the v14 bilingual hybrid-RAG
 assistant. It is also the stop-condition list: any unexplained diff, failed check, moved remote,
 missing secret, incorrect deployment SHA, private-data leak, or unsupported evidence claim blocks
 publication.
@@ -127,11 +127,12 @@ scoped secrets; never prefix server values with `NEXT_PUBLIC_`.
    hashes/statuses/model IDs/citation IDs in the release record—not prompt packets or private text.
 5. Run Preview Lighthouse and confirm homepage Performance remains at least 90.
 
-## 6. Fast-forward public main and verify Production
+## 6. Merge through a normal PR and verify Production
 
-After Preview passes, re-read remote `main` and require it is still the candidate's parent. Update
-`main` with a normal fast-forward push only. Do not force, rewrite history, change repository
-visibility, create a tag/release, or mutate unrelated branches.
+After Preview passes, re-read remote `main`, update the candidate normally if it moved, and merge a
+ready pull request through the repository's normal GitHub merge workflow. Do not push directly to
+`main`, force, rewrite history, change repository visibility, create a tag/release, or mutate
+unrelated branches.
 
 Confirm the Git-triggered Production deployment uses the exact main SHA. Re-run the anonymous route,
 download, citation, bilingual assistant, injection refusal, Upstash header, client-bundle leak, and
@@ -140,3 +141,20 @@ Asia/Shanghai timestamp (and UTC equivalent), model IDs, knowledge hashes, and g
 public-safe final state update.
 
 Only after those checks may `STATE.md` change from `V15_RELEASE_CANDIDATE` to a deployed status.
+
+## 7. 2026-07-23 release receipt
+
+- [x] PR #3 and follow-up PR #4 merged normally without a direct `main` push.
+- [x] Runtime merge commit: `468f31ba1ce196348caa5e30a76b11ed46a609d4`.
+- [x] Production deployment: `dpl_8U7hHXby6Az4iwLrM81n84Ga2CcP`, Ready and aliased to
+  <https://portfolio-site-seven-murex.vercel.app>.
+- [x] Exact-model Preview and Production acceptance passed once per locale: Claude Sonnet 4.6 for
+  English and Kimi K3 for Chinese, using OpenRouter ZDR and only bounded retrieved excerpts.
+- [x] Assistant verification: 36 passed; complete browser suite: 218 passed, 52 intentional skips,
+  0 failed; typecheck, lint, evidence, build, performance budget, dependency audit, and secret scans
+  passed.
+- [x] Production browser audit passed for locale behavior, desktop/mobile layout, representative
+  cases, assistant disclosure, and console cleanliness.
+- [x] All 11 public routes returned HTTP 200 for both language variants with expected security
+  headers.
+- [x] Lighthouse 13.4.1: Performance 98, Accessibility 100, Best Practices 100, SEO 100.
