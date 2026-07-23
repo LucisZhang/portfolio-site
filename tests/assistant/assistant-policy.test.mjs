@@ -107,9 +107,9 @@ test("hybrid RAG policy and bilingual model defaults are code-bound", () => {
   assert.throws(() => resolveAssistantModel("en", "bad model"), /invalid/u);
   assert.throws(() => resolveAssistantFallbackModels("en", "bad model"), /invalid/u);
   assert.deepEqual(assistantAttemptPlan(DEFAULT_ASSISTANT_MODEL_EN, DEFAULT_ASSISTANT_FALLBACK_MODELS_EN), [
-    { model: DEFAULT_ASSISTANT_MODEL_EN, timeoutMs: 18_000 },
-    { model: DEFAULT_ASSISTANT_FALLBACK_MODELS_EN[0], timeoutMs: 11_000 },
-    { model: DEFAULT_ASSISTANT_FALLBACK_MODELS_EN[1], timeoutMs: 8_000 },
+    { model: DEFAULT_ASSISTANT_MODEL_EN, timeoutMs: 26_000 },
+    { model: DEFAULT_ASSISTANT_FALLBACK_MODELS_EN[0], timeoutMs: 8_000 },
+    { model: DEFAULT_ASSISTANT_FALLBACK_MODELS_EN[1], timeoutMs: 5_000 },
   ]);
 });
 
@@ -324,7 +324,7 @@ test("fallback budget reaches a distinct model and classifies transient, permane
     fetcher: async (_url, init) => {
       const model = JSON.parse(init.body).model;
       models.push(model);
-      if (models.length < 2) return new Response("bad gateway", { status: 502 });
+      if (models.length < 2) return new Response("model route unavailable", { status: 404 });
       return completedResponse(answerJson(), model);
     },
   });

@@ -320,8 +320,8 @@ export function resolveAssistantFallbackModels(locale: AssistantLocale, configur
 
 export function assistantAttemptPlan(primary: string, fallbacks: readonly string[]): AssistantAttemptPlan[] {
   return [
-    { model: primary, timeoutMs: 18_000 },
-    ...fallbacks.slice(0, 2).map((model, index) => ({ model, timeoutMs: index === 0 ? 11_000 : 8_000 })),
+    { model: primary, timeoutMs: 26_000 },
+    ...fallbacks.slice(0, 2).map((model, index) => ({ model, timeoutMs: index === 0 ? 8_000 : 5_000 })),
   ];
 }
 
@@ -603,7 +603,7 @@ export async function executeAssistantRequest(
     }
     if (!upstream.ok) {
       lastUpstreamStatus = upstream.status;
-      lastFailureReason = [408, 409, 425, 429].includes(upstream.status) || upstream.status >= 500
+      lastFailureReason = [404, 408, 409, 425, 429].includes(upstream.status) || upstream.status >= 500
         ? "http_transient"
         : "http_permanent";
       attempts.push({ model: attemptModel, timeoutMs, outcome: lastFailureReason, upstreamStatus: upstream.status });

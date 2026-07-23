@@ -127,8 +127,8 @@ Never paste the value into a tracked file, shell history, issue, PR, or verifica
   explicit off-topic work are refused locally.
 - Request body: 24,000 streamed bytes, 28,000 parsed characters, 3-second total read deadline.
 - Response: at most 900 model tokens, 6,000 displayed characters, 64,000 upstream bytes.
-- Model deadline: 40 seconds. The primary gets 18 seconds, the first fallback 11 seconds, and the
-  second fallback 8 seconds. A transient/network failure advances directly to the next distinct
+- Model deadline: 40 seconds. The primary gets 26 seconds, the first fallback 8 seconds, and the
+  second fallback 5 seconds. A transient/network failure or model-route 404 advances to the next distinct
   model; a retryable total failure gives the visitor a fresh Retry action without duplicating the
   visible question.
 - Rate limits: 10 requests/minute and 50 requests/day per HMAC pseudonym.
