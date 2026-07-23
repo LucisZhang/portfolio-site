@@ -222,7 +222,7 @@ test("assistant route discloses hybrid RAG mode on a local refusal", async ({ re
   });
   expect(response.status()).toBe(200);
   expect(response.headers()["x-assistant-evidence-mode"]).toBe("pinned-github-plus-private-candidate-rag");
-  expect(response.headers()["x-assistant-policy-revision"]).toBe("hybrid-portfolio-rag-v16-kimi-structured-retry");
+  expect(response.headers()["x-assistant-policy-revision"]).toBe("hybrid-portfolio-rag-v17-claim-contradiction-guard");
   expect(response.headers()["x-assistant-ratelimit-mode"]).toBeTruthy();
   await expect(response.json()).resolves.toEqual({
     reply: "I focus on Xiangguo Zhang's background, projects, skills, working style, and role fit. Ask me about any of those.",

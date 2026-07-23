@@ -101,7 +101,7 @@ function completedResponse(content, model = DEFAULT_ASSISTANT_MODEL_EN) {
 }
 
 test("hybrid RAG policy and bilingual model defaults are code-bound", () => {
-  assert.equal(ASSISTANT_POLICY_REVISION, "hybrid-portfolio-rag-v16-kimi-structured-retry");
+  assert.equal(ASSISTANT_POLICY_REVISION, "hybrid-portfolio-rag-v17-claim-contradiction-guard");
   assert.equal(ASSISTANT_EVIDENCE_MODE, "pinned-github-plus-private-candidate-rag");
   assert.equal(resolveAssistantModel("en"), DEFAULT_ASSISTANT_MODEL_EN);
   assert.equal(resolveAssistantModel("zh"), DEFAULT_ASSISTANT_MODEL_ZH);
@@ -286,6 +286,18 @@ test("completion and output checks require one exact model response with valid g
     answerJson("Privacy Preflight also has a macOS app."),
     JSON.stringify({ blocks: [{ type: "paragraph", segments: [{ type: "text", text: "claim" }] }], citation_ids: [chunks[0].id], confidence: "certain" }),
   ]) assert.equal(protectAssistantOutput(content, chunks).ok, false, content);
+  assert.equal(
+    protectAssistantOutput(answerJson("Margin Control Tower uses the real public Olist dataset; its synthetic fixture is fallback test data."), chunks).ok,
+    true,
+  );
+  assert.deepEqual(
+    protectAssistantOutput(answerJson("Margin Control Tower's dataset is a governed synthetic fixture."), chunks),
+    { ok: false, rejection: "unsafe_text" },
+  );
+  assert.deepEqual(
+    protectAssistantOutput(answerJson("毛利控制塔的数据集是合成数据。"), chunks, "zh"),
+    { ok: false, rejection: "unsafe_text" },
+  );
 });
 
 test("route core retrieves first, rate-limits second, calls one language model, and returns used citations", async () => {
