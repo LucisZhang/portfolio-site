@@ -352,6 +352,8 @@ test("fallback budget reaches a distinct model and classifies transient, permane
   assert.equal(permanent.status, 502);
   assert.equal(calls, 1);
   assert.equal(permanent.failureReason, "http_permanent");
+  assert.equal(permanent.upstreamStatus, 400);
+  assert.equal(permanent.attempts[0].upstreamStatus, 400);
   assert.equal(permanent.retryable, false);
 
   calls = 0;

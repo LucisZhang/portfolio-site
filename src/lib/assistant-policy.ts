@@ -96,6 +96,7 @@ export interface AssistantAttemptRecord {
   model: string;
   timeoutMs: number;
   outcome: "success" | AssistantFailureReason;
+  upstreamStatus?: number;
 }
 
 export interface AssistantExecutionResult {
@@ -114,6 +115,7 @@ export interface AssistantExecutionResult {
   attempts?: readonly AssistantAttemptRecord[];
   attemptedModels?: readonly string[];
   failureReason?: AssistantFailureReason;
+  upstreamStatus?: number;
   attemptCount?: number;
   retryable?: boolean;
 }
@@ -576,6 +578,7 @@ export async function executeAssistantRequest(
   let lastRejection: AssistantOutputRejection | undefined;
   let lastReturnedModel: string | undefined;
   let lastFailureReason: AssistantFailureReason = "http_transient";
+  let lastUpstreamStatus: number | undefined;
   for (const attempt of plan) {
     const remaining = deadline - Date.now();
     if (remaining < 1_000) break;
@@ -603,10 +606,11 @@ export async function executeAssistantRequest(
       continue;
     }
     if (!upstream.ok) {
+      lastUpstreamStatus = upstream.status;
       lastFailureReason = [408, 409, 425, 429].includes(upstream.status) || upstream.status >= 500
         ? "http_transient"
         : "http_permanent";
-      attempts.push({ model: attemptModel, timeoutMs, outcome: lastFailureReason });
+      attempts.push({ model: attemptModel, timeoutMs, outcome: lastFailureReason, upstreamStatus: upstream.status });
       if (!retryableFailure(lastFailureReason)) break;
       continue;
     }
@@ -663,6 +667,7 @@ export async function executeAssistantRequest(
     attempts,
     attemptedModels: attempts.map((record) => record.model),
     failureReason: lastFailureReason,
+    upstreamStatus: lastUpstreamStatus,
     attemptCount: attempts.length,
     retryable: retryableFailure(lastFailureReason),
   };

@@ -45,6 +45,7 @@ function responseHeaders(
   outboundPayloadSha256?: string,
   attemptCount?: number,
   failureReason?: AssistantFailureReason,
+  upstreamStatus?: number,
 ) {
   const headers: Record<string, string> = {
     "Cache-Control": "no-store, max-age=0",
@@ -61,6 +62,7 @@ function responseHeaders(
   if (outboundPayloadSha256) headers["X-Assistant-Payload-SHA256"] = outboundPayloadSha256;
   if (attemptCount !== undefined) headers["X-Assistant-Attempt-Count"] = String(attemptCount);
   if (failureReason) headers["X-Assistant-Failure-Reason"] = failureReason;
+  if (upstreamStatus !== undefined) headers["X-Assistant-Upstream-Status"] = String(upstreamStatus);
   if (rate) {
     headers["X-RateLimit-Remaining-Minute"] = String(rate.remainingMinute);
     headers["X-RateLimit-Remaining-Day"] = String(rate.remainingDay);
@@ -85,6 +87,7 @@ function assistantResponse(
   retrievalCount?: number,
   outboundPayloadSha256?: string,
   attemptCount?: number,
+  upstreamStatus?: number,
 ) {
   return NextResponse.json({
     reply,
@@ -105,6 +108,7 @@ function assistantResponse(
       outboundPayloadSha256,
       attemptCount,
       failureReason,
+      upstreamStatus,
     ),
   });
 }
@@ -161,5 +165,6 @@ export async function POST(request: Request) {
     result.retrievalCount,
     result.outboundPayloadSha256,
     result.attemptCount,
+    result.upstreamStatus,
   );
 }
