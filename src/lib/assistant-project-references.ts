@@ -66,13 +66,13 @@ function exactKeys(value: Record<string, unknown>, required: string[], optional:
 }
 
 export function validateAssistantAnswerBlocks(value: unknown, locale: "en" | "zh"): AssistantAnswerBlock[] | null {
-  if (!Array.isArray(value) || value.length < 1 || value.length > 8) return null;
+  if (!Array.isArray(value) || value.length < 1 || value.length > 12) return null;
   const blocks: AssistantAnswerBlock[] = [];
   let flattenedLength = 0;
   for (const candidate of value) {
     if (!isRecord(candidate) || !exactKeys(candidate, ["type", "segments"])
       || !["paragraph", "heading", "bullet"].includes(String(candidate.type))
-      || !Array.isArray(candidate.segments) || candidate.segments.length < 1 || candidate.segments.length > 12) return null;
+      || !Array.isArray(candidate.segments) || candidate.segments.length < 1 || candidate.segments.length > 20) return null;
     const segments: AssistantAnswerSegment[] = [];
     for (const segment of candidate.segments) {
       if (!isRecord(segment) || typeof segment.type !== "string" || ("strong" in segment && typeof segment.strong !== "boolean")) return null;

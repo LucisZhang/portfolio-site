@@ -44,6 +44,7 @@ export type AssistantProblem =
 
 export const MAX_INPUT_CHARACTERS = 2_500;
 export const MAX_RESPONSE_TOKENS = 900;
+export const MAX_RESPONSE_TOKENS_EN = 1_600;
 export const MAX_RESPONSE_CHARACTERS = 6_000;
 export const MAX_REQUEST_BODY_CHARACTERS = 28_000;
 export const MAX_HISTORY_MESSAGES = 6;
@@ -374,8 +375,11 @@ export function buildOpenRouterPayload(
       ...safeConversationMessages(locale, messages).map((message) => ({ role: message.role, content: message.content })),
     ],
     provider: { data_collection: "deny" as const, zdr: true, require_parameters: true },
-    max_tokens: MAX_RESPONSE_TOKENS,
-    reasoning: { effort: "low", exclude: true },
+    max_tokens: model === DEFAULT_ASSISTANT_MODEL_EN ? MAX_RESPONSE_TOKENS_EN : MAX_RESPONSE_TOKENS,
+    reasoning: {
+      effort: model === DEFAULT_ASSISTANT_MODEL_EN ? "none" : "low",
+      exclude: true,
+    },
     response_format: {
       type: "json_schema" as const,
       json_schema: {

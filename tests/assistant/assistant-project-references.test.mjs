@@ -42,4 +42,20 @@ test("answer block validation accepts only bounded typed project segments", () =
   assert.equal(validateAssistantAnswerBlocks([
     { type: "paragraph", segments: [{ type: "text", text: "https://example.com" }] },
   ], "en"), null);
+  assert.equal(validateAssistantAnswerBlocks(Array.from({ length: 12 }, () => ({
+    type: "paragraph",
+    segments: [{ type: "text", text: "Grounded evidence." }],
+  })), "en")?.length, 12);
+  assert.equal(validateAssistantAnswerBlocks(Array.from({ length: 13 }, () => ({
+    type: "paragraph",
+    segments: [{ type: "text", text: "Grounded evidence." }],
+  })), "en"), null);
+  assert.equal(validateAssistantAnswerBlocks([{
+    type: "paragraph",
+    segments: Array.from({ length: 20 }, () => ({ type: "text", text: "Evidence. " })),
+  }], "en")?.[0].segments.length, 20);
+  assert.equal(validateAssistantAnswerBlocks([{
+    type: "paragraph",
+    segments: Array.from({ length: 21 }, () => ({ type: "text", text: "Evidence. " })),
+  }], "en"), null);
 });
