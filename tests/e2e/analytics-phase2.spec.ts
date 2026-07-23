@@ -10,6 +10,11 @@ test.beforeAll(async () => {
   await mkdir(screenshotRoot, { recursive: true });
 });
 
+test.afterEach(async ({ page }) => {
+  // Explicitly unload DuckDB-WASM workers before Playwright tears down its test worker.
+  await page.goto("about:blank").catch(() => undefined);
+});
+
 test("Margin Control Tower uses the expanded dataset for linked diagnosis and scenario recomputation", async ({ page }, testInfo) => {
   const browserErrors: string[] = [];
   page.on("pageerror", (error) => browserErrors.push(error.message));

@@ -5,6 +5,9 @@ const browserChannel = process.env.PLAYWRIGHT_CHANNEL || "chrome";
 export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: true,
+  // DuckDB-WASM and PDF/OCR browser workers are intentionally resource-heavy. Running the
+  // release gate in one Playwright worker prevents Chrome teardown races and cross-test pressure.
+  workers: 1,
   forbidOnly: true,
   retries: 0,
   reporter: [["list"], ["html", { open: "never" }]],

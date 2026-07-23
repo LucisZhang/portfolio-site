@@ -118,7 +118,8 @@ test("assistant prompts follow the page context and typed project segments becom
   }
 
   await page.route("**/api/assistant", async (route) => {
-    await new Promise((resolve) => setTimeout(resolve, 250));
+    // Keep the mocked request pending long enough to exercise the loading state under CI load.
+    await new Promise((resolve) => setTimeout(resolve, 1_000));
     await route.fulfill({
       status: 200,
       contentType: "application/json",
