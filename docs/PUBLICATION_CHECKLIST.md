@@ -1,6 +1,6 @@
 # Portfolio publication checklist
 
-Updated: 2026-07-21 (Asia/Shanghai)
+Updated: 2026-07-23 (Asia/Shanghai)
 
 This is the release procedure for the complete portfolio and the v13 bilingual hybrid-RAG
 assistant. It is also the stop-condition list: any unexplained diff, failed check, moved remote,
@@ -58,11 +58,11 @@ Then require all of the following:
 
 Require policy `hybrid-portfolio-rag-v14`, evidence mode
 `pinned-github-plus-private-candidate-rag`, and public snapshot SHA-256
-`b8cc614034bb0b0fc4b878553d08141471a8cb548698809f70f8f1819d97a777`.
+`43628d6deaae5f0d24db05a35c40ae27e2321be0f3b9ea4878baa4dbd59eb660`.
 
 Check that:
 
-1. Public generation covers 9 repositories, 44 reviewed files, and 364 chunks. Runtime performs no
+1. Public generation covers 9 repositories, 49 reviewed files, and 344 chunks. Runtime performs no
    GitHub fetch.
 2. The owner-selected private builder removes contact/secret-shaped values and superseded RAG
    metrics, produces a bounded gzip/base64 packet below the Git-ignored `.assistant-private/`
@@ -73,8 +73,8 @@ Check that:
    `moonshotai/kimi-k3`. Overrides, if any, must be explicit valid provider/model identifiers.
 5. Every outbound model request enforces `data_collection: deny`, `zdr: true`, and
    `require_parameters: true`, contains only retrieved evidence plus at most 6 recent messages,
-   stays inside the 40-second request deadline, retries the primary once after transient/network
-   failures, and then advances through the configured locale-specific fallback order.
+   stays inside the 40-second request deadline, and advances through the configured distinct-model
+   fallback order only for retryable failures.
 6. Output JSON is server-validated. Unknown/duplicate citation IDs, sensitive output, long copied
    evidence, malformed JSON, non-stop completion, returned-model mismatch, and oversized upstream
    bodies fail closed.
@@ -86,7 +86,9 @@ Check that:
    IP, HMAC secret, and Upstash token never enter logs or Redis keys. Limiter failure returns 503
    before any model call.
 
-Perform one real request per locale using the exact final private packet. Each must return HTTP 200,
+Perform one real request per locale using the exact final private packet. When deployment secrets
+are Vercel Sensitive and cannot be downloaded, this live pair must run against the exact-SHA
+Preview before merge rather than weakening or extracting the secrets. Each must return HTTP 200,
 the exact expected model, a complete persuasive answer, non-empty validated citations, public and
 private knowledge hashes, retrieval count, outbound payload hash, and `upstash-redis` limiter mode.
 Reject any result containing a superseded RAG corpus/latency/quality/regression figure, private
@@ -137,4 +139,4 @@ homepage Lighthouse checks against the production alias. Record the production U
 Asia/Shanghai timestamp (and UTC equivalent), model IDs, knowledge hashes, and gate summary in a
 public-safe final state update.
 
-Only after those checks may `STATE.md` change from `V13_RELEASE_CANDIDATE` to a deployed status.
+Only after those checks may `STATE.md` change from `V15_RELEASE_CANDIDATE` to a deployed status.

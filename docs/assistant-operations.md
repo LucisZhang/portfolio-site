@@ -1,6 +1,6 @@
 # Portfolio assistant operations
 
-Updated: 2026-07-21 (Asia/Shanghai)
+Updated: 2026-07-23 (Asia/Shanghai)
 
 The built-in assistant is a bilingual, recruiter-facing hybrid RAG service. It retrieves a small
 set of relevant evidence from a commit-pinned public GitHub snapshot and an optional encrypted-at-
@@ -20,9 +20,9 @@ The browser never receives the full knowledge stores or any provider credential.
 - Chinese default: `moonshotai/kimi-k3`
 - English fallback order: `openai/gpt-5.4`, then `qwen/qwen3.5-397b-a17b`.
 - Chinese fallback order: `qwen/qwen3.5-397b-a17b`, then `openai/gpt-5.4`.
-- Public snapshot: 9 repositories, 44 reviewed files, 364 bounded chunks
+- Public snapshot: 9 repositories, 49 reviewed files, 344 bounded chunks
 - Public snapshot SHA-256:
-  `b8cc614034bb0b0fc4b878553d08141471a8cb548698809f70f8f1819d97a777`
+  `43628d6deaae5f0d24db05a35c40ae27e2321be0f3b9ea4878baa4dbd59eb660`
 - Current local private packet: 7 reviewed source files, 74 chunks; it is ignored by Git and its
   hash is reported at runtime without exposing its content or local source paths.
 - Retrieval: deterministic bilingual lexical scoring, alias/query expansion, per-source diversity,
@@ -155,7 +155,9 @@ npm audit --omit=dev
 git diff --check
 ```
 
-Then perform one bounded live request per locale with the exact candidate configuration. Require:
+Then perform one bounded live request per locale with the exact candidate configuration. If Vercel
+marks the required values Sensitive, do not attempt to extract them: run the exact live checks on
+the candidate's Vercel Preview before merge. Require:
 
 1. HTTP 200 and exact returned model equality.
 2. A persuasive, complete answer grounded in both candidate and project evidence where relevant.
