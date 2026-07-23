@@ -128,7 +128,7 @@ Never paste the value into a tracked file, shell history, issue, PR, or verifica
 - Request body: 24,000 streamed bytes, 28,000 parsed characters, 3-second total read deadline.
 - Response: Claude Sonnet 4.6 receives at most 1,600 model tokens with reasoning disabled; other
   configured models receive at most 900 model tokens. All responses remain capped at 6,000
-  displayed characters and 64,000 upstream bytes. Typed answers allow at most 12 blocks and 20
+  displayed characters and 64,000 upstream bytes. Typed answers allow at most 20 blocks and 24
   segments per block.
 - Model deadline: 58 seconds. The primary gets 38 seconds, the first fallback 12 seconds, and the
   second fallback 7 seconds. A transient/network failure or model-route 404 advances to the next distinct
