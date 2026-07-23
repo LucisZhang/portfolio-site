@@ -17,7 +17,7 @@ const AssistantWidget = dynamic(() => import("./AssistantWidget"), {
 
 const labels = {
   en: { open: "Ask about Xiangguo", close: "Close portfolio assistant", loading: "Loading assistant…" },
-  zh: { open: "询问章向国", close: "关闭作品集助手", loading: "正在加载助手…" },
+  zh: { open: "询问作品集", close: "关闭作品集助手", loading: "正在加载助手…" },
 } as const;
 
 export default function AssistantLauncher() {

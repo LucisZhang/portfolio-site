@@ -12,8 +12,8 @@ import {
   validateAssistantPublicSourcePack,
 } from "../../src/lib/assistant-public-sources.ts";
 
-const PINNED_COMMIT = "2fade314617c9ce55f92cc34da7e140806048cf0";
-const STABLE_PACK_SHA256 = "b1cda2e27708efbc078b14e221bd39aae674d0b611bbd4ba50cdfdb0fbf6ddc2";
+const PINNED_COMMIT = "eda2a7c156059678ecae8c57f4452ef98bd9ae89";
+const STABLE_PACK_SHA256 = "81973c062f133225ad817cf97b1673aca4ee61e84450515c6d2dbf0774fa0452";
 
 function sha256(value) {
   return createHash("sha256").update(value, "utf8").digest("hex");

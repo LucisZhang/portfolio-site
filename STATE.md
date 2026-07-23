@@ -1,90 +1,102 @@
 # Public Portfolio state
 
-Updated: 2026-07-23 16:56 (Asia/Shanghai) / 2026-07-23 08:56 UTC
+Updated: 2026-07-23 21:34 (Asia/Shanghai) / 2026-07-23 13:34 UTC
 
-This file records the recruiter-safe state of the current public release. It contains no
+This file records the recruiter-safe state of the current release candidate. It contains no
 credentials, raw private candidate material, local source paths, or browser-session data.
 
-Overall status: `V15_DEPLOYED_VERIFIED`. The verified runtime release is merge commit
-`468f31ba1ce196348caa5e30a76b11ed46a609d4`, deployed as
-`dpl_8U7hHXby6Az4iwLrM81n84Ga2CcP` and attached to the Production alias
-<https://portfolio-site-seven-murex.vercel.app>.
+Overall status: `V15_RELEASE_CANDIDATE`. The currently verified Production baseline remains
+merge commit `468f31ba1ce196348caa5e30a76b11ed46a609d4`, deployed as
+`dpl_8U7hHXby6Az4iwLrM81n84Ga2CcP` at
+<https://portfolio-site-seven-murex.vercel.app>. The fixes3 candidate has not yet replaced that
+Production deployment.
 
-The owner explicitly authorized the current branch push, ready pull request, exact-SHA Preview,
-normal PR merge to public `main`, and exact-SHA Production deployment. For this portfolio release
-task, the owner also granted standing authorization for all English Claude Sonnet 4.6 and Chinese
-Kimi K3 calls necessary to complete Preview and Production acceptance, without per-call
-reconfirmation. That authorization includes sending only the retrieved, bounded private-candidate
-excerpts to OpenRouter's ZDR route and the selected Claude/Kimi provider. It does not authorize a
-non-ZDR route, another provider, raw-file, credential, full-packet, or unrelated-task disclosure.
+The owner explicitly authorized this release's repository and website branches, ready pull
+requests, exact-SHA Preview, normal PR merges, exact-SHA Production deployment, and all English
+Claude Sonnet 4.6 and Chinese Kimi K3 calls needed for Preview and Production acceptance. Model
+authorization is limited to OpenRouter ZDR routes and the retrieved, bounded candidate excerpts
+needed for the question. It does not authorize a non-ZDR route, another provider, raw-file,
+credential, full-packet, or unrelated-task disclosure.
+
+## Repository publication state
+
+The six recruiter-facing project repositories now resolve through normal PR merges:
+
+- Release Guardian: `1be4af55301b6d4a2c1c98b1850a820b698208bb`
+- Streaming Reliability Lab: `eda2a7c156059678ecae8c57f4452ef98bd9ae89`
+- RAG Quality Lab: `bed604bb3ca49e641ba75e2999de29fa68b75754`
+- Privacy Preflight Web: `47eef37aa2aa39198c26f10fd5480c90274091ff`
+- Margin Control Tower: `16ad870cd4a7a81ca919831e7b881a8462912773`
+- Credit Policy Lab: `53dfd853c9b2d70476ed3b9250a7acdf01777887`
+
+Release Guardian's English homepage was rebuilt after source-and-evidence review, then aligned in
+Chinese. RAG publishes the C2 adapters, 11,309-document manifest path, 130-question evaluation
+path, runner, and tests without committing the generated knowledge base or claiming a C3 metric.
+Margin and Credit are self-contained, real-data-first repositories with their pipeline,
+provenance, source lock, validation code, derived artifacts, and optional synthetic fixtures.
+Streaming's current narration uses the final repository name; old `p1-reliability-lab` strings
+remain only where immutable historical logs, package names, or source namespaces require the
+original evidence identity.
 
 ## Candidate delivery
 
-- Xiangguo Zhang / 章向国 / XGZ is used consistently across the bilingual runtime identity.
-- Six bilingual project pages and the legacy Analytics compatibility route remain available.
-- Project pages keep one consolidated bottom section for limitations while the main narrative,
-  media captions, and interactive surfaces focus on the candidate's work, decisions, and results.
-- Privacy Preflight is presented as a Web-only project. The withdrawn Mac application, download,
-  packaging, signing, notarization, and Gatekeeper surfaces are not linked or rendered.
-- Every primary project link opens the corresponding GitHub repository homepage.
+- Every project detail page ends with two distinct columns: how the result was verified and what it
+  does not prove. Mobile layouts preserve that order while stacking the columns.
+- Track project navigation applies relational hover, keyboard focus, sibling de-emphasis, and a
+  reduced-motion-safe transition, matching the homepage project interaction.
+- Privacy Preflight's multi-page PDF source and redacted result each occupy the complete left main
+  preview region while the right review rail remains available.
+- Margin and Credit default to their verified real-data artifacts. Synthetic generation remains an
+  explicitly labeled fixture path rather than the recruiter entrypoint.
+- The footer names the Applied AI, data engineering, and data analytics fit and provides a direct
+  contact action.
 
-## Assistant release state
+## Assistant candidate
 
-- Policy: `hybrid-portfolio-rag-v14`.
+- Policy: `hybrid-portfolio-rag-v15-llm-guard`.
 - Evidence mode: `pinned-github-plus-private-candidate-rag`.
-- English primary model: `anthropic/claude-sonnet-4.6`; default fallbacks:
-  `openai/gpt-5.4`, then `qwen/qwen3.5-397b-a17b`.
-- Chinese primary model: `moonshotai/kimi-k3`; default fallbacks:
-  `qwen/qwen3.5-397b-a17b`, then `openai/gpt-5.4`.
-- Transient, timeout, model-route 404, malformed-JSON, and model-mismatch failures advance through
-  distinct models inside one 58-second request deadline; permanent or unsafe failures stop immediately.
-- Public knowledge is pinned to 9 exact-commit GitHub repositories, 49 reviewed files, and 344
-  chunks with SHA-256
-  `43628d6deaae5f0d24db05a35c40ae27e2321be0f3b9ea4878baa4dbd59eb660`.
-- Private candidate material remains Git-ignored and server-only. Browser citations describe it
-  generically, and withdrawn Privacy Mac material is filtered from retrieval and output.
-- The assistant uses page-specific prompts and server-validated typed answer segments. Recognized
-  project IDs resolve only to canonical local or reviewed GitHub destinations.
+- Dedicated scope guard: `openai/gpt-5-mini`.
+- English primary: `anthropic/claude-sonnet-4.6`; Chinese primary:
+  `moonshotai/kimi-k3`.
+- The guard receives only the latest question, locale, and sanitized portfolio route. It receives
+  no evidence, private material, conversation history, source path, citation, or provider
+  credential. Timeout, malformed output, returned-model mismatch, unavailable routing, sensitive
+  scope, injection, ambiguity, and off-topic scope fail closed before retrieval and generation.
+- Public knowledge is pinned to 9 exact-commit repositories, 66 reviewed text files, and 531
+  bounded chunks with SHA-256
+  `10f43c583473a1a42bdda972f4de8c5d253091c3c380b82772f01f0d5ad019d9`.
+- Private candidate material remains Git-ignored and server-only. Only retrieved bounded excerpts
+  may be sent to the authorized ZDR provider route.
 
-## Verification
+## Verification completed before Preview
 
-- Assistant policy/unit verification: 36 passed, 0 failed, including a regression test proving that
-  the primary model can complete after 14 seconds without being aborted and canonicalization tests
-  for known project names returned as plain text.
-- Complete Playwright run: 218 passed, 52 intentional device-inapplicable skips, 0 failed.
-- TypeScript, ESLint, evidence verification, production build, performance budget,
-  `git diff --check`, and production dependency audit passed; the audit reported 0 vulnerabilities.
-- The public knowledge snapshot reproduced exactly from the nine commit-pinned remote repositories.
-- Exact-SHA protected Preview
-  <https://portfolio-site-nt23qsn3s-luciszhangs-projects.vercel.app> passed one bounded English
-  Claude Sonnet 4.6 request and one bounded Chinese Kimi K3 request. Both returned HTTP 200 on the
-  expected model with Upstash limiting, nine retrieved chunks, validated citations, all knowledge
-  and payload hashes, and no sensitive-output exposure.
-- Production deployment `dpl_8U7hHXby6Az4iwLrM81n84Ga2CcP` is Ready. Its `/api/assistant`
-  function has the intended 60-second timeout, and the three Production aliases resolve to it.
-- Final Production acceptance returned HTTP 200 in one attempt from exact model
-  `anthropic/claude-sonnet-4.6` in English and exact model `moonshotai/kimi-k3` in Chinese. Both used
-  policy v14, Upstash limiting, nine retrieved chunks, complete typed answers, grounded citations,
-  public/private/combined/payload hashes, and exposed no system marker, private path, secret, or
-  contact data.
-- Browser acceptance verified the desktop and 390 × 844 mobile layouts, automatic Chinese locale,
-  manual English/Chinese switching, the Streaming Reliability Lab wording, Web-only Privacy media
-  and multi-page PDF workflow, assistant ZDR disclosure, and a clean warning/error console.
-- All 11 public routes returned HTTP 200 in both English and Chinese. The Production response
-  includes CSP, HSTS, `nosniff`, `DENY` framing, referrer, and permissions-policy headers.
-- Production homepage Lighthouse 13.4.1: Performance 98, Accessibility 100, Best Practices 100,
-  SEO 100, FCP 1.3 s, LCP 2.2 s, TBT 50 ms, CLS 0, Speed Index 2.1 s. Report SHA-256:
-  `669b7fee14bb7ff7fb0f7a43343446b27cc489639847c84127b5b6a9bd486fbd`; see
-  [`docs/lighthouse-homepage-20260723.md`](docs/lighthouse-homepage-20260723.md).
+- Release Guardian, Margin Control Tower, and Credit Policy Lab each completed one combined
+  source-aware Fable 5 review covering senior GitHub-user quality and Applied AI/data
+  engineering/data analytics recruiter review. Release, Margin, Credit, and RAG then completed one
+  Kimi K3 Chinese pass; no redundant Chinese Fable review was added.
+- All six repository PRs passed their remote CI before merge. Bilingual README pair checks,
+  relative-link checks, emphasis checks, commit-range secret scans, and live GitHub rendering
+  checks passed. One literal Chinese emphasis marker found only in GitHub rendering was fixed in
+  Streaming PR #6.
+- The public knowledge snapshot reproduced exactly from its pinned GitHub sources. The offline
+  Streaming compatibility pack also reproduced at the merged commit.
+- Assistant policy/unit verification passes 37 tests. TypeScript, ESLint, production build,
+  evidence verification, localization, dependency audit, and the complete Playwright matrix pass
+  locally. The clean full browser run completed with 218 tests passed, 52 intentional skips, and
+  zero failures across the desktop, tablet, and mobile route matrix, including the three-page
+  Privacy PDF workflow.
+- Browser inspection confirmed that all 12 primary English/Chinese GitHub homepages render an
+  article, language switch, headings, and expected tables without a not-found page or raw emphasis
+  marker.
 
-## Publication state
+## Remaining release gates
 
-- Runtime changes reached public `main` through normal pull-request merges: PR #3 established the
-  release and PR #4 added deterministic canonical project-link rendering and the fresh-request
-  retry behavior. No direct push to `main` was used.
-- The release branch is `codex/portfolio-site-fixes2-20260722`; the user's primary checkout and
-  untracked inventory remained untouched.
-- Preview and Production retain the five encrypted server values already required by v13.
-  Optional fallback-model variables may override the validated defaults but must remain server-only.
-- No force push, history rewrite, repository visibility change, tag, release, or unrelated-branch
-  mutation was performed.
+The candidate must still pass the static-client disclosure scan, Preview deployment, desktop/
+tablet/mobile and bilingual Preview review, homepage Lighthouse Performance at or above 90, and one
+bounded English Claude Sonnet 4.6 plus one bounded Chinese Kimi K3 Preview acceptance. Only after
+those pass may the website PR merge and Production deployment proceed. Production must then pass
+the exact-SHA route, security-header, assistant, browser, PDF, and Lighthouse checks before this
+status changes to a deployed state.
+
+No direct push to `main`, force push, history rewrite, visibility change, tag, release, or
+unrelated-branch mutation is authorized or planned.

@@ -51,7 +51,7 @@ test("assistant widget code loads only after the launcher opens", async ({ page 
 test("assistant gives local bilingual guardrail replies without calling a model", async ({ page }) => {
   await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "zh"));
   await page.goto("/", { waitUntil: "networkidle" });
-  await page.getByRole("button", { name: "询问章向国" }).click();
+  await page.getByRole("button", { name: "询问作品集" }).click();
   const widget = page.getByTestId("assistant-widget");
   const input = widget.getByPlaceholder("为什么章向国适合 AI 应用岗位？");
 
@@ -222,7 +222,7 @@ test("assistant route discloses hybrid RAG mode on a local refusal", async ({ re
   });
   expect(response.status()).toBe(200);
   expect(response.headers()["x-assistant-evidence-mode"]).toBe("pinned-github-plus-private-candidate-rag");
-  expect(response.headers()["x-assistant-policy-revision"]).toBe("hybrid-portfolio-rag-v14");
+  expect(response.headers()["x-assistant-policy-revision"]).toBe("hybrid-portfolio-rag-v15-llm-guard");
   expect(response.headers()["x-assistant-ratelimit-mode"]).toBeTruthy();
   await expect(response.json()).resolves.toEqual({
     reply: "I focus on Xiangguo Zhang's background, projects, skills, working style, and role fit. Ask me about any of those.",

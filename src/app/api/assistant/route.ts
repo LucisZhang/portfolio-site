@@ -46,6 +46,9 @@ function responseHeaders(
   attemptCount?: number,
   failureReason?: AssistantFailureReason,
   upstreamStatus?: number,
+  guardDecision?: string,
+  guardReturnedModel?: string,
+  guardPayloadSha256?: string,
 ) {
   const headers: Record<string, string> = {
     "Cache-Control": "no-store, max-age=0",
@@ -63,6 +66,9 @@ function responseHeaders(
   if (attemptCount !== undefined) headers["X-Assistant-Attempt-Count"] = String(attemptCount);
   if (failureReason) headers["X-Assistant-Failure-Reason"] = failureReason;
   if (upstreamStatus !== undefined) headers["X-Assistant-Upstream-Status"] = String(upstreamStatus);
+  if (guardDecision) headers["X-Assistant-Guard-Decision"] = guardDecision;
+  if (guardReturnedModel) headers["X-Assistant-Guard-Model"] = guardReturnedModel;
+  if (guardPayloadSha256) headers["X-Assistant-Guard-Payload-SHA256"] = guardPayloadSha256;
   if (rate) {
     headers["X-RateLimit-Remaining-Minute"] = String(rate.remainingMinute);
     headers["X-RateLimit-Remaining-Day"] = String(rate.remainingDay);
@@ -88,6 +94,9 @@ function assistantResponse(
   outboundPayloadSha256?: string,
   attemptCount?: number,
   upstreamStatus?: number,
+  guardDecision?: string,
+  guardReturnedModel?: string,
+  guardPayloadSha256?: string,
 ) {
   return NextResponse.json({
     reply,
@@ -109,6 +118,9 @@ function assistantResponse(
       attemptCount,
       failureReason,
       upstreamStatus,
+      guardDecision,
+      guardReturnedModel,
+      guardPayloadSha256,
     ),
   });
 }
@@ -145,6 +157,7 @@ export async function POST(request: Request) {
     apiKey: process.env.OPENROUTER_API_KEY,
     modelEn: process.env.ASSISTANT_MODEL_EN,
     modelZh: process.env.ASSISTANT_MODEL_ZH,
+    guardModel: process.env.ASSISTANT_GUARD_MODEL ?? "openai/gpt-5-mini",
     fallbackModelsEn: process.env.ASSISTANT_FALLBACK_MODELS_EN,
     fallbackModelsZh: process.env.ASSISTANT_FALLBACK_MODELS_ZH,
     privateKnowledgeEncoded: process.env.ASSISTANT_PRIVATE_KNOWLEDGE_B64_GZIP,
@@ -166,5 +179,8 @@ export async function POST(request: Request) {
     result.outboundPayloadSha256,
     result.attemptCount,
     result.upstreamStatus,
+    result.guardDecision,
+    result.guardReturnedModel,
+    result.guardPayloadSha256,
   );
 }

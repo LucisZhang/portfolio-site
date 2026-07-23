@@ -17,9 +17,28 @@ const RagManifestDriftLab = dynamic(() => import("./rag/RagManifestDriftLab"), {
 export default function RagProof() {
   const { locale, dict } = useI18n();
   const checks = locale === "en" ? ["S1 corpus adapter", "S1-answerable question adapter", "Deterministic manifest", "Backend-aware verifier", "Retrieval contract layer", "Ruff and test suite"] : ["S1 语料适配器", "S1 可回答问题适配器", "确定性清单", "后端感知校验器", "检索契约层", "Ruff 与测试套件"];
+  const pipeline = locale === "en" ? [
+    ["01 · Lock", "Pin the EnterpriseRAG-Bench S1 source slice and license boundary."],
+    ["02 · Adapt", "Normalize 5,189 Confluence and 6,120 Jira records into 11,309 documents."],
+    ["03 · Manifest", "Write deterministic counts, hashes, adapter identity, and generation parameters."],
+    ["04 · Map", "Bind 130 S1-answerable questions to the bounded evaluation scope."],
+    ["05 · Preflight", "Validate the backend contract, corpus identity, and output destination before a run."],
+    ["06 · Run or stop", "Invoke the retrieval runner only when every gate passes; C3 stopped without a metric."],
+  ] : [
+    ["01 · 锁定", "固定 EnterpriseRAG-Bench S1 源切片与许可证边界。"],
+    ["02 · 适配", "将 5,189 条 Confluence 与 6,120 条 Jira 记录规范化为 11,309 份文档。"],
+    ["03 · 清单", "写入确定性的数量、哈希、适配器身份与生成参数。"],
+    ["04 · 映射", "将 130 个 S1 可回答问题绑定到有界评估范围。"],
+    ["05 · 预检", "运行前校验后端契约、语料身份与输出位置。"],
+    ["06 · 运行或停止", "仅在全部闸门通过后调用检索 runner；C3 未产生指标即停止。"],
+  ];
   return (
     <ProjectProofSection title={dict.evidence} className="tinted-section">
       <div className="analytics-boundary"><CircleAlert aria-hidden="true" /><span>{locale === "en" ? "Why judge-free matters: hashed manifests catch corpus and claim drift before any quality claim ships." : "无需裁判模型的价值在于：带哈希的清单会在任何质量声明发布前捕获语料与声明漂移。"}</span></div>
+      <section className="rag-c2-pipeline" aria-labelledby="rag-c2-pipeline-title">
+        <div><p className="eyebrow">C2 · {locale === "en" ? "Tracked implementation" : "已跟踪实现"}</p><h3 id="rag-c2-pipeline-title">{locale === "en" ? "From licensed source slice to a gated evaluation run" : "从获许可源切片到受门控评估运行"}</h3><p>{locale === "en" ? "The public repository now contains the adapters, question set, manifest writer, runner seam, backend contract, and tests. The ~88 MB generated knowledge base is reproducible but intentionally excluded from Git." : "公开仓库现已包含适配器、问题集、清单写入器、runner 接口、后端契约与测试。约 88 MB 的生成知识库可复现，但有意不提交到 Git。"}</p></div>
+        <ol>{pipeline.map(([label, detail]) => <li key={label}><strong>{label}</strong><span>{detail}</span></li>)}</ol>
+      </section>
       <RagManifestDriftLab />
       <div className="rag-floor">
         <div><span>{locale === "en" ? "Documents in the bounded S1 scope" : "S1 有界范围内文档"}</span><strong>11,309</strong></div>

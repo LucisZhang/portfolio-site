@@ -4,7 +4,8 @@
   .index-heading h2,
   .site-header nav a,
   .discipline-strip a,
-  .project-name strong
+  .project-name strong,
+  .track-projects h2
 ) {
   font-family: var(--font-flourish-latin), Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
 }
@@ -31,7 +32,8 @@
   }
 
   .discipline-strip a,
-  .project-name strong {
+  .project-name strong,
+  .track-projects h2 {
     font-variation-settings: "wght" 700;
     transition: font-variation-settings 200ms ease-out;
   }
@@ -41,7 +43,8 @@
   }
 
   .discipline-strip a:is(:hover, :focus-visible),
-  .project-table > a:is(:hover, :focus-visible) .project-name strong {
+  .project-table > a:is(:hover, :focus-visible) .project-name strong,
+  .track-projects > a:is(:hover, :focus-visible) h2 {
     font-variation-settings: "wght" 770;
   }
 }
@@ -62,7 +65,9 @@
     .discipline-strip a,
     .discipline-strip a:is(:hover, :focus-visible),
     .project-name strong,
-    .project-table > a:is(:hover, :focus-visible) .project-name strong {
+    .project-table > a:is(:hover, :focus-visible) .project-name strong,
+    .track-projects h2,
+    .track-projects > a:is(:hover, :focus-visible) h2 {
       transition: none;
       font-variation-settings: "wght" 700;
     }

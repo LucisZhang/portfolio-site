@@ -1,21 +1,26 @@
 @supports selector(:has(*)) {
-  .project-table > a {
+  .project-table > a,
+  .track-projects > a {
     transition: opacity 150ms ease-out;
   }
 
-  .project-table:has(> a:is(:hover, :focus-visible)) > a:not(:is(:hover, :focus-visible)) {
+  .project-table:has(> a:is(:hover, :focus-visible)) > a:not(:is(:hover, :focus-visible)),
+  .track-projects:has(> a:is(:hover, :focus-visible)) > a:not(:is(:hover, :focus-visible)) {
     opacity: 0.55 !important;
   }
 
-  .project-table > a:is(:hover, :focus-visible) {
+  .project-table > a:is(:hover, :focus-visible),
+  .track-projects > a:is(:hover, :focus-visible) {
     opacity: 1 !important;
   }
 
-  .project-table > a > svg:last-child {
+  .project-table > a > svg:last-child,
+  .track-projects > a > svg:last-child {
     transition: transform 150ms ease-out;
   }
 
-  .project-table > a:is(:hover, :focus-visible) > svg:last-child {
+  .project-table > a:is(:hover, :focus-visible) > svg:last-child,
+  .track-projects > a:is(:hover, :focus-visible) > svg:last-child {
     transform: translate(2px, -2px);
   }
 }
@@ -23,7 +28,9 @@
 @media (prefers-reduced-motion: reduce) {
   @supports selector(:has(*)) {
     .project-table > a,
-    .project-table > a > svg:last-child {
+    .project-table > a > svg:last-child,
+    .track-projects > a,
+    .track-projects > a > svg:last-child {
       transition-duration: 0s;
     }
   }

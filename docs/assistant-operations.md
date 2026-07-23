@@ -12,17 +12,18 @@ The browser never receives the full knowledge stores or any provider credential.
 快照和可选的私有候选人材料包中检索少量相关证据，仅把命中的片段、有限的最近对话和当前问题
 发送给 OpenRouter。浏览器不会获得完整知识库，也不会获得任何模型或 Redis 凭证。
 
-## Current v14 architecture
+## Current v15 architecture
 
-- Policy revision: `hybrid-portfolio-rag-v14`
+- Policy revision: `hybrid-portfolio-rag-v15-llm-guard`
 - Evidence mode: `pinned-github-plus-private-candidate-rag`
+- Dedicated scope guard: `openai/gpt-5-mini`
 - English default: `anthropic/claude-sonnet-4.6`
 - Chinese default: `moonshotai/kimi-k3`
 - English fallback order: `openai/gpt-5.4`, then `qwen/qwen3.5-397b-a17b`.
 - Chinese fallback order: `qwen/qwen3.5-397b-a17b`, then `openai/gpt-5.4`.
-- Public snapshot: 9 repositories, 49 reviewed files, 344 bounded chunks
+- Public snapshot: 9 repositories, 66 reviewed files, 531 bounded chunks
 - Public snapshot SHA-256:
-  `43628d6deaae5f0d24db05a35c40ae27e2321be0f3b9ea4878baa4dbd59eb660`
+  `10f43c583473a1a42bdda972f4de8c5d253091c3c380b82772f01f0d5ad019d9`
 - Current local private packet: 7 reviewed source files, 74 chunks; it is ignored by Git and its
   hash is reported at runtime without exposing its content or local source paths.
 - Retrieval: deterministic bilingual lexical scoring, alias/query expansion, per-source diversity,
@@ -42,6 +43,20 @@ That directory is ignored by Git. Do not commit the JSON, environment payload, r
 source paths.
 
 ## Model transmission and privacy boundary
+
+Every request that survives the deterministic abuse and sensitive-data checks first passes through
+one dedicated LLM scope guard. The guard sees only the newest question, locale, and a sanitized
+portfolio route such as `/ai/rag-quality-lab`; it never receives public evidence chunks, private
+candidate material, prior conversation, source paths, citations, or provider credentials. It must
+return one strict-schema decision: allow a portfolio/candidate question, or reject an off-topic,
+prompt-injection, sensitive, or ambiguous request. A timeout, malformed response, returned-model
+mismatch, unavailable route, or ambiguous classification fails closed before retrieval and answer
+generation. There is no guard fallback or retry.
+
+通过本地滥用与敏感信息检查的请求，会先进入独立的 LLM 范围门禁。门禁只接收最新问题、语言与
+经过净化的作品集页面路径，不接收公开证据片段、私有候选人材料、历史对话、来源路径或引用。
+任何超时、响应格式错误、返回模型不一致、路由不可用或不明确分类都会在检索和回答生成前
+fail closed；门禁不设回退模型，也不重试。
 
 Each accepted request uses OpenRouter's OpenAI-compatible chat-completions endpoint with:
 
@@ -84,6 +99,7 @@ Server-only variables:
 | `UPSTASH_REDIS_REST_TOKEN` | Yes | Durable rate limiter |
 | `ASSISTANT_RATE_LIMIT_HMAC_SECRET` | Yes, at least 32 UTF-8 bytes | Pseudonymizes client IPs before Redis |
 | `ASSISTANT_PRIVATE_KNOWLEDGE_B64_GZIP` | Yes for hybrid private RAG | Reviewed private packet |
+| `ASSISTANT_GUARD_MODEL` | Optional | Overrides the code-bound dedicated scope guard; use a strict-JSON-capable provider/model identifier |
 | `ASSISTANT_MODEL_EN` | Optional | Overrides the code-bound English default |
 | `ASSISTANT_MODEL_ZH` | Optional | Overrides the code-bound Chinese default |
 | `ASSISTANT_FALLBACK_MODELS_EN` | Optional | Comma-separated English fallback order |
@@ -122,9 +138,11 @@ Never paste the value into a tracked file, shell history, issue, PR, or verifica
 
 ## Runtime safety and limits
 
-- JSON and same-origin browser gates run before retrieval.
+- JSON and same-origin browser gates run before any model call.
 - Prompt-injection, requests for system/knowledge exfiltration, secret/contact disclosure, and
   explicit off-topic work are refused locally.
+- Once configuration and rate limiting pass, the dedicated scope guard runs before retrieval. It
+  receives no candidate evidence; only `allow_portfolio` may proceed to retrieval and generation.
 - Request body: 24,000 streamed bytes, 28,000 parsed characters, 3-second total read deadline.
 - Response: Claude Sonnet 4.6 receives at most 1,600 model tokens with reasoning disabled; other
   configured models receive at most 900 model tokens. All responses remain capped at 6,000
@@ -169,8 +187,9 @@ the candidate's Vercel Preview before merge. Require:
 3. Non-empty server-validated citations; public citations must use exact-commit GitHub URLs and
    private citations must expose only the generic reviewed-material label.
 4. No superseded RAG metric, contact detail, private path, secret, or unsupported current claim.
-5. `X-Assistant-Policy-Revision`, evidence mode, public/private/combined snapshot hashes,
-   retrieval count, payload hash, response model, and `upstash-redis` limiter mode on success.
+5. `X-Assistant-Policy-Revision`, guard decision/model/payload hash, evidence mode,
+   public/private/combined snapshot hashes, retrieval count, answer payload hash, response model,
+   and `upstash-redis` limiter mode on success.
 6. Injection and exfiltration prompts refuse locally with no retrieval/model metadata.
 
 Finally test the production build through the browser in both locales, inspect mobile/desktop UI,
