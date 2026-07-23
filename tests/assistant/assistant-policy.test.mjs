@@ -160,6 +160,9 @@ test("payload uses locale-specific model, ZDR routing, structured citations, and
   assert.equal(payload.model, DEFAULT_ASSISTANT_MODEL_EN);
   assert.deepEqual(payload.provider, { data_collection: "deny", zdr: true, require_parameters: true });
   assert.equal(payload.response_format.type, "json_schema");
+  const segmentSchemas = payload.response_format.json_schema.schema.properties.blocks.items.properties.segments.items.anyOf;
+  assert.deepEqual(segmentSchemas[0].required, ["type", "text", "strong"]);
+  assert.deepEqual(segmentSchemas[1].required, ["type", "projectId", "strong"]);
   assert.deepEqual(payload.response_format.json_schema.schema.properties.blocks.items.properties.segments.items.anyOf[1].properties.projectId.enum, [
     "release-guardian", "streaming-reliability-lab", "rag-quality-lab", "privacy-preflight-web",
     "margin-control-tower", "credit-policy-lab", "ex-solver", "Voice-in-Security", "Risk-Control-Portfolio",

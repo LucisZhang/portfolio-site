@@ -408,7 +408,7 @@ export function buildOpenRouterPayload(
                             text: { type: "string", minLength: 1, maxLength: 1_500 },
                             strong: { type: "boolean" },
                           },
-                          required: ["type", "text"],
+                          required: ["type", "text", "strong"],
                         },
                         {
                           type: "object",
@@ -418,7 +418,7 @@ export function buildOpenRouterPayload(
                             projectId: { type: "string", enum: [...ASSISTANT_PROJECT_IDS] },
                             strong: { type: "boolean" },
                           },
-                          required: ["type", "projectId"],
+                          required: ["type", "projectId", "strong"],
                         },
                       ],
                     },
