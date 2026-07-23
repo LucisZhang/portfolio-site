@@ -56,11 +56,14 @@ original evidence identity.
 
 ## Assistant candidate
 
-- Policy: `hybrid-portfolio-rag-v15-llm-guard`.
+- Policy: `hybrid-portfolio-rag-v16-kimi-structured-retry`.
 - Evidence mode: `pinned-github-plus-private-candidate-rag`.
 - Dedicated scope guard: `anthropic/claude-haiku-4.5` through an eligible ZDR route.
 - English primary: `anthropic/claude-sonnet-4.6`; Chinese primary:
   `moonshotai/kimi-k3`.
+- A strict-schema failure from Chinese Kimi K3 receives one bounded retry through the same model
+  and ZDR route; repeated invalid output still fails closed. Typed text is normalized before UI
+  rendering so model-emitted Markdown markers are not shown literally.
 - The guard receives only the latest question, locale, and sanitized portfolio route. It receives
   no evidence, private material, conversation history, source path, citation, or provider
   credential. Timeout, malformed output, returned-model mismatch, unavailable routing, sensitive

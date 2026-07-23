@@ -58,7 +58,7 @@ export const DEFAULT_ASSISTANT_FALLBACK_MODELS_EN = ["openai/gpt-5.4", "qwen/qwe
 export const DEFAULT_ASSISTANT_FALLBACK_MODELS_ZH = ["qwen/qwen3.5-397b-a17b", "openai/gpt-5.4"] as const;
 export const OPENROUTER_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions";
 export const SYSTEM_SCOPE_SENTINEL = "XGZ_HYBRID_RAG_V14_PRIVATE_DO_NOT_DISCLOSE";
-export const ASSISTANT_POLICY_REVISION = "hybrid-portfolio-rag-v15-llm-guard";
+export const ASSISTANT_POLICY_REVISION = "hybrid-portfolio-rag-v16-kimi-structured-retry";
 export const ASSISTANT_EVIDENCE_MODE = "pinned-github-plus-private-candidate-rag";
 
 export type AssistantOutputRejection =
@@ -774,12 +774,14 @@ export async function executeAssistantRequest(
   if (!retrieval) return { reply: localizedProblem("not_established", locale), status: 200 };
 
   const plan = assistantAttemptPlan(model, fallbackModels);
+  let primaryStructuredRetriesRemaining = locale === "zh" ? 1 : 0;
   const attempts: AssistantAttemptRecord[] = [];
   let lastRejection: AssistantOutputRejection | undefined;
   let lastReturnedModel: string | undefined;
   let lastFailureReason: AssistantFailureReason = "http_transient";
   let lastUpstreamStatus: number | undefined;
-  for (const attempt of plan) {
+  for (let planIndex = 0; planIndex < plan.length; planIndex += 1) {
+    const attempt = plan[planIndex];
     const remaining = deadline - Date.now();
     if (remaining < 1_000) break;
     const attemptModel = attempt.model;
@@ -828,6 +830,11 @@ export async function executeAssistantRequest(
       lastRejection = completion.rejection;
       lastFailureReason = completion.rejection === "model_mismatch" ? "model_mismatch" : "invalid_output";
       attempts.push({ model: attemptModel, timeoutMs, outcome: lastFailureReason });
+      if (lastFailureReason === "invalid_output" && attemptModel === model && primaryStructuredRetriesRemaining > 0) {
+        primaryStructuredRetriesRemaining -= 1;
+        plan.splice(planIndex + 1, 0, { model, timeoutMs: Math.min(20_000, attempt.timeoutMs) });
+        continue;
+      }
       if (!retryableFailure(lastFailureReason)) break;
       continue;
     }
@@ -837,6 +844,11 @@ export async function executeAssistantRequest(
       lastRejection = protectedOutput.rejection;
       lastFailureReason = protectedOutput.rejection === "unsafe_text" ? "unsafe_output" : "invalid_output";
       attempts.push({ model: attemptModel, timeoutMs, outcome: lastFailureReason });
+      if (lastFailureReason === "invalid_output" && attemptModel === model && primaryStructuredRetriesRemaining > 0) {
+        primaryStructuredRetriesRemaining -= 1;
+        plan.splice(planIndex + 1, 0, { model, timeoutMs: Math.min(20_000, attempt.timeoutMs) });
+        continue;
+      }
       break;
     }
     attempts.push({ model: attemptModel, timeoutMs, outcome: "success" });

@@ -12,9 +12,9 @@ The browser never receives the full knowledge stores or any provider credential.
 快照和可选的私有候选人材料包中检索少量相关证据，仅把命中的片段、有限的最近对话和当前问题
 发送给 OpenRouter。浏览器不会获得完整知识库，也不会获得任何模型或 Redis 凭证。
 
-## Current v15 architecture
+## Current v16 architecture
 
-- Policy revision: `hybrid-portfolio-rag-v15-llm-guard`
+- Policy revision: `hybrid-portfolio-rag-v16-kimi-structured-retry`
 - Evidence mode: `pinned-github-plus-private-candidate-rag`
 - Dedicated scope guard: `anthropic/claude-haiku-4.5` through an eligible ZDR route
 - English default: `anthropic/claude-sonnet-4.6`
@@ -84,9 +84,11 @@ public portfolio evidence has authority over project metrics and claim boundarie
 may add background and project stories, but cannot revive superseded RAG corpus, latency, quality,
 or regression metrics. The output is strict JSON with an answer, retrieved citation IDs, and a
 bounded confidence value. Unknown citation IDs, sensitive output, very long copied passages,
-malformed JSON, model mismatch, or an incomplete upstream response fail closed. Timeout,
-transient HTTP, invalid JSON, and model mismatch failures may advance to the next planned model;
-permanent HTTP, invalid output, and unsafe output stop immediately.
+malformed JSON, model mismatch, or an incomplete upstream response fail closed. Markdown markers
+inside typed text segments are removed before rendering. Chinese Kimi K3 output that fails the
+strict answer schema receives one bounded retry through the same Kimi K3 ZDR route; a second
+invalid result fails closed. Timeout, transient HTTP, invalid JSON, and model mismatch failures may
+advance to the next planned model; permanent HTTP and unsafe output stop immediately.
 
 ## Environment variables
 

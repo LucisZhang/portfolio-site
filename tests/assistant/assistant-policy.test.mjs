@@ -101,7 +101,7 @@ function completedResponse(content, model = DEFAULT_ASSISTANT_MODEL_EN) {
 }
 
 test("hybrid RAG policy and bilingual model defaults are code-bound", () => {
-  assert.equal(ASSISTANT_POLICY_REVISION, "hybrid-portfolio-rag-v15-llm-guard");
+  assert.equal(ASSISTANT_POLICY_REVISION, "hybrid-portfolio-rag-v16-kimi-structured-retry");
   assert.equal(ASSISTANT_EVIDENCE_MODE, "pinned-github-plus-private-candidate-rag");
   assert.equal(resolveAssistantModel("en"), DEFAULT_ASSISTANT_MODEL_EN);
   assert.equal(resolveAssistantModel("zh"), DEFAULT_ASSISTANT_MODEL_ZH);
@@ -464,6 +464,22 @@ test("fallback budget reaches a distinct model and classifies transient, permane
   assert.equal(invalidStructuredOutput.status, 502);
   assert.equal(invalidStructuredOutput.failureReason, "invalid_output");
   assert.equal(invalidStructuredOutput.retryable, true);
+
+  let kimiCalls = 0;
+  const recoveredChineseOutput = await executeAssistantRequest(rawRequest("章向国有哪些项目证据？", "zh"), {
+    clientIp: "198.51.100.172",
+    checkRate: () => allowedRate,
+    apiKey: "key",
+    retrieve: () => retrieval,
+    fetcher: async () => {
+      kimiCalls += 1;
+      return completedResponse(kimiCalls === 1 ? "not-json" : answerJson("有依据的回答。"), DEFAULT_ASSISTANT_MODEL_ZH);
+    },
+  });
+  assert.equal(recoveredChineseOutput.status, 200);
+  assert.equal(kimiCalls, 2);
+  assert.deepEqual(recoveredChineseOutput.attemptedModels, [DEFAULT_ASSISTANT_MODEL_ZH, DEFAULT_ASSISTANT_MODEL_ZH]);
+  assert.equal(recoveredChineseOutput.attemptCount, 2);
 });
 
 test("invalid JSON and model mismatch advance through the fallback plan", async () => {

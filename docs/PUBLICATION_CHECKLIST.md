@@ -54,9 +54,9 @@ Then require all of the following:
 - Fixed routes remain statically generated; only `/api/assistant` and the intended artifact route
   are dynamic.
 
-## 3. Verify assistant v15 locally
+## 3. Verify assistant v16 locally
 
-Require policy `hybrid-portfolio-rag-v15-llm-guard`, evidence mode
+Require policy `hybrid-portfolio-rag-v16-kimi-structured-retry`, evidence mode
 `pinned-github-plus-private-candidate-rag`, and public snapshot SHA-256
 `99127978b4aeb74d182610ad0ae3554181b1dbd81392dae520a41bf4468978a3`.
 
