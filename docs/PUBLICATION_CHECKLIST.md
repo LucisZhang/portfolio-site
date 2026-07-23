@@ -147,7 +147,28 @@ public-safe final state update.
 
 Only after those checks may `STATE.md` change from `V15_RELEASE_CANDIDATE` to a deployed status.
 
-## 7. 2026-07-23 release receipt
+## 7. 2026-07-23 fixes3 release receipt
+
+- [x] Website PR #6 merged normally without a direct `main` push.
+- [x] Runtime merge commit: `0fccdcc4929718600f053221bdcef31faebd102f`.
+- [x] Production deployment: `dpl_3w3vvQfFnuzFUBqhsnvjx5zxGMro`, Ready and aliased to
+  <https://portfolio-site-seven-murex.vercel.app> during acceptance.
+- [x] Exact-model Preview and Production acceptance passed once per locale: Claude Sonnet 4.6 for
+  English and Kimi K3 for Chinese, after an exact Claude Haiku 4.5 fail-closed scope guard, using
+  OpenRouter ZDR and only bounded retrieved excerpts.
+- [x] Public assistant snapshot: 9 repositories, 66 files, 532 chunks, SHA-256
+  `99127978b4aeb74d182610ad0ae3554181b1dbd81392dae520a41bf4468978a3`.
+- [x] Assistant verification: 37 passed; complete browser suite: 218 passed, 52 intentional skips,
+  0 errors; typecheck, lint, evidence, build, performance budget, dependency audit, disclosure and
+  secret scans passed.
+- [x] Production Privacy PDF audit passed with 3/3 scanned and rendered pages, verified raster
+  output, the result in the complete left main region, the right review rail preserved, and no
+  horizontal overflow.
+- [x] Production fixed routes returned HTTP 200 as static prerenders with the expected security
+  headers.
+- [x] Lighthouse 13.4.1: Performance 99, Accessibility 100, Best Practices 100, SEO 100.
+
+## 8. 2026-07-23 v15 release receipt
 
 - [x] PR #3 and follow-up PR #4 merged normally without a direct `main` push.
 - [x] Runtime merge commit: `468f31ba1ce196348caa5e30a76b11ed46a609d4`.

@@ -1,15 +1,15 @@
 # Public Portfolio state
 
-Updated: 2026-07-23 22:10 (Asia/Shanghai) / 2026-07-23 14:10 UTC
+Updated: 2026-07-23 23:26 (Asia/Shanghai) / 2026-07-23 15:26 UTC
 
 This file records the recruiter-safe state of the current release candidate. It contains no
 credentials, raw private candidate material, local source paths, or browser-session data.
 
-Overall status: `V15_RELEASE_CANDIDATE`. The currently verified Production baseline remains
-merge commit `468f31ba1ce196348caa5e30a76b11ed46a609d4`, deployed as
-`dpl_8U7hHXby6Az4iwLrM81n84Ga2CcP` at
-<https://portfolio-site-seven-murex.vercel.app>. The fixes3 candidate has not yet replaced that
-Production deployment.
+Overall status: `FIXES3_PRODUCTION_VERIFIED`. Runtime merge commit
+`0fccdcc4929718600f053221bdcef31faebd102f` is deployed as
+`dpl_3w3vvQfFnuzFUBqhsnvjx5zxGMro` at
+<https://portfolio-site-seven-murex.vercel.app>. The deployment was Ready, matched the exact
+`main` SHA, and passed the Production checks recorded below.
 
 The owner explicitly authorized this release's repository and website branches, ready pull
 requests, exact-SHA Preview, normal PR merges, exact-SHA Production deployment, and all English
@@ -100,14 +100,26 @@ original evidence identity.
   article, language switch, headings, and expected tables without a not-found page or raw emphasis
   marker.
 
-## Remaining release gates
+## Production verification
 
-The candidate must still pass the static-client disclosure scan, Preview deployment, desktop/
-tablet/mobile and bilingual Preview review, homepage Lighthouse Performance at or above 90, and one
-bounded English Claude Sonnet 4.6 plus one bounded Chinese Kimi K3 Preview acceptance. Only after
-those pass may the website PR merge and Production deployment proceed. Production must then pass
-the exact-SHA route, security-header, assistant, browser, PDF, and Lighthouse checks before this
-status changes to a deployed state.
+- Website PR #6 merged normally to runtime commit
+  `0fccdcc4929718600f053221bdcef31faebd102f`; no direct push to `main` occurred.
+- Production deployment `dpl_3w3vvQfFnuzFUBqhsnvjx5zxGMro` reached Ready and the canonical alias
+  resolved to that exact commit during acceptance.
+- The bilingual desktop/tablet/mobile review passed. The Production three-page Privacy PDF flow
+  scanned all pages, generated a verified redacted PDF, kept the 340 px review rail, and rendered
+  all three result canvases in the 838 px left main region without horizontal overflow.
+- Production live acceptance passed once per locale: English returned exact
+  `anthropic/claude-sonnet-4.6`, Chinese returned exact `moonshotai/kimi-k3`, and both used the
+  independent `anthropic/claude-haiku-4.5` guard before retrieving 9 bounded chunks. Both responses
+  were bound to public snapshot
+  `99127978b4aeb74d182610ad0ae3554181b1dbd81392dae520a41bf4468978a3`.
+- Homepage Lighthouse scored 99 Performance, 100 Accessibility, 100 Best Practices, and 100 SEO.
+  Fixed routes returned HTTP 200 as static prerenders with the expected CSP, HSTS, permissions,
+  referrer, content-type, and frame-denial headers.
+- Typecheck, lint, evidence verification, production build, 37 assistant tests, dependency audit,
+  client disclosure scan, localization and link checks, secret scans, and the full browser matrix
+  passed. The formal browser run completed with 218 passed, 52 intentional skips, and zero errors.
 
 No direct push to `main`, force push, history rewrite, visibility change, tag, release, or
-unrelated-branch mutation is authorized or planned.
+unrelated-branch mutation occurred.
