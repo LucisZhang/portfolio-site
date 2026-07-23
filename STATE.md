@@ -34,7 +34,7 @@ Claude/Kimi provider. It does not authorize raw-file, credential, or full-packet
 - Chinese primary model: `moonshotai/kimi-k3`; default fallbacks:
   `qwen/qwen3.5-397b-a17b`, then `openai/gpt-5.4`.
 - Transient, timeout, model-route 404, malformed-JSON, and model-mismatch failures advance through
-  distinct models inside one 40-second request deadline; permanent or unsafe failures stop immediately.
+  distinct models inside one 58-second request deadline; permanent or unsafe failures stop immediately.
 - Public knowledge is pinned to 9 exact-commit GitHub repositories, 49 reviewed files, and 344
   chunks with SHA-256
   `43628d6deaae5f0d24db05a35c40ae27e2321be0f3b9ea4878baa4dbd59eb660`.

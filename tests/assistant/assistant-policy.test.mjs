@@ -107,9 +107,9 @@ test("hybrid RAG policy and bilingual model defaults are code-bound", () => {
   assert.throws(() => resolveAssistantModel("en", "bad model"), /invalid/u);
   assert.throws(() => resolveAssistantFallbackModels("en", "bad model"), /invalid/u);
   assert.deepEqual(assistantAttemptPlan(DEFAULT_ASSISTANT_MODEL_EN, DEFAULT_ASSISTANT_FALLBACK_MODELS_EN), [
-    { model: DEFAULT_ASSISTANT_MODEL_EN, timeoutMs: 26_000 },
-    { model: DEFAULT_ASSISTANT_FALLBACK_MODELS_EN[0], timeoutMs: 8_000 },
-    { model: DEFAULT_ASSISTANT_FALLBACK_MODELS_EN[1], timeoutMs: 5_000 },
+    { model: DEFAULT_ASSISTANT_MODEL_EN, timeoutMs: 38_000 },
+    { model: DEFAULT_ASSISTANT_FALLBACK_MODELS_EN[0], timeoutMs: 12_000 },
+    { model: DEFAULT_ASSISTANT_FALLBACK_MODELS_EN[1], timeoutMs: 7_000 },
   ]);
 });
 

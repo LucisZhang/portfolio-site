@@ -320,8 +320,8 @@ export function resolveAssistantFallbackModels(locale: AssistantLocale, configur
 
 export function assistantAttemptPlan(primary: string, fallbacks: readonly string[]): AssistantAttemptPlan[] {
   return [
-    { model: primary, timeoutMs: 26_000 },
-    ...fallbacks.slice(0, 2).map((model, index) => ({ model, timeoutMs: index === 0 ? 8_000 : 5_000 })),
+    { model: primary, timeoutMs: 38_000 },
+    ...fallbacks.slice(0, 2).map((model, index) => ({ model, timeoutMs: index === 0 ? 12_000 : 7_000 })),
   ];
 }
 
@@ -570,7 +570,7 @@ export async function executeAssistantRequest(
 
   const plan = assistantAttemptPlan(model, fallbackModels);
   const attempts: AssistantAttemptRecord[] = [];
-  const deadline = Date.now() + 40_000;
+  const deadline = Date.now() + 58_000;
   let lastRejection: AssistantOutputRejection | undefined;
   let lastReturnedModel: string | undefined;
   let lastFailureReason: AssistantFailureReason = "http_transient";

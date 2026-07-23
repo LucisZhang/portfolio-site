@@ -73,7 +73,7 @@ Check that:
    `moonshotai/kimi-k3`. Overrides, if any, must be explicit valid provider/model identifiers.
 5. Every outbound model request enforces `data_collection: deny`, `zdr: true`, and
    `require_parameters: true`, contains only retrieved evidence plus at most 6 recent messages,
-   stays inside the 40-second request deadline, and advances through the configured distinct-model
+   stays inside the 58-second request deadline, and advances through the configured distinct-model
    fallback order only for retryable failures.
 6. Output JSON is server-validated. Unknown/duplicate citation IDs, sensitive output, long copied
    evidence, malformed JSON, non-stop completion, returned-model mismatch, and oversized upstream
