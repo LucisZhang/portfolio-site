@@ -1,6 +1,6 @@
 # Public Portfolio state
 
-Updated: 2026-07-23 14:22 (Asia/Shanghai) / 2026-07-23 06:22 UTC
+Updated: 2026-07-23 16:06 (Asia/Shanghai) / 2026-07-23 08:06 UTC
 
 This file records the recruiter-safe state of the current public release. It contains no
 credentials, raw private candidate material, local source paths, or browser-session data.
@@ -10,10 +10,12 @@ Overall status: `V15_RELEASE_CANDIDATE`. Production remains the previously verif
 attached to the Production alias.
 
 The owner explicitly authorized the current branch push, ready pull request, exact-SHA Preview,
-one bounded English and one bounded Chinese assistant request in Preview and Production, normal PR
-merge to public `main`, and exact-SHA Production deployment. That authorization includes sending
-only the retrieved, bounded private-candidate excerpts to OpenRouter's ZDR route and the selected
-Claude/Kimi provider. It does not authorize raw-file, credential, or full-packet disclosure.
+normal PR merge to public `main`, and exact-SHA Production deployment. For this portfolio release
+task, the owner also granted standing authorization for all English Claude Sonnet 4.6 and Chinese
+Kimi K3 calls necessary to complete Preview and Production acceptance, without per-call
+reconfirmation. That authorization includes sending only the retrieved, bounded private-candidate
+excerpts to OpenRouter's ZDR route and the selected Claude/Kimi provider. It does not authorize a
+non-ZDR route, another provider, raw-file, credential, full-packet, or unrelated-task disclosure.
 
 ## Candidate delivery
 
