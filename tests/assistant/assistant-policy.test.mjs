@@ -392,6 +392,17 @@ test("fallback budget reaches a distinct model and classifies transient, permane
   assert.equal(calls, 1);
   assert.equal(unsafe.failureReason, "unsafe_output");
   assert.equal(unsafe.retryable, false);
+
+  const invalidStructuredOutput = await executeAssistantRequest(rawRequest("Tell me about Xiangguo."), {
+    clientIp: "198.51.100.171",
+    checkRate: () => allowedRate,
+    apiKey: "key",
+    retrieve: () => retrieval,
+    fetcher: async () => completedResponse("not-json"),
+  });
+  assert.equal(invalidStructuredOutput.status, 502);
+  assert.equal(invalidStructuredOutput.failureReason, "invalid_output");
+  assert.equal(invalidStructuredOutput.retryable, true);
 });
 
 test("invalid JSON and model mismatch advance through the fallback plan", async () => {

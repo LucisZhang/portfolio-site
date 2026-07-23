@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   ASSISTANT_PROJECT_IDS,
+  canonicalizeAssistantProjectMentions,
   projectReference,
   validateAssistantAnswerBlocks,
 } from "../../src/lib/assistant-project-references.ts";
@@ -58,4 +59,29 @@ test("answer block validation accepts only bounded typed project segments", () =
     type: "paragraph",
     segments: Array.from({ length: 25 }, () => ({ type: "text", text: "Evidence. " })),
   }], "en"), null);
+});
+
+test("plain-text known project mentions become canonical project segments", () => {
+  assert.deepEqual(canonicalizeAssistantProjectMentions([{
+    type: "paragraph",
+    segments: [{ type: "text", text: "Compare Release Guardian with ex-solver, then inspect 毛利控制塔。", strong: true }],
+  }]), [{
+    type: "paragraph",
+    segments: [
+      { type: "text", text: "Compare ", strong: true },
+      { type: "project", projectId: "release-guardian", strong: true },
+      { type: "text", text: " with ", strong: true },
+      { type: "project", projectId: "ex-solver", strong: true },
+      { type: "text", text: ", then inspect ", strong: true },
+      { type: "project", projectId: "margin-control-tower", strong: true },
+      { type: "text", text: "。", strong: true },
+    ],
+  }]);
+  assert.deepEqual(canonicalizeAssistantProjectMentions([{
+    type: "paragraph",
+    segments: [{ type: "text", text: "unrelated text" }, { type: "project", projectId: "rag-quality-lab" }],
+  }]), [{
+    type: "paragraph",
+    segments: [{ type: "text", text: "unrelated text" }, { type: "project", projectId: "rag-quality-lab" }],
+  }]);
 });
