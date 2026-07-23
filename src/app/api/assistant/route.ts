@@ -16,6 +16,7 @@ import {
   type AssistantCitation,
   type AssistantOutputRejection,
 } from "@/lib/assistant-policy";
+import type { AssistantAnswerBlock } from "@/lib/assistant-project-references";
 import {
   createAssistantRateLimiter,
   type AssistantRateLimiter,
@@ -66,6 +67,7 @@ function responseHeaders(
 function assistantResponse(
   reply: string,
   status: number,
+  blocks?: readonly AssistantAnswerBlock[],
   rate?: RateLimitDecision,
   responseReturnedModel?: string,
   outputRejection?: AssistantOutputRejection,
@@ -76,7 +78,7 @@ function assistantResponse(
   retrievalCount?: number,
   outboundPayloadSha256?: string,
 ) {
-  return NextResponse.json({ reply, ...(sources ? { sources } : {}) }, {
+  return NextResponse.json({ reply, ...(blocks ? { blocks } : {}), ...(sources ? { sources } : {}) }, {
     status,
     headers: responseHeaders(
       rate,
@@ -130,6 +132,7 @@ export async function POST(request: Request) {
   return assistantResponse(
     result.reply,
     result.status,
+    result.blocks,
     result.rate,
     result.responseReturnedModel,
     result.outputRejection,

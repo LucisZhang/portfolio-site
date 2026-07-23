@@ -80,7 +80,11 @@ function rawRequest(content, locale = "en", history = []) {
 }
 
 function answerJson(answer = "Xiangguo combines applied-AI delivery with evidence-oriented data systems.", citationIds = [chunks[0].id]) {
-  return JSON.stringify({ answer, citation_ids: citationIds, confidence: "supported" });
+  return JSON.stringify({
+    blocks: [{ type: "paragraph", segments: [{ type: "text", text: answer }] }],
+    citation_ids: citationIds,
+    confidence: "supported",
+  });
 }
 
 function completedResponse(content, model = DEFAULT_ASSISTANT_MODEL_EN) {
@@ -150,6 +154,10 @@ test("payload uses locale-specific model, ZDR routing, structured citations, and
   assert.equal(payload.model, DEFAULT_ASSISTANT_MODEL_EN);
   assert.deepEqual(payload.provider, { data_collection: "deny", zdr: true, require_parameters: true });
   assert.equal(payload.response_format.type, "json_schema");
+  assert.deepEqual(payload.response_format.json_schema.schema.properties.blocks.items.properties.segments.items.anyOf[1].properties.projectId.enum, [
+    "release-guardian", "streaming-reliability-lab", "rag-quality-lab", "privacy-preflight-web",
+    "margin-control-tower", "credit-policy-lab", "ex-solver", "Voice-in-Security", "Risk-Control-Portfolio",
+  ]);
   assert.deepEqual(payload.response_format.json_schema.schema.properties.citation_ids.items.enum, chunks.map((chunk) => chunk.id));
   assert.equal(payload.messages.length, 4);
   assert.match(payload.messages[0].content, /recruiter-facing advocate/u);
@@ -177,28 +185,21 @@ test("completion and output checks require one exact model response with valid g
   assert.deepEqual(protectAssistantOutput(answerJson(), chunks), {
     ok: true,
     answer: "Xiangguo combines applied-AI delivery with evidence-oriented data systems.",
+    blocks: [{ type: "paragraph", segments: [{ type: "text", text: "Xiangguo combines applied-AI delivery with evidence-oriented data systems." }] }],
     citationIds: [chunks[0].id],
     confidence: "supported",
   });
-  assert.deepEqual(
-    protectAssistantOutput(JSON.stringify({ answer: "Grounded claim.", citation_ids: [], confidence: "partial" }), chunks),
-    {
-      ok: true,
-      answer: "Grounded claim.",
-      citationIds: chunks.slice(0, 4).map((chunk) => chunk.id),
-      confidence: "partial",
-    },
-  );
+  assert.equal(protectAssistantOutput(answerJson("Grounded claim.", []), chunks).ok, false);
   assert.equal(
-    protectAssistantOutput(JSON.stringify({ answer: "A production-grade workflow.", citation_ids: [chunks[0].id], confidence: "supported" }), chunks).answer,
+    protectAssistantOutput(answerJson("A production-grade workflow."), chunks).answer,
     "A production-oriented workflow.",
   );
   for (const content of [
     "not-json",
-    JSON.stringify({ answer: "claim", citation_ids: ["unknown"], confidence: "supported" }),
-    JSON.stringify({ answer: "candidate@example.com", citation_ids: [chunks[0].id], confidence: "supported" }),
-    JSON.stringify({ answer: "Privacy Preflight also has a macOS app.", citation_ids: [chunks[0].id], confidence: "supported" }),
-    JSON.stringify({ answer: "claim", citation_ids: [chunks[0].id], confidence: "certain" }),
+    answerJson("claim", ["unknown"]),
+    answerJson("candidate@example.com"),
+    answerJson("Privacy Preflight also has a macOS app."),
+    JSON.stringify({ blocks: [{ type: "paragraph", segments: [{ type: "text", text: "claim" }] }], citation_ids: [chunks[0].id], confidence: "certain" }),
   ]) assert.equal(protectAssistantOutput(content, chunks).ok, false, content);
 });
 
@@ -336,7 +337,7 @@ test("rate limiting blocks upstream calls while transient 502 failures retry onc
     retrieve: () => retrieval,
     fetcher: async () => {
       calls += 1;
-      return completedResponse(JSON.stringify({ answer: "candidate@example.com", citation_ids: [chunks[0].id], confidence: "supported" }));
+      return completedResponse(answerJson("candidate@example.com"));
     },
   });
   assert.equal(unsafe.status, 502);

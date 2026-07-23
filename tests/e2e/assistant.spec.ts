@@ -103,7 +103,7 @@ test("assistant renders public and private evidence citations without overflow",
   await expect.poll(() => widget.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
 });
 
-test("assistant prompts follow the page context and Markdown project names become local links", async ({ page }) => {
+test("assistant prompts follow the page context and typed project segments become canonical links", async ({ page }) => {
   const contexts = [
     ["/", "Why is Xiangguo a strong Applied AI candidate?"],
     ["/ai", "Ask about Xiangguo's AI applications work…"],
@@ -123,7 +123,15 @@ test("assistant prompts follow the page context and Markdown project names becom
       status: 200,
       contentType: "application/json",
       body: JSON.stringify({
-        reply: "## Strongest match\n- **RAG Quality Lab** demonstrates repeatable AI evaluation.\n\nA strong Applied AI example.",
+        reply: "Strongest match\nRAG Quality Lab demonstrates repeatable AI evaluation.\nA strong Applied AI example.",
+        blocks: [
+          { type: "heading", segments: [{ type: "text", text: "Strongest match" }] },
+          { type: "bullet", segments: [
+            { type: "project", projectId: "rag-quality-lab", strong: true },
+            { type: "text", text: " demonstrates repeatable AI evaluation." },
+          ] },
+          { type: "paragraph", segments: [{ type: "text", text: "A strong Applied AI example." }] },
+        ],
         sources: [],
       }),
     });
