@@ -14,7 +14,7 @@ const finalRepositoryCommits = new Map([
   ["LucisZhang/rag-quality-lab", "bed604bb3ca49e641ba75e2999de29fa68b75754"],
   ["LucisZhang/privacy-preflight-web", "47eef37aa2aa39198c26f10fd5480c90274091ff"],
   ["LucisZhang/streaming-reliability-lab", "eda2a7c156059678ecae8c57f4452ef98bd9ae89"],
-  ["LucisZhang/margin-control-tower", "16ad870cd4a7a81ca919831e7b881a8462912773"],
+  ["LucisZhang/margin-control-tower", "bd68e65b676593dff46c5fec41a8f4879ce5066c"],
   ["LucisZhang/credit-policy-lab", "53dfd853c9b2d70476ed3b9250a7acdf01777887"],
 ]);
 

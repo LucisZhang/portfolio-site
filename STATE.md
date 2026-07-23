@@ -1,6 +1,6 @@
 # Public Portfolio state
 
-Updated: 2026-07-23 21:56 (Asia/Shanghai) / 2026-07-23 13:56 UTC
+Updated: 2026-07-23 22:10 (Asia/Shanghai) / 2026-07-23 14:10 UTC
 
 This file records the recruiter-safe state of the current release candidate. It contains no
 credentials, raw private candidate material, local source paths, or browser-session data.
@@ -26,7 +26,7 @@ The six recruiter-facing project repositories now resolve through normal PR merg
 - Streaming Reliability Lab: `eda2a7c156059678ecae8c57f4452ef98bd9ae89`
 - RAG Quality Lab: `bed604bb3ca49e641ba75e2999de29fa68b75754`
 - Privacy Preflight Web: `47eef37aa2aa39198c26f10fd5480c90274091ff`
-- Margin Control Tower: `16ad870cd4a7a81ca919831e7b881a8462912773`
+- Margin Control Tower: `bd68e65b676593dff46c5fec41a8f4879ce5066c`
 - Credit Policy Lab: `53dfd853c9b2d70476ed3b9250a7acdf01777887`
 
 Release Guardian's English homepage was rebuilt after source-and-evidence review, then aligned in
@@ -34,6 +34,9 @@ Chinese. RAG publishes the C2 adapters, 11,309-document manifest path, 130-quest
 path, runner, and tests without committing the generated knowledge base or claiming a C3 metric.
 Margin and Credit are self-contained, real-data-first repositories with their pipeline,
 provenance, source lock, validation code, derived artifacts, and optional synthetic fixtures.
+Margin follow-up PR #4 also corrected its browser-artifact README, data contract, and metric
+registry so Olist measurements and source-specific BRL semantics cannot be mistaken for the
+separate fixed-seed synthetic fixture.
 Streaming's current narration uses the final repository name; old `p1-reliability-lab` strings
 remain only where immutable historical logs, package names, or source namespaces require the
 original evidence identity.
@@ -62,9 +65,9 @@ original evidence identity.
   no evidence, private material, conversation history, source path, citation, or provider
   credential. Timeout, malformed output, returned-model mismatch, unavailable routing, sensitive
   scope, injection, ambiguity, and off-topic scope fail closed before retrieval and generation.
-- Public knowledge is pinned to 9 exact-commit repositories, 66 reviewed text files, and 531
+- Public knowledge is pinned to 9 exact-commit repositories, 66 reviewed text files, and 532
   bounded chunks with SHA-256
-  `10f43c583473a1a42bdda972f4de8c5d253091c3c380b82772f01f0d5ad019d9`.
+  `99127978b4aeb74d182610ad0ae3554181b1dbd81392dae520a41bf4468978a3`.
 - Private candidate material remains Git-ignored and server-only. Only retrieved bounded excerpts
   may be sent to the authorized ZDR provider route.
 

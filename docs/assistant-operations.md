@@ -21,9 +21,9 @@ The browser never receives the full knowledge stores or any provider credential.
 - Chinese default: `moonshotai/kimi-k3`
 - English fallback order: `openai/gpt-5.4`, then `qwen/qwen3.5-397b-a17b`.
 - Chinese fallback order: `qwen/qwen3.5-397b-a17b`, then `openai/gpt-5.4`.
-- Public snapshot: 9 repositories, 66 reviewed files, 531 bounded chunks
+- Public snapshot: 9 repositories, 66 reviewed files, 532 bounded chunks
 - Public snapshot SHA-256:
-  `10f43c583473a1a42bdda972f4de8c5d253091c3c380b82772f01f0d5ad019d9`
+  `99127978b4aeb74d182610ad0ae3554181b1dbd81392dae520a41bf4468978a3`
 - Current local private packet: 7 reviewed source files, 74 chunks; it is ignored by Git and its
   hash is reported at runtime without exposing its content or local source paths.
 - Retrieval: deterministic bilingual lexical scoring, alias/query expansion, per-source diversity,

@@ -58,11 +58,11 @@ Then require all of the following:
 
 Require policy `hybrid-portfolio-rag-v15-llm-guard`, evidence mode
 `pinned-github-plus-private-candidate-rag`, and public snapshot SHA-256
-`10f43c583473a1a42bdda972f4de8c5d253091c3c380b82772f01f0d5ad019d9`.
+`99127978b4aeb74d182610ad0ae3554181b1dbd81392dae520a41bf4468978a3`.
 
 Check that:
 
-1. Public generation covers 9 repositories, 66 reviewed files, and 531 chunks. Runtime performs no
+1. Public generation covers 9 repositories, 66 reviewed files, and 532 chunks. Runtime performs no
    GitHub fetch.
 2. The owner-selected private builder removes contact/secret-shaped values and superseded RAG
    metrics, produces a bounded gzip/base64 packet below the Git-ignored `.assistant-private/`

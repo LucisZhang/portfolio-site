@@ -70,7 +70,7 @@
     {
       "owner": "LucisZhang",
       "repo": "margin-control-tower",
-      "commit": "16ad870cd4a7a81ca919831e7b881a8462912773",
+      "commit": "bd68e65b676593dff46c5fec41a8f4879ce5066c",
       "label": { "en": "Margin Control Tower", "zh": "毛利控制塔" },
       "aliases": ["Margin Control Tower", "毛利控制塔", "margin", "毛利", "Olist", "DuckDB", "elasticity", "弹性", "scenario", "情景"],
       "files": [
