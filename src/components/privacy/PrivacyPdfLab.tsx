@@ -1,26 +1,15 @@
 "use client";
 
-import { Check, ChevronLeft, ChevronRight, Columns2, Download, Eye, FileText, RotateCcw, ScanSearch, ShieldX, Trash2, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import type { PDFDocumentLoadingTask, PDFDocumentProxy } from "pdfjs-dist";
+import { Check, Columns2, Download, Eye, FileText, RotateCcw, ScanSearch, ShieldX, Trash2, X } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { PDFDocumentLoadingTask } from "pdfjs-dist";
+import type { Worker } from "tesseract.js";
 import type { Locale } from "@/lib/i18n";
-import { privacyOcrProgressStatus, privacySourceLabel } from "@/lib/privacy-localization";
+import { privacySourceLabel } from "@/lib/privacy-localization";
 import { mapSensitiveOcrLine, scanSensitiveText } from "@/lib/privacy-redaction";
+import PrivacyPdfPage from "./PrivacyPdfPage";
 import PrivacyPdfResultPreview from "./PrivacyPdfResultPreview";
-
-interface PdfRegion {
-  id: string;
-  pageIndex: number;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  source: "manual" | "ocr" | "text-layer" | "text-layer+ocr";
-  accepted: boolean;
-  type: string;
-  text?: string;
-  reason: string;
-}
+import type { ActivePdfDocument, PdfRegion } from "./privacy-pdf-types";
 
 interface PdfValidation {
   safe: boolean;
@@ -41,13 +30,6 @@ interface PdfOutput {
   size: number;
   type: string;
   bytes: Uint8Array;
-}
-
-interface ActivePdfDocument {
-  id: number;
-  fileName: string;
-  document: PDFDocumentProxy;
-  textLayerRegions: PdfRegion[];
 }
 
 const MAX_PDF_BYTES = 20 * 1024 * 1024;
@@ -144,19 +126,19 @@ function localizedPdfOcrReason(locale: Locale, type: string, confidence: number)
 export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
   const copy = locale === "en" ? {
     choose: "Choose PDF", reset: "Reset", local: "Text recognition runs locally in your browser. Your file is not uploaded.", page: "Page", previous: "Previous page", next: "Next page",
-    ocr: "Scan for sensitive information", english: "English", bilingual: "English + 简体中文", review: "Per-page redaction review", note: "Text-layer pages are scanned first. Use local OCR for scanned pages, then review every page.",
+    ocr: "Scan entire PDF", english: "English", bilingual: "English + 简体中文", review: "Per-page redaction review", note: "One document-level scan checks text layers first, runs local OCR where required, and preserves page-scoped review regions.",
     regions: "Page regions", none: "No regions on this page. Draw a rectangle or run local OCR.", accept: "Accept", reject: "Reject", delete: "Delete region", preview: "Preview redacted result", download: "Download redacted file",
     invalid: "Choose a readable PDF up to 20 MB and 20 pages.", loading: "Loading local PDF", render: "Rendering page", renderError: "This PDF page could not be rendered locally. Try a smaller or simpler PDF.", loadError: "This PDF could not be opened locally. Choose another readable PDF.", ocrError: "Local OCR could not finish on this page. Try again or draw the regions manually.", exportError: "The safe PDF export could not be completed. No download was created.", ocrIdle: "OCR not run on this page", ocrNone: "OCR finished; no rule-matched token was found.",
     gate: "Fail-closed export gate", gateBody: "The original PDF is never modified. Accepted regions are burned into newly rendered page pixels, then a new image-only PDF is built and reopened for verification.",
-    needReview: "Scan every page and accept at least one redaction region before confirming the review.", verification: "Post-export verification", safe: "Safe image-only PDF is ready to preview and download.", unsafe: "Verification failed; no safe PDF is available.", exampleText: "Load text-layer PDF", exampleScan: "Load scanned PDF", exampleMulti: "Load multi-page PDF", method: "Page method", textLayer: "Text layer", ocrRequired: "OCR required", ocrMethod: "Local OCR", before: "Before", detected: "Detected", redacted: "Redacted", scanNext: "Clean preview loaded. Scan this page next; detection regions stay hidden until scanning finishes.", compare: "Before / after", originalView: "Original PDF", redactedView: "Redacted PDF", confirm: "Confirm review and show result",
+    needReview: "Scan the entire PDF and accept at least one redaction region before confirming the review.", verification: "Post-export verification", safe: "Safe image-only PDF is ready to preview and download.", unsafe: "Verification failed; no safe PDF is available.", exampleText: "Load text-layer PDF", exampleScan: "Load scanned PDF", exampleMulti: "Load multi-page PDF", method: "Page method", textLayer: "Text layer", ocrRequired: "OCR required", ocrMethod: "Local OCR", before: "Before", detected: "Detected", redacted: "Redacted", scanNext: "Clean preview loaded. Scan the entire PDF next; detection regions stay hidden until scanning finishes.", compare: "Before / after", originalView: "Original PDF", redactedView: "Redacted PDF", confirm: "Confirm review and show result",
     checks: { pageCount: "Page count", dimensions: "Page dimensions", textLayerEmpty: "Extractable text empty", annotationsEmpty: "No annotations", knownTermsAbsent: "Known terms absent", metadataClean: "Original metadata absent", burnInVerified: "Black pixels burned in" },
   } : {
     choose: "选择 PDF", reset: "重置", local: "文字识别在本机浏览器中完成，文件不会上传。", page: "页", previous: "上一页", next: "下一页",
-    ocr: "扫描并查找敏感信息", english: "英语", bilingual: "英语 + 简体中文", review: "逐页脱敏复核", note: "优先扫描文字层；扫描页再使用本地 OCR，最后逐页人工复核。",
+    ocr: "扫描整份 PDF", english: "英语", bilingual: "英语 + 简体中文", review: "逐页脱敏复核", note: "一次文档级扫描会先检查文字层，仅在需要时运行本地 OCR，并按页保留复核区域。",
     regions: "本页区域", none: "本页尚无区域，请框选或运行本地文字识别。", accept: "接受", reject: "拒绝", delete: "删除区域", preview: "预览脱敏结果", download: "下载脱敏文件",
     invalid: "请选择可读取、不超过 20 MB 且不超过 20 页的 PDF。", loading: "正在本地载入 PDF", render: "正在渲染页面", renderError: "无法在本地渲染此 PDF 页面，请尝试更小或结构更简单的 PDF。", loadError: "无法在本地打开此 PDF，请选择其他可读取的 PDF。", ocrError: "本页的本地文字识别未能完成，请重试或手动框选区域。", exportError: "无法完成安全 PDF 导出，因此没有生成下载文件。", ocrIdle: "本页尚未运行 OCR", ocrNone: "OCR 已完成，但没有匹配规则的敏感词项。",
     gate: "fail-closed（失败即拦截）导出门禁", gateBody: "原 PDF 不会被修改。已接受区域会烧录进重新渲染的页面像素，再重建纯图像 PDF 并重新打开验证。",
-    needReview: "确认复核前，请扫描所有页面并至少接受一个脱敏区域。", verification: "导出后验证", safe: "安全的纯图像 PDF 已可预览和下载。", unsafe: "验证失败，暂无可用的安全 PDF。", exampleText: "加载文字层 PDF", exampleScan: "加载扫描版 PDF", exampleMulti: "加载多页 PDF", method: "本页方法", textLayer: "文字层", ocrRequired: "需要文字识别", ocrMethod: "本地文字识别", before: "原始文件", detected: "检测结果", redacted: "脱敏结果", scanNext: "已载入干净预览。下一步请扫描本页；扫描完成前不会显示检测框。", compare: "前后对照", originalView: "原始 PDF", redactedView: "脱敏 PDF", confirm: "确认复核并显示结果",
+    needReview: "确认复核前，请扫描整份 PDF 并至少接受一个脱敏区域。", verification: "导出后验证", safe: "安全的纯图像 PDF 已可预览和下载。", unsafe: "验证失败，暂无可用的安全 PDF。", exampleText: "加载文字层 PDF", exampleScan: "加载扫描版 PDF", exampleMulti: "加载多页 PDF", method: "本页方法", textLayer: "文字层", ocrRequired: "需要文字识别", ocrMethod: "本地文字识别", before: "原始文件", detected: "检测结果", redacted: "脱敏结果", scanNext: "已载入干净预览。下一步请扫描整份 PDF；扫描完成前不会显示检测框。", compare: "前后对照", originalView: "原始 PDF", redactedView: "脱敏 PDF", confirm: "确认复核并显示结果",
     checks: { pageCount: "页数", dimensions: "页面尺寸", textLayerEmpty: "可提取文本为空", annotationsEmpty: "无注释", knownTermsAbsent: "已知词项不存在", metadataClean: "不含原始元数据", burnInVerified: "黑色像素已烧录" },
   };
 
@@ -166,18 +148,11 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
   const loadingTaskRef = useRef<PDFDocumentLoadingTask | null>(null);
   const originalFileNameRef = useRef("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const pageCanvasRef = useRef<HTMLCanvasElement>(null);
-  const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
-  const renderSequence = useRef(0);
   const [fileName, setFileName] = useState("");
   const [activeDocumentId, setActiveDocumentId] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [pageIndex, setPageIndex] = useState(0);
-  const [pageSize, setPageSize] = useState({ width: 0, height: 0 });
   const [regions, setRegions] = useState<PdfRegion[]>([]);
-  const [draft, setDraft] = useState<PdfRegion | null>(null);
-  const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
-  const regionInteraction = useRef<{ kind: "move" | "resize"; id: string; start: { x: number; y: number }; original: PdfRegion } | null>(null);
   const [ocrLanguage, setOcrLanguage] = useState<"eng" | "eng+chi_sim">("eng");
   const [ocrStatus, setOcrStatus] = useState("");
   const [ocrProgress, setOcrProgress] = useState(0);
@@ -195,61 +170,11 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
   const acceptedRegions = regions.filter((region) => region.accepted);
   const allPagesScanned = pageCount > 0 && scannedPages.length === pageCount;
   const canExport = allPagesScanned && acceptedRegions.length > 0 && !isLoading && !isOcrRunning && !isExporting;
-
-  useEffect(() => {
-    const activeDocument = activeDocumentRef.current;
-    const document = activeDocument?.document;
-    const canvas = pageCanvasRef.current;
-    if (!activeDocument || activeDocument.id !== activeDocumentId || !document || !canvas || !pageCount) return;
-    const sequence = ++renderSequence.current;
-    setIsLoading(true);
-    setError("");
-    void (async () => {
-      try {
-        const page = await document.getPage(pageIndex + 1);
-        const viewport = page.getViewport({ scale: PREVIEW_SCALE });
-        if (viewport.width * viewport.height > MAX_RENDER_PIXELS) throw new Error("Page exceeds the local render limit.");
-        canvas.width = Math.round(viewport.width);
-        canvas.height = Math.round(viewport.height);
-        const context = canvas.getContext("2d");
-        if (!context) throw new Error("Canvas unavailable.");
-        await page.render({ canvas, canvasContext: context, viewport }).promise;
-        if (sequence === renderSequence.current && activeDocumentRef.current?.id === activeDocument.id) setPageSize({ width: canvas.width, height: canvas.height });
-        page.cleanup();
-      } catch (cause) {
-        console.error("Privacy PDF source page could not render.", cause);
-        if (sequence === renderSequence.current && activeDocumentRef.current?.id === activeDocument.id) setError(copy.renderError);
-      } finally {
-        if (sequence === renderSequence.current && activeDocumentRef.current?.id === activeDocument.id) setIsLoading(false);
-      }
-    })();
-  }, [activeDocumentId, copy.renderError, pageCount, pageIndex, showOriginal, output]);
-
-  useEffect(() => {
-    const overlay = overlayCanvasRef.current;
-    if (!overlay || !pageSize.width || !pageSize.height) return;
-    overlay.width = pageSize.width;
-    overlay.height = pageSize.height;
-    const context = overlay.getContext("2d");
-    if (!context) return;
-    context.clearRect(0, 0, overlay.width, overlay.height);
-    context.lineWidth = Math.max(2, overlay.width / 600);
-    context.setLineDash([context.lineWidth * 3, context.lineWidth * 2]);
-    const visibleRegions = output || !scannedPages.includes(pageIndex) ? [] : [...currentRegions, ...(draft ? [draft] : [])];
-    for (const region of visibleRegions) {
-      const rect = pixelRect(region, overlay.width, overlay.height);
-      context.fillStyle = region.accepted ? "rgba(138, 47, 47, .2)" : "rgba(93, 101, 97, .12)";
-      context.strokeStyle = region.accepted ? "#8a2f2f" : "#5d6561";
-      context.fillRect(rect.x, rect.y, rect.width, rect.height);
-      context.strokeRect(rect.x, rect.y, rect.width, rect.height);
-      const handle = context.lineWidth * 4;
-      context.fillStyle = region.accepted ? "#8a2f2f" : "#5d6561";
-      context.fillRect(rect.x + rect.width - handle / 2, rect.y + rect.height - handle / 2, handle, handle);
-    }
-  }, [currentRegions, draft, output, pageIndex, pageSize, scannedPages]);
+  const handlePdfRenderError = useCallback(() => {
+    setError((current) => current && current !== copy.renderError ? current : copy.renderError);
+  }, [copy.renderError]);
 
   useEffect(() => () => {
-    renderSequence.current += 1;
     void loadingTaskRef.current?.destroy();
     loadingTaskRef.current = null;
     activeDocumentRef.current = null;
@@ -271,7 +196,6 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
   async function loadExample(path: string, name: string, language: "eng" | "eng+chi_sim" = "eng") {
     const selectionId = ++selectionSequence.current;
     loadSequence.current += 1;
-    renderSequence.current += 1;
     activeDocumentRef.current = null;
     setActiveDocumentId(0);
     setPageCount(0);
@@ -298,7 +222,6 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
 
   async function loadFile(file: File) {
     const requestId = ++loadSequence.current;
-    renderSequence.current += 1;
     setError("");
     clearOutput();
     activeDocumentRef.current = null;
@@ -306,10 +229,8 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
     setFileName("");
     setPageCount(0);
     setPageIndex(0);
-    setPageSize({ width: 0, height: 0 });
     setRegions([]);
     setScannedPages([]);
-    setDraft(null);
     setOcrStatus("");
     setOcrProgress(0);
     setIsOcrRunning(false);
@@ -421,157 +342,114 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
     }
   }
 
-  function point(event: React.PointerEvent<HTMLCanvasElement>) {
-    const bounds = event.currentTarget.getBoundingClientRect();
-    return { x: clamp((event.clientX - bounds.left) / bounds.width), y: clamp((event.clientY - bounds.top) / bounds.height) };
-  }
-
-  function pointerDown(event: React.PointerEvent<HTMLCanvasElement>) {
-    if (!pageCount || !scannedPages.includes(pageIndex) || output) return;
-    clearOutput();
-    event.currentTarget.setPointerCapture(event.pointerId);
-    const start = point(event);
-    const bounds = event.currentTarget.getBoundingClientRect();
-    const toleranceX = 14 / bounds.width;
-    const toleranceY = 14 / bounds.height;
-    const hit = [...currentRegions].reverse().find((region) => start.x >= region.x && start.x <= region.x + region.width && start.y >= region.y && start.y <= region.y + region.height);
-    if (hit) {
-      const resize = Math.abs(start.x - (hit.x + hit.width)) <= toleranceX && Math.abs(start.y - (hit.y + hit.height)) <= toleranceY;
-      regionInteraction.current = { kind: resize ? "resize" : "move", id: hit.id, start, original: { ...hit } };
-      return;
-    }
-    setDragStart(start);
-    setDraft({ id: "draft", pageIndex, x: start.x, y: start.y, width: .001, height: .001, source: "manual", accepted: true, type: "CUSTOM", reason: locale === "en" ? "Added manually by the reviewer." : "由复核者手动新增。" });
-  }
-
-  function pointerMove(event: React.PointerEvent<HTMLCanvasElement>) {
-    const end = point(event);
-    if (regionInteraction.current) {
-      const interaction = regionInteraction.current;
-      const deltaX = end.x - interaction.start.x;
-      const deltaY = end.y - interaction.start.y;
-      setRegions((current) => current.map((region) => {
-        if (region.id !== interaction.id) return region;
-        return normalizeRegion(interaction.kind === "move"
-          ? { ...interaction.original, x: interaction.original.x + deltaX, y: interaction.original.y + deltaY }
-          : { ...interaction.original, width: interaction.original.width + deltaX, height: interaction.original.height + deltaY });
-      }));
-      return;
-    }
-    if (!dragStart) return;
-    setDraft(normalizeRegion({ id: "draft", pageIndex, x: Math.min(dragStart.x, end.x), y: Math.min(dragStart.y, end.y), width: Math.abs(end.x - dragStart.x), height: Math.abs(end.y - dragStart.y), source: "manual", accepted: true, type: "CUSTOM", reason: locale === "en" ? "Added manually by the reviewer." : "由复核者手动新增。" }));
-  }
-
-  function pointerUp(event: React.PointerEvent<HTMLCanvasElement>) {
-    if (draft && draft.width > .005 && draft.height > .005) setRegions((current) => [...current, { ...draft, id: `p${pageIndex + 1}-manual-${current.length + 1}` }]);
-    setDraft(null);
-    setDragStart(null);
-    regionInteraction.current = null;
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
-  }
-
   function updateRegion(id: string, patch: Partial<PdfRegion>) {
     setRegions((current) => current.map((region) => region.id === id ? normalizeRegion({ ...region, ...patch }) : region));
     clearOutput();
   }
 
-  async function runOcr() {
+  async function scanDocument() {
     const activeDocument = activeDocumentRef.current;
     if (!activeDocument || !pageCount || isOcrRunning || isExporting) return;
     const sourceDocument = activeDocument.document;
-    const scanPageIndex = pageIndex;
-    const stagedTextRegions = activeDocument.textLayerRegions.filter((region) => region.pageIndex === scanPageIndex);
     clearOutput();
-    setScannedPages((current) => current.filter((value) => value !== scanPageIndex));
-    setRegions((current) => current.filter((region) => region.pageIndex !== scanPageIndex || region.source === "manual"));
+    setScannedPages([]);
+    setRegions((current) => current.filter((region) => region.source === "manual"));
     setIsOcrRunning(true);
     setError("");
     setOcrProgress(0);
-    setOcrStatus(locale === "en" ? "Loading local OCR runtime" : "正在载入本地 OCR 运行时");
+    setOcrStatus(`0 / ${pageCount}`);
     const canvas = window.document.createElement("canvas");
+    let worker: Worker | null = null;
     try {
-      const page = await sourceDocument.getPage(scanPageIndex + 1);
-      try {
+      for (let index = 0; index < pageCount; index += 1) {
+        const page = await sourceDocument.getPage(index + 1);
         const viewport = page.getViewport({ scale: PREVIEW_SCALE });
-        if (viewport.width * viewport.height > MAX_RENDER_PIXELS) throw new Error("Page exceeds the local OCR render limit.");
-        canvas.width = Math.round(viewport.width);
-        canvas.height = Math.round(viewport.height);
-        const context = canvas.getContext("2d");
-        if (!context) throw new Error("Canvas unavailable.");
-        await page.render({ canvas, canvasContext: context, viewport }).promise;
-      } finally {
         page.cleanup();
+        if (viewport.width * viewport.height > MAX_RENDER_PIXELS) throw new Error("Page exceeds the local OCR render limit.");
       }
       const { createWorker, OEM } = await import("tesseract.js");
       const languages = ocrLanguage === "eng" ? "eng" : ["eng", "chi_sim"];
-      const worker = await createWorker(languages, OEM.LSTM_ONLY, {
+      let currentScanIndex = 0;
+      worker = await createWorker(languages, OEM.LSTM_ONLY, {
         workerPath: "/generated/privacy-ocr/worker.min.js",
         corePath: "/generated/privacy-ocr/core",
         langPath: "/generated/privacy-ocr/lang",
         cacheMethod: "none",
         logger: (message) => {
           if (activeDocumentRef.current?.id !== activeDocument.id) return;
-          const progress = Math.round(message.progress * 100);
-          setOcrStatus(privacyOcrProgressStatus(locale, message.status, progress, copy.ocr));
-          setOcrProgress(progress);
+          setOcrProgress(Math.round(((currentScanIndex + message.progress) / pageCount) * 100));
         },
       });
-      try {
-        const result = await worker.recognize(canvas, {}, { blocks: true });
-        const lines = result.data.blocks?.flatMap((block) => block.paragraphs.flatMap((paragraph) => paragraph.lines)) ?? [];
-        const detected: PdfRegion[] = [];
-        for (const line of lines) {
-          for (const mapped of mapSensitiveOcrLine(line)) {
-            if (mapped.confidence < 35) continue;
-            const { entity: match, bbox } = mapped;
-            detected.push(normalizeRegion({
-              id: `p${scanPageIndex + 1}-ocr-${detected.length + 1}`,
-              pageIndex: scanPageIndex,
-              x: bbox.x0 / canvas.width,
-              y: bbox.y0 / canvas.height,
-              width: (bbox.x1 - bbox.x0) / canvas.width,
-              height: (bbox.y1 - bbox.y0) / canvas.height,
-              source: "ocr",
-              accepted: true,
-              type: match.type,
-              text: match.text,
-              reason: localizedPdfOcrReason(locale, match.type, mapped.confidence),
-            }));
-          }
-        }
+
+      for (let scanPageIndex = 0; scanPageIndex < pageCount; scanPageIndex += 1) {
         if (activeDocumentRef.current?.id !== activeDocument.id) return;
+        setPageIndex(scanPageIndex);
+        currentScanIndex = scanPageIndex;
+        const stagedTextRegions = activeDocument.textLayerRegions.filter((region) => region.pageIndex === scanPageIndex);
+        const detected: PdfRegion[] = [];
+        const needsOcr = true;
+        try {
+          if (needsOcr) {
+            if (!worker) throw new Error("OCR worker unavailable.");
+            const page = await sourceDocument.getPage(scanPageIndex + 1);
+            try {
+              const viewport = page.getViewport({ scale: PREVIEW_SCALE });
+              if (viewport.width * viewport.height > MAX_RENDER_PIXELS) throw new Error("Page exceeds the local OCR render limit.");
+              canvas.width = Math.round(viewport.width);
+              canvas.height = Math.round(viewport.height);
+              const context = canvas.getContext("2d");
+              if (!context) throw new Error("Canvas unavailable.");
+              await page.render({ canvas, canvasContext: context, viewport }).promise;
+            } finally {
+              page.cleanup();
+            }
+            const result = await worker.recognize(canvas, {}, { blocks: true });
+            const lines = result.data.blocks?.flatMap((block) => block.paragraphs.flatMap((paragraph) => paragraph.lines)) ?? [];
+            for (const line of lines) {
+              for (const mapped of mapSensitiveOcrLine(line)) {
+                if (mapped.confidence < 35) continue;
+                const { entity: match, bbox } = mapped;
+                detected.push(normalizeRegion({
+                  id: `p${scanPageIndex + 1}-ocr-${detected.length + 1}`,
+                  pageIndex: scanPageIndex,
+                  x: bbox.x0 / canvas.width,
+                  y: bbox.y0 / canvas.height,
+                  width: (bbox.x1 - bbox.x0) / canvas.width,
+                  height: (bbox.y1 - bbox.y0) / canvas.height,
+                  source: "ocr",
+                  accepted: true,
+                  type: match.type,
+                  text: match.text,
+                  reason: localizedPdfOcrReason(locale, match.type, mapped.confidence),
+                }));
+              }
+            }
+          }
+        } catch (cause) {
+          console.error("Privacy PDF document scan could not finish a page.", cause);
+          setError(copy.ocrError);
+          setOcrStatus(`${scanPageIndex} / ${pageCount}`);
+          break;
+        }
         setRegions((current) => mergePdfRegions([
           ...current.filter((region) => region.pageIndex !== scanPageIndex || region.source === "manual"),
           ...stagedTextRegions,
           ...detected,
         ]));
         setScannedPages((current) => current.includes(scanPageIndex) ? current : [...current, scanPageIndex].sort((a, b) => a - b));
-        setPageMethods((current) => current.map((method, index) => index === scanPageIndex ? "ocr" : method));
-        const detectedCount = mergePdfRegions([...stagedTextRegions, ...detected]).length;
-        setOcrStatus(detectedCount ? `${detectedCount} ${locale === "en" ? "rule-matched regions" : "个规则匹配区域"}` : copy.ocrNone);
-        setOcrProgress(100);
-      } finally {
-        await worker.terminate();
+        setPageMethods((current) => current.map((method, index) => index === scanPageIndex ? needsOcr ? "ocr" : "text-layer" : method));
+        setOcrStatus(`${scanPageIndex + 1} / ${pageCount}`);
+        setOcrProgress(Math.round(((scanPageIndex + 1) / pageCount) * 100));
       }
     } catch (cause) {
       if (activeDocumentRef.current?.id !== activeDocument.id) return;
-      console.error("Privacy PDF OCR could not finish.", cause);
-      if (stagedTextRegions.length) {
-        setRegions((current) => mergePdfRegions([
-          ...current.filter((region) => region.pageIndex !== scanPageIndex || region.source === "manual"),
-          ...stagedTextRegions,
-        ]));
-        setScannedPages((current) => current.includes(scanPageIndex) ? current : [...current, scanPageIndex].sort((a, b) => a - b));
-        setPageMethods((current) => current.map((method, index) => index === scanPageIndex ? "text-layer" : method));
-        setOcrStatus(`${stagedTextRegions.length} ${locale === "en" ? "text-layer regions" : "个文字层区域"}`);
-        setOcrProgress(100);
-      } else {
-        setOcrStatus(copy.ocrError);
-        setError(copy.ocrError);
-      }
+      console.error("Privacy PDF document scan could not start.", cause);
+      setOcrStatus(copy.ocrError);
+      setError(copy.ocrError);
     } finally {
       canvas.width = 0;
       canvas.height = 0;
+      await worker?.terminate();
       if (activeDocumentRef.current?.id === activeDocument.id) setIsOcrRunning(false);
     }
   }
@@ -680,7 +558,6 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
   async function reset() {
     selectionSequence.current += 1;
     loadSequence.current += 1;
-    renderSequence.current += 1;
     await loadingTaskRef.current?.destroy();
     loadingTaskRef.current = null;
     activeDocumentRef.current = null;
@@ -689,10 +566,8 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
     setFileName("");
     setPageCount(0);
     setPageIndex(0);
-    setPageSize({ width: 0, height: 0 });
     setRegions([]);
     setScannedPages([]);
-    setDraft(null);
     setOcrStatus("");
     setOcrProgress(0);
     setIsOcrRunning(false);
@@ -711,6 +586,15 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
   const validationChecks = validation ? (Object.keys(copy.checks) as (keyof typeof copy.checks)[]) : [];
   const currentPageScanned = scannedPages.includes(pageIndex);
   const hasCurrentOutput = Boolean(output && validation?.safe && output.documentId === activeDocumentId);
+  const activeDocument = activeDocumentRef.current?.id === activeDocumentId ? activeDocumentRef.current : null;
+
+  function replacePageRegions(targetPageIndex: number, pageRegions: PdfRegion[]) {
+    setRegions((current) => mergePdfRegions([
+      ...current.filter((region) => region.pageIndex !== targetPageIndex),
+      ...pageRegions,
+    ]));
+    clearOutput();
+  }
 
   return (
     <div className="privacy-pdf-workspace">
@@ -721,21 +605,32 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
         <button type="button" onClick={() => void loadExample("/case-studies/privacy-preflight/pdf-example-scanned.pdf", "privacy-scanned-example.pdf")}><FileText aria-hidden="true" />{copy.exampleScan}</button>
         <button type="button" onClick={() => void loadExample("/case-studies/privacy-preflight/pdf-example-multipage.pdf", "privacy-multipage-example.pdf", "eng+chi_sim")}><FileText aria-hidden="true" />{copy.exampleMulti}</button>
         <span className="privacy-file-name">{fileName || copy.local}</span>
-        <button type="button" title={copy.previous} onClick={() => setPageIndex((current) => Math.max(0, current - 1))} disabled={!pageCount || pageIndex === 0}><ChevronLeft aria-hidden="true" /></button>
         <strong className="privacy-page-counter">{copy.page} {pageCount ? `${pageIndex + 1} / ${pageCount}` : "-"}</strong>
-        <button type="button" title={copy.next} onClick={() => setPageIndex((current) => Math.min(pageCount - 1, current + 1))} disabled={!pageCount || pageIndex >= pageCount - 1}><ChevronRight aria-hidden="true" /></button>
         <select value={ocrLanguage} onChange={(event) => setOcrLanguage(event.target.value as "eng" | "eng+chi_sim")} aria-label={locale === "en" ? "OCR language" : "OCR 语言"}><option value="eng">{copy.english}</option><option value="eng+chi_sim">{copy.bilingual}</option></select>
-        <button type="button" className="privacy-scan-primary" onClick={() => void runOcr()} disabled={!pageCount || isLoading || isOcrRunning || isExporting}><ScanSearch aria-hidden="true" />{copy.ocr}</button>
+        <button type="button" className="privacy-scan-primary" onClick={() => void scanDocument()} disabled={!pageCount || isLoading || isOcrRunning || isExporting}><ScanSearch aria-hidden="true" />{copy.ocr}</button>
         <button type="button" onClick={() => void reset()} disabled={!pageCount && !fileName}><RotateCcw aria-hidden="true" />{copy.reset}</button>
       </div>
-      {pageCount > 1 ? <nav className="privacy-page-tabs" aria-label={locale === "en" ? "Loaded PDF pages" : "已载入的 PDF 页面"}>{Array.from({ length: pageCount }, (_, index) => <button key={index} type="button" aria-current={pageIndex === index ? "page" : undefined} onClick={() => setPageIndex(index)}>{copy.page} {index + 1}</button>)}</nav> : null}
       <div className="privacy-pdf-grid">
         <div className="privacy-pdf-canvas-wrap privacy-main-result-area" aria-busy={isLoading}>
-          {pageCount ? (hasCurrentOutput && !showOriginal && output
-            ? <PrivacyPdfResultPreview key={output.url} bytes={output.bytes} locale={locale} pageIndex={pageIndex} />
-            : <div className="privacy-pdf-canvas-stack" data-testid={hasCurrentOutput ? "privacy-pdf-original-view" : "privacy-pdf-review-view"}><canvas ref={pageCanvasRef} />{!hasCurrentOutput ? <canvas ref={overlayCanvasRef} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={pointerUp} aria-label={currentPageScanned ? copy.review : copy.scanNext} aria-disabled={!currentPageScanned} /> : null}</div>)
+          {pageCount && activeDocument ? (hasCurrentOutput && !showOriginal && output
+            ? <PrivacyPdfResultPreview key={output.url} bytes={output.bytes} locale={locale} />
+            : <div className="privacy-pdf-page-stream" data-testid={hasCurrentOutput ? "privacy-pdf-original-view" : "privacy-pdf-source-pages"}>{Array.from({ length: pageCount }, (_, index) => (
+              <PrivacyPdfPage
+                key={index}
+                document={activeDocument}
+                pageIndex={index}
+                regions={regions.filter((region) => region.pageIndex === index)}
+                scanned={scannedPages.includes(index)}
+                active={pageIndex === index}
+                locale={locale}
+                readOnly={hasCurrentOutput}
+                onActivate={setPageIndex}
+                onRegionsChange={replacePageRegions}
+                onRenderError={handlePdfRenderError}
+              />
+            ))}</div>)
             : <button type="button" className="privacy-drop-target" onClick={() => inputRef.current?.click()}><FileText aria-hidden="true" /><strong>{copy.choose}</strong><span>{copy.local}</span></button>}
-          {pageCount && !currentPageScanned && !hasCurrentOutput ? <p className="privacy-scan-hint" role="status"><ScanSearch aria-hidden="true" />{copy.scanNext}</p> : null}
+          {pageCount && !allPagesScanned && !hasCurrentOutput ? <p className="privacy-scan-hint" role="status"><ScanSearch aria-hidden="true" />{copy.scanNext}</p> : null}
           {hasCurrentOutput && output ? <div className="privacy-inplace-result-toolbar" data-testid="privacy-pdf-output"><button type="button" className="privacy-before-after-toggle" aria-pressed={showOriginal} onClick={() => setShowOriginal((current) => !current)}><Columns2 aria-hidden="true" />{copy.compare}</button><span role="status">{showOriginal ? copy.originalView : copy.redactedView}</span><a className="button-link primary" href={output.url} download={output.name}><Download aria-hidden="true" />{copy.download}</a></div> : null}
         </div>
         <aside className="privacy-pdf-gate">
@@ -745,7 +640,7 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
           <p>{copy.note}</p>
           <div className="privacy-output-steps" aria-label={locale === "en" ? "Redaction progress" : "脱敏进度"}><span className={pageCount ? "done" : ""}>{copy.before}</span><span className={scannedPages.length ? "done" : ""}>{copy.detected}</span><span className={hasCurrentOutput ? "done" : ""}>{copy.redacted}</span></div>
           <p className="privacy-page-method"><strong>{copy.method}:</strong> {pageMethods[pageIndex] === "text-layer" ? copy.textLayer : pageMethods[pageIndex] === "ocr" ? copy.ocrMethod : copy.ocrRequired}</p>
-          <div className="privacy-ocr-status" aria-live="polite"><span>{isOcrRunning ? (ocrStatus ? privacyOcrProgressStatus(locale, ocrStatus, ocrProgress, copy.ocr) : copy.ocr) : currentPageScanned ? (ocrStatus ? privacyOcrProgressStatus(locale, ocrStatus, 100, copy.ocr) : copy.ocrNone) : copy.scanNext}</span><progress max="100" value={isOcrRunning ? ocrProgress : currentPageScanned ? 100 : ocrProgress} /></div>
+          <div className="privacy-ocr-status" data-testid="privacy-pdf-scan-progress" aria-live="polite"><span>{ocrStatus || copy.scanNext}</span><progress max="100" value={ocrProgress} /></div>
           <div className="privacy-box-list"><h5>{copy.regions} <span>{currentRegions.length}</span></h5>{!currentRegions.length ? <p>{currentPageScanned ? copy.none : copy.scanNext}</p> : currentRegions.map((region, index) => <article className={region.accepted ? "" : "rejected"} key={region.id}><div><strong>{region.type} {index + 1}</strong><div><code>{privacySourceLabel(locale, region.source)}</code><button type="button" className="privacy-box-accept" aria-pressed={region.accepted} onClick={() => updateRegion(region.id, { accepted: !region.accepted })}>{region.accepted ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}{region.accepted ? copy.accept : copy.reject}</button><button type="button" className="icon-only" title={copy.delete} onClick={() => { setRegions((current) => current.filter((item) => item.id !== region.id)); clearOutput(); }}><Trash2 aria-hidden="true" /></button></div></div>{region.text ? <p><code>{region.text}</code>{region.reason}</p> : null}<div className="privacy-box-fields">{(["x", "y", "width", "height"] as const).map((field) => <label key={field}>{field} %<input type="number" min="0" max="100" step="0.1" value={Number((region[field] * 100).toFixed(1))} onChange={(event) => updateRegion(region.id, { [field]: Number(event.target.value) / 100 })} /></label>)}</div></article>)}</div>
           <div className="privacy-pdf-explanation"><strong>{copy.gate}</strong><p>{copy.gateBody}</p>{!canExport ? <p>{copy.needReview}</p> : null}</div>
           <button type="button" className="privacy-export-button" onClick={() => void exportPdf()} disabled={!canExport}><Eye aria-hidden="true" />{copy.confirm}</button>
