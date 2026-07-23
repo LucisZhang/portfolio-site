@@ -16,7 +16,7 @@ The browser never receives the full knowledge stores or any provider credential.
 
 - Policy revision: `hybrid-portfolio-rag-v15-llm-guard`
 - Evidence mode: `pinned-github-plus-private-candidate-rag`
-- Dedicated scope guard: `openai/gpt-5-mini`
+- Dedicated scope guard: `anthropic/claude-haiku-4.5` through an eligible ZDR route
 - English default: `anthropic/claude-sonnet-4.6`
 - Chinese default: `moonshotai/kimi-k3`
 - English fallback order: `openai/gpt-5.4`, then `qwen/qwen3.5-397b-a17b`.

@@ -1,6 +1,6 @@
 # Public Portfolio state
 
-Updated: 2026-07-23 21:34 (Asia/Shanghai) / 2026-07-23 13:34 UTC
+Updated: 2026-07-23 21:56 (Asia/Shanghai) / 2026-07-23 13:56 UTC
 
 This file records the recruiter-safe state of the current release candidate. It contains no
 credentials, raw private candidate material, local source paths, or browser-session data.
@@ -55,7 +55,7 @@ original evidence identity.
 
 - Policy: `hybrid-portfolio-rag-v15-llm-guard`.
 - Evidence mode: `pinned-github-plus-private-candidate-rag`.
-- Dedicated scope guard: `openai/gpt-5-mini`.
+- Dedicated scope guard: `anthropic/claude-haiku-4.5` through an eligible ZDR route.
 - English primary: `anthropic/claude-sonnet-4.6`; Chinese primary:
   `moonshotai/kimi-k3`.
 - The guard receives only the latest question, locale, and sanitized portfolio route. It receives
@@ -80,6 +80,9 @@ original evidence identity.
   Streaming PR #6.
 - The public knowledge snapshot reproduced exactly from its pinned GitHub sources. The offline
   Streaming compatibility pack also reproduced at the merged commit.
+- The dedicated guard payload was exercised against its configured Claude Haiku 4.5 ZDR route;
+  the route returned the exact structured rejection schema without receiving evidence or private
+  candidate material.
 - Assistant policy/unit verification passes 37 tests. TypeScript, ESLint, production build,
   evidence verification, localization, dependency audit, and the complete Playwright matrix pass
   locally. The clean full browser run completed with 218 tests passed, 52 intentional skips, and
