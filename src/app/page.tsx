@@ -51,7 +51,7 @@ export default function Home() {
       </section>
 
       <section className="project-index page-shell">
-        <div className="index-heading"><h2>{dict.navWork}</h2><p>{locale === "en" ? "Open any project to see what I built, how it works, and what the results don't prove." : "打开任意项目，看看我做了什么、项目如何运作，以及结果不能说明什么。"}</p></div>
+        <div className="index-heading"><h2>{dict.navWork}</h2><p>{locale === "en" ? "Open any project to see what I built, how it works, and how to verify it." : "打开任意项目，了解我做了什么、项目如何运作，以及如何验证结果。"}</p></div>
         <div className="project-table">
           {featuredProjects.map((project, index) => (
             <LocaleLink key={project.slug} href={`/${project.track}/${project.slug}`}>

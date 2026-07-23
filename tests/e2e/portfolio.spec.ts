@@ -56,6 +56,9 @@ for (const locale of ["en", "zh"] as const) {
         await expect(page.locator('a[href="mailto:HsiangKuoChang@outlook.com"]')).toBeVisible();
         await expect(page.locator('a[href="/resume.pdf"]')).toHaveCount(0);
         await expect(page.locator(".workspace-index")).toContainText(locale === "en" ? "6 interactive demos" : "6 个交互式演示");
+        await expect(page.locator(".index-heading p")).toHaveText(locale === "en"
+          ? "Open any project to see what I built, how it works, and how to verify it."
+          : "打开任意项目，了解我做了什么、项目如何运作，以及如何验证结果。");
         const projectLinks = page.locator(".project-table > a");
         await expect(projectLinks).toHaveCount(6);
         await expect(projectLinks.nth(0)).toHaveAttribute("href", /^\/ai\/release-guardian(?:\?lang=zh)?$/);
@@ -86,6 +89,7 @@ for (const locale of ["en", "zh"] as const) {
         }
       }
       if (route === "/engineering/p1-reliability-lab") {
+        await expect(page.locator('a[href="https://github.com/LucisZhang/streaming-reliability-lab"]')).toBeVisible();
         await expect(page.locator(".artifact-table > a")).toHaveCount(5);
         await expect(page.locator('a[href^="/artifact?"][href*="workstation-reproduction-guide.md"]')).toHaveCount(0);
         await expect(page.locator(".p1-pressure-evidence")).toContainText("55 ms → 19,022 ms");
@@ -98,6 +102,7 @@ for (const locale of ["en", "zh"] as const) {
         );
       }
       if (route === "/ai/release-guardian") {
+        await expect(page.locator('a[href="https://github.com/LucisZhang/release-guardian"]')).toBeVisible();
         await expect(page.locator(".finding-table > div:not(.finding-head)")).toHaveCount(5);
         await expect(page.locator(".release-funded-stats")).toContainText("$8.1214");
         await expect(page.locator(".release-funded-stats")).toContainText("~35.08 s");
