@@ -32,7 +32,7 @@ export interface AssistantPublicSourcePack {
     };
     owner: "LucisZhang";
     repo: "streaming-reliability-lab";
-    commit: "2fade314617c9ce55f92cc34da7e140806048cf0";
+    commit: "eda2a7c156059678ecae8c57f4452ef98bd9ae89";
     aliases: {
       en: readonly string[];
       zh: readonly string[];
@@ -50,7 +50,7 @@ export interface AssistantPublicCitation {
   };
   owner: "LucisZhang";
   repo: "streaming-reliability-lab";
-  commit: "2fade314617c9ce55f92cc34da7e140806048cf0";
+  commit: "eda2a7c156059678ecae8c57f4452ef98bd9ae89";
   path: string;
   lineStart: number;
   lineEnd: number;
@@ -65,7 +65,7 @@ export type AssistantPublicProjectResolution =
 const EXPECTED_PROJECT = Object.freeze({
   owner: "LucisZhang",
   repo: "streaming-reliability-lab",
-  commit: "2fade314617c9ce55f92cc34da7e140806048cf0",
+  commit: "eda2a7c156059678ecae8c57f4452ef98bd9ae89",
 });
 
 const EXPECTED_ALIASES = Object.freeze({

@@ -59,6 +59,11 @@ test.describe("analytics real-data evidence", () => {
     await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "en"));
   });
 
+  test.afterEach(async ({ page }) => {
+    // Explicitly unload DuckDB-WASM workers before Playwright tears down its test worker.
+    await page.goto("about:blank").catch(() => undefined);
+  });
+
   test("both project pages mount the dedicated methods section and authoritative dataset source", async ({ page }) => {
     for (const [route, project, sourceHref] of [
       ["/analytics/margin-control-tower", "margin", "https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce"],

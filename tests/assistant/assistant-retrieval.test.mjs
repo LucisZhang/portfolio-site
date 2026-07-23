@@ -10,12 +10,12 @@ import {
 } from "../../src/lib/assistant-retrieval.ts";
 
 const finalRepositoryCommits = new Map([
-  ["LucisZhang/release-guardian", "10b2a69406cc826d8215b25bcaafb3c564a0bda3"],
-  ["LucisZhang/rag-quality-lab", "8691ab82b4db40a828de8bf890688e66ce6c46a8"],
-  ["LucisZhang/privacy-preflight-web", "f7ca9c4062cc05a619c226f986f9abd57586db75"],
-  ["LucisZhang/streaming-reliability-lab", "2fade314617c9ce55f92cc34da7e140806048cf0"],
-  ["LucisZhang/margin-control-tower", "fe8f793209547c8b9167e65e722a3f3b3bc85df1"],
-  ["LucisZhang/credit-policy-lab", "5330e2a6b365079b932d2e70ed2b6ec33b962441"],
+  ["LucisZhang/release-guardian", "1be4af55301b6d4a2c1c98b1850a820b698208bb"],
+  ["LucisZhang/rag-quality-lab", "bed604bb3ca49e641ba75e2999de29fa68b75754"],
+  ["LucisZhang/privacy-preflight-web", "47eef37aa2aa39198c26f10fd5480c90274091ff"],
+  ["LucisZhang/streaming-reliability-lab", "eda2a7c156059678ecae8c57f4452ef98bd9ae89"],
+  ["LucisZhang/margin-control-tower", "bd68e65b676593dff46c5fec41a8f4879ce5066c"],
+  ["LucisZhang/credit-policy-lab", "53dfd853c9b2d70476ed3b9250a7acdf01777887"],
 ]);
 
 test("generated public knowledge is pinned to all six final repository releases", () => {

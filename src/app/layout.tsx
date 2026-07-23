@@ -6,7 +6,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import LocaleLink from "@/components/LocaleLink";
 import { LanguageProvider, LocalizedText, type LocalizedString } from "@/lib/i18n";
 import { featuredProjects, tracks } from "@/lib/projects";
-import { siteMetadata } from "@/lib/site-config";
+import { siteIdentity, siteMetadata } from "@/lib/site-config";
 import "./globals.css";
 
 const flourishLatin = localFont({
@@ -32,7 +32,7 @@ const navItems: { href: string; label: LocalizedString }[] = [
 ];
 
 function FooterCopy() {
-  return <LocalizedText text={{ en: "Public v1 portfolio. Every project says what actually ran — and what the results don't prove.", zh: "公开 v1 作品集。每个项目说明实际运行了什么，以及结果不能证明什么。" }} />;
+  return <span className="footer-pitch"><LocalizedText text={{ en: "Applied AI, data engineering, and analytics — built to turn ambiguous work into operable systems.", zh: "面向 AI 应用、数据工程与数据分析岗位——把模糊问题转化为可运行的系统。" }} /><a href={`mailto:${siteIdentity.profiles.email}`}><LocalizedText text={{ en: "Contact Xiangguo", zh: "联系章向国" }} /></a></span>;
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

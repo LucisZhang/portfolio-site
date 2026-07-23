@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   ASSISTANT_EVIDENCE_MODE,
   ASSISTANT_POLICY_REVISION,
+  DEFAULT_ASSISTANT_GUARD_MODEL,
   DEFAULT_ASSISTANT_MODEL_EN,
   DEFAULT_ASSISTANT_MODEL_ZH,
   DEFAULT_ASSISTANT_FALLBACK_MODELS_EN,
@@ -11,12 +12,14 @@ import {
   MAX_RESPONSE_TOKENS,
   MAX_RESPONSE_TOKENS_EN,
   assistantAttemptPlan,
+  buildAssistantGuardPayload,
   buildOpenRouterPayload,
   completedOpenRouterCompletion,
   executeAssistantRequest,
   parseAssistantBody,
   protectAssistantOutput,
   resolveAssistantModel,
+  resolveAssistantGuardModel,
   resolveAssistantFallbackModels,
   scopeDecision,
 } from "../../src/lib/assistant-policy.ts";
@@ -98,10 +101,11 @@ function completedResponse(content, model = DEFAULT_ASSISTANT_MODEL_EN) {
 }
 
 test("hybrid RAG policy and bilingual model defaults are code-bound", () => {
-  assert.equal(ASSISTANT_POLICY_REVISION, "hybrid-portfolio-rag-v14");
+  assert.equal(ASSISTANT_POLICY_REVISION, "hybrid-portfolio-rag-v17-claim-contradiction-guard");
   assert.equal(ASSISTANT_EVIDENCE_MODE, "pinned-github-plus-private-candidate-rag");
   assert.equal(resolveAssistantModel("en"), DEFAULT_ASSISTANT_MODEL_EN);
   assert.equal(resolveAssistantModel("zh"), DEFAULT_ASSISTANT_MODEL_ZH);
+  assert.equal(resolveAssistantGuardModel(), DEFAULT_ASSISTANT_GUARD_MODEL);
   assert.equal(resolveAssistantModel("en", "anthropic/claude-sonnet-5"), "anthropic/claude-sonnet-5");
   assert.deepEqual(resolveAssistantFallbackModels("en"), [...DEFAULT_ASSISTANT_FALLBACK_MODELS_EN]);
   assert.deepEqual(resolveAssistantFallbackModels("zh"), [...DEFAULT_ASSISTANT_FALLBACK_MODELS_ZH]);
@@ -118,6 +122,56 @@ test("hybrid RAG policy and bilingual model defaults are code-bound", () => {
     { model: DEFAULT_ASSISTANT_FALLBACK_MODELS_ZH[0], timeoutMs: 7_000 },
     { model: DEFAULT_ASSISTANT_FALLBACK_MODELS_ZH[1], timeoutMs: 2_000 },
   ]);
+});
+
+test("dedicated LLM guard sees only the question and page context, blocks algebra, and runs before retrieval", async () => {
+  const guardPayload = buildAssistantGuardPayload(DEFAULT_ASSISTANT_GUARD_MODEL, {
+    locale: "zh",
+    pageContext: "/ai/rag-quality-lab",
+    messages: [{ role: "user", content: "x-3=2 怎么解？" }],
+  });
+  assert.equal(guardPayload.model, DEFAULT_ASSISTANT_GUARD_MODEL);
+  assert.deepEqual(guardPayload.provider, { data_collection: "deny", zdr: true, require_parameters: true });
+  assert.match(guardPayload.messages[1].content, /x-3=2/u);
+  assert.doesNotMatch(guardPayload.messages[1].content, /private-packet|evidence-oriented data systems/u);
+
+  let fetchCalls = 0;
+  let retrievalCalls = 0;
+  const blocked = await executeAssistantRequest(rawRequest("x-3=2 怎么解？", "zh"), {
+    clientIp: "198.51.100.20",
+    checkRate: () => allowedRate,
+    apiKey: "test-only-key",
+    guardModel: DEFAULT_ASSISTANT_GUARD_MODEL,
+    retrieve: () => { retrievalCalls += 1; return retrieval; },
+    fetcher: async () => {
+      fetchCalls += 1;
+      return completedResponse(JSON.stringify({ decision: "reject_off_topic" }), DEFAULT_ASSISTANT_GUARD_MODEL);
+    },
+  });
+  assert.equal(blocked.status, 200);
+  assert.equal(blocked.guardDecision, "reject_off_topic");
+  assert.equal(fetchCalls, 1);
+  assert.equal(retrievalCalls, 0);
+
+  fetchCalls = 0;
+  retrievalCalls = 0;
+  const allowed = await executeAssistantRequest(rawRequest("How does the RAG Quality Lab fit an Applied AI role?"), {
+    clientIp: "198.51.100.21",
+    checkRate: () => allowedRate,
+    apiKey: "test-only-key",
+    guardModel: DEFAULT_ASSISTANT_GUARD_MODEL,
+    retrieve: () => { retrievalCalls += 1; return retrieval; },
+    fetcher: async () => {
+      fetchCalls += 1;
+      return fetchCalls === 1
+        ? completedResponse(JSON.stringify({ decision: "allow_portfolio" }), DEFAULT_ASSISTANT_GUARD_MODEL)
+        : completedResponse(answerJson());
+    },
+  });
+  assert.equal(allowed.status, 200);
+  assert.equal(allowed.guardDecision, "allow_portfolio");
+  assert.equal(fetchCalls, 2);
+  assert.equal(retrievalCalls, 1);
 });
 
 test("request parser accepts bounded conversation history and rejects oversized or malformed input", () => {
@@ -221,6 +275,10 @@ test("completion and output checks require one exact model response with valid g
     protectAssistantOutput(answerJson("A production-grade workflow."), chunks).answer,
     "A production-oriented workflow.",
   );
+  assert.equal(
+    protectAssistantOutput(answerJson("**Evidence:** run `verify-evidence.mjs`."), chunks).answer,
+    "Evidence: run verify-evidence.mjs.",
+  );
   for (const content of [
     "not-json",
     answerJson("claim", ["unknown"]),
@@ -228,6 +286,18 @@ test("completion and output checks require one exact model response with valid g
     answerJson("Privacy Preflight also has a macOS app."),
     JSON.stringify({ blocks: [{ type: "paragraph", segments: [{ type: "text", text: "claim" }] }], citation_ids: [chunks[0].id], confidence: "certain" }),
   ]) assert.equal(protectAssistantOutput(content, chunks).ok, false, content);
+  assert.equal(
+    protectAssistantOutput(answerJson("Margin Control Tower uses the real public Olist dataset; its synthetic fixture is fallback test data."), chunks).ok,
+    true,
+  );
+  assert.deepEqual(
+    protectAssistantOutput(answerJson("Margin Control Tower's dataset is a governed synthetic fixture."), chunks),
+    { ok: false, rejection: "unsafe_text" },
+  );
+  assert.deepEqual(
+    protectAssistantOutput(answerJson("毛利控制塔的数据集是合成数据。"), chunks, "zh"),
+    { ok: false, rejection: "unsafe_text" },
+  );
 });
 
 test("route core retrieves first, rate-limits second, calls one language model, and returns used citations", async () => {
@@ -315,7 +385,10 @@ test("local refusals, missing knowledge, missing configuration, and limiter fail
   });
   assert.equal(limiterFailure.status, 503);
   assert.equal(calls, 0);
-  assert.equal(rateCalls, 1);
+  // Once configuration is present, rate limiting now protects the dedicated
+  // scope guard as well as retrieval/generation. The two configured retrieval
+  // paths and the explicit limiter-failure path therefore reach the limiter.
+  assert.equal(rateCalls, 3);
 });
 
 test("fallback budget reaches a distinct model and classifies transient, permanent, and unsafe failures", async () => {
@@ -403,6 +476,22 @@ test("fallback budget reaches a distinct model and classifies transient, permane
   assert.equal(invalidStructuredOutput.status, 502);
   assert.equal(invalidStructuredOutput.failureReason, "invalid_output");
   assert.equal(invalidStructuredOutput.retryable, true);
+
+  let kimiCalls = 0;
+  const recoveredChineseOutput = await executeAssistantRequest(rawRequest("章向国有哪些项目证据？", "zh"), {
+    clientIp: "198.51.100.172",
+    checkRate: () => allowedRate,
+    apiKey: "key",
+    retrieve: () => retrieval,
+    fetcher: async () => {
+      kimiCalls += 1;
+      return completedResponse(kimiCalls === 1 ? "not-json" : answerJson("有依据的回答。"), DEFAULT_ASSISTANT_MODEL_ZH);
+    },
+  });
+  assert.equal(recoveredChineseOutput.status, 200);
+  assert.equal(kimiCalls, 2);
+  assert.deepEqual(recoveredChineseOutput.attemptedModels, [DEFAULT_ASSISTANT_MODEL_ZH, DEFAULT_ASSISTANT_MODEL_ZH]);
+  assert.equal(recoveredChineseOutput.attemptCount, 2);
 });
 
 test("invalid JSON and model mismatch advance through the fallback plan", async () => {

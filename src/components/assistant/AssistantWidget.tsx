@@ -31,7 +31,7 @@ const copy = {
   },
   zh: {
     eyebrow: "AI 作品集向导",
-    title: "询问章向国",
+    title: "询问作品集",
     intro: "可以询问章向国的背景、项目、优势、工作方式，或与某个岗位的匹配度等问题。",
     placeholder: "为什么章向国适合 AI 应用岗位？",
     send: "发送",
@@ -162,6 +162,7 @@ export default function AssistantWidget({ onClose }: { onClose: () => void }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           locale,
+          pageContext: pathname,
           messages: conversation.map(({ role, content: messageContent }) => ({ role, content: messageContent })),
         }),
       });

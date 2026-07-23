@@ -53,7 +53,10 @@ for (const locale of ["en", "zh"] as const) {
           : "求职方向：数据分析、数据工程与 AI 应用工程。");
         await expect(page.locator('a[href="https://github.com/LucisZhang"]')).toBeVisible();
         await expect(page.locator('a[href="https://www.linkedin.com/in/xiangguo-zhang"]')).toBeVisible();
-        await expect(page.locator('a[href="mailto:HsiangKuoChang@outlook.com"]')).toBeVisible();
+        const emailLinks = page.locator('a[href="mailto:HsiangKuoChang@outlook.com"]');
+        await expect(emailLinks).toHaveCount(2);
+        await expect(emailLinks.first()).toBeVisible();
+        await expect(emailLinks.last()).toBeVisible();
         await expect(page.locator('a[href="/resume.pdf"]')).toHaveCount(0);
         await expect(page.locator(".workspace-index")).toContainText(locale === "en" ? "6 interactive demos" : "6 个交互式演示");
         await expect(page.locator(".index-heading p")).toHaveText(locale === "en"
@@ -81,8 +84,10 @@ for (const locale of ["en", "zh"] as const) {
       }
       if (route.split("/").length === 3) {
         expect(bodyText).toContain(locale === "en" ? "Audience" : "受众群体");
-        await expect(page.locator(".notes-section h2")).toHaveText(locale === "en" ? "What this does not prove" : "这项结果不能说明什么");
-        await expect(page.locator(".notes-section h2")).toHaveCount(1);
+        await expect(page.locator(".notes-section h2")).toHaveText(locale === "en"
+          ? ["How this was verified", "What this does not prove"]
+          : ["如何验证", "这项结果不能说明什么"]);
+        await expect(page.locator(".notes-section h2")).toHaveCount(2);
         if (route !== "/analytics/analytics-tandem") {
           const repositoryLink = page.locator('.link-list a[href^="https://github.com/"]').first();
           await expect(repositoryLink).toHaveAttribute("href", /^https:\/\/github\.com\/LucisZhang\/[^/]+$/);
@@ -153,6 +158,15 @@ for (const locale of ["en", "zh"] as const) {
         await expect(page.locator(".related-engineering-evidence")).toContainText(locale === "en" ? "Related engineering evidence" : "相关工程证据");
         await expect(page.locator('.related-engineering-evidence a[href^="/ai/release-guardian"]')).toBeVisible();
         await expect(page.locator('.related-engineering-evidence a[href^="/ai/rag-quality-lab"]')).toBeVisible();
+      }
+      if (["/engineering", "/analytics", "/ai"].includes(route) && testInfo.project.name === "desktop") {
+        const projectLinks = page.locator(".track-projects > a");
+        expect(await projectLinks.count()).toBeGreaterThan(0);
+        if (await page.evaluate(() => CSS.supports("selector(:has(*))"))) {
+          await projectLinks.nth(0).focus();
+          await expect(projectLinks.nth(0)).toHaveCSS("opacity", "1");
+          if (await projectLinks.count() > 1) await expect(projectLinks.nth(1)).toHaveCSS("opacity", "0.55");
+        }
       }
 
       const robots = page.locator('meta[name="robots"]');
@@ -921,6 +935,19 @@ test.describe("Privacy Preflight Web", () => {
     const sourcePages = page.getByTestId("privacy-pdf-source-pages").locator("[data-pdf-page]");
     await expect(sourcePages).toHaveCount(3);
     await expect(page.locator(".privacy-page-tabs")).toHaveCount(0);
+    const sourceLayout = await page.getByTestId("privacy-pdf-source-pages").evaluate((stream) => {
+      const outer = stream.closest(".privacy-main-result-area");
+      return {
+        maxHeight: getComputedStyle(stream).maxHeight,
+        streamWidth: stream.clientWidth,
+        streamHeight: stream.clientHeight,
+        outerWidth: outer?.clientWidth ?? 0,
+        outerHeight: outer?.clientHeight ?? 0,
+      };
+    });
+    expect(sourceLayout.maxHeight).toBe("none");
+    expect(Math.abs(sourceLayout.streamWidth - sourceLayout.outerWidth)).toBeLessThanOrEqual(1);
+    expect(Math.abs(sourceLayout.streamHeight - sourceLayout.outerHeight)).toBeLessThanOrEqual(1);
 
     const sourceCounter = page.locator(".privacy-pdf-workspace > .privacy-actionbar .privacy-page-counter");
     await page.getByRole("button", { name: "Scan entire PDF" }).click();
@@ -941,6 +968,23 @@ test.describe("Privacy Preflight Web", () => {
     const resultPages = result.locator("[data-pdf-page]");
     const resultCanvases = resultPages.locator("canvas");
     await expect(resultPages).toHaveCount(3, { timeout: 100_000 });
+    const resultLayout = await result.evaluate((preview) => {
+      const outer = preview.closest(".privacy-main-result-area");
+      const stream = preview.querySelector<HTMLElement>("[data-testid='privacy-pdf-result-pages']");
+      const rail = outer?.nextElementSibling as HTMLElement | null;
+      return {
+        streamMaxHeight: stream ? getComputedStyle(stream).maxHeight : "missing",
+        previewWidth: (preview as HTMLElement).clientWidth,
+        previewHeight: (preview as HTMLElement).clientHeight,
+        outerWidth: (outer as HTMLElement | null)?.clientWidth ?? 0,
+        outerHeight: (outer as HTMLElement | null)?.clientHeight ?? 0,
+        railWidth: rail?.clientWidth ?? 0,
+      };
+    });
+    expect(resultLayout.streamMaxHeight).toBe("none");
+    expect(Math.abs(resultLayout.previewWidth - resultLayout.outerWidth)).toBeLessThanOrEqual(1);
+    expect(Math.abs(resultLayout.previewHeight - resultLayout.outerHeight)).toBeLessThanOrEqual(1);
+    expect(resultLayout.railWidth).toBeGreaterThan(300);
     for (let index = 0; index < 3; index += 1) {
       const resultCanvas = resultCanvases.nth(index);
       await resultCanvas.scrollIntoViewIfNeeded();

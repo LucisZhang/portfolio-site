@@ -2,7 +2,7 @@
 
 Updated: 2026-07-23 (Asia/Shanghai)
 
-This is the release procedure for the complete portfolio and the v14 bilingual hybrid-RAG
+This is the release procedure for the complete portfolio and the v15 bilingual hybrid-RAG
 assistant. It is also the stop-condition list: any unexplained diff, failed check, moved remote,
 missing secret, incorrect deployment SHA, private-data leak, or unsupported evidence claim blocks
 publication.
@@ -54,15 +54,15 @@ Then require all of the following:
 - Fixed routes remain statically generated; only `/api/assistant` and the intended artifact route
   are dynamic.
 
-## 3. Verify assistant v14 locally
+## 3. Verify assistant v17 locally
 
-Require policy `hybrid-portfolio-rag-v14`, evidence mode
+Require policy `hybrid-portfolio-rag-v17-claim-contradiction-guard`, evidence mode
 `pinned-github-plus-private-candidate-rag`, and public snapshot SHA-256
-`43628d6deaae5f0d24db05a35c40ae27e2321be0f3b9ea4878baa4dbd59eb660`.
+`99127978b4aeb74d182610ad0ae3554181b1dbd81392dae520a41bf4468978a3`.
 
 Check that:
 
-1. Public generation covers 9 repositories, 49 reviewed files, and 344 chunks. Runtime performs no
+1. Public generation covers 9 repositories, 66 reviewed files, and 532 chunks. Runtime performs no
    GitHub fetch.
 2. The owner-selected private builder removes contact/secret-shaped values and superseded RAG
    metrics, produces a bounded gzip/base64 packet below the Git-ignored `.assistant-private/`
@@ -71,18 +71,22 @@ Check that:
    single-project, cross-project, and role-fit questions in both English and Chinese.
 4. English resolves to `anthropic/claude-sonnet-4.6`; Chinese resolves to
    `moonshotai/kimi-k3`. Overrides, if any, must be explicit valid provider/model identifiers.
-5. Every outbound model request enforces `data_collection: deny`, `zdr: true`, and
+5. The dedicated scope guard receives only the latest question, locale, and sanitized portfolio
+   page path. It receives no public/private evidence or conversation history, uses one strict JSON
+   decision with no fallback, and fails closed before retrieval on timeout, invalid output, model
+   mismatch, ambiguous scope, or provider failure.
+6. Every outbound model request enforces `data_collection: deny`, `zdr: true`, and
    `require_parameters: true`, contains only retrieved evidence plus at most 6 recent messages,
    stays inside the 58-second request deadline, and advances through the configured distinct-model
    fallback order only for retryable failures.
-6. Output JSON is server-validated. Unknown/duplicate citation IDs, sensitive output, long copied
+7. Output JSON is server-validated. Unknown/duplicate citation IDs, sensitive output, long copied
    evidence, malformed JSON, non-stop completion, returned-model mismatch, and oversized upstream
    bodies fail closed.
-7. Request gates enforce JSON, same-origin browser use, 24 KB streamed bytes, a 3-second body-read
+8. Request gates enforce JSON, same-origin browser use, 24 KB streamed bytes, a 3-second body-read
    deadline, 2,500 characters per newest user message, and local refusal of prompt injection,
    knowledge/system-prompt exfiltration, explicit secret/contact requests, and explicit off-topic
    work.
-8. Upstash applies 10/minute and 50/day sliding windows to an `ip-hmac-v2` HMAC pseudonym. The raw
+9. Upstash applies 10/minute and 50/day sliding windows to an `ip-hmac-v2` HMAC pseudonym. The raw
    IP, HMAC secret, and Upstash token never enter logs or Redis keys. Limiter failure returns 503
    before any model call.
 
@@ -107,6 +111,7 @@ Before a Preview build, verify variable name and target only—never print value
 - `UPSTASH_REDIS_REST_TOKEN`
 - `ASSISTANT_RATE_LIMIT_HMAC_SECRET` (independent, at least 32 UTF-8 bytes)
 - `ASSISTANT_PRIVATE_KNOWLEDGE_B64_GZIP`
+- optional `ASSISTANT_GUARD_MODEL`
 - optional `ASSISTANT_MODEL_EN` and `ASSISTANT_MODEL_ZH`
 - optional `ASSISTANT_FALLBACK_MODELS_EN` and `ASSISTANT_FALLBACK_MODELS_ZH`
 
