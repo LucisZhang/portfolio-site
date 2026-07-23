@@ -157,6 +157,51 @@ test("assistant API rejects oversized input before any model request", async ({ 
   await expect(response.json()).resolves.toMatchObject({ reply: expect.stringContaining("2,500") });
 });
 
+test("assistant exposes a retryable failure without duplicating the user message", async ({ page }) => {
+  const requestBodies: Array<{ messages: Array<{ role: string; content: string }> }> = [];
+  await page.route("**/api/assistant", async (route) => {
+    const body = route.request().postDataJSON();
+    requestBodies.push(body);
+    if (requestBodies.length === 1) {
+      await route.fulfill({
+        status: 502,
+        contentType: "application/json",
+        body: JSON.stringify({
+          reply: "The assistant could not complete a grounded answer. Please try again or inspect the project pages directly.",
+          retryable: true,
+          failureReason: "http_transient",
+        }),
+      });
+      return;
+    }
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        reply: "RAG Quality Lab provides repeatable evaluation.",
+        blocks: [{ type: "paragraph", segments: [
+          { type: "project", projectId: "rag-quality-lab" },
+          { type: "text", text: " provides repeatable evaluation." },
+        ] }],
+        sources: [],
+        retryable: false,
+      }),
+    });
+  });
+  await page.goto("/", { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: "Ask about Xiangguo" }).click();
+  const widget = page.getByTestId("assistant-widget");
+  const question = "How does the RAG project demonstrate his strengths?";
+  await widget.getByPlaceholder("Why is Xiangguo a strong Applied AI candidate?").fill(question);
+  await widget.getByRole("button", { name: "Send", exact: true }).click();
+  await widget.getByRole("button", { name: "Retry", exact: true }).click();
+  await expect(widget.getByRole("link", { name: "RAG Quality Lab" })).toBeVisible();
+  await expect(widget.locator("article").filter({ hasText: question })).toHaveCount(1);
+  expect(requestBodies).toHaveLength(2);
+  expect(requestBodies[0].messages.filter((message) => message.role === "user")).toHaveLength(1);
+  expect(requestBodies[1].messages.filter((message) => message.role === "user")).toHaveLength(1);
+});
+
 test("assistant API rejects cross-site and non-JSON requests before rate limiting", async ({ request }) => {
   const body = JSON.stringify({ locale: "en", messages: [{ role: "user", content: "Tell me about Xiangguo Zhang." }] });
   const textPlain = await request.post("/api/assistant", { data: body, headers: { "Content-Type": "text/plain" } });

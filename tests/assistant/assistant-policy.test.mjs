@@ -8,6 +8,7 @@ import {
   DEFAULT_ASSISTANT_FALLBACK_MODELS_EN,
   DEFAULT_ASSISTANT_FALLBACK_MODELS_ZH,
   MAX_INPUT_CHARACTERS,
+  assistantAttemptPlan,
   buildOpenRouterPayload,
   completedOpenRouterCompletion,
   executeAssistantRequest,
@@ -105,6 +106,11 @@ test("hybrid RAG policy and bilingual model defaults are code-bound", () => {
   assert.deepEqual(resolveAssistantFallbackModels("en", "openai/gpt-5.4, qwen/qwen3.5-397b-a17b"), [...DEFAULT_ASSISTANT_FALLBACK_MODELS_EN]);
   assert.throws(() => resolveAssistantModel("en", "bad model"), /invalid/u);
   assert.throws(() => resolveAssistantFallbackModels("en", "bad model"), /invalid/u);
+  assert.deepEqual(assistantAttemptPlan(DEFAULT_ASSISTANT_MODEL_EN, DEFAULT_ASSISTANT_FALLBACK_MODELS_EN), [
+    { model: DEFAULT_ASSISTANT_MODEL_EN, timeoutMs: 18_000 },
+    { model: DEFAULT_ASSISTANT_FALLBACK_MODELS_EN[0], timeoutMs: 11_000 },
+    { model: DEFAULT_ASSISTANT_FALLBACK_MODELS_EN[1], timeoutMs: 8_000 },
+  ]);
 });
 
 test("request parser accepts bounded conversation history and rejects oversized or malformed input", () => {
@@ -235,6 +241,8 @@ test("route core retrieves first, rate-limits second, calls one language model, 
   assert.equal(result.publicSnapshotSha256, retrieval.publicSnapshotSha256);
   assert.equal(result.privateSnapshotSha256, retrieval.privateSnapshotSha256);
   assert.equal(result.retrievalCount, 2);
+  assert.equal(result.attemptCount, 1);
+  assert.deepEqual(result.attemptedModels, [DEFAULT_ASSISTANT_MODEL_EN]);
   assert.match(result.outboundPayloadSha256, /^[a-f0-9]{64}$/u);
   const payload = JSON.parse(calls[0].init.body);
   assert.equal(payload.provider.zdr, true);
@@ -289,7 +297,7 @@ test("local refusals, missing knowledge, missing configuration, and limiter fail
   assert.equal(rateCalls, 1);
 });
 
-test("rate limiting blocks upstream calls while transient 502 failures retry once and then fall back", async () => {
+test("fallback budget reaches a distinct model and classifies transient, permanent, and unsafe failures", async () => {
   let calls = 0;
   const limited = await executeAssistantRequest(rawRequest("Tell me about Xiangguo."), {
     clientIp: "198.51.100.14",
@@ -310,12 +318,14 @@ test("rate limiting blocks upstream calls while transient 502 failures retry onc
     fetcher: async (_url, init) => {
       const model = JSON.parse(init.body).model;
       models.push(model);
-      if (models.length < 3) return new Response("bad gateway", { status: 502 });
+      if (models.length < 2) return new Response("bad gateway", { status: 502 });
       return completedResponse(answerJson(), model);
     },
   });
   assert.equal(recovered.status, 200);
-  assert.deepEqual(models, [DEFAULT_ASSISTANT_MODEL_EN, DEFAULT_ASSISTANT_MODEL_EN, DEFAULT_ASSISTANT_FALLBACK_MODELS_EN[0]]);
+  assert.deepEqual(models, [DEFAULT_ASSISTANT_MODEL_EN, DEFAULT_ASSISTANT_FALLBACK_MODELS_EN[0]]);
+  assert.deepEqual(recovered.attemptedModels, models);
+  assert.equal(recovered.attemptCount, 2);
   assert.equal(recovered.responseReturnedModel, DEFAULT_ASSISTANT_FALLBACK_MODELS_EN[0]);
 
   calls = 0;
@@ -327,7 +337,22 @@ test("rate limiting blocks upstream calls while transient 502 failures retry onc
     fetcher: async () => { calls += 1; return new Response("unavailable", { status: 503 }); },
   });
   assert.equal(exhausted.status, 502);
-  assert.equal(calls, 2 + DEFAULT_ASSISTANT_FALLBACK_MODELS_EN.length);
+  assert.equal(calls, 1 + DEFAULT_ASSISTANT_FALLBACK_MODELS_EN.length);
+  assert.equal(exhausted.failureReason, "http_transient");
+  assert.equal(exhausted.retryable, true);
+
+  calls = 0;
+  const permanent = await executeAssistantRequest(rawRequest("Tell me about Xiangguo."), {
+    clientIp: "198.51.100.160",
+    checkRate: () => allowedRate,
+    apiKey: "key",
+    retrieve: () => retrieval,
+    fetcher: async () => { calls += 1; return new Response("bad request", { status: 400 }); },
+  });
+  assert.equal(permanent.status, 502);
+  assert.equal(calls, 1);
+  assert.equal(permanent.failureReason, "http_permanent");
+  assert.equal(permanent.retryable, false);
 
   calls = 0;
   const unsafe = await executeAssistantRequest(rawRequest("Tell me about Xiangguo."), {
@@ -342,6 +367,30 @@ test("rate limiting blocks upstream calls while transient 502 failures retry onc
   });
   assert.equal(unsafe.status, 502);
   assert.equal(calls, 1);
+  assert.equal(unsafe.failureReason, "unsafe_output");
+  assert.equal(unsafe.retryable, false);
+});
+
+test("invalid JSON and model mismatch advance through the fallback plan", async () => {
+  for (const firstResponse of [
+    () => new Response("not-json", { status: 200, headers: { "Content-Type": "application/json" } }),
+    () => completedResponse(answerJson(), "other/model"),
+  ]) {
+    const models = [];
+    const result = await executeAssistantRequest(rawRequest("Tell me about Xiangguo."), {
+      clientIp: "198.51.100.161",
+      checkRate: () => allowedRate,
+      apiKey: "key",
+      retrieve: () => retrieval,
+      fetcher: async (_url, init) => {
+        const model = JSON.parse(init.body).model;
+        models.push(model);
+        return models.length === 1 ? firstResponse() : completedResponse(answerJson(), model);
+      },
+    });
+    assert.equal(result.status, 200);
+    assert.deepEqual(models, [DEFAULT_ASSISTANT_MODEL_EN, DEFAULT_ASSISTANT_FALLBACK_MODELS_EN[0]]);
+  }
 });
 
 test("primary model can complete after fourteen seconds without being aborted", { timeout: 20_000 }, async () => {

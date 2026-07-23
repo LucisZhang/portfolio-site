@@ -83,6 +83,21 @@ export interface AssistantExecutionDependencies {
   retrieve?: (question: string, privateEncoded?: string) => AssistantRetrievalResult | null;
 }
 
+export type AssistantFailureReason =
+  | "timeout"
+  | "http_transient"
+  | "http_permanent"
+  | "invalid_json"
+  | "model_mismatch"
+  | "invalid_output"
+  | "unsafe_output";
+export interface AssistantAttemptPlan { model: string; timeoutMs: number; }
+export interface AssistantAttemptRecord {
+  model: string;
+  timeoutMs: number;
+  outcome: "success" | AssistantFailureReason;
+}
+
 export interface AssistantExecutionResult {
   reply: string;
   blocks?: readonly AssistantAnswerBlock[];
@@ -96,6 +111,11 @@ export interface AssistantExecutionResult {
   combinedSnapshotSha256?: string;
   retrievalCount?: number;
   outboundPayloadSha256?: string;
+  attempts?: readonly AssistantAttemptRecord[];
+  attemptedModels?: readonly string[];
+  failureReason?: AssistantFailureReason;
+  attemptCount?: number;
+  retryable?: boolean;
 }
 
 const replies: Record<AssistantProblem, Record<AssistantLocale, string>> = {
@@ -294,6 +314,17 @@ export function resolveAssistantFallbackModels(locale: AssistantLocale, configur
     : [...(locale === "zh" ? DEFAULT_ASSISTANT_FALLBACK_MODELS_ZH : DEFAULT_ASSISTANT_FALLBACK_MODELS_EN)];
   if (values.some((value) => !validModelIdentifier(value))) throw new Error("assistant fallback model identifier is invalid");
   return [...new Set(values)];
+}
+
+export function assistantAttemptPlan(primary: string, fallbacks: readonly string[]): AssistantAttemptPlan[] {
+  return [
+    { model: primary, timeoutMs: 18_000 },
+    ...fallbacks.slice(0, 2).map((model, index) => ({ model, timeoutMs: index === 0 ? 11_000 : 8_000 })),
+  ];
+}
+
+function retryableFailure(reason: AssistantFailureReason) {
+  return reason === "timeout" || reason === "http_transient" || reason === "invalid_json" || reason === "model_mismatch";
 }
 
 function buildSystemPrompt(locale: AssistantLocale, retrieval: AssistantRetrievalResult) {
@@ -539,13 +570,17 @@ export async function executeAssistantRequest(
   }
   if (!rate.allowed) return { reply: localizedProblem("rate_limited", locale), status: 429, rate };
 
-  const attempts = [model, model, ...fallbackModels];
+  const plan = assistantAttemptPlan(model, fallbackModels);
+  const attempts: AssistantAttemptRecord[] = [];
   const deadline = Date.now() + 40_000;
   let lastRejection: AssistantOutputRejection | undefined;
   let lastReturnedModel: string | undefined;
-  for (const [attemptIndex, attemptModel] of attempts.entries()) {
+  let lastFailureReason: AssistantFailureReason = "http_transient";
+  for (const attempt of plan) {
     const remaining = deadline - Date.now();
     if (remaining < 1_000) break;
+    const attemptModel = attempt.model;
+    const timeoutMs = Math.min(attempt.timeoutMs, remaining);
     const payload = buildOpenRouterPayload(attemptModel, locale, messages, retrieval);
     const outboundPayloadSha256 = sha256Json(payload);
     let upstream: Response;
@@ -560,13 +595,19 @@ export async function executeAssistantRequest(
         },
         body: JSON.stringify(payload),
         cache: "no-store",
-        signal: AbortSignal.timeout(Math.min(attemptIndex === 0 ? 25_000 : 14_000, remaining)),
+        signal: AbortSignal.timeout(timeoutMs),
       });
-    } catch {
+    } catch (error) {
+      lastFailureReason = error instanceof DOMException && error.name === "TimeoutError" ? "timeout" : "http_transient";
+      attempts.push({ model: attemptModel, timeoutMs, outcome: lastFailureReason });
       continue;
     }
     if (!upstream.ok) {
-      if (![408, 409, 425, 429].includes(upstream.status) && upstream.status < 500) break;
+      lastFailureReason = [408, 409, 425, 429].includes(upstream.status) || upstream.status >= 500
+        ? "http_transient"
+        : "http_permanent";
+      attempts.push({ model: attemptModel, timeoutMs, outcome: lastFailureReason });
+      if (!retryableFailure(lastFailureReason)) break;
       continue;
     }
 
@@ -574,20 +615,27 @@ export async function executeAssistantRequest(
     try {
       completionValue = await readAssistantUpstreamJson(upstream);
     } catch {
+      lastFailureReason = "invalid_json";
+      attempts.push({ model: attemptModel, timeoutMs, outcome: lastFailureReason });
       continue;
     }
     const completion = completedOpenRouterCompletion(completionValue, attemptModel);
     if (!completion.ok) {
       lastRejection = completion.rejection;
+      lastFailureReason = completion.rejection === "model_mismatch" ? "model_mismatch" : "invalid_output";
+      attempts.push({ model: attemptModel, timeoutMs, outcome: lastFailureReason });
+      if (!retryableFailure(lastFailureReason)) break;
       continue;
     }
     lastReturnedModel = completion.responseReturnedModel;
     const protectedOutput = protectAssistantOutput(completion.content, retrieval.chunks, locale);
     if (!protectedOutput.ok) {
       lastRejection = protectedOutput.rejection;
-      if (protectedOutput.rejection === "unsafe_text") break;
-      continue;
+      lastFailureReason = protectedOutput.rejection === "unsafe_text" ? "unsafe_output" : "invalid_output";
+      attempts.push({ model: attemptModel, timeoutMs, outcome: lastFailureReason });
+      break;
     }
+    attempts.push({ model: attemptModel, timeoutMs, outcome: "success" });
     return {
       reply: protectedOutput.answer,
       blocks: protectedOutput.blocks,
@@ -600,13 +648,22 @@ export async function executeAssistantRequest(
       combinedSnapshotSha256: retrieval.combinedSnapshotSha256,
       retrievalCount: retrieval.chunks.length,
       outboundPayloadSha256,
+      attempts,
+      attemptedModels: attempts.map((record) => record.model),
+      attemptCount: attempts.length,
+      retryable: false,
     };
   }
   return {
-    reply: localizedProblem(lastRejection === "unsafe_text" || lastRejection === "model_mismatch" ? "unsafe_output" : "upstream_failed", locale),
+    reply: localizedProblem(lastFailureReason === "unsafe_output" || lastFailureReason === "model_mismatch" ? "unsafe_output" : "upstream_failed", locale),
     status: 502,
     rate,
     responseReturnedModel: lastReturnedModel,
     outputRejection: lastRejection,
+    attempts,
+    attemptedModels: attempts.map((record) => record.model),
+    failureReason: lastFailureReason,
+    attemptCount: attempts.length,
+    retryable: retryableFailure(lastFailureReason),
   };
 }

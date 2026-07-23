@@ -18,10 +18,8 @@ The browser never receives the full knowledge stores or any provider credential.
 - Evidence mode: `pinned-github-plus-private-candidate-rag`
 - English default: `anthropic/claude-sonnet-4.6`
 - Chinese default: `moonshotai/kimi-k3`
-- English fallback order: retry Sonnet once, then `openai/gpt-5.4`, then
-  `qwen/qwen3.5-397b-a17b`.
-- Chinese fallback order: retry Kimi K3 once, then `qwen/qwen3.5-397b-a17b`, then
-  `openai/gpt-5.4`.
+- English fallback order: `openai/gpt-5.4`, then `qwen/qwen3.5-397b-a17b`.
+- Chinese fallback order: `qwen/qwen3.5-397b-a17b`, then `openai/gpt-5.4`.
 - Public snapshot: 9 repositories, 44 reviewed files, 364 bounded chunks
 - Public snapshot SHA-256:
   `b8cc614034bb0b0fc4b878553d08141471a8cb548698809f70f8f1819d97a777`
@@ -71,7 +69,9 @@ public portfolio evidence has authority over project metrics and claim boundarie
 may add background and project stories, but cannot revive superseded RAG corpus, latency, quality,
 or regression metrics. The output is strict JSON with an answer, retrieved citation IDs, and a
 bounded confidence value. Unknown citation IDs, sensitive output, very long copied passages,
-malformed JSON, model mismatch, or an incomplete upstream response fail closed with no retry.
+malformed JSON, model mismatch, or an incomplete upstream response fail closed. Timeout,
+transient HTTP, invalid JSON, and model mismatch failures may advance to the next planned model;
+permanent HTTP, invalid output, and unsafe output stop immediately.
 
 ## Environment variables
 
@@ -86,8 +86,8 @@ Server-only variables:
 | `ASSISTANT_PRIVATE_KNOWLEDGE_B64_GZIP` | Yes for hybrid private RAG | Reviewed private packet |
 | `ASSISTANT_MODEL_EN` | Optional | Overrides the code-bound English default |
 | `ASSISTANT_MODEL_ZH` | Optional | Overrides the code-bound Chinese default |
-| `ASSISTANT_FALLBACK_MODELS_EN` | Optional | Comma-separated English fallback order after one same-model retry |
-| `ASSISTANT_FALLBACK_MODELS_ZH` | Optional | Comma-separated Chinese fallback order after one same-model retry |
+| `ASSISTANT_FALLBACK_MODELS_EN` | Optional | Comma-separated English fallback order |
+| `ASSISTANT_FALLBACK_MODELS_ZH` | Optional | Comma-separated Chinese fallback order |
 
 None may use the `NEXT_PUBLIC_` prefix. Preview and Production must each have a dedicated HMAC
 secret; do not reuse the Upstash token. Validate variable names and deployment targets without
@@ -127,8 +127,10 @@ Never paste the value into a tracked file, shell history, issue, PR, or verifica
   explicit off-topic work are refused locally.
 - Request body: 24,000 streamed bytes, 28,000 parsed characters, 3-second total read deadline.
 - Response: at most 900 model tokens, 6,000 displayed characters, 64,000 upstream bytes.
-- Model deadline: 40 seconds; each attempt is capped at 14 seconds. A transient/network failure
-  retries the locale's primary model once, then advances through the configured fallback order.
+- Model deadline: 40 seconds. The primary gets 18 seconds, the first fallback 11 seconds, and the
+  second fallback 8 seconds. A transient/network failure advances directly to the next distinct
+  model; a retryable total failure gives the visitor a fresh Retry action without duplicating the
+  visible question.
 - Rate limits: 10 requests/minute and 50 requests/day per HMAC pseudonym.
 - Production/model-key environments fail closed if Upstash or the dedicated HMAC secret is absent,
   invalid, or unavailable. Raw IP addresses are not sent to Upstash.

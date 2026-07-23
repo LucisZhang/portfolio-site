@@ -22,6 +22,7 @@ const copy = {
     close: "Close",
     empty: "Ask one question about the candidate, a project, or role fit.",
     failed: "The portfolio assistant is unavailable right now. The project pages and public sources remain available.",
+    retry: "Retry",
     disclosure: "Your question is sent only to a zero-data-retention external AI service. Do not enter credentials or private contact details.",
     prompts: ["Why should a team hire Xiangguo for an Applied AI role?", "How do his RAG and data-engineering projects reinforce each other?", "What is his working style?"],
     user: "You",
@@ -38,6 +39,7 @@ const copy = {
     close: "关闭",
     empty: "请询问候选人、具体项目或岗位匹配。",
     failed: "作品集助手暂时不可用，项目页面和公开来源仍可查看。",
+    retry: "重试",
     disclosure: "你的问题仅会发送到采用零数据保留策略的外部 AI 服务。请勿输入凭据或私人联系方式。",
     prompts: ["为什么团队应该在 AI 应用岗位上选择章向国？", "他的 RAG 与数据工程项目如何相互印证？", "他的工作方式有什么特点？"],
     user: "你",
@@ -93,6 +95,8 @@ interface DisplayMessage extends AssistantMessage {
   id: string;
   sources?: AssistantCitation[];
   blocks?: AssistantAnswerBlock[];
+  retryable?: boolean;
+  retryQuestion?: string;
 }
 
 function replyFromUnknown(value: unknown, locale: "en" | "zh") {
@@ -117,7 +121,8 @@ function replyFromUnknown(value: unknown, locale: "en" | "zh") {
         || (typeof source.url === "string" && /^https:\/\/github\.com\/LucisZhang\/[A-Za-z0-9._-]+\/blob\/[a-f0-9]{40}\//.test(source.url)))
     ))
     : [];
-  return { reply: value.reply, sources, ...(blocks ? { blocks } : {}) };
+  const retryable = "retryable" in value && value.retryable === true;
+  return { reply: value.reply, sources, ...(blocks ? { blocks } : {}), retryable };
 }
 
 export default function AssistantWidget({ onClose }: { onClose: () => void }) {
@@ -148,19 +153,7 @@ export default function AssistantWidget({ onClose }: { onClose: () => void }) {
     logRef.current?.scrollTo({ top: logRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, busy]);
 
-  async function send(content: string) {
-    const question = content.trim();
-    if (!question) {
-      setNotice(labels.empty);
-      inputRef.current?.focus();
-      return;
-    }
-
-    const userMessage: DisplayMessage = { id: crypto.randomUUID(), role: "user", content: question };
-    const conversation = [...messages, userMessage].slice(-6);
-    setMessages(conversation);
-    setDraft("");
-    setNotice("");
+  async function requestConversation(conversation: DisplayMessage[], question: string) {
     setBusy(true);
 
     try {
@@ -180,6 +173,8 @@ export default function AssistantWidget({ onClose }: { onClose: () => void }) {
         content: parsedReply?.reply ?? labels.failed,
         sources: parsedReply?.sources,
         blocks: parsedReply?.blocks,
+        retryable: parsedReply?.retryable,
+        retryQuestion: parsedReply?.retryable ? question : undefined,
       }]);
     } catch {
       setMessages((current) => [...current, { id: crypto.randomUUID(), role: "assistant", content: labels.failed }]);
@@ -187,6 +182,30 @@ export default function AssistantWidget({ onClose }: { onClose: () => void }) {
       setBusy(false);
       requestAnimationFrame(() => inputRef.current?.focus());
     }
+  }
+
+  async function send(content: string) {
+    const question = content.trim();
+    if (!question) {
+      setNotice(labels.empty);
+      inputRef.current?.focus();
+      return;
+    }
+
+    const userMessage: DisplayMessage = { id: crypto.randomUUID(), role: "user", content: question };
+    const conversation = [...messages, userMessage].slice(-6);
+    setMessages(conversation);
+    setDraft("");
+    setNotice("");
+    await requestConversation(conversation, question);
+  }
+
+  function retry(message: DisplayMessage) {
+    const question = message.retryQuestion;
+    if (!question || busy) return;
+    const conversation = messages.filter((candidate) => candidate.id !== message.id).slice(-6);
+    setMessages(conversation);
+    void requestConversation(conversation, question);
   }
 
   function submit(event: FormEvent<HTMLFormElement>) {
@@ -241,6 +260,9 @@ export default function AssistantWidget({ onClose }: { onClose: () => void }) {
                   ))}
                 </ul>
               </div>
+            ) : null}
+            {message.role === "assistant" && message.retryable ? (
+              <button className={styles.retry} type="button" onClick={() => retry(message)} disabled={busy}>{labels.retry}</button>
             ) : null}
           </article>
         ))}
