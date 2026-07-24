@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useI18n } from "@/lib/i18n";
 import styles from "./AssistantLauncher.module.css";
 
@@ -16,7 +16,7 @@ const AssistantWidget = dynamic(() => import("./AssistantWidget"), {
 });
 
 const labels = {
-  en: { open: "Ask about Xiangguo", close: "Close portfolio assistant", loading: "Loading assistant…" },
+  en: { open: "Ask Portfolio", close: "Close portfolio assistant", loading: "Loading assistant…" },
   zh: { open: "询问作品集", close: "关闭作品集助手", loading: "正在加载助手…" },
 } as const;
 
@@ -28,6 +28,12 @@ export default function AssistantLauncher() {
   const close = useCallback(() => {
     setOpen(false);
     requestAnimationFrame(() => launcherRef.current?.focus());
+  }, []);
+
+  useEffect(() => {
+    const openAssistant = () => setOpen(true);
+    window.addEventListener("portfolio:open-assistant", openAssistant);
+    return () => window.removeEventListener("portfolio:open-assistant", openAssistant);
   }, []);
 
   return (

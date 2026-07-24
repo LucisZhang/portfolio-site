@@ -54,10 +54,62 @@ test("representative workflows remain keyboard-operable with reduced motion", as
   expect(Number(await capacity.inputValue())).toBeGreaterThan(before);
 
   await page.goto("/", { waitUntil: "networkidle" });
+  await expect(page.getByTestId("lucis-orbit")).toHaveCSS("animation-name", "none");
   const chinese = page.getByRole("button", { name: "中", exact: true });
   await chinese.focus();
   await page.keyboard.press("Enter");
   await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
+});
+
+test("homepage contacts, WeChat QR variants, and one-time Lucis Orbit follow locale", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "Shared homepage behavior is exercised once.");
+  await page.addInitScript(() => {
+    window.localStorage.setItem("portfolio-locale", "en");
+    window.sessionStorage.removeItem("lucis-orbit-seen-v1");
+  });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  const orbit = page.getByTestId("lucis-orbit");
+  await expect(orbit).toBeVisible();
+  await expect(orbit).toHaveClass(/is-entering/);
+  await expect.poll(() => page.evaluate(() => window.sessionStorage.getItem("lucis-orbit-seen-v1"))).toBe("1");
+  await expect(page.getByRole("link", { name: /GitHub/ })).toHaveAttribute("target", "_blank");
+  await expect(page.getByRole("link", { name: /LinkedIn/ })).toHaveAttribute("rel", /noopener/);
+  await expect(page.getByRole("link", { name: /\+86 15990784046/ })).toHaveAttribute("href", "tel:+8615990784046");
+  await page.getByRole("button", { name: "WeChat" }).click();
+  await expect(page.getByAltText("WeChat QR code for Lucis")).toHaveAttribute("src", /wechat-en\.jpg/);
+  await expect(page.getByRole("dialog")).toContainText("ZJ_Lucis");
+  await page.getByRole("button", { name: "Close WeChat QR code" }).click();
+  await page.reload({ waitUntil: "networkidle" });
+  await expect(orbit).not.toHaveClass(/is-entering/);
+
+  await page.getByRole("button", { name: "中", exact: true }).click();
+  await expect(page.getByRole("link", { name: /LinkedIn/ })).toHaveCount(0);
+  await page.getByRole("button", { name: "WeChat" }).click();
+  await expect(page.getByAltText("Lucis 的微信二维码")).toHaveAttribute("src", /wechat-zh\.jpg/);
+});
+
+test("portfolio search returns bilingual, typo-tolerant, and nearest-page results", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "Shared search ranking is exercised once.");
+  await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "en"));
+  await page.goto("/", { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: /Search/ }).click();
+  const input = page.getByPlaceholder("Search projects, systems, or tools");
+  await input.fill("relese gate");
+  await expect(page.locator("[cmdk-item]").first()).toContainText("Release Guardian");
+  await expect(page.locator("[cmdk-item]")).toHaveCount(3);
+  await input.fill("scan confidential PDF");
+  await expect(page.locator("[cmdk-item]").first()).toContainText("Privacy Preflight Web");
+  await input.fill("a completely unrelated business phrase");
+  await expect(page.locator("[cmdk-item]")).toHaveCount(3);
+  await expect(page.locator(".command-search-note")).toContainText("bilingual concepts");
+  await page.getByRole("button", { name: "Ask an open-ended question" }).click();
+  await expect(page.getByTestId("assistant-widget")).toBeVisible();
+  await page.getByRole("button", { name: "Close portfolio assistant" }).click();
+
+  await page.getByRole("button", { name: "中", exact: true }).click();
+  await page.getByRole("button", { name: "搜索" }).click();
+  await page.getByPlaceholder("搜索项目、系统或工具").fill("利润分析");
+  await expect(page.locator("[cmdk-item]").first()).toContainText("数据分析");
 });
 
 test("core operable routes have no serious automated accessibility violations", async ({ page }, testInfo) => {

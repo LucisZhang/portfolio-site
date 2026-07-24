@@ -184,9 +184,9 @@ export default function PrivacyPdfPage({
   }
 
   return (
-    <div ref={wrapperRef} className={`privacy-pdf-page${active ? " active" : ""}`} data-pdf-page={pageIndex + 1} onClick={() => onActivate(pageIndex)} style={{ aspectRatio }}>
+    <div ref={wrapperRef} className={`privacy-pdf-page${active ? " active" : ""}`} data-pdf-page={pageIndex + 1} onClick={() => onActivate(pageIndex)}>
       <span className="privacy-pdf-page-label">{locale === "en" ? "Page" : "第"} {pageIndex + 1}{locale === "zh" ? " 页" : ""}</span>
-      <div className="privacy-pdf-canvas-stack">
+      <div className="privacy-pdf-canvas-stack" style={{ aspectRatio }}>
         <canvas ref={pageCanvasRef} />
         {!readOnly ? <canvas ref={overlayCanvasRef} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={pointerUp} aria-label={scanned ? (locale === "en" ? "Per-page redaction review" : "逐页脱敏复核") : (locale === "en" ? "Scan entire PDF before review" : "扫描整份 PDF 后再复核")} aria-disabled={!scanned} /> : null}
       </div>

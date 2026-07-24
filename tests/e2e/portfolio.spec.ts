@@ -52,7 +52,8 @@ for (const locale of ["en", "zh"] as const) {
           ? "Open to Data Analytics, Data Engineering, and AI Application Engineering roles."
           : "求职方向：数据分析、数据工程与 AI 应用工程。");
         await expect(page.locator('a[href="https://github.com/LucisZhang"]')).toBeVisible();
-        await expect(page.locator('a[href="https://www.linkedin.com/in/xiangguo-zhang"]')).toBeVisible();
+        if (locale === "en") await expect(page.locator('a[href="https://www.linkedin.com/in/xiangguo-zhang"]')).toBeVisible();
+        else await expect(page.locator('a[href="https://www.linkedin.com/in/xiangguo-zhang"]')).toHaveCount(0);
         const emailLinks = page.locator('a[href="mailto:HsiangKuoChang@outlook.com"]');
         await expect(emailLinks).toHaveCount(2);
         await expect(emailLinks.first()).toBeVisible();
@@ -119,8 +120,8 @@ for (const locale of ["en", "zh"] as const) {
       if (route === "/ai/rag-quality-lab") {
         await expect(page.locator(".rag-historical-result")).toContainText("0.8093 → 0.9438");
         await expect(page.locator(".notes-section")).toContainText(locale === "en"
-          ? "Historical 12-question corpus only; does not transfer to the 11,309-document S1 checkpoint."
-          : "仅适用于历史 12 问题语料；不能迁移解释为 11,309 文档 S1 检查点的结果。");
+          ? "The reported quality and latency measurements belong to the controlled saved runs; they do not transfer to the 11,309-document enterprise corpus."
+          : "已报告的质量与延迟测量仅属于受控的已保存运行，不能迁移解释为 11,309 份企业文档语料的结果。");
       }
       if (route === "/ai/privacy-preflight-mac") {
         await expect(page.locator(".privacy-verification-metrics")).toContainText(locale === "en"
@@ -465,27 +466,27 @@ test.describe("RAG Manifest & Drift Lab", () => {
     await expect(page.getByTestId("rag-drift-lab")).toBeVisible();
   });
 
-  test("detects corpus, metric, fallback, and public-sync claim drift", async ({ page }) => {
+  test("connects controlled regression, enterprise scale, and the published implementation", async ({ page }) => {
     const lab = page.getByTestId("rag-drift-lab");
     await expect(lab).toContainText("Deterministic verifier");
-    await expect(lab).toContainText("C2 sync pending");
-    await expect(lab).toContainText("0fc1433");
+    await expect(lab).toContainText("Implementation published");
+    await expect(lab).toContainText("88879a2");
     await expect(lab).toContainText("6c887a1");
     await expect(lab.locator(".rag-verdict")).toContainText("No claim drift");
-    await expect(lab.locator(".rag-claim-registry article")).toHaveCount(4);
+    await expect(lab.locator(".rag-claim-registry article")).toHaveCount(3);
+    await expect(lab).not.toContainText("C3");
 
     await lab.getByRole("button", { name: "Corpus drift" }).click();
     await expect(lab.locator(".rag-verdict")).toContainText("1 drift item");
     await expect(lab.getByTestId("rag-diff-list")).toContainText("documents");
 
-    await lab.getByRole("button", { name: "Metric leak" }).click();
-    await expect(lab.locator(".rag-verdict")).toContainText("3 drift items");
-    await expect(lab.getByTestId("rag-diff-list")).toContainText("answer_quality_metrics");
-    await expect(lab.getByTestId("rag-diff-list")).toContainText("fallback_metrics_substituted");
-
-    await lab.getByRole("button", { name: "Sync overclaim" }).click();
+    await lab.getByRole("button", { name: "Regression drift" }).click();
     await expect(lab.locator(".rag-verdict")).toContainText("1 drift item");
-    await expect(lab.getByTestId("rag-diff-list")).toContainText("public_c2_code_synced");
+    await expect(lab.getByTestId("rag-diff-list")).toContainText("degraded_questions");
+
+    await lab.getByRole("button", { name: "Commit drift" }).click();
+    await expect(lab.locator(".rag-verdict")).toContainText("1 drift item");
+    await expect(lab.getByTestId("rag-diff-list")).toContainText("public_repository_commit");
 
     await lab.getByRole("textbox", { name: "Candidate manifest JSON" }).fill("{not-json");
     await lab.getByRole("button", { name: "Verify", exact: true }).click();
@@ -948,6 +949,16 @@ test.describe("Privacy Preflight Web", () => {
     expect(sourceLayout.maxHeight).toBe("none");
     expect(Math.abs(sourceLayout.streamWidth - sourceLayout.outerWidth)).toBeLessThanOrEqual(1);
     expect(Math.abs(sourceLayout.streamHeight - sourceLayout.outerHeight)).toBeLessThanOrEqual(1);
+    for (const sourcePage of await sourcePages.all()) {
+      const geometry = await sourcePage.evaluate((node) => {
+        const frame = node.getBoundingClientRect();
+        const canvas = node.querySelector("canvas")?.getBoundingClientRect();
+        return canvas ? { frameTop: frame.top, frameBottom: frame.bottom, canvasTop: canvas.top, canvasBottom: canvas.bottom } : null;
+      });
+      expect(geometry).not.toBeNull();
+      expect(geometry!.canvasTop).toBeGreaterThanOrEqual(geometry!.frameTop);
+      expect(geometry!.canvasBottom).toBeLessThanOrEqual(geometry!.frameBottom + 1);
+    }
 
     const sourceCounter = page.locator(".privacy-pdf-workspace > .privacy-actionbar .privacy-page-counter");
     await page.getByRole("button", { name: "Scan entire PDF" }).click();
@@ -986,6 +997,14 @@ test.describe("Privacy Preflight Web", () => {
     expect(Math.abs(resultLayout.previewHeight - resultLayout.outerHeight)).toBeLessThanOrEqual(1);
     expect(resultLayout.railWidth).toBeGreaterThan(300);
     for (let index = 0; index < 3; index += 1) {
+      const geometry = await resultPages.nth(index).evaluate((node) => {
+        const frame = node.getBoundingClientRect();
+        const canvas = node.querySelector("canvas")?.getBoundingClientRect();
+        return canvas ? { frameTop: frame.top, frameBottom: frame.bottom, canvasTop: canvas.top, canvasBottom: canvas.bottom } : null;
+      });
+      expect(geometry).not.toBeNull();
+      expect(geometry!.canvasTop).toBeGreaterThanOrEqual(geometry!.frameTop);
+      expect(geometry!.canvasBottom).toBeLessThanOrEqual(geometry!.frameBottom + 1);
       const resultCanvas = resultCanvases.nth(index);
       await resultCanvas.scrollIntoViewIfNeeded();
       await expect.poll(() => resultCanvas.evaluate((canvas, center) => {

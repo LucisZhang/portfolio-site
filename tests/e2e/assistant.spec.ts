@@ -32,7 +32,7 @@ test("assistant widget code loads only after the launcher opens", async ({ page 
   await expect(page.getByTestId("assistant-widget")).toHaveCount(0);
   for (const script of widgetScripts) expect(requestedPaths.has(script)).toBe(false);
 
-  const launcher = page.getByRole("button", { name: "Ask about Xiangguo" });
+  const launcher = page.getByRole("button", { name: "Ask Portfolio" });
   await launcher.click();
   await expect(page.getByTestId("assistant-widget")).toBeVisible();
   for (const script of widgetScripts) await expect.poll(() => requestedPaths.has(script)).toBe(true);
@@ -90,7 +90,7 @@ test("assistant renders public and private evidence citations without overflow",
     });
   });
   await page.goto("/", { waitUntil: "networkidle" });
-  await page.getByRole("button", { name: "Ask about Xiangguo" }).click();
+  await page.getByRole("button", { name: "Ask Portfolio" }).click();
   const widget = page.getByTestId("assistant-widget");
   const input = widget.getByPlaceholder("Why is Xiangguo a strong Applied AI candidate?");
   await input.fill("Why should an Applied AI team hire Xiangguo?");
@@ -112,7 +112,7 @@ test("assistant prompts follow the page context and typed project segments becom
   ];
   for (const [path, placeholder] of contexts) {
     await page.goto(path, { waitUntil: "networkidle" });
-    await page.getByRole("button", { name: "Ask about Xiangguo" }).click();
+    await page.getByRole("button", { name: "Ask Portfolio" }).click();
     await expect(page.getByTestId("assistant-widget").getByPlaceholder(placeholder)).toBeVisible();
     await page.getByTestId("assistant-widget").getByRole("button", { name: "Close", exact: true }).click();
   }
@@ -138,7 +138,7 @@ test("assistant prompts follow the page context and typed project segments becom
     });
   });
   await page.goto("/ai/rag-quality-lab", { waitUntil: "networkidle" });
-  await page.getByRole("button", { name: "Ask about Xiangguo" }).click();
+  await page.getByRole("button", { name: "Ask Portfolio" }).click();
   const widget = page.getByTestId("assistant-widget");
   await expect(widget.getByPlaceholder("Ask how RAG Quality Lab demonstrates Xiangguo's strengths…")).toBeVisible();
   await widget.getByRole("button", { name: "What problem does RAG Quality Lab solve, and what did Xiangguo build?" }).click();
@@ -190,7 +190,7 @@ test("assistant exposes a retryable failure without duplicating the user message
     });
   });
   await page.goto("/", { waitUntil: "networkidle" });
-  await page.getByRole("button", { name: "Ask about Xiangguo" }).click();
+  await page.getByRole("button", { name: "Ask Portfolio" }).click();
   const widget = page.getByTestId("assistant-widget");
   const question = "How does the RAG project demonstrate his strengths?";
   await widget.getByPlaceholder("Why is Xiangguo a strong Applied AI candidate?").fill(question);

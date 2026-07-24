@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "snapshotId": "public-github-portfolio-20260723-v2",
+  "snapshotId": "public-github-portfolio-20260724-v3",
   "repositories": [
     {
       "owner": "LucisZhang",
@@ -35,7 +35,7 @@
     {
       "owner": "LucisZhang",
       "repo": "rag-quality-lab",
-      "commit": "bed604bb3ca49e641ba75e2999de29fa68b75754",
+      "commit": "88879a286104d4fe0941c07d75230610093996d3",
       "label": { "en": "RAG Quality Lab", "zh": "RAG 质量实验室" },
       "aliases": ["RAG Quality Lab", "RAG 质量实验室", "retrieval", "检索", "evaluation", "评估", "BM25", "Chroma", "regression", "回归"],
       "files": [
