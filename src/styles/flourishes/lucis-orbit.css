@@ -1,28 +1,122 @@
-.lucis-orbit {
-  position: relative;
-  width: 72px;
-  height: 72px;
-  flex: none;
-  border: 1px solid var(--line-dark);
+/* Lucis symbol: a small solar system. First session shows it viewport-center at hero
+   scale, then it shrinks — structure intact — into the static mark below the name.
+   The mark is a compact emblem plus the LUCIS wordmark; the overlay is pointer-events:none. */
+.identity-mark { margin-top: 12px; }
+
+.lucis-orbit { display: inline-flex; align-items: center; gap: 8px; }
+
+.lucis-orbit-emblem { position: relative; display: block; width: 28px; height: 28px; flex: none; }
+
+.lucis-orbit-wordmark {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--gr);
+  line-height: 1;
+}
+
+.lucis-orbit-overlay { position: fixed; inset: 0; z-index: 60; pointer-events: none; }
+
+/* Paper veil owns the screen first; the solar system fades in on top of it. */
+.lucis-orbit-overlay::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: var(--pa);
+  opacity: 1;
+}
+
+.lucis-orbit-overlay.is-live::before { animation: lo-veil 2.4s linear both; }
+
+@keyframes lo-veil { 0%, 60% { opacity: 1; } 88%, 100% { opacity: 0; } }
+
+.lucis-orbit-system {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: min(64vmin, 420px);
+  height: min(64vmin, 420px);
+  transform: translate(-50%, -50%);
+}
+
+.lo-sun, .lo-orbit, .lo-planet { position: absolute; display: block; }
+
+.lo-sun {
+  inset: 45.5%;
+  border-radius: 50%;
+  background: var(--gr);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--green) 55%, transparent);
+}
+
+.lo-orbit { border: 1px solid var(--li); border-radius: 50%; }
+.lo-o1 { inset: 30%; }
+.lo-o2 { inset: 18%; }
+.lo-o3 { inset: 6%; }
+
+.lo-planet { inset: 0; transform: rotate(var(--pa)); }
+.lo-planet i {
+  position: absolute;
+  left: 50%; top: var(--pt);
+  width: 4.6%; height: 4.6%;
+  margin: -2.3% 0 0 -2.3%;
   border-radius: 50%;
 }
+.lo-p1 { --pa: 25deg; --pt: 30%; }
+.lo-p1 i { background: var(--gr); }
+.lo-p2 { --pa: 145deg; --pt: 18%; }
+.lo-p2 i { width: 3.6%; height: 3.6%; margin: -1.8% 0 0 -1.8%; background: var(--ink); }
+.lo-p3 { --pa: 265deg; --pt: 6%; }
+.lo-p3 i { background: var(--wh); border: 1px solid var(--ld); }
 
-.lucis-orbit-core,
-.lucis-orbit-node { position: absolute; display: grid; place-items: center; border-radius: 50%; }
-.lucis-orbit-core { inset: 22px; background: var(--paper); font-size: 10px; font-weight: 800; }
-.lucis-orbit-node { width: 8px; height: 8px; background: var(--green); }
-.lucis-orbit .node-ai { top: 5px; left: 32px; }
-.lucis-orbit .node-engineering { right: 7px; bottom: 12px; }
-.lucis-orbit .node-analytics { left: 7px; bottom: 12px; }
+/* Hero-scene labels: sun name below the core, planet names above each dot. Labels
+   counter-rotate against the orbit so they stay upright while planets revolve. */
+.lo-sun-tag, .lo-tag {
+  position: absolute;
+  left: 50%;
+  color: var(--ink);
+  font-size: clamp(10px, 2.4vmin, 15px);
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+.lo-sun-tag {
+  top: calc(50% + 8%);
+  transform: translateX(-50%);
+  font-weight: 800;
+}
+.lo-tag { top: var(--pt); transform: rotate(calc(-1 * var(--pa))); }
+.lo-tag b {
+  position: absolute;
+  left: 0; bottom: 9px;
+  transform: translateX(-50%);
+  font-weight: 600;
+}
+.lucis-orbit-overlay.is-live .lo-sun-tag, .lucis-orbit-overlay.is-live .lo-tag { animation: lo-tag 2.4s linear both; }
+.lucis-orbit-overlay.is-live .lo-tag { animation: lo-untag 8s linear infinite, lo-tag 2.4s linear both; }
 
-.lucis-orbit.is-entering { animation: lucis-orbit-arrive 950ms cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes lo-untag { to { transform: rotate(calc(-360deg - var(--pa))); } }
+@keyframes lo-tag { 0% { opacity: 0; } 16%, 55% { opacity: 1; } 85%, 100% { opacity: 0; } }
 
-@keyframes lucis-orbit-arrive {
-  0% { opacity: 0; transform: scale(.72) rotate(-18deg); }
-  65% { opacity: 1; transform: scale(1.035) rotate(2deg); }
-  100% { opacity: 1; transform: scale(1) rotate(0); }
+/* Overlay-only motion: planets orbit slowly while the whole system flies to the name. */
+.lucis-orbit-overlay.is-live .lo-planet { animation: lo-spin 8s linear infinite; }
+.lucis-orbit-overlay.is-live .lucis-orbit-system { animation: lo-fly 2.4s cubic-bezier(.3, .7, .2, 1) both; }
+
+@keyframes lo-spin { to { transform: rotate(calc(var(--pa) + 360deg)); } }
+@keyframes lo-fly {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(1.04); }
+  16% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  55% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  88% { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--tx, 0px)), calc(-50% + var(--ty, 0px))) scale(var(--s, .12)); }
 }
 
+.lucis-orbit.is-entering { animation: lo-mark 2.4s linear both; }
+@keyframes lo-mark { 0%, 88% { opacity: 0; } 100% { opacity: 1; } }
+
 @media (prefers-reduced-motion: reduce) {
+  .lucis-orbit-overlay { display: none; }
   .lucis-orbit.is-entering { animation: none; }
+}
+
+@media (max-width: 640px) {
+  .lucis-orbit-emblem { width: 24px; height: 24px; }
+  .lucis-orbit-wordmark { font-size: 11px; }
 }

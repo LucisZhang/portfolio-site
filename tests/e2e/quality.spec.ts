@@ -55,6 +55,8 @@ test("representative workflows remain keyboard-operable with reduced motion", as
 
   await page.goto("/", { waitUntil: "networkidle" });
   await expect(page.getByTestId("lucis-orbit")).toHaveCSS("animation-name", "none");
+  await expect(page.getByTestId("lucis-orbit-overlay")).toBeHidden();
+  await expect(page.getByTestId("lucis-orbit").locator(".lo-planet")).toHaveCount(3);
   const chinese = page.getByRole("button", { name: "中", exact: true });
   await chinese.focus();
   await page.keyboard.press("Enter");
@@ -65,27 +67,207 @@ test("homepage contacts, WeChat QR variants, and one-time Lucis Orbit follow loc
   test.skip(testInfo.project.name !== "desktop", "Shared homepage behavior is exercised once.");
   await page.addInitScript(() => {
     window.localStorage.setItem("portfolio-locale", "en");
-    window.sessionStorage.removeItem("lucis-orbit-seen-v1");
+    window.sessionStorage.removeItem("lucis-orbit-seen-v5");
   });
   await page.goto("/", { waitUntil: "domcontentloaded" });
   const orbit = page.getByTestId("lucis-orbit");
-  await expect(orbit).toBeVisible();
-  await expect(orbit).toHaveClass(/is-entering/);
-  await expect.poll(() => page.evaluate(() => window.sessionStorage.getItem("lucis-orbit-seen-v1"))).toBe("1");
+  const overlay = page.getByTestId("lucis-orbit-overlay");
+  // First session: the paper veil owns the screen before anything fades in.
+  await expect(overlay).toBeVisible();
+  await expect(overlay).toHaveCSS("pointer-events", "none");
+  const veilOf = () => page.evaluate(() => {
+    const el = document.querySelector('[data-testid="lucis-orbit-overlay"]');
+    if (!el) return { opacity: 0, background: "rgba(0, 0, 0, 0)" };
+    const cs = getComputedStyle(el, "::before");
+    return { opacity: parseFloat(cs.opacity), background: cs.backgroundColor };
+  });
+  await expect.poll(async () => (await veilOf()).opacity, { timeout: 2000 }).toBeGreaterThan(0.9);
+  const veil = await veilOf();
+  expect(veil.background).toBe("rgb(247, 248, 246)");
+  // Deterministic ordering proof: the veil is opaque from its first keyframe while
+  // the solar system (lo-fly) starts transparent and fades in on top of it.
+  const system = overlay.locator(".lucis-orbit-system");
+  const intro = await page.evaluate(() => {
+    const anims = document.getAnimations() as CSSAnimation[];
+    const firstOpacity = (name: string) => {
+      const anim = anims.find((a) => a.animationName === name);
+      const frames = anim?.effect && "getKeyframes" in anim.effect
+        ? (anim.effect as KeyframeEffect).getKeyframes()
+        : [];
+      const value = frames[0]?.opacity;
+      return value == null ? null : parseFloat(String(value));
+    };
+    return { veil: firstOpacity("lo-veil"), fly: firstOpacity("lo-fly") };
+  });
+  expect(intro.veil).toBeGreaterThan(0.9);
+  expect(intro.fly).toBe(0);
+  await expect(system).toHaveCSS("opacity", "1");
+  // Kimi structure: sun, three orbits, three revolving planets.
+  await expect(overlay.locator(".lo-sun")).toBeVisible();
+  await expect(overlay.locator(".lo-orbit")).toHaveCount(3);
+  await expect(overlay.locator(".lo-planet")).toHaveCount(3);
+  await expect(overlay.locator(".lo-planet").first()).toHaveCSS("animation-name", "lo-spin");
+  // The hero-scale scene carries readable identity and direction labels (en locale).
+  for (const label of ["Lucis", "AI Applications", "Data Engineering", "Data Analytics"]) {
+    await expect(overlay.getByText(label, { exact: true })).toBeVisible();
+  }
+  await expect(orbit).toHaveAttribute("data-entering", "true");
+  const viewport = page.viewportSize()!;
+  const overlayBox = (await system.boundingBox())!;
+  expect(overlayBox.width).toBeGreaterThan(300);
+  expect(Math.abs(overlayBox.x + overlayBox.width / 2 - viewport.width / 2)).toBeLessThan(40);
+  expect(Math.abs(overlayBox.y + overlayBox.height / 2 - viewport.height / 2)).toBeLessThan(40);
+  // The flight targets the emblem below the name, not beside it.
+  const nameBox = (await page.locator(".identity-title h1").boundingBox())!;
+  const emblemBox = (await orbit.locator(".lucis-orbit-emblem").boundingBox())!;
+  expect(emblemBox.y).toBeGreaterThanOrEqual(nameBox.y + nameBox.height - 1);
+  expect(Math.abs(emblemBox.x - nameBox.x)).toBeLessThan(24);
+  // While the system flies, the final mark below the name is still hidden and much smaller.
+  expect(emblemBox.width).toBeLessThanOrEqual(28);
+  expect(overlayBox.width).toBeGreaterThan(emblemBox.width * 5);
+  await expect(orbit).toHaveCSS("opacity", "0");
+  // During the flight the shrinking system converges on the emblem below the name.
+  await expect.poll(async () => {
+    if ((await system.count()) === 0) return 0; // Overlay already handed off to the landed mark.
+    const flyingBox = await system.boundingBox({ timeout: 500 }).catch(() => null);
+    if (!flyingBox) return Number.MAX_SAFE_INTEGER;
+    return Math.hypot(
+      flyingBox.x + flyingBox.width / 2 - (emblemBox.x + emblemBox.width / 2),
+      flyingBox.y + flyingBox.height / 2 - (emblemBox.y + emblemBox.height / 2),
+    );
+  }, { timeout: 6000 }).toBeLessThan(120);
+  // After the one-time entrance the overlay is gone; the landed mark shows emblem + LUCIS.
+  await expect(overlay).toHaveCount(0, { timeout: 5000 });
+  await expect(orbit).toHaveAttribute("data-entering", "false");
+  await expect(orbit).toHaveCSS("opacity", "1");
+  await expect(orbit.locator(".lucis-orbit-wordmark")).toHaveText("Lucis");
+  await expect(orbit.locator(".lucis-orbit-wordmark")).toBeVisible();
+  await expect.poll(() => page.evaluate(() => window.sessionStorage.getItem("lucis-orbit-seen-v5"))).toBe("1");
   await expect(page.getByRole("link", { name: /GitHub/ })).toHaveAttribute("target", "_blank");
   await expect(page.getByRole("link", { name: /LinkedIn/ })).toHaveAttribute("rel", /noopener/);
-  await expect(page.getByRole("link", { name: /\+86 15990784046/ })).toHaveAttribute("href", "tel:+8615990784046");
+  expect(await page.locator(".identity-links > a, .identity-links > button").evaluateAll((controls) => (
+    controls.map((control) => control.querySelectorAll(":scope > svg").length)
+  ))).toEqual([1, 1, 1, 1, 1]);
+  const phone = page.getByRole("link", { name: "Phone", exact: true });
+  await expect(phone).toHaveAttribute("href", "tel:+8615990784046");
+  await expect(page.locator(".identity-links")).not.toContainText("+86 15990784046");
+  await phone.click();
+  await expect(page.getByRole("dialog", { name: "Contact by phone" })).toContainText("+86 15990784046");
+  await page.getByRole("button", { name: "Close phone number" }).click();
   await page.getByRole("button", { name: "WeChat" }).click();
   await expect(page.getByAltText("WeChat QR code for Lucis")).toHaveAttribute("src", /wechat-en\.jpg/);
   await expect(page.getByRole("dialog")).toContainText("ZJ_Lucis");
   await page.getByRole("button", { name: "Close WeChat QR code" }).click();
   await page.reload({ waitUntil: "networkidle" });
+  // Replay is suppressed: no overlay, no entrance, final static mark directly.
+  await expect(page.getByTestId("lucis-orbit-overlay")).toHaveCount(0);
   await expect(orbit).not.toHaveClass(/is-entering/);
+  await expect(orbit).toHaveAttribute("data-entering", "false");
+  await expect(orbit).toHaveCSS("animation-name", "none");
+  await expect(orbit).toHaveCSS("opacity", "1");
+  const box = await orbit.locator(".lucis-orbit-emblem").boundingBox();
+  expect(box?.width).toBe(28);
+  expect(box?.height).toBe(28);
 
   await page.getByRole("button", { name: "中", exact: true }).click();
   await expect(page.getByRole("link", { name: /LinkedIn/ })).toHaveCount(0);
-  await page.getByRole("button", { name: "WeChat" }).click();
+  await expect(page.getByRole("link", { name: "电话", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "邮箱", exact: true })).toBeVisible();
+  expect(await page.locator(".identity-links > a, .identity-links > button").evaluateAll((controls) => (
+    controls.map((control) => control.querySelectorAll(":scope > svg").length)
+  ))).toEqual([1, 1, 1, 1]);
+  await page.getByRole("button", { name: "微信", exact: true }).click();
   await expect(page.getByAltText("Lucis 的微信二维码")).toHaveAttribute("src", /wechat-zh\.jpg/);
+});
+
+test("Lucis Orbit veil ships in the SSR HTML so the first paint never flashes the homepage", async ({ request }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "One SSR HTML audit is sufficient.");
+  const html = await (await request.get("/")).text();
+  // The opaque paper veil is part of the very first HTML paint — before hydration.
+  expect(html).toContain('data-testid="lucis-orbit-overlay"');
+  expect(html).not.toContain("lucis-orbit-system");
+  // The final static mark is also rendered up front (behind the veil).
+  expect(html).toContain('data-testid="lucis-orbit"');
+  expect(html).toContain("lucis-orbit-wordmark");
+});
+
+test("Lucis Orbit hero scene labels follow the Chinese locale", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "The labeled hero scene is exercised once per locale.");
+  await page.addInitScript(() => {
+    window.localStorage.setItem("portfolio-locale", "zh");
+    window.sessionStorage.removeItem("lucis-orbit-seen-v5");
+  });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  const overlay = page.getByTestId("lucis-orbit-overlay");
+  await expect(overlay).toBeVisible();
+  // Visible in the hero-scale scene, not merely present in the DOM.
+  for (const label of ["Lucis", "AI 应用", "数据工程", "数据分析"]) {
+    await expect(overlay.getByText(label, { exact: true })).toBeVisible();
+  }
+  // Labels retire with the entrance; the landed mark below the name shows emblem + LUCIS.
+  await expect(overlay).toHaveCount(0, { timeout: 5000 });
+  const mark = page.getByTestId("lucis-orbit");
+  await expect(mark).toHaveCSS("opacity", "1");
+  await expect(mark.locator(".lucis-orbit-wordmark")).toHaveText("Lucis");
+  await expect(mark.locator(".lucis-orbit-wordmark")).toBeVisible();
+  const nameBox = (await page.locator(".identity-title h1").boundingBox())!;
+  const emblemBox = (await mark.locator(".lucis-orbit-emblem").boundingBox())!;
+  expect(emblemBox.width).toBeLessThanOrEqual(28);
+  expect(emblemBox.y).toBeGreaterThanOrEqual(nameBox.y + nameBox.height - 1);
+});
+
+test("mobile 390px keeps the Lucis mark compact without horizontal overflow", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile", "The 390px overflow regression is specific to the mobile layout.");
+  await page.addInitScript(() => {
+    window.localStorage.setItem("portfolio-locale", "en");
+    window.sessionStorage.setItem("lucis-orbit-seen-v5", "1");
+  });
+  await page.goto("/", { waitUntil: "networkidle" });
+  const orbit = page.getByTestId("lucis-orbit");
+  await expect(orbit).toBeVisible();
+  await expect(page.getByTestId("lucis-orbit-overlay")).toHaveCount(0);
+  await expect(orbit).not.toHaveClass(/is-entering/);
+  await expect(orbit.locator(".lucis-orbit-wordmark")).toHaveText("Lucis");
+  const nameBox = (await page.locator(".identity-title h1").boundingBox())!;
+  const box = (await orbit.boundingBox())!;
+  expect(box.y).toBeGreaterThanOrEqual(nameBox.y + nameBox.height - 1);
+  expect(box.height).toBeLessThanOrEqual(28);
+  const viewportWidth = page.viewportSize()?.width ?? 390;
+  expect(box.x + box.width).toBeLessThanOrEqual(viewportWidth);
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  expect(overflow).toBeLessThanOrEqual(0);
+});
+
+test("mobile phone contact keeps the native dial link without exposing the number in the homepage row", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile", "The native dial behavior is specific to the mobile layout.");
+  await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "zh"));
+  await page.goto("/?lang=zh", { waitUntil: "networkidle" });
+  const phone = page.getByRole("link", { name: "电话", exact: true });
+  await expect(phone).toHaveAttribute("href", "tel:+8615990784046");
+  await expect(page.locator(".identity-links")).not.toContainText("+86 15990784046");
+  await phone.click();
+  await expect(page.getByRole("dialog", { name: "电话联系" })).toHaveCount(0);
+});
+
+test("footer contact returns to the top of the localized homepage contact section", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "The shared footer destination only needs one route pass.");
+  await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "zh"));
+  await page.goto("/?lang=zh", { waitUntil: "networkidle" });
+  let contact = page.getByRole("link", { name: "联系章向国", exact: true });
+  await contact.scrollIntoViewIfNeeded();
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+  await contact.click();
+  await expect(page).toHaveURL(/\/?\?lang=zh#contact$/);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThanOrEqual(1);
+  await expect(page.locator("section#contact.workspace-head")).toBeVisible();
+
+  await page.goto("/ai/release-guardian?lang=zh", { waitUntil: "networkidle" });
+  contact = page.getByRole("link", { name: "联系章向国", exact: true });
+  await expect(contact).toHaveAttribute("href", "/?lang=zh#contact");
+  await contact.click();
+  await expect(page).toHaveURL(/\/?\?lang=zh#contact$/);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThanOrEqual(1);
+  await expect(page.locator("section#contact.workspace-head")).toBeVisible();
 });
 
 test("portfolio search returns bilingual, typo-tolerant, and nearest-page results", async ({ page }, testInfo) => {
@@ -96,11 +278,12 @@ test("portfolio search returns bilingual, typo-tolerant, and nearest-page result
   const input = page.getByPlaceholder("Search projects, systems, or tools");
   await input.fill("relese gate");
   await expect(page.locator("[cmdk-item]").first()).toContainText("Release Guardian");
-  await expect(page.locator("[cmdk-item]")).toHaveCount(3);
+  await expect(page.locator("[cmdk-item]")).toHaveCount(1);
   await input.fill("scan confidential PDF");
   await expect(page.locator("[cmdk-item]").first()).toContainText("Privacy Preflight Web");
   await input.fill("a completely unrelated business phrase");
-  await expect(page.locator("[cmdk-item]")).toHaveCount(3);
+  await expect(page.locator("[cmdk-item]")).toHaveCount(0);
+  await expect(page.locator(".command-empty")).toContainText("No confident project match");
   await expect(page.locator(".command-search-note")).toContainText("bilingual concepts");
   await page.getByRole("button", { name: "Ask an open-ended question" }).click();
   await expect(page.getByTestId("assistant-widget")).toBeVisible();
@@ -109,7 +292,7 @@ test("portfolio search returns bilingual, typo-tolerant, and nearest-page result
   await page.getByRole("button", { name: "中", exact: true }).click();
   await page.getByRole("button", { name: "搜索" }).click();
   await page.getByPlaceholder("搜索项目、系统或工具").fill("利润分析");
-  await expect(page.locator("[cmdk-item]").first()).toContainText("数据分析");
+  await expect(page.locator("[cmdk-item]").first()).toContainText("毛利控制塔");
 });
 
 test("core operable routes have no serious automated accessibility violations", async ({ page }, testInfo) => {

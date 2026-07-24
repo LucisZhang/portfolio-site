@@ -55,9 +55,11 @@ for (const locale of ["en", "zh"] as const) {
         if (locale === "en") await expect(page.locator('a[href="https://www.linkedin.com/in/xiangguo-zhang"]')).toBeVisible();
         else await expect(page.locator('a[href="https://www.linkedin.com/in/xiangguo-zhang"]')).toHaveCount(0);
         const emailLinks = page.locator('a[href="mailto:HsiangKuoChang@outlook.com"]');
-        await expect(emailLinks).toHaveCount(2);
-        await expect(emailLinks.first()).toBeVisible();
-        await expect(emailLinks.last()).toBeVisible();
+        await expect(emailLinks).toHaveCount(1);
+        await expect(emailLinks).toBeVisible();
+        const footerContact = page.getByRole("link", { name: locale === "en" ? "Contact Xiangguo" : "联系章向国", exact: true });
+        await expect(footerContact).toBeVisible();
+        await expect(footerContact).toHaveAttribute("href", locale === "en" ? "/#contact" : "/?lang=zh#contact");
         await expect(page.locator('a[href="/resume.pdf"]')).toHaveCount(0);
         await expect(page.locator(".workspace-index")).toContainText(locale === "en" ? "6 interactive demos" : "6 个交互式演示");
         await expect(page.locator(".index-heading p")).toHaveText(locale === "en"
@@ -802,6 +804,7 @@ test.describe("Privacy Preflight Web", () => {
     await expect(page.locator(".privacy-pdf-canvas-stack canvas").first()).toBeVisible();
     await expect(page.locator(".privacy-box-list article")).toHaveCount(0);
     await expect(page.locator(".privacy-scan-hint")).toContainText("regions stay hidden until scanning finishes");
+    await expect(page.locator(".privacy-scan-hint")).toHaveCount(0, { timeout: 6_000 });
     const overlayBeforeScan = await page.locator(".privacy-pdf-canvas-stack canvas").last().evaluate((canvas) => {
       const node = canvas as HTMLCanvasElement;
       const context = node.getContext("2d");
@@ -839,7 +842,7 @@ test.describe("Privacy Preflight Web", () => {
     await expect(page.locator(".privacy-error")).toContainText("Local OCR could not finish on this page");
     await expect(scanButton).toBeEnabled();
     await expect(page.locator(".privacy-page-method")).toContainText("OCR required");
-    await expect(page.locator(".privacy-scan-hint")).toBeVisible();
+    await expect(page.locator(".privacy-scan-hint")).toHaveCount(0);
     await expect(page.locator(".privacy-box-list article")).toHaveCount(0);
     await expect(page.getByTestId("privacy-pdf-output")).toHaveCount(0);
     await expect(page.locator(".privacy-validation")).toHaveCount(0);

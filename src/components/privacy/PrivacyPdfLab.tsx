@@ -146,6 +146,9 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
   const loadSequence = useRef(0);
   const selectionSequence = useRef(0);
   const loadingTaskRef = useRef<PDFDocumentLoadingTask | null>(null);
+  const scanHintTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scanHintFadeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scanHintRef = useRef<HTMLParagraphElement>(null);
   const originalFileNameRef = useRef("");
   const inputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState("");
@@ -165,6 +168,7 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
   const [showOriginal, setShowOriginal] = useState(false);
   const [pageMethods, setPageMethods] = useState<("text-layer" | "ocr-required" | "ocr")[]>([]);
   const [scannedPages, setScannedPages] = useState<number[]>([]);
+  const [scanHintDocumentId, setScanHintDocumentId] = useState(0);
 
   const currentRegions = regions.filter((region) => region.pageIndex === pageIndex);
   const acceptedRegions = regions.filter((region) => region.accepted);
@@ -175,6 +179,8 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
   }, [copy.renderError]);
 
   useEffect(() => () => {
+    if (scanHintTimerRef.current) clearTimeout(scanHintTimerRef.current);
+    if (scanHintFadeTimerRef.current) clearTimeout(scanHintFadeTimerRef.current);
     void loadingTaskRef.current?.destroy();
     loadingTaskRef.current = null;
     activeDocumentRef.current = null;
@@ -235,6 +241,9 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
     setOcrProgress(0);
     setIsOcrRunning(false);
     setIsExporting(false);
+    setScanHintDocumentId(0);
+    if (scanHintTimerRef.current) clearTimeout(scanHintTimerRef.current);
+    if (scanHintFadeTimerRef.current) clearTimeout(scanHintFadeTimerRef.current);
     setPageMethods([]);
     originalFileNameRef.current = "";
     const previousTask = loadingTaskRef.current;
@@ -328,6 +337,16 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
       setScannedPages([]);
       setOcrStatus(copy.scanNext);
       setOcrProgress(0);
+      setScanHintDocumentId(activeDocument.id);
+      scanHintFadeTimerRef.current = setTimeout(() => {
+        if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          scanHintRef.current?.animate([
+            { opacity: 1, transform: "translateY(0)" },
+            { opacity: 0, transform: "translateY(-4px)" },
+          ], { duration: 400, easing: "ease", fill: "forwards" });
+        }
+      }, 3600);
+      scanHintTimerRef.current = setTimeout(() => setScanHintDocumentId(0), 4000);
     } catch (cause) {
       if (requestId !== loadSequence.current) return;
       console.error("Privacy PDF could not load.", cause);
@@ -352,6 +371,9 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
     if (!activeDocument || !pageCount || isOcrRunning || isExporting) return;
     const sourceDocument = activeDocument.document;
     clearOutput();
+    setScanHintDocumentId(0);
+    if (scanHintTimerRef.current) clearTimeout(scanHintTimerRef.current);
+    if (scanHintFadeTimerRef.current) clearTimeout(scanHintFadeTimerRef.current);
     setScannedPages([]);
     setRegions((current) => current.filter((region) => region.source === "manual"));
     setIsOcrRunning(true);
@@ -630,7 +652,7 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
               />
             ))}</div>)
             : <button type="button" className="privacy-drop-target" onClick={() => inputRef.current?.click()}><FileText aria-hidden="true" /><strong>{copy.choose}</strong><span>{copy.local}</span></button>}
-          {pageCount && !allPagesScanned && !hasCurrentOutput ? <p className="privacy-scan-hint" role="status"><ScanSearch aria-hidden="true" />{copy.scanNext}</p> : null}
+          {pageCount && scanHintDocumentId === activeDocumentId && !allPagesScanned && !hasCurrentOutput ? <p ref={scanHintRef} className="privacy-scan-hint" role="status"><ScanSearch aria-hidden="true" />{copy.scanNext}</p> : null}
           {hasCurrentOutput && output ? <div className="privacy-inplace-result-toolbar" data-testid="privacy-pdf-output"><button type="button" className="privacy-before-after-toggle" aria-pressed={showOriginal} onClick={() => setShowOriginal((current) => !current)}><Columns2 aria-hidden="true" />{copy.compare}</button><span role="status">{showOriginal ? copy.originalView : copy.redactedView}</span><a className="button-link primary" href={output.url} download={output.name}><Download aria-hidden="true" />{copy.download}</a></div> : null}
         </div>
         <aside className="privacy-pdf-gate">
