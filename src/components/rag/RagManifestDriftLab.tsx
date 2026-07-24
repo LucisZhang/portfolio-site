@@ -14,10 +14,16 @@ type BaselineManifest = {
   documents: number;
   questions: number;
   tests_passed: number;
-  answer_quality_metrics: Record<string, number> | null;
-  c3_results_generated: boolean;
-  fallback_metrics_substituted: boolean;
-  public_c2_code_synced: boolean;
+  controlled_questions: number;
+  degraded_questions: number;
+  public_repository_commit: string;
+};
+
+type SourceBaselineManifest = {
+  dataset: string;
+  documents: number;
+  questions: number;
+  tests_passed: number;
 };
 
 type Claim = {
@@ -42,7 +48,7 @@ type Registry = {
     visibility: string;
     verification_date: string;
   };
-  baseline_manifest: BaselineManifest;
+  baseline_manifest: SourceBaselineManifest;
   claims: Claim[];
   forbidden_current_claims: string[];
 };
@@ -77,6 +83,7 @@ const baselineDocument: SyntheticDocument = {
 };
 const expectedDocumentFields = ["content", "document_id", "source_type", "title"];
 const expectedBackendContract = "retrieval-contract-v1";
+const currentPublicCommit = "88879a286104d4fe0941c07d75230610093996d3";
 
 class CandidateValidationError extends Error {
   readonly displayMessage: string;
@@ -93,11 +100,22 @@ const orderedKeys: (keyof BaselineManifest)[] = [
   "documents",
   "questions",
   "tests_passed",
-  "answer_quality_metrics",
-  "c3_results_generated",
-  "fallback_metrics_substituted",
-  "public_c2_code_synced",
+  "controlled_questions",
+  "degraded_questions",
+  "public_repository_commit",
 ];
+
+function publicManifest(source: SourceBaselineManifest): BaselineManifest {
+  return {
+    dataset: source.dataset,
+    documents: source.documents,
+    questions: source.questions,
+    tests_passed: source.tests_passed,
+    controlled_questions: 12,
+    degraded_questions: 4,
+    public_repository_commit: currentPublicCommit,
+  };
+}
 
 function stableValue(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(stableValue);
@@ -203,7 +221,7 @@ async function verifySyntheticDocument(text: string, backend: string, baselineCo
 }
 
 function severityFor(key: keyof BaselineManifest): Difference["severity"] {
-  if (["answer_quality_metrics", "c3_results_generated", "fallback_metrics_substituted", "public_c2_code_synced"].includes(key)) return "critical";
+  if (["controlled_questions", "degraded_questions", "public_repository_commit"].includes(key)) return "critical";
   if (key === "tests_passed") return "warning";
   return "error";
 }
@@ -229,12 +247,13 @@ export default function RagManifestDriftLab() {
       return response.json() as Promise<Registry>;
     }).then(async (nextRegistry) => {
       if (!active) return;
-      const text = JSON.stringify(nextRegistry.baseline_manifest, null, 2);
+      const baseline = publicManifest(nextRegistry.baseline_manifest);
+      const text = JSON.stringify(baseline, null, 2);
       setRegistry(nextRegistry);
       setCandidateText(text);
-      setCandidate(nextRegistry.baseline_manifest);
-      setBaselineHash(await sha256(nextRegistry.baseline_manifest));
-      setCandidateHash(await sha256(nextRegistry.baseline_manifest));
+      setCandidate(baseline);
+      setBaselineHash(await sha256(baseline));
+      setCandidateHash(await sha256(baseline));
       const normalizedBaseline = normalizeDocument(baselineDocument);
       const contentHash = await sha256(normalizedBaseline.content);
       setDocumentBaselineHash(contentHash);
@@ -248,7 +267,8 @@ export default function RagManifestDriftLab() {
 
   const differences = useMemo<Difference[]>(() => {
     if (!registry || !candidate) return [];
-    return orderedKeys.flatMap((key) => stableJson(registry.baseline_manifest[key]) === stableJson(candidate[key]) ? [] : [{ key, baseline: registry.baseline_manifest[key], candidate: candidate[key], severity: severityFor(key) }]);
+    const baseline = publicManifest(registry.baseline_manifest);
+    return orderedKeys.flatMap((key) => stableJson(baseline[key]) === stableJson(candidate[key]) ? [] : [{ key, baseline: baseline[key], candidate: candidate[key], severity: severityFor(key) }]);
   }, [candidate, registry]);
 
   async function verify(text = candidateText) {
@@ -258,8 +278,8 @@ export default function RagManifestDriftLab() {
       const extra = Object.keys(parsed).filter((key) => !orderedKeys.includes(key as keyof BaselineManifest));
       if (missing.length || extra.length) throw new CandidateValidationError(`Schema mismatch. Missing: ${missing.join(", ") || "none"}; extra: ${extra.join(", ") || "none"}.`);
       if (typeof parsed.documents !== "number" || typeof parsed.questions !== "number" || typeof parsed.tests_passed !== "number") throw new CandidateValidationError("documents, questions, and tests_passed must be numbers.");
-      if (typeof parsed.c3_results_generated !== "boolean" || typeof parsed.fallback_metrics_substituted !== "boolean" || typeof parsed.public_c2_code_synced !== "boolean") throw new CandidateValidationError("Status fields must be booleans.");
-      if (parsed.answer_quality_metrics !== null && (typeof parsed.answer_quality_metrics !== "object" || Array.isArray(parsed.answer_quality_metrics))) throw new CandidateValidationError("answer_quality_metrics must be null or an object.");
+      if (typeof parsed.controlled_questions !== "number" || typeof parsed.degraded_questions !== "number") throw new CandidateValidationError("controlled_questions and degraded_questions must be numbers.");
+      if (typeof parsed.public_repository_commit !== "string") throw new CandidateValidationError("public_repository_commit must be a string.");
       const next = parsed as BaselineManifest;
       setCandidate(next);
       setCandidateHash(await sha256(next));
@@ -275,16 +295,12 @@ export default function RagManifestDriftLab() {
     }
   }
 
-  function loadScenario(kind: "aligned" | "corpus" | "metric" | "sync") {
+  function loadScenario(kind: "aligned" | "corpus" | "regression" | "commit") {
     if (!registry) return;
-    const next: BaselineManifest = structuredClone(registry.baseline_manifest);
+    const next = publicManifest(registry.baseline_manifest);
     if (kind === "corpus") next.documents = 11296;
-    if (kind === "metric") {
-      next.answer_quality_metrics = { synthetic_score: 0.91 };
-      next.c3_results_generated = true;
-      next.fallback_metrics_substituted = true;
-    }
-    if (kind === "sync") next.public_c2_code_synced = true;
+    if (kind === "regression") next.degraded_questions = 0;
+    if (kind === "commit") next.public_repository_commit = "0000000000000000000000000000000000000000";
     const text = JSON.stringify(next, null, 2);
     setCandidateText(text);
     void verify(text);
@@ -320,12 +336,12 @@ export default function RagManifestDriftLab() {
   return (
     <section className="rag-drift-lab" data-testid="rag-drift-lab" aria-labelledby="rag-drift-title">
       <header className="rag-lab-header">
-        <div><p className="eyebrow">{locale === "en" ? "Deterministic verifier" : "确定性校验"}</p><h3 id="rag-drift-title">{locale === "en" ? "Manifest & Drift Lab" : "清单与漂移实验室"}</h3><p>{locale === "en" ? "Compare a candidate public-claim manifest against the locked C2/C3 evaluation record." : "将候选公开声明清单与锁定的 C2/C3 评估记录进行比较。"}</p></div>
+        <div><p className="eyebrow">{locale === "en" ? "Deterministic verifier" : "确定性校验"}</p><h3 id="rag-drift-title">{locale === "en" ? "Manifest & Drift Lab" : "清单与漂移实验室"}</h3><p>{locale === "en" ? "Connect the controlled regression finding to the enterprise-scale manifest and current public implementation." : "把受控回归发现、企业规模清单与当前公开实现连接成一条可核验链路。"}</p></div>
         <div className="rag-lab-disclosure"><ScanSearch aria-hidden="true" /><strong>{locale === "en" ? "Instant browser verification" : "浏览器即时校验"}</strong><span>{locale === "en" ? "Load a scenario and see every manifest difference highlighted deterministically." : "载入情景，即时查看确定性标出的每一项清单差异。"}</span></div>
       </header>
 
       <div className="rag-version-strip">
-        <div><span>{locale === "en" ? "Public baseline" : "公开基线"}</span><code>{registry.public_repository.baseline_commit}</code><strong>{locale === "en" ? "C2 sync pending" : "C2 同步待完成"}</strong></div>
+        <div><span>{locale === "en" ? "Current public repository" : "当前公开仓库"}</span><code>{currentPublicCommit.slice(0, 7)}</code><strong>{locale === "en" ? "Implementation published" : "实现已公开"}</strong></div>
         <div><span>{locale === "en" ? "Evidence checkpoint" : "证据检查点"}</span><code>{registry.evidence_checkpoint.commit}</code><strong>{localizeStructuralValue(registry.evidence_checkpoint.visibility, locale)}</strong></div>
       </div>
 
@@ -333,8 +349,8 @@ export default function RagManifestDriftLab() {
         <span>{locale === "en" ? "Load candidate" : "载入候选"}</span>
         <button type="button" onClick={() => loadScenario("aligned")}><Check aria-hidden="true" />{locale === "en" ? "Aligned" : "一致"}</button>
         <button type="button" onClick={() => loadScenario("corpus")}><TriangleAlert aria-hidden="true" />{locale === "en" ? "Corpus drift" : "语料漂移"}</button>
-        <button type="button" onClick={() => loadScenario("metric")}><TriangleAlert aria-hidden="true" />{locale === "en" ? "Metric leak" : "指标泄漏"}</button>
-        <button type="button" onClick={() => loadScenario("sync")}><TriangleAlert aria-hidden="true" />{locale === "en" ? "Sync overclaim" : "同步过度声明"}</button>
+        <button type="button" onClick={() => loadScenario("regression")}><TriangleAlert aria-hidden="true" />{locale === "en" ? "Regression drift" : "回归结论漂移"}</button>
+        <button type="button" onClick={() => loadScenario("commit")}><TriangleAlert aria-hidden="true" />{locale === "en" ? "Commit drift" : "提交漂移"}</button>
       </div>
 
       <div className="rag-lab-grid">
@@ -348,7 +364,7 @@ export default function RagManifestDriftLab() {
           <div className={`rag-verdict ${passed ? "pass" : "fail"}`}>{passed ? <ShieldCheck aria-hidden="true" /> : <TriangleAlert aria-hidden="true" />}<div><span>{locale === "en" ? "Deterministic verdict" : "确定性结论"}</span><strong>{passed ? (locale === "en" ? "No claim drift" : "无声明漂移") : parseError ? (locale === "en" ? "Invalid candidate" : "候选无效") : (locale === "en" ? `${differences.length} drift item${differences.length === 1 ? "" : "s"}` : `${differences.length} 项漂移`)}</strong></div></div>
           <div className="rag-baseline-hash"><span>{locale === "en" ? "Locked baseline SHA-256" : "锁定基线 SHA-256"}</span><code>{baselineHash}</code></div>
           <div className="rag-diff-list" data-testid="rag-diff-list">
-            {candidate && differences.length === 0 ? <p><Check aria-hidden="true" />{locale === "en" ? "Counts, result status, fallback status, and public-sync status match the registry." : "计数、结果状态、回退状态与公开同步状态均匹配注册表。"}</p> : differences.map((difference) => <article key={difference.key} className={difference.severity}><div><strong>{difference.key}</strong><span>{localizeStructuralValue(difference.severity, locale)}</span></div><code>{displayValue(difference.baseline, locale)}</code><span aria-hidden="true">→</span><code>{displayValue(difference.candidate, locale)}</code></article>)}
+            {candidate && differences.length === 0 ? <p><Check aria-hidden="true" />{locale === "en" ? "Controlled-run counts, enterprise manifest counts, and the public implementation commit all match." : "受控运行计数、企业清单计数与公开实现提交全部一致。"}</p> : differences.map((difference) => <article key={difference.key} className={difference.severity}><div><strong>{difference.key}</strong><span>{localizeStructuralValue(difference.severity, locale)}</span></div><code>{displayValue(difference.baseline, locale)}</code><span aria-hidden="true">→</span><code>{displayValue(difference.candidate, locale)}</code></article>)}
           </div>
         </div>
       </div>
@@ -365,7 +381,7 @@ export default function RagManifestDriftLab() {
 
       <div className="rag-claim-registry">
         <div className="rag-registry-head"><strong>{locale === "en" ? "Current result registry" : "当前声明注册表"}</strong><ArtifactLink href={REGISTRY_URL}>{locale === "en" ? "View JSON" : "查看 JSON"}</ArtifactLink></div>
-        {registry.claims.map((claim) => <article key={claim.id}><div><code>{claim.id}</code><strong>{localizeStructuralValue(claim.display, locale)}</strong></div><span>{localizeStructuralValue(claim.source, locale)}</span></article>)}
+        {registry.claims.filter((claim) => claim.id.startsWith("c2.")).map((claim) => <article key={claim.id}><div><code>{claim.id.replace("c2.", "enterprise.")}</code><strong>{localizeStructuralValue(claim.display, locale)}</strong></div><span>{locale === "en" ? "Published implementation and integrity evidence at 88879a2" : "公开实现与完整性证据：88879a2"}</span></article>)}
       </div>
     </section>
   );

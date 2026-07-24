@@ -9,6 +9,9 @@ export const siteIdentity = {
     github: "https://github.com/LucisZhang",
     linkedin: "https://www.linkedin.com/in/xiangguo-zhang",
     email: "HsiangKuoChang@outlook.com",
+    phone: "+86 15990784046",
+    phoneHref: "tel:+8615990784046",
+    wechat: "ZJ_Lucis",
   },
   resume: {
     href: "/resume.pdf",

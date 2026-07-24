@@ -1,8 +1,10 @@
 "use client";
 
-import { ArrowUpRight, CheckCircle2, Github, Linkedin, Mail } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, Github, Linkedin, Mail, Phone } from "lucide-react";
+import LucisOrbit from "@/components/LucisOrbit";
 import LocaleLink from "@/components/LocaleLink";
 import LocaleDocumentMetadata from "@/components/LocaleDocumentMetadata";
+import WeChatContact from "@/components/WeChatContact";
 import { localize, LocalizedText, useI18n } from "@/lib/i18n";
 import { featuredProjects, tracks } from "@/lib/projects";
 import { siteIdentity, siteMetadata } from "@/lib/site-config";
@@ -28,13 +30,15 @@ export default function Home() {
       <section className="workspace-head page-shell">
         <div>
           <p className="eyebrow">{locale === "en" ? "AI applications · Data engineering · Data analytics" : "AI 应用 · 数据工程 · 数据分析"}</p>
-          <h1>{locale === "en" ? siteIdentity.name : siteIdentity.chineseName}</h1>
+          <div className="identity-title"><h1>{locale === "en" ? siteIdentity.name : siteIdentity.chineseName}</h1><LucisOrbit /></div>
           <p className="lede">{localize(siteIdentity.positioning, locale)}</p>
           <p className="target-roles">{dict.targetRoles}</p>
           <div className="identity-links" aria-label={locale === "en" ? "Contact and profiles" : "联系方式与主页"}>
-            <a href={siteIdentity.profiles.github}><Github aria-hidden="true" /><span>GitHub</span><ArrowUpRight aria-hidden="true" /></a>
-            <a href={siteIdentity.profiles.linkedin}><Linkedin aria-hidden="true" /><span>LinkedIn</span><ArrowUpRight aria-hidden="true" /></a>
+            <a href={siteIdentity.profiles.github} target="_blank" rel="noreferrer noopener"><Github aria-hidden="true" /><span>GitHub</span><ArrowUpRight aria-hidden="true" /></a>
+            {locale === "en" ? <a href={siteIdentity.profiles.linkedin} target="_blank" rel="noreferrer noopener"><Linkedin aria-hidden="true" /><span>LinkedIn</span><ArrowUpRight aria-hidden="true" /></a> : null}
+            <a href={siteIdentity.profiles.phoneHref}><Phone aria-hidden="true" /><span>{siteIdentity.profiles.phone}</span></a>
             <a href={`mailto:${siteIdentity.profiles.email}`}><Mail aria-hidden="true" /><span>Email</span></a>
+            <WeChatContact />
           </div>
         </div>
         <div className="workspace-index" aria-label={locale === "en" ? "Portfolio index" : "作品集索引"}>

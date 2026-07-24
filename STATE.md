@@ -1,9 +1,26 @@
 # Public Portfolio state
 
-Updated: 2026-07-23 23:26 (Asia/Shanghai) / 2026-07-23 15:26 UTC
+Updated: 2026-07-24 15:59 (Asia/Shanghai) / 2026-07-24 07:59 UTC
 
 This file records the recruiter-safe state of the current release candidate. It contains no
 credentials, raw private candidate material, local source paths, or browser-session data.
+
+## Fixes4 authorized candidate gate
+
+Status: `FIXES4_LOCAL_VERIFIED`; the fixes3 Production release recorded below
+remains the live rollback point until the fixes4 Preview and Production gates pass.
+
+The final local browser matrix passed all 276 cases (220 executed and 56 intentional
+project/device skips), with no failed tests. Type, lint, evidence, assistant, localization, link,
+build, dependency-audit, and performance gates are recorded again at the exact candidate commit
+before the Preview gate.
+
+The owner explicitly authorized the fixes4 website branch, ready pull request, exact-SHA Preview,
+normal PR merge, Git-triggered Production deployment, and one English Claude Sonnet 4.6 plus one
+Chinese Kimi K3 live acceptance on both final Preview and Production. Model calls remain limited
+to OpenRouter ZDR routes and retrieval-selected bounded candidate excerpts. The owner separately
+authorized the exact RAG Contributor history cleanup; that narrow rewrite and the subsequent normal
+content PR are complete. No direct content push to either repository's `main` is authorized.
 
 Overall status: `FIXES3_PRODUCTION_VERIFIED`. Runtime merge commit
 `0fccdcc4929718600f053221bdcef31faebd102f` is deployed as

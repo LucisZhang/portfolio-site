@@ -1,0 +1,28 @@
+.lucis-orbit {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  flex: none;
+  border: 1px solid var(--line-dark);
+  border-radius: 50%;
+}
+
+.lucis-orbit-core,
+.lucis-orbit-node { position: absolute; display: grid; place-items: center; border-radius: 50%; }
+.lucis-orbit-core { inset: 22px; background: var(--paper); font-size: 10px; font-weight: 800; }
+.lucis-orbit-node { width: 8px; height: 8px; background: var(--green); }
+.lucis-orbit .node-ai { top: 5px; left: 32px; }
+.lucis-orbit .node-engineering { right: 7px; bottom: 12px; }
+.lucis-orbit .node-analytics { left: 7px; bottom: 12px; }
+
+.lucis-orbit.is-entering { animation: lucis-orbit-arrive 950ms cubic-bezier(.2, .8, .2, 1) both; }
+
+@keyframes lucis-orbit-arrive {
+  0% { opacity: 0; transform: scale(.72) rotate(-18deg); }
+  65% { opacity: 1; transform: scale(1.035) rotate(2deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lucis-orbit.is-entering { animation: none; }
+}

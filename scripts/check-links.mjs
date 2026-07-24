@@ -104,7 +104,7 @@ try {
       }
       if (/\/private\/tmp\/|\/Users\//.test(anchor.href)) addFinding("error", "private path", route, "Public link exposes a local filesystem path.", anchor.href);
       if (anchor.disabled && anchor.href) addFinding("error", "disabled link", route, "Disabled state is still a clickable anchor.", anchor.href);
-      if (anchor.href.startsWith("mailto:")) continue;
+      if (anchor.href.startsWith("mailto:") || anchor.href.startsWith("tel:")) continue;
       const target = new URL(anchor.resolved);
       if (target.origin !== baseUrl.origin) {
         externalTargets.add(target.href);
@@ -145,7 +145,7 @@ try {
   }
 
   for (const href of externalTargets) {
-    if (href.startsWith("mailto:")) continue;
+    if (href.startsWith("mailto:") || href.startsWith("tel:")) continue;
     let status = 0;
     try {
       const response = await context.request.get(href, { failOnStatusCode: false, timeout: 30_000, maxRedirects: 8 });

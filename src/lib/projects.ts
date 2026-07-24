@@ -208,25 +208,25 @@ export const projects: Project[] = [
     title: { en: "RAG Quality Lab", zh: "RAG 质量实验室" },
     eyebrow: { en: "Deterministic RAG evaluation", zh: "确定性 RAG 评估" },
     summary: {
-      en: "I built this RAG workbench to work without an LLM judge: a fixed document set and question list become hashed manifests, backend contracts, and repeatable regression checks.",
-      zh: "我搭建的 RAG 工作台不用 LLM 当裁判：固定文档集和问题列表会生成带哈希的清单、后端契约和可复现的回归检查。",
+      en: "A controlled regression test caught a knowledge-base update degrading the strongest pipeline; I then extended the same evidence lifecycle into tracked evaluation infrastructure for 11,309 enterprise documents.",
+      zh: "一次受控回归测试发现知识库更新使最强流水线全面退化；我随后把同一套证据生命周期扩展为可追踪的 11,309 份企业文档评估基础设施。",
     },
-    metrics: { en: "11,309 docs hashed · 130 questions · 68 tests passing", zh: "11,309 份文档已哈希 · 130 个问题 · 68 项测试通过" },
+    metrics: { en: "4/12 questions regressed · 11,309 docs · 130 enterprise questions", zh: "12 题中 4 题退化 · 11,309 份文档 · 130 道企业问题" },
     problem: {
-      en: "Before you can compare retrieval methods — or claim better answers — RAG work needs a data and test setup that can be rerun and checked.",
-      zh: "比较检索方法或声称答案更优之前，RAG 工作需要的是可重跑、可核验的数据与测试配置。",
+      en: "RAG changes often look harmless while silently reducing answer quality. Teams need a repeatable gate that catches regressions and still works when the corpus becomes too large to inspect manually.",
+      zh: "RAG 变更看似无害，却可能悄然降低答案质量。团队需要一套可重复的门禁，既能发现退化，也能在语料大到无法人工逐份检查时继续运作。",
     },
     audience: {
-      en: "Applied-AI and evaluation engineers who want a reproducible foundation in place before making any quality comparison.",
-      zh: "AI 应用与评估工程师，希望在比较质量之前先建立可复现的测试基础。",
+      en: "Applied-AI, retrieval, and evaluation teams that need reviewable evidence before a RAG change reaches users.",
+      zh: "需要在 RAG 变更触达用户前取得可审阅证据的 AI 应用、检索与评估团队。",
     },
     role: {
-      en: "I built the document and question adapters, deterministic manifest, backend interface, verifier, retrieval runner, tests, and operating docs.",
-      zh: "构建语料与问题适配器、确定性清单、后端接口、校验器、检索运行器、测试与运行文档。",
+      en: "I built the A/B and regression harness, then added enterprise-corpus adapters, deterministic manifests, backend seams, a judge-free retrieval runner, verifiers, tests, and operating documentation.",
+      zh: "我先构建 A/B 对比与回归工具，再补充企业语料适配器、确定性清单、后端接口、无需裁判模型的检索运行器、校验器、测试与运行文档。",
     },
     outcome: {
-      en: "At the current checkpoint, 11,309 S1 documents and 130 answerable questions pass manifest verification, and the suite records 68 passing tests across the evaluation foundation.",
-      zh: "在当前检查点，11,309 份文档与 130 个可回答问题通过清单校验，评估基础设施共有 68 项测试通过。",
+      en: "On the controlled 12-question set, a document-only update degraded four questions and every reported quality metric. The repository now carries the same versioned-data and verification lifecycle to 11,309 synthetic enterprise documents and 130 answerable questions.",
+      zh: "在受控的 12 题集合中，仅修改文档就导致 4 道题及全部已报告质量指标退化。仓库现已把同一套版本化数据与验证生命周期扩展至 11,309 份合成企业文档和 130 道可回答问题。",
     },
     stack: projectStack(
       "Python",
@@ -237,39 +237,32 @@ export const projects: Project[] = [
       { en: "Deterministic manifests", zh: "确定性清单" },
     ),
     architecture: [
-      { label: { en: "Acquire", zh: "采集" }, detail: { en: "Mirror the fixed S1 inputs and record their integrity.", zh: "镜像固定的 S1 输入并记录其完整性。" } },
-      { label: { en: "Adapt", zh: "适配" }, detail: { en: "Normalize documents and answerable questions.", zh: "规范化文档与可回答问题。" } },
-      { label: { en: "Manifest", zh: "清单" }, detail: { en: "Hash the exact evaluation scope deterministically.", zh: "确定性哈希精确评估范围。" } },
-      { label: { en: "Run", zh: "运行" }, detail: { en: "Use a backend-aware, judge-free retrieval contract.", zh: "使用感知后端且无需裁判模型的检索契约。" } },
-      { label: { en: "Verify", zh: "校验" }, detail: { en: "Fail on data drift, contract breaks, or regression.", zh: "数据漂移、契约破坏或回归时直接失败。" } },
+      { label: { en: "Compare", zh: "对比" }, detail: { en: "Run naive vector and hybrid-rerank pipelines on the same controlled questions.", zh: "在同一受控问题集上运行朴素向量与混合重排流水线。" } },
+      { label: { en: "Regress", zh: "回归" }, detail: { en: "Compare one pipeline across knowledge-base versions and bucket question-level changes.", zh: "让同一流水线跨知识库版本运行，并对逐题变化分桶。" } },
+      { label: { en: "Scale", zh: "扩展" }, detail: { en: "Adapt 11,309 synthetic enterprise documents and 130 grounded questions.", zh: "适配 11,309 份合成企业文档与 130 道带依据的问题。" } },
+      { label: { en: "Manifest", zh: "清单" }, detail: { en: "Bind datasets, adapters, and outputs to deterministic hashes.", zh: "以确定性哈希绑定数据集、适配器与输出。" } },
+      { label: { en: "Gate", zh: "门禁" }, detail: { en: "Fail on data drift, contract breaks, or measured regression.", zh: "发现数据漂移、契约破坏或已测退化时直接失败。" } },
     ],
     provenance: [
       {
-        en: "Local evidence checkpoint 6c887a1 contains the C2 corpus, question, manifest, backend, verifier, and runner work plus the C3 no-results record.",
-        zh: "本地证据检查点 6c887a1 包含语料、问题、清单、后端、校验器与运行器的工作，以及一次没有产生结果的限时评估记录。",
+        en: "The saved 2026-04 controlled run was deterministically re-parsed in 2026-07: Pipeline B moved from 0.988 to 0.867 faithfulness after the V1-to-V2 document update, with 4 degraded, 0 improved, and 8 stable questions.",
+        zh: "2026-04 保存的受控运行于 2026-07 完成确定性重解析：V1 到 V2 的文档更新后，流水线 B 的忠实度从 0.988 降至 0.867；逐题结果为 4 题退化、0 题改善、8 题稳定。",
       },
       {
-        en: "Verification on 2026-07-12: Ruff passed, 68 tests passed, data verification passed, and the deterministic A3 wrapper passed with dependency stubs.",
-        zh: "2026-07-12 校验：Ruff 通过、68 项测试通过、数据校验通过，确定性检索契约在依赖 stub 下也通过。",
+        en: "The public repository at commit 88879a2 contains the enterprise adapters, manifest, backend seam, retrieval runner, tests, and bilingual operating documentation; its CI passed before merge.",
+        zh: "公开仓库提交 88879a2 已包含企业语料适配器、清单、后端接口、检索运行器、测试与双语运行文档，并在合并前通过 CI。",
       },
     ],
     boundaries: [
       {
-        en: "Historical 12-question corpus only; does not transfer to the 11,309-document S1 checkpoint.",
-        zh: "仅适用于历史 12 问题语料；不能迁移解释为 11,309 文档 S1 检查点的结果。",
+        en: "The reported quality and latency measurements belong to the controlled saved runs; they do not transfer to the 11,309-document enterprise corpus.",
+        zh: "已报告的质量与延迟测量仅属于受控的已保存运行，不能迁移解释为 11,309 份企业文档语料的结果。",
       },
       {
-        en: "Legacy corpus-scale and performance results are excluded from v1. C2 checks the evaluation foundation, not answer quality.",
-        zh: "v1 不包含旧版的语料规模或性能声明；当前检查点证明的是评估基础设施，而不是回答质量。",
+        en: "At enterprise scale, the current evidence establishes data integrity and runnable evaluation infrastructure, not a new answer-quality result.",
+        zh: "在企业语料规模上，当前证据证明的是数据完整性与可运行的评估基础设施，而不是新的答案质量结论。",
       },
-      {
-        en: "C3 ended before execution because the real hybrid stack and uncached reranker were unavailable locally. It produced no result file and no fallback metric.",
-        zh: "C3 在执行前终止，因为本地无法提供真实的混合检索栈和未缓存的重排器；未产生结果文件，也未使用替代指标。",
-      },
-      {
-        en: "The public repository remains at baseline commit 0fc1433; the local C2 checkpoints have not been synced. The linked code is therefore labeled as a public baseline, not as the C2 implementation.",
-        zh: "公开仓库仍停留在基线提交 0fc1433；本地检查点的工作尚未同步过去，因此这里的链接标注为公开基线，而不是当前实现。",
-      },
+      { en: "The lab is a single-machine evaluation workbench, not a released package or a production serving system.", zh: "该实验室是单机评估工作台，并非已发布的软件包或生产服务系统。" },
     ],
     links: [
       { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/rag-quality-lab" },
