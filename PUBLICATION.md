@@ -1,6 +1,6 @@
 # Portfolio publication record
 
-Published: 2026-07-23
+Published: 2026-07-24
 
 - Production site: <https://portfolio-site-seven-murex.vercel.app>
 - Public source: <https://github.com/LucisZhang/portfolio-site>
@@ -29,7 +29,40 @@ records package chronology; it is not the current publication status.
 Approval does not extend to the private source repository, raw reports, prompts, scenarios,
 traces, datasets, original screenshots, or any substituted asset hash.
 
-## Current verified release — fixes3
+## Current verified release — fixes4
+
+Website PR [#8](https://github.com/LucisZhang/portfolio-site/pull/8) merged normally as runtime
+commit `c1c5a11bfc6057b92e521c19270f569a880d69c2`; no direct push to `main` occurred. GitHub
+Production deployment `5585933491` reached success at `2026-07-24T08:22:13Z`. The canonical
+Production alias is <https://portfolio-site-seven-murex.vercel.app>, and the immutable build URL is
+<https://portfolio-site-oxvhbt0iz-luciszhangs-projects.vercel.app>.
+
+The release keeps the established site design while adding the removable session-once Lucis Orbit
+entry flourish, locale-specific contact surfaces and WeChat QR images, bilingual typo-tolerant
+local search, and a clear assistant handoff. English includes LinkedIn; Chinese intentionally does
+not. The Privacy three-page PDF workflow keeps every source and result canvas inside the complete
+left-side page frame through review, validated export, and download.
+
+RAG repository PR [#5](https://github.com/LucisZhang/rag-quality-lab/pull/5) merged its unified
+recruiter-facing narrative and bilingual homepage at
+`88879a286104d4fe0941c07d75230610093996d3`. One Fable 5 task combined senior GitHub-user and
+AI/data recruiter review, followed by one Kimi K3 Chinese pass. The separately authorized narrow
+history cleanup removed the obsolete contributor attribution before the normal content PR.
+
+The assistant public corpus reproduces 9 repositories, 66 files, and 532 bounded chunks at
+SHA-256 `a47c5bbe603da3b3efb5497d50886960cf0323d1f885a9034052697bcfd9b6ad`.
+Preview and Production each passed one authorized English Claude Sonnet 4.6 and one Chinese Kimi
+K3 live acceptance after the independent Claude Haiku 4.5 scope gate, through OpenRouter ZDR and
+with retrieval-selected bounded material only.
+
+The complete local browser matrix finished with 220 passed, 56 intentional skips, and zero
+failures; assistant verification passed 37 tests. Typecheck, lint, evidence, public-source
+reproduction, build, localization, links, production dependency audit, disclosure/security scans,
+and performance budget passed. Production Lighthouse scored 92 Performance and 100 for
+Accessibility, Best Practices, and SEO. See
+[`docs/lighthouse-homepage-20260724.md`](docs/lighthouse-homepage-20260724.md).
+
+## Previous verified release — fixes3
 
 Runtime merge commit `0fccdcc4929718600f053221bdcef31faebd102f` is deployed to Production as
 `dpl_3w3vvQfFnuzFUBqhsnvjx5zxGMro`. Website PR #6 and all project-repository PRs merged through the
