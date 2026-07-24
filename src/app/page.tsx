@@ -28,16 +28,16 @@ export default function Home() {
   return (
     <main>
       <LocaleDocumentMetadata title={siteMetadata.title} description={siteMetadata.description} />
-      <section className="workspace-head page-shell">
+      <section className="workspace-head page-shell" id="contact" style={{ scrollMarginTop: 92 }}>
         <div>
           <p className="eyebrow">{locale === "en" ? "AI applications · Data engineering · Data analytics" : "AI 应用 · 数据工程 · 数据分析"}</p>
           <div className="identity-title"><h1>{locale === "en" ? siteIdentity.name : siteIdentity.chineseName}</h1></div>
           <div className="identity-mark"><LucisOrbit /></div>
           <p className="lede">{localize(siteIdentity.positioning, locale)}</p>
           <p className="target-roles">{dict.targetRoles}</p>
-          <div className="identity-links" id="contact" style={{ scrollMarginTop: 92 }} aria-label={locale === "en" ? "Contact and profiles" : "联系方式与主页"}>
-            <a href={siteIdentity.profiles.github} target="_blank" rel="noreferrer noopener"><Github aria-hidden="true" /><span>GitHub</span><ArrowUpRight aria-hidden="true" /></a>
-            {locale === "en" ? <a href={siteIdentity.profiles.linkedin} target="_blank" rel="noreferrer noopener"><Linkedin aria-hidden="true" /><span>LinkedIn</span><ArrowUpRight aria-hidden="true" /></a> : null}
+          <div className="identity-links" aria-label={locale === "en" ? "Contact and profiles" : "联系方式与主页"}>
+            <a href={siteIdentity.profiles.github} target="_blank" rel="noreferrer noopener"><Github aria-hidden="true" /><span>GitHub</span></a>
+            {locale === "en" ? <a href={siteIdentity.profiles.linkedin} target="_blank" rel="noreferrer noopener"><Linkedin aria-hidden="true" /><span>LinkedIn</span></a> : null}
             <PhoneContact />
             <a href={`mailto:${siteIdentity.profiles.email}`}><Mail aria-hidden="true" /><span>{locale === "en" ? "Email" : "邮箱"}</span></a>
             <WeChatContact />

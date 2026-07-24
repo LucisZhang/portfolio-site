@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import AssistantLauncher from "@/components/assistant/AssistantLauncher";
 import CommandPalette from "@/components/CommandPalette";
+import FooterContactLink from "@/components/FooterContactLink";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import LocaleLink from "@/components/LocaleLink";
 import { LanguageProvider, LocalizedText, type LocalizedString } from "@/lib/i18n";
@@ -32,7 +33,7 @@ const navItems: { href: string; label: LocalizedString }[] = [
 ];
 
 function FooterCopy() {
-  return <span className="footer-pitch"><LocalizedText text={{ en: "Applied AI, data engineering, and analytics — built to turn ambiguous work into operable systems.", zh: "面向 AI 应用、数据工程与数据分析岗位——把模糊问题转化为可运行的系统。" }} /><LocaleLink href="/#contact"><LocalizedText text={{ en: "Contact Xiangguo", zh: "联系章向国" }} /></LocaleLink></span>;
+  return <span className="footer-pitch"><LocalizedText text={{ en: "Applied AI, data engineering, and analytics — built to turn ambiguous work into operable systems.", zh: "面向 AI 应用、数据工程与数据分析岗位——把模糊问题转化为可运行的系统。" }} /><FooterContactLink /></span>;
 }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

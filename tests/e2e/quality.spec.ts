@@ -145,6 +145,9 @@ test("homepage contacts, WeChat QR variants, and one-time Lucis Orbit follow loc
   await expect.poll(() => page.evaluate(() => window.sessionStorage.getItem("lucis-orbit-seen-v5"))).toBe("1");
   await expect(page.getByRole("link", { name: /GitHub/ })).toHaveAttribute("target", "_blank");
   await expect(page.getByRole("link", { name: /LinkedIn/ })).toHaveAttribute("rel", /noopener/);
+  expect(await page.locator(".identity-links > a, .identity-links > button").evaluateAll((controls) => (
+    controls.map((control) => control.querySelectorAll(":scope > svg").length)
+  ))).toEqual([1, 1, 1, 1, 1]);
   const phone = page.getByRole("link", { name: "Phone", exact: true });
   await expect(phone).toHaveAttribute("href", "tel:+8615990784046");
   await expect(page.locator(".identity-links")).not.toContainText("+86 15990784046");
@@ -170,6 +173,9 @@ test("homepage contacts, WeChat QR variants, and one-time Lucis Orbit follow loc
   await expect(page.getByRole("link", { name: /LinkedIn/ })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "电话", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "邮箱", exact: true })).toBeVisible();
+  expect(await page.locator(".identity-links > a, .identity-links > button").evaluateAll((controls) => (
+    controls.map((control) => control.querySelectorAll(":scope > svg").length)
+  ))).toEqual([1, 1, 1, 1]);
   await page.getByRole("button", { name: "微信", exact: true }).click();
   await expect(page.getByAltText("Lucis 的微信二维码")).toHaveAttribute("src", /wechat-zh\.jpg/);
 });
@@ -243,15 +249,25 @@ test("mobile phone contact keeps the native dial link without exposing the numbe
   await expect(page.getByRole("dialog", { name: "电话联系" })).toHaveCount(0);
 });
 
-test("footer contact returns to the localized homepage contact row", async ({ page }, testInfo) => {
+test("footer contact returns to the top of the localized homepage contact section", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "The shared footer destination only needs one route pass.");
   await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "zh"));
+  await page.goto("/?lang=zh", { waitUntil: "networkidle" });
+  let contact = page.getByRole("link", { name: "联系章向国", exact: true });
+  await contact.scrollIntoViewIfNeeded();
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+  await contact.click();
+  await expect(page).toHaveURL(/\/?\?lang=zh#contact$/);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThanOrEqual(1);
+  await expect(page.locator("section#contact.workspace-head")).toBeVisible();
+
   await page.goto("/ai/release-guardian?lang=zh", { waitUntil: "networkidle" });
-  const contact = page.getByRole("link", { name: "联系章向国", exact: true });
+  contact = page.getByRole("link", { name: "联系章向国", exact: true });
   await expect(contact).toHaveAttribute("href", "/?lang=zh#contact");
   await contact.click();
   await expect(page).toHaveURL(/\/?\?lang=zh#contact$/);
-  await expect(page.locator("#contact")).toBeVisible();
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThanOrEqual(1);
+  await expect(page.locator("section#contact.workspace-head")).toBeVisible();
 });
 
 test("portfolio search returns bilingual, typo-tolerant, and nearest-page results", async ({ page }, testInfo) => {

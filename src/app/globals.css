@@ -97,7 +97,6 @@ svg { flex: none; }
 .identity-contact-button:hover, .identity-contact-button:focus-visible { border-color: var(--ink); }
 .identity-links > a:hover, .identity-links > a:focus-visible { border-color: var(--ink); }
 .identity-links svg { width: 14px; height: 14px; }
-.identity-links > a svg:last-child { width: 11px; }
 .wechat-modal { position: fixed; inset: 0; z-index: 70; display: grid; place-items: center; background: rgba(21, 24, 23, .62); padding: 20px; }
 .wechat-card { position: relative; width: min(390px, 100%); max-height: calc(100vh - 40px); overflow-y: auto; border: 1px solid var(--ld); border-radius: 8px; background: var(--pa); padding: 22px; box-shadow: 0 24px 80px rgba(21, 24, 23, .28); }
 .wechat-card h2 { margin: 6px 0 16px; font-size: 20px; }
