@@ -1,30 +1,29 @@
 # Public Portfolio state
 
-Updated: 2026-07-24 16:30 (Asia/Shanghai) / 2026-07-24 08:30 UTC
+Updated: 2026-07-25 00:10 (Asia/Shanghai) / 2026-07-24 16:10 UTC
 
 This file records the recruiter-safe state of the current release candidate. It contains no
 credentials, raw private candidate material, local source paths, or browser-session data.
 
-## Fixes4 verified release
+## Fixes5 verified release
 
-Status: `FIXES4_PRODUCTION_VERIFIED`. Runtime PR #8 merged normally as commit
-`c1c5a11bfc6057b92e521c19270f569a880d69c2`; no direct push to `main` occurred. GitHub
-Production deployment `5585933491` reached success at `2026-07-24T08:22:13Z`, and the canonical
-alias <https://portfolio-site-seven-murex.vercel.app> served the merged runtime. The immutable
-Vercel build URL is
-<https://portfolio-site-oxvhbt0iz-luciszhangs-projects.vercel.app>.
+Status: `FIXES5_PRODUCTION_VERIFIED`. Runtime PR #10 merged normally as commit
+`29466dd7e0f11f9a69db3d87694929e03287ceb1`; no direct push to `main` occurred. Vercel
+Production deployment `dpl_8twyKAbaEJMiqUgFKx8Pwb18xgLV` reached Ready at
+`2026-07-24 23:53:54 Asia/Shanghai` / `2026-07-24 15:53:54 UTC`, and the canonical alias
+<https://portfolio-site-seven-murex.vercel.app> served the merged runtime. The immutable build URL
+is <https://portfolio-site-qeil86ae7-luciszhangs-projects.vercel.app>.
 
-The final local browser matrix passed all 276 cases (220 executed and 56 intentional
-project/device skips), with no failed tests. Type, lint, evidence, assistant, localization, link,
-build, dependency-audit, and performance gates passed at candidate commit
-`7da0a70fbacd340b65491284c982ada849c8a981` before the Preview gate.
+The final local browser matrix passed all 300 cases (228 executed and 72 intentional
+project/device skips), with no failures. Type, lint, evidence, assistant, localization, link,
+build, dependency-audit, security, and performance gates passed at candidate commit
+`18ab7a49753b33aa62171f742b8be8a71afc3846` before the Preview gate.
 
-The owner explicitly authorized the fixes4 website branch, ready pull request, exact-SHA Preview,
-normal PR merge, Git-triggered Production deployment, and one English Claude Sonnet 4.6 plus one
-Chinese Kimi K3 live acceptance on both final Preview and Production. Model calls remain limited
-to OpenRouter ZDR routes and retrieval-selected bounded candidate excerpts. The owner separately
-authorized the exact RAG Contributor history cleanup; that narrow rewrite and the subsequent normal
-content PR are complete. No direct content push to either repository's `main` was used.
+The owner reviewed and retained the hybrid Lucis Orbit entrance. The fixes5 release also makes the
+footer contact action land on the actual homepage contact region, including from the homepage
+itself; removes upper-right arrows from the full contact row for one consistent icon treatment;
+adds an explicit phone contact dialog; improves bilingual whole-catalog search ranking; and
+clarifies the transient Privacy PDF clean-preview state before scanning.
 
 The owner explicitly authorized this release's repository and website branches, ready pull
 requests, exact-SHA Preview, normal PR merges, exact-SHA Production deployment, and all English
@@ -122,7 +121,27 @@ original evidence identity.
   article, language switch, headings, and expected tables without a not-found page or raw emphasis
   marker.
 
-## Fixes4 Preview and Production verification
+## Fixes5 Preview and Production verification
+
+- Exact candidate Preview deployment `dpl_2CkxyCRoZHN96eEkd1FjFHkxirz3` reached Ready at
+  <https://portfolio-site-ebidtfwx5-luciszhangs-projects.vercel.app> for candidate
+  `18ab7a49753b33aa62171f742b8be8a71afc3846`.
+- Preview and Production each passed one English Claude Sonnet 4.6 and one Chinese Kimi K3 live
+  acceptance after the independent Claude Haiku 4.5 scope gate. Each accepted request retrieved 9
+  bounded chunks, matched the configured model exactly, retained public/private/combined knowledge
+  hashes and payload hashes, and exposed no forbidden candidate field.
+- Production browser acceptance covered English and Chinese contact matrices, same-page and
+  cross-page contact navigation, locale-specific QR dialogs, whole-catalog search examples, the
+  retained Lucis Orbit, and the complete three-page Privacy scan/review/raster-export workflow.
+  The result used the complete left main region, rendered all three pages, showed the verified
+  export receipt, had no horizontal overflow, and emitted no browser warnings or errors.
+- Fourteen representative English/Chinese routes returned HTTP 200 with CSP and frame-denial
+  headers. The formal project route is `/engineering/p1-reliability-lab` while the visible and
+  repository-facing name remains Streaming Reliability Lab.
+- Production Lighthouse scored 98 Performance and 100 for Accessibility, Best Practices, and SEO.
+  See [`docs/lighthouse-homepage-20260725-fixes5.md`](docs/lighthouse-homepage-20260725-fixes5.md).
+
+## Previous fixes4 Preview and Production verification
 
 - Exact candidate Preview GitHub deployment `5585781639` reached success with environment URL
   <https://portfolio-site-czmxqs9pw-luciszhangs-projects.vercel.app>. Signed-in browser acceptance

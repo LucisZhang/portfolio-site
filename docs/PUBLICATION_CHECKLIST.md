@@ -147,7 +147,38 @@ public-safe final state update.
 
 Only after those checks may `STATE.md` change from `V15_RELEASE_CANDIDATE` to a deployed status.
 
-## 7. 2026-07-24 fixes4 release receipt
+## 7. 2026-07-25 fixes5 release receipt
+
+- [x] Website PR #10 merged normally without a direct `main` push.
+- [x] Candidate commit: `18ab7a49753b33aa62171f742b8be8a71afc3846`; runtime merge commit:
+  `29466dd7e0f11f9a69db3d87694929e03287ceb1`.
+- [x] Preview deployment `dpl_2CkxyCRoZHN96eEkd1FjFHkxirz3` reached Ready at
+  <https://portfolio-site-ebidtfwx5-luciszhangs-projects.vercel.app>.
+- [x] Production deployment `dpl_8twyKAbaEJMiqUgFKx8Pwb18xgLV` reached Ready at
+  `2026-07-24 23:53:54 Asia/Shanghai` / `2026-07-24 15:53:54 UTC`; the canonical alias served the
+  runtime at <https://portfolio-site-seven-murex.vercel.app>.
+- [x] Preview and Production each passed one exact English Claude Sonnet 4.6 and one exact Chinese
+  Kimi K3 acceptance after the independent Claude Haiku 4.5 portfolio-scope guard. Each accepted
+  request retrieved 9 bounded chunks and retained validated knowledge, payload, and citation
+  metadata without exposing forbidden candidate fields.
+- [x] Public assistant snapshot: 9 repositories, 66 files, 532 chunks, SHA-256
+  `a47c5bbe603da3b3efb5497d50886960cf0323d1f885a9034052697bcfd9b6ad`.
+- [x] Local/browser verification: 228 passed, 72 intentional skips, 0 failures; assistant
+  verification: 37 passed. Typecheck, lint, evidence, public-source reproduction, build,
+  localization, link, dependency-audit, client-disclosure, secret, and performance-budget gates
+  passed.
+- [x] Owner-retained hybrid Lucis Orbit, locale-specific contact matrices and QR images, phone
+  dialog, same-page/cross-page contact anchor, consistent no-upper-right-arrow contact row, and
+  bilingual whole-catalog ranking passed browser acceptance.
+- [x] Production Privacy acceptance completed the three-page scan, review, confirmation, verified
+  pure-image export, and before/after presentation in the complete left main region, without
+  horizontal overflow or browser warnings/errors.
+- [x] Fourteen representative English/Chinese routes returned HTTP 200 with CSP and frame-denial
+  headers.
+- [x] Lighthouse 13.4.1: Production 98/100/100/100 for Performance, Accessibility, Best Practices,
+  and SEO respectively.
+
+## 8. 2026-07-24 fixes4 release receipt
 
 - [x] Website PR #8 merged normally without a direct `main` push.
 - [x] Candidate commit: `7da0a70fbacd340b65491284c982ada849c8a981`; runtime merge commit:
@@ -176,7 +207,7 @@ Only after those checks may `STATE.md` change from `V15_RELEASE_CANDIDATE` to a 
 - [x] Lighthouse 13.4.1: local 97/100/100/100 and Production 92/100/100/100 for Performance,
   Accessibility, Best Practices, and SEO respectively.
 
-## 8. 2026-07-23 fixes3 release receipt
+## 9. 2026-07-23 fixes3 release receipt
 
 - [x] Website PR #6 merged normally without a direct `main` push.
 - [x] Runtime merge commit: `0fccdcc4929718600f053221bdcef31faebd102f`.
@@ -197,7 +228,7 @@ Only after those checks may `STATE.md` change from `V15_RELEASE_CANDIDATE` to a 
   headers.
 - [x] Lighthouse 13.4.1: Performance 99, Accessibility 100, Best Practices 100, SEO 100.
 
-## 9. 2026-07-23 v15 release receipt
+## 10. 2026-07-23 v15 release receipt
 
 - [x] PR #3 and follow-up PR #4 merged normally without a direct `main` push.
 - [x] Runtime merge commit: `468f31ba1ce196348caa5e30a76b11ed46a609d4`.
