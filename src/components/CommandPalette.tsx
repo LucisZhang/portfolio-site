@@ -118,6 +118,7 @@ export default function CommandPalette({
                 </Command.Item>
               ))}
             </Command.Group>
+            {query && !results.length ? <Command.Empty className="command-empty">{locale === "en" ? "No confident project match. Try a project, business problem, capability, or tool." : "没有置信度足够的项目匹配。可尝试输入项目、业务问题、能力或工具。"}</Command.Empty> : null}
             {query ? <p className="command-search-note"><span>{locale === "en" ? "Results use bilingual concepts, synonyms, and typo-tolerant matching." : "结果综合双语概念、同义词与拼写容错。"}</span><button type="button" onClick={askPortfolio}>{locale === "en" ? "Ask an open-ended question" : "询问开放式问题"}<ArrowRight aria-hidden="true" /></button></p> : null}
           </Command.List>
         </div>

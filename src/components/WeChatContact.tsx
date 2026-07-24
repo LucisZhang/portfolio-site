@@ -40,7 +40,7 @@ export default function WeChatContact() {
   return (
     <>
       <button ref={openerRef} type="button" className="identity-contact-button" onClick={() => setOpen(true)}>
-        <MessageCircle aria-hidden="true" /><span>WeChat</span>
+        <MessageCircle aria-hidden="true" /><span>{locale === "en" ? "WeChat" : "微信"}</span>
       </button>
       {open ? (
         <div className="wechat-modal" role="dialog" aria-modal="true" aria-labelledby="wechat-title" onMouseDown={(event) => { if (event.target === event.currentTarget) close(); }}>

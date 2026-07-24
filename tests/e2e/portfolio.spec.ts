@@ -802,6 +802,7 @@ test.describe("Privacy Preflight Web", () => {
     await expect(page.locator(".privacy-pdf-canvas-stack canvas").first()).toBeVisible();
     await expect(page.locator(".privacy-box-list article")).toHaveCount(0);
     await expect(page.locator(".privacy-scan-hint")).toContainText("regions stay hidden until scanning finishes");
+    await expect(page.locator(".privacy-scan-hint")).toHaveCount(0, { timeout: 6_000 });
     const overlayBeforeScan = await page.locator(".privacy-pdf-canvas-stack canvas").last().evaluate((canvas) => {
       const node = canvas as HTMLCanvasElement;
       const context = node.getContext("2d");
@@ -839,7 +840,7 @@ test.describe("Privacy Preflight Web", () => {
     await expect(page.locator(".privacy-error")).toContainText("Local OCR could not finish on this page");
     await expect(scanButton).toBeEnabled();
     await expect(page.locator(".privacy-page-method")).toContainText("OCR required");
-    await expect(page.locator(".privacy-scan-hint")).toBeVisible();
+    await expect(page.locator(".privacy-scan-hint")).toHaveCount(0);
     await expect(page.locator(".privacy-box-list article")).toHaveCount(0);
     await expect(page.getByTestId("privacy-pdf-output")).toHaveCount(0);
     await expect(page.locator(".privacy-validation")).toHaveCount(0);
