@@ -29,7 +29,33 @@ records package chronology; it is not the current publication status.
 Approval does not extend to the private source repository, raw reports, prompts, scenarios,
 traces, datasets, original screenshots, or any substituted asset hash.
 
-## Current verified release — fixes4
+## Current verified release — fixes5
+
+Website PR [#10](https://github.com/LucisZhang/portfolio-site/pull/10) merged normally as runtime
+commit `29466dd7e0f11f9a69db3d87694929e03287ceb1`; no direct push to `main` occurred. Vercel
+Production deployment `dpl_8twyKAbaEJMiqUgFKx8Pwb18xgLV` reached Ready at
+`2026-07-24T15:53:54Z`. The canonical Production alias is
+<https://portfolio-site-seven-murex.vercel.app>, and the immutable build URL is
+<https://portfolio-site-qeil86ae7-luciszhangs-projects.vercel.app>.
+
+The owner-reviewed hybrid Lucis Orbit is retained. Footer contact navigation now lands on the
+actual top contact region from any route, and GitHub, LinkedIn, phone, email, and WeChat use one
+consistent no-upper-right-arrow treatment. The release also adds a phone dialog, strengthens
+bilingual whole-catalog search ranking, and makes the Privacy PDF clean-preview state explicit
+before scanning without narrowing the result workspace.
+
+The complete local browser matrix finished with 228 passed, 72 intentional skips, and zero
+failures. Preview and Production each passed one English Claude Sonnet 4.6 and one Chinese Kimi K3
+live acceptance after the independent Claude Haiku 4.5 portfolio-scope guard, using 9 bounded
+retrieved chunks and the pinned public snapshot SHA-256
+`a47c5bbe603da3b3efb5497d50886960cf0323d1f885a9034052697bcfd9b6ad`.
+
+Production browser acceptance completed the three-page Privacy scan, review, reconstruction, and
+verified pure-image export with no console errors or horizontal overflow. Production Lighthouse
+scored 98 Performance and 100 for Accessibility, Best Practices, and SEO. See
+[`docs/lighthouse-homepage-20260725-fixes5.md`](docs/lighthouse-homepage-20260725-fixes5.md).
+
+## Previous verified release — fixes4
 
 Website PR [#8](https://github.com/LucisZhang/portfolio-site/pull/8) merged normally as runtime
 commit `c1c5a11bfc6057b92e521c19270f569a880d69c2`; no direct push to `main` occurred. GitHub
