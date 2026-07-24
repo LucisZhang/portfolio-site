@@ -1,104 +1,112 @@
-/* Lucis mark: AI star point, engineering pipeline, analytics bars converge into "Lucis".
-   Fixed box, transform/opacity only entrance — no layout shift. */
+/* Lucis symbol: a small solar system. First session shows it viewport-center at hero
+   scale, then it shrinks — structure intact — into the static mark beside the name.
+   Fixed mark box, transform/opacity only, overlay is pointer-events:none. */
 .lucis-orbit {
-  --w: 104px; --h: 44px;
-  --a: 8px; --b: 22px; --c: 36px;
-  --x: 20px; --ll: 46px; --lm: 44px; --r: 17.6deg;
-  --ease: cubic-bezier(.2, .8, .2, 1);
   position: relative;
-  width: var(--w);
-  height: var(--h);
+  width: 40px;
+  height: 40px;
   flex: none;
-  overflow: hidden;
 }
 
-.lucis-orbit-signal, .lucis-orbit-line { position: absolute; display: block; }
+.lucis-orbit-overlay { position: fixed; inset: 0; z-index: 60; pointer-events: none; }
 
-/* AI applications: star point */
-.signal-ai {
-  left: 5px; top: calc(var(--a) - 3px);
-  width: 6px; height: 6px;
-  background: var(--green);
-  transform: rotate(45deg);
-}
-.signal-ai::after {
+/* Paper veil isolates the hero scene from the fully-rendered homepage beneath it. */
+.lucis-orbit-overlay::before {
   content: "";
-  position: absolute; inset: 2px;
-  background: var(--paper);
+  position: absolute; inset: 0;
+  background: var(--pa);
+  opacity: 0;
+  animation: lo-veil 2.4s linear both;
+}
+
+@keyframes lo-veil { 10%, 60% { opacity: .96; } 0%, 88%, 100% { opacity: 0; } }
+
+.lucis-orbit-system {
+  position: absolute;
+  left: 50%; top: 50%;
+  width: min(64vmin, 420px);
+  height: min(64vmin, 420px);
+  transform: translate(-50%, -50%);
+}
+
+.lo-sun, .lo-orbit, .lo-planet { position: absolute; display: block; }
+
+.lo-sun {
+  inset: 45.5%;
+  border-radius: 50%;
+  background: var(--gr);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--green) 55%, transparent);
+}
+
+.lo-orbit { border: 1px solid var(--li); border-radius: 50%; }
+.lo-o1 { inset: 30%; }
+.lo-o2 { inset: 18%; }
+.lo-o3 { inset: 6%; }
+
+.lo-planet { inset: 0; transform: rotate(var(--pa)); }
+.lo-planet i {
+  position: absolute;
+  left: 50%; top: var(--pt);
+  width: 4.6%; height: 4.6%;
+  margin: -2.3% 0 0 -2.3%;
   border-radius: 50%;
 }
+.lo-p1 { --pa: 25deg; --pt: 30%; }
+.lo-p1 i { background: var(--gr); }
+.lo-p2 { --pa: 145deg; --pt: 18%; }
+.lo-p2 i { width: 3.6%; height: 3.6%; margin: -1.8% 0 0 -1.8%; background: var(--ink); }
+.lo-p3 { --pa: 265deg; --pt: 6%; }
+.lo-p3 i { background: var(--wh); border: 1px solid var(--ld); }
 
-/* Data engineering: three-layer pipeline */
-.signal-engineering {
-  left: 0; top: calc(var(--b) - 5px);
-  width: 16px; height: 10px;
-  display: grid;
-  grid-template-rows: repeat(3, 2px);
-  align-content: space-between;
+/* Hero-scene labels: sun name below the core, planet names above each dot. Labels
+   counter-rotate against the orbit so they stay upright while planets revolve. */
+.lo-sun-tag, .lo-tag {
+  position: absolute;
+  left: 50%;
+  color: var(--ink);
+  font-size: clamp(10px, 2.4vmin, 15px);
+  letter-spacing: .04em;
+  white-space: nowrap;
 }
-.signal-engineering i {
-  display: block; position: relative;
-  width: 16px; height: 2px;
-  background: var(--ld);
+.lo-sun-tag {
+  top: calc(50% + 8%);
+  transform: translateX(-50%);
+  font-weight: 800;
 }
-.signal-engineering i::after {
-  content: "";
-  position: absolute; right: 0; top: -1px;
-  width: 4px; height: 4px;
-  border-radius: 50%;
-  background: var(--green);
+.lo-tag { top: var(--pt); transform: rotate(calc(-1 * var(--pa))); }
+.lo-tag b {
+  position: absolute;
+  left: 0; bottom: 9px;
+  transform: translateX(-50%);
+  font-weight: 600;
 }
-.signal-engineering i:nth-child(2) { width: 12px; }
-.signal-engineering i:nth-child(3) { width: 8px; }
+.lucis-orbit-overlay .lo-sun-tag, .lucis-orbit-overlay .lo-tag { animation: lo-tag 2.4s linear both; }
+.lucis-orbit-overlay .lo-tag { animation: lo-untag 8s linear infinite, lo-tag 2.4s linear both; }
 
-/* Data analytics: rising bars */
-.signal-analytics {
-  left: 1px; top: calc(var(--c) - 5px);
-  width: 14px; height: 10px;
-  display: flex; align-items: flex-end; gap: 3px;
-}
-.signal-analytics i { display: block; width: 2px; background: var(--green); }
-.signal-analytics i:nth-child(1) { height: 4px; }
-.signal-analytics i:nth-child(2) { height: 7px; }
-.signal-analytics i:nth-child(3) { height: 10px; }
+@keyframes lo-untag { to { transform: rotate(calc(-360deg - var(--pa))); } }
+@keyframes lo-tag { 0% { opacity: 0; } 16%, 55% { opacity: 1; } 85%, 100% { opacity: 0; } }
 
-/* Converging lines into the word */
-.lucis-orbit-line {
-  left: var(--x);
-  height: 1px;
-  background: var(--ld);
-  transform-origin: left center;
-}
-.line-ai { top: var(--a); width: var(--ll); transform: rotate(var(--r)); }
-.line-engineering { top: var(--b); width: var(--lm); }
-.line-analytics { top: var(--c); width: var(--ll); transform: rotate(calc(-1 * var(--r))); }
+/* Overlay-only motion: planets orbit slowly while the whole system flies to the name. */
+.lucis-orbit-overlay .lo-planet { animation: lo-spin 8s linear infinite; }
+.lucis-orbit-overlay .lucis-orbit-system { animation: lo-fly 2.4s cubic-bezier(.3, .7, .2, 1) both; }
 
-.lucis-orbit-word {
-  position: absolute; right: 0; top: 50%;
-  transform: translateY(-50%);
-  font-size: 15px; font-weight: 800; letter-spacing: .02em; line-height: 1;
+@keyframes lo-spin { to { transform: rotate(calc(var(--pa) + 360deg)); } }
+@keyframes lo-fly {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(1.04); }
+  16% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  55% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  88% { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--tx, 0px)), calc(-50% + var(--ty, 0px))) scale(var(--s, .12)); }
 }
 
-/* First-session entrance (~0.96s): scattered, larger signals settle into the mark. */
-.is-entering .signal-ai { --dx: -10px; --dy: -12px; --rot: 45deg; animation: lo-s .8s var(--ease) both; }
-.is-entering .signal-engineering { --dx: -14px; animation: lo-s .88s var(--ease) both; }
-.is-entering .signal-analytics { --dx: -10px; --dy: 12px; animation: lo-s .96s var(--ease) both; }
-.is-entering .lucis-orbit-line { animation: lo-l .3s var(--ease) .56s both; }
-.is-entering .lucis-orbit-word { animation: lo-w .34s var(--ease) .64s both; }
-
-@keyframes lo-s { 0% { opacity: 0; transform: translate(var(--dx, 0), var(--dy, 0)) scale(1.7) rotate(var(--rot, 0deg)); } }
-@keyframes lo-l { 0% { opacity: 0; scale: 0 1; } }
-@keyframes lo-w { 0% { opacity: 0; transform: translateY(-50%) translateX(8px); } }
+.lucis-orbit.is-entering { animation: lo-mark 2.4s linear both; }
+@keyframes lo-mark { 0%, 86% { opacity: 0; } 100% { opacity: 1; } }
 
 @media (prefers-reduced-motion: reduce) {
-  .is-entering .lucis-orbit-signal, .is-entering .lucis-orbit-line, .is-entering .lucis-orbit-word { animation: none; }
+  .lucis-orbit-overlay { display: none; }
+  .lucis-orbit.is-entering { animation: none; }
 }
 
 @media (max-width: 640px) {
-  .lucis-orbit {
-    --w: 88px; --h: 34px;
-    --a: 6px; --b: 17px; --c: 28px;
-    --x: 17px; --ll: 40px; --lm: 38px; --r: 16.2deg;
-  }
-  .lucis-orbit-word { font-size: 12px; }
+  .lucis-orbit { width: 32px; height: 32px; }
 }

@@ -55,7 +55,8 @@ test("representative workflows remain keyboard-operable with reduced motion", as
 
   await page.goto("/", { waitUntil: "networkidle" });
   await expect(page.getByTestId("lucis-orbit")).toHaveCSS("animation-name", "none");
-  await expect(page.getByTestId("lucis-orbit").locator(".lucis-orbit-signal")).toHaveCount(3);
+  await expect(page.getByTestId("lucis-orbit-overlay")).toBeHidden();
+  await expect(page.getByTestId("lucis-orbit").locator(".lo-planet")).toHaveCount(3);
   const chinese = page.getByRole("button", { name: "中", exact: true });
   await chinese.focus();
   await page.keyboard.press("Enter");
@@ -66,17 +67,46 @@ test("homepage contacts, WeChat QR variants, and one-time Lucis Orbit follow loc
   test.skip(testInfo.project.name !== "desktop", "Shared homepage behavior is exercised once.");
   await page.addInitScript(() => {
     window.localStorage.setItem("portfolio-locale", "en");
-    window.sessionStorage.removeItem("lucis-orbit-seen-v2");
+    window.sessionStorage.removeItem("lucis-orbit-seen-v3");
   });
   await page.goto("/", { waitUntil: "domcontentloaded" });
   const orbit = page.getByTestId("lucis-orbit");
-  await expect(orbit).toBeVisible();
-  await expect(orbit).toHaveClass(/is-entering/);
+  const overlay = page.getByTestId("lucis-orbit-overlay");
+  // First session: a viewport-centered solar system at hero scale leads the entrance.
+  await expect(overlay).toBeVisible();
+  await expect(overlay).toHaveCSS("pointer-events", "none");
+  // A paper veil isolates the hero scene so page copy cannot bleed through the labels.
+  const veilOf = () => page.evaluate(() => {
+    const el = document.querySelector('[data-testid="lucis-orbit-overlay"]');
+    if (!el) return { opacity: 0, background: "rgba(0, 0, 0, 0)" };
+    const cs = getComputedStyle(el, "::before");
+    return { opacity: parseFloat(cs.opacity), background: cs.backgroundColor };
+  });
+  await expect.poll(async () => (await veilOf()).opacity, { timeout: 2000 }).toBeGreaterThan(0.9);
+  const veil = await veilOf();
+  expect(veil.background).toBe("rgb(247, 248, 246)");
+  await expect(overlay.locator(".lo-sun")).toBeVisible();
+  await expect(overlay.locator(".lo-planet")).toHaveCount(3);
+  // The hero-scale scene carries readable identity and direction labels (en locale).
+  for (const label of ["Lucis", "AI Applications", "Data Engineering", "Data Analytics"]) {
+    await expect(overlay.getByText(label, { exact: true })).toBeVisible();
+  }
   await expect(orbit).toHaveAttribute("data-entering", "true");
-  await expect(orbit.locator(".lucis-orbit-word")).toHaveText("Lucis");
-  await expect(orbit.locator(".lucis-orbit-signal")).toHaveCount(3);
-  await expect(orbit.locator(".lucis-orbit-line")).toHaveCount(3);
-  await expect.poll(() => page.evaluate(() => window.sessionStorage.getItem("lucis-orbit-seen-v2"))).toBe("1");
+  const viewport = page.viewportSize()!;
+  const overlayBox = (await overlay.locator(".lucis-orbit-system").boundingBox())!;
+  expect(overlayBox.width).toBeGreaterThan(300);
+  expect(Math.abs(overlayBox.x + overlayBox.width / 2 - viewport.width / 2)).toBeLessThan(40);
+  expect(Math.abs(overlayBox.y + overlayBox.height / 2 - viewport.height / 2)).toBeLessThan(40);
+  // While the system flies, the final mark beside the name is still hidden and much smaller.
+  const markBox = (await orbit.boundingBox())!;
+  expect(markBox.width).toBeLessThanOrEqual(40);
+  expect(overlayBox.width).toBeGreaterThan(markBox.width * 5);
+  await expect(orbit).toHaveCSS("opacity", "0");
+  // After the one-time entrance the overlay is gone and the static mark sits beside the name.
+  await expect(overlay).toHaveCount(0, { timeout: 5000 });
+  await expect(orbit).toHaveAttribute("data-entering", "false");
+  await expect(orbit).toHaveCSS("opacity", "1");
+  await expect.poll(() => page.evaluate(() => window.sessionStorage.getItem("lucis-orbit-seen-v3"))).toBe("1");
   await expect(page.getByRole("link", { name: /GitHub/ })).toHaveAttribute("target", "_blank");
   await expect(page.getByRole("link", { name: /LinkedIn/ })).toHaveAttribute("rel", /noopener/);
   const phone = page.getByRole("link", { name: "Phone", exact: true });
@@ -90,12 +120,15 @@ test("homepage contacts, WeChat QR variants, and one-time Lucis Orbit follow loc
   await expect(page.getByRole("dialog")).toContainText("ZJ_Lucis");
   await page.getByRole("button", { name: "Close WeChat QR code" }).click();
   await page.reload({ waitUntil: "networkidle" });
+  // Replay is suppressed: no overlay, no entrance, final static mark directly.
+  await expect(page.getByTestId("lucis-orbit-overlay")).toHaveCount(0);
   await expect(orbit).not.toHaveClass(/is-entering/);
   await expect(orbit).toHaveAttribute("data-entering", "false");
   await expect(orbit).toHaveCSS("animation-name", "none");
+  await expect(orbit).toHaveCSS("opacity", "1");
   const box = await orbit.boundingBox();
-  expect(box?.width).toBeGreaterThan(0);
-  expect(box?.height).toBeGreaterThan(0);
+  expect(box?.width).toBe(40);
+  expect(box?.height).toBe(40);
 
   await page.getByRole("button", { name: "中", exact: true }).click();
   await expect(page.getByRole("link", { name: /LinkedIn/ })).toHaveCount(0);
@@ -105,20 +138,41 @@ test("homepage contacts, WeChat QR variants, and one-time Lucis Orbit follow loc
   await expect(page.getByAltText("Lucis 的微信二维码")).toHaveAttribute("src", /wechat-zh\.jpg/);
 });
 
+test("Lucis Orbit hero scene labels follow the Chinese locale", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "The labeled hero scene is exercised once per locale.");
+  await page.addInitScript(() => {
+    window.localStorage.setItem("portfolio-locale", "zh");
+    window.sessionStorage.removeItem("lucis-orbit-seen-v3");
+  });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  const overlay = page.getByTestId("lucis-orbit-overlay");
+  await expect(overlay).toBeVisible();
+  // Visible in the hero-scale scene, not merely present in the DOM.
+  for (const label of ["Lucis", "AI 应用", "数据工程", "数据分析"]) {
+    await expect(overlay.getByText(label, { exact: true })).toBeVisible();
+  }
+  // Labels retire with the entrance; the final mark beside the name stays small and static.
+  await expect(overlay).toHaveCount(0, { timeout: 5000 });
+  const mark = page.getByTestId("lucis-orbit");
+  await expect(mark).toHaveCSS("opacity", "1");
+  expect(((await mark.boundingBox())!).width).toBeLessThanOrEqual(40);
+});
+
 test("mobile 390px keeps the Lucis mark compact without horizontal overflow", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile", "The 390px overflow regression is specific to the mobile layout.");
   await page.addInitScript(() => {
     window.localStorage.setItem("portfolio-locale", "en");
-    window.sessionStorage.setItem("lucis-orbit-seen-v2", "1");
+    window.sessionStorage.setItem("lucis-orbit-seen-v3", "1");
   });
   await page.goto("/", { waitUntil: "networkidle" });
   const orbit = page.getByTestId("lucis-orbit");
   await expect(orbit).toBeVisible();
+  await expect(page.getByTestId("lucis-orbit-overlay")).toHaveCount(0);
   await expect(orbit).not.toHaveClass(/is-entering/);
   const box = await orbit.boundingBox();
   expect(box).not.toBeNull();
-  expect(box!.width).toBeLessThanOrEqual(88);
-  expect(box!.height).toBeLessThanOrEqual(34);
+  expect(box!.width).toBeLessThanOrEqual(32);
+  expect(box!.height).toBeLessThanOrEqual(32);
   const viewportWidth = page.viewportSize()?.width ?? 390;
   expect(box!.x + box!.width).toBeLessThanOrEqual(viewportWidth);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
