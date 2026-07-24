@@ -55,9 +55,11 @@ for (const locale of ["en", "zh"] as const) {
         if (locale === "en") await expect(page.locator('a[href="https://www.linkedin.com/in/xiangguo-zhang"]')).toBeVisible();
         else await expect(page.locator('a[href="https://www.linkedin.com/in/xiangguo-zhang"]')).toHaveCount(0);
         const emailLinks = page.locator('a[href="mailto:HsiangKuoChang@outlook.com"]');
-        await expect(emailLinks).toHaveCount(2);
-        await expect(emailLinks.first()).toBeVisible();
-        await expect(emailLinks.last()).toBeVisible();
+        await expect(emailLinks).toHaveCount(1);
+        await expect(emailLinks).toBeVisible();
+        const footerContact = page.getByRole("link", { name: locale === "en" ? "Contact Xiangguo" : "联系章向国", exact: true });
+        await expect(footerContact).toBeVisible();
+        await expect(footerContact).toHaveAttribute("href", locale === "en" ? "/#contact" : "/?lang=zh#contact");
         await expect(page.locator('a[href="/resume.pdf"]')).toHaveCount(0);
         await expect(page.locator(".workspace-index")).toContainText(locale === "en" ? "6 interactive demos" : "6 个交互式演示");
         await expect(page.locator(".index-heading p")).toHaveText(locale === "en"
