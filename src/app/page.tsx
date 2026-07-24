@@ -31,7 +31,8 @@ export default function Home() {
       <section className="workspace-head page-shell">
         <div>
           <p className="eyebrow">{locale === "en" ? "AI applications · Data engineering · Data analytics" : "AI 应用 · 数据工程 · 数据分析"}</p>
-          <div className="identity-title"><h1>{locale === "en" ? siteIdentity.name : siteIdentity.chineseName}</h1><LucisOrbit /></div>
+          <div className="identity-title"><h1>{locale === "en" ? siteIdentity.name : siteIdentity.chineseName}</h1></div>
+          <div className="identity-mark"><LucisOrbit /></div>
           <p className="lede">{localize(siteIdentity.positioning, locale)}</p>
           <p className="target-roles">{dict.targetRoles}</p>
           <div className="identity-links" id="contact" style={{ scrollMarginTop: 92 }} aria-label={locale === "en" ? "Contact and profiles" : "联系方式与主页"}>

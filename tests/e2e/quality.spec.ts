@@ -67,15 +67,14 @@ test("homepage contacts, WeChat QR variants, and one-time Lucis Orbit follow loc
   test.skip(testInfo.project.name !== "desktop", "Shared homepage behavior is exercised once.");
   await page.addInitScript(() => {
     window.localStorage.setItem("portfolio-locale", "en");
-    window.sessionStorage.removeItem("lucis-orbit-seen-v3");
+    window.sessionStorage.removeItem("lucis-orbit-seen-v5");
   });
   await page.goto("/", { waitUntil: "domcontentloaded" });
   const orbit = page.getByTestId("lucis-orbit");
   const overlay = page.getByTestId("lucis-orbit-overlay");
-  // First session: a viewport-centered solar system at hero scale leads the entrance.
+  // First session: the paper veil owns the screen before anything fades in.
   await expect(overlay).toBeVisible();
   await expect(overlay).toHaveCSS("pointer-events", "none");
-  // A paper veil isolates the hero scene so page copy cannot bleed through the labels.
   const veilOf = () => page.evaluate(() => {
     const el = document.querySelector('[data-testid="lucis-orbit-overlay"]');
     if (!el) return { opacity: 0, background: "rgba(0, 0, 0, 0)" };
@@ -85,28 +84,65 @@ test("homepage contacts, WeChat QR variants, and one-time Lucis Orbit follow loc
   await expect.poll(async () => (await veilOf()).opacity, { timeout: 2000 }).toBeGreaterThan(0.9);
   const veil = await veilOf();
   expect(veil.background).toBe("rgb(247, 248, 246)");
+  // Deterministic ordering proof: the veil is opaque from its first keyframe while
+  // the solar system (lo-fly) starts transparent and fades in on top of it.
+  const system = overlay.locator(".lucis-orbit-system");
+  const intro = await page.evaluate(() => {
+    const anims = document.getAnimations() as CSSAnimation[];
+    const firstOpacity = (name: string) => {
+      const anim = anims.find((a) => a.animationName === name);
+      const frames = anim?.effect && "getKeyframes" in anim.effect
+        ? (anim.effect as KeyframeEffect).getKeyframes()
+        : [];
+      const value = frames[0]?.opacity;
+      return value == null ? null : parseFloat(String(value));
+    };
+    return { veil: firstOpacity("lo-veil"), fly: firstOpacity("lo-fly") };
+  });
+  expect(intro.veil).toBeGreaterThan(0.9);
+  expect(intro.fly).toBe(0);
+  await expect(system).toHaveCSS("opacity", "1");
+  // Kimi structure: sun, three orbits, three revolving planets.
   await expect(overlay.locator(".lo-sun")).toBeVisible();
+  await expect(overlay.locator(".lo-orbit")).toHaveCount(3);
   await expect(overlay.locator(".lo-planet")).toHaveCount(3);
+  await expect(overlay.locator(".lo-planet").first()).toHaveCSS("animation-name", "lo-spin");
   // The hero-scale scene carries readable identity and direction labels (en locale).
   for (const label of ["Lucis", "AI Applications", "Data Engineering", "Data Analytics"]) {
     await expect(overlay.getByText(label, { exact: true })).toBeVisible();
   }
   await expect(orbit).toHaveAttribute("data-entering", "true");
   const viewport = page.viewportSize()!;
-  const overlayBox = (await overlay.locator(".lucis-orbit-system").boundingBox())!;
+  const overlayBox = (await system.boundingBox())!;
   expect(overlayBox.width).toBeGreaterThan(300);
   expect(Math.abs(overlayBox.x + overlayBox.width / 2 - viewport.width / 2)).toBeLessThan(40);
   expect(Math.abs(overlayBox.y + overlayBox.height / 2 - viewport.height / 2)).toBeLessThan(40);
-  // While the system flies, the final mark beside the name is still hidden and much smaller.
-  const markBox = (await orbit.boundingBox())!;
-  expect(markBox.width).toBeLessThanOrEqual(40);
-  expect(overlayBox.width).toBeGreaterThan(markBox.width * 5);
+  // The flight targets the emblem below the name, not beside it.
+  const nameBox = (await page.locator(".identity-title h1").boundingBox())!;
+  const emblemBox = (await orbit.locator(".lucis-orbit-emblem").boundingBox())!;
+  expect(emblemBox.y).toBeGreaterThanOrEqual(nameBox.y + nameBox.height - 1);
+  expect(Math.abs(emblemBox.x - nameBox.x)).toBeLessThan(24);
+  // While the system flies, the final mark below the name is still hidden and much smaller.
+  expect(emblemBox.width).toBeLessThanOrEqual(28);
+  expect(overlayBox.width).toBeGreaterThan(emblemBox.width * 5);
   await expect(orbit).toHaveCSS("opacity", "0");
-  // After the one-time entrance the overlay is gone and the static mark sits beside the name.
+  // During the flight the shrinking system converges on the emblem below the name.
+  await expect.poll(async () => {
+    if ((await system.count()) === 0) return 0; // Overlay already handed off to the landed mark.
+    const flyingBox = await system.boundingBox({ timeout: 500 }).catch(() => null);
+    if (!flyingBox) return Number.MAX_SAFE_INTEGER;
+    return Math.hypot(
+      flyingBox.x + flyingBox.width / 2 - (emblemBox.x + emblemBox.width / 2),
+      flyingBox.y + flyingBox.height / 2 - (emblemBox.y + emblemBox.height / 2),
+    );
+  }, { timeout: 6000 }).toBeLessThan(120);
+  // After the one-time entrance the overlay is gone; the landed mark shows emblem + LUCIS.
   await expect(overlay).toHaveCount(0, { timeout: 5000 });
   await expect(orbit).toHaveAttribute("data-entering", "false");
   await expect(orbit).toHaveCSS("opacity", "1");
-  await expect.poll(() => page.evaluate(() => window.sessionStorage.getItem("lucis-orbit-seen-v3"))).toBe("1");
+  await expect(orbit.locator(".lucis-orbit-wordmark")).toHaveText("Lucis");
+  await expect(orbit.locator(".lucis-orbit-wordmark")).toBeVisible();
+  await expect.poll(() => page.evaluate(() => window.sessionStorage.getItem("lucis-orbit-seen-v5"))).toBe("1");
   await expect(page.getByRole("link", { name: /GitHub/ })).toHaveAttribute("target", "_blank");
   await expect(page.getByRole("link", { name: /LinkedIn/ })).toHaveAttribute("rel", /noopener/);
   const phone = page.getByRole("link", { name: "Phone", exact: true });
@@ -126,9 +162,9 @@ test("homepage contacts, WeChat QR variants, and one-time Lucis Orbit follow loc
   await expect(orbit).toHaveAttribute("data-entering", "false");
   await expect(orbit).toHaveCSS("animation-name", "none");
   await expect(orbit).toHaveCSS("opacity", "1");
-  const box = await orbit.boundingBox();
-  expect(box?.width).toBe(40);
-  expect(box?.height).toBe(40);
+  const box = await orbit.locator(".lucis-orbit-emblem").boundingBox();
+  expect(box?.width).toBe(28);
+  expect(box?.height).toBe(28);
 
   await page.getByRole("button", { name: "中", exact: true }).click();
   await expect(page.getByRole("link", { name: /LinkedIn/ })).toHaveCount(0);
@@ -138,11 +174,22 @@ test("homepage contacts, WeChat QR variants, and one-time Lucis Orbit follow loc
   await expect(page.getByAltText("Lucis 的微信二维码")).toHaveAttribute("src", /wechat-zh\.jpg/);
 });
 
+test("Lucis Orbit veil ships in the SSR HTML so the first paint never flashes the homepage", async ({ request }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "One SSR HTML audit is sufficient.");
+  const html = await (await request.get("/")).text();
+  // The opaque paper veil is part of the very first HTML paint — before hydration.
+  expect(html).toContain('data-testid="lucis-orbit-overlay"');
+  expect(html).not.toContain("lucis-orbit-system");
+  // The final static mark is also rendered up front (behind the veil).
+  expect(html).toContain('data-testid="lucis-orbit"');
+  expect(html).toContain("lucis-orbit-wordmark");
+});
+
 test("Lucis Orbit hero scene labels follow the Chinese locale", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "The labeled hero scene is exercised once per locale.");
   await page.addInitScript(() => {
     window.localStorage.setItem("portfolio-locale", "zh");
-    window.sessionStorage.removeItem("lucis-orbit-seen-v3");
+    window.sessionStorage.removeItem("lucis-orbit-seen-v5");
   });
   await page.goto("/", { waitUntil: "domcontentloaded" });
   const overlay = page.getByTestId("lucis-orbit-overlay");
@@ -151,30 +198,36 @@ test("Lucis Orbit hero scene labels follow the Chinese locale", async ({ page },
   for (const label of ["Lucis", "AI 应用", "数据工程", "数据分析"]) {
     await expect(overlay.getByText(label, { exact: true })).toBeVisible();
   }
-  // Labels retire with the entrance; the final mark beside the name stays small and static.
+  // Labels retire with the entrance; the landed mark below the name shows emblem + LUCIS.
   await expect(overlay).toHaveCount(0, { timeout: 5000 });
   const mark = page.getByTestId("lucis-orbit");
   await expect(mark).toHaveCSS("opacity", "1");
-  expect(((await mark.boundingBox())!).width).toBeLessThanOrEqual(40);
+  await expect(mark.locator(".lucis-orbit-wordmark")).toHaveText("Lucis");
+  await expect(mark.locator(".lucis-orbit-wordmark")).toBeVisible();
+  const nameBox = (await page.locator(".identity-title h1").boundingBox())!;
+  const emblemBox = (await mark.locator(".lucis-orbit-emblem").boundingBox())!;
+  expect(emblemBox.width).toBeLessThanOrEqual(28);
+  expect(emblemBox.y).toBeGreaterThanOrEqual(nameBox.y + nameBox.height - 1);
 });
 
 test("mobile 390px keeps the Lucis mark compact without horizontal overflow", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile", "The 390px overflow regression is specific to the mobile layout.");
   await page.addInitScript(() => {
     window.localStorage.setItem("portfolio-locale", "en");
-    window.sessionStorage.setItem("lucis-orbit-seen-v3", "1");
+    window.sessionStorage.setItem("lucis-orbit-seen-v5", "1");
   });
   await page.goto("/", { waitUntil: "networkidle" });
   const orbit = page.getByTestId("lucis-orbit");
   await expect(orbit).toBeVisible();
   await expect(page.getByTestId("lucis-orbit-overlay")).toHaveCount(0);
   await expect(orbit).not.toHaveClass(/is-entering/);
-  const box = await orbit.boundingBox();
-  expect(box).not.toBeNull();
-  expect(box!.width).toBeLessThanOrEqual(32);
-  expect(box!.height).toBeLessThanOrEqual(32);
+  await expect(orbit.locator(".lucis-orbit-wordmark")).toHaveText("Lucis");
+  const nameBox = (await page.locator(".identity-title h1").boundingBox())!;
+  const box = (await orbit.boundingBox())!;
+  expect(box.y).toBeGreaterThanOrEqual(nameBox.y + nameBox.height - 1);
+  expect(box.height).toBeLessThanOrEqual(28);
   const viewportWidth = page.viewportSize()?.width ?? 390;
-  expect(box!.x + box!.width).toBeLessThanOrEqual(viewportWidth);
+  expect(box.x + box.width).toBeLessThanOrEqual(viewportWidth);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   expect(overflow).toBeLessThanOrEqual(0);
 });
