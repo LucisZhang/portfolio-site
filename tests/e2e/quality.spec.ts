@@ -55,6 +55,7 @@ test("representative workflows remain keyboard-operable with reduced motion", as
 
   await page.goto("/", { waitUntil: "networkidle" });
   await expect(page.getByTestId("lucis-orbit")).toHaveCSS("animation-name", "none");
+  await expect(page.getByTestId("lucis-orbit").locator(".lucis-orbit-signal")).toHaveCount(3);
   const chinese = page.getByRole("button", { name: "中", exact: true });
   await chinese.focus();
   await page.keyboard.press("Enter");
@@ -65,13 +66,17 @@ test("homepage contacts, WeChat QR variants, and one-time Lucis Orbit follow loc
   test.skip(testInfo.project.name !== "desktop", "Shared homepage behavior is exercised once.");
   await page.addInitScript(() => {
     window.localStorage.setItem("portfolio-locale", "en");
-    window.sessionStorage.removeItem("lucis-orbit-seen-v1");
+    window.sessionStorage.removeItem("lucis-orbit-seen-v2");
   });
   await page.goto("/", { waitUntil: "domcontentloaded" });
   const orbit = page.getByTestId("lucis-orbit");
   await expect(orbit).toBeVisible();
   await expect(orbit).toHaveClass(/is-entering/);
-  await expect.poll(() => page.evaluate(() => window.sessionStorage.getItem("lucis-orbit-seen-v1"))).toBe("1");
+  await expect(orbit).toHaveAttribute("data-entering", "true");
+  await expect(orbit.locator(".lucis-orbit-word")).toHaveText("Lucis");
+  await expect(orbit.locator(".lucis-orbit-signal")).toHaveCount(3);
+  await expect(orbit.locator(".lucis-orbit-line")).toHaveCount(3);
+  await expect.poll(() => page.evaluate(() => window.sessionStorage.getItem("lucis-orbit-seen-v2"))).toBe("1");
   await expect(page.getByRole("link", { name: /GitHub/ })).toHaveAttribute("target", "_blank");
   await expect(page.getByRole("link", { name: /LinkedIn/ })).toHaveAttribute("rel", /noopener/);
   const phone = page.getByRole("link", { name: "Phone", exact: true });
@@ -86,6 +91,11 @@ test("homepage contacts, WeChat QR variants, and one-time Lucis Orbit follow loc
   await page.getByRole("button", { name: "Close WeChat QR code" }).click();
   await page.reload({ waitUntil: "networkidle" });
   await expect(orbit).not.toHaveClass(/is-entering/);
+  await expect(orbit).toHaveAttribute("data-entering", "false");
+  await expect(orbit).toHaveCSS("animation-name", "none");
+  const box = await orbit.boundingBox();
+  expect(box?.width).toBeGreaterThan(0);
+  expect(box?.height).toBeGreaterThan(0);
 
   await page.getByRole("button", { name: "中", exact: true }).click();
   await expect(page.getByRole("link", { name: /LinkedIn/ })).toHaveCount(0);
@@ -93,6 +103,26 @@ test("homepage contacts, WeChat QR variants, and one-time Lucis Orbit follow loc
   await expect(page.getByRole("link", { name: "邮箱", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "微信", exact: true }).click();
   await expect(page.getByAltText("Lucis 的微信二维码")).toHaveAttribute("src", /wechat-zh\.jpg/);
+});
+
+test("mobile 390px keeps the Lucis mark compact without horizontal overflow", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile", "The 390px overflow regression is specific to the mobile layout.");
+  await page.addInitScript(() => {
+    window.localStorage.setItem("portfolio-locale", "en");
+    window.sessionStorage.setItem("lucis-orbit-seen-v2", "1");
+  });
+  await page.goto("/", { waitUntil: "networkidle" });
+  const orbit = page.getByTestId("lucis-orbit");
+  await expect(orbit).toBeVisible();
+  await expect(orbit).not.toHaveClass(/is-entering/);
+  const box = await orbit.boundingBox();
+  expect(box).not.toBeNull();
+  expect(box!.width).toBeLessThanOrEqual(88);
+  expect(box!.height).toBeLessThanOrEqual(34);
+  const viewportWidth = page.viewportSize()?.width ?? 390;
+  expect(box!.x + box!.width).toBeLessThanOrEqual(viewportWidth);
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  expect(overflow).toBeLessThanOrEqual(0);
 });
 
 test("mobile phone contact keeps the native dial link without exposing the number in the homepage row", async ({ page }, testInfo) => {
