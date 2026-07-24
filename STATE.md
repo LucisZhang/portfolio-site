@@ -1,32 +1,30 @@
 # Public Portfolio state
 
-Updated: 2026-07-24 15:59 (Asia/Shanghai) / 2026-07-24 07:59 UTC
+Updated: 2026-07-24 16:30 (Asia/Shanghai) / 2026-07-24 08:30 UTC
 
 This file records the recruiter-safe state of the current release candidate. It contains no
 credentials, raw private candidate material, local source paths, or browser-session data.
 
-## Fixes4 authorized candidate gate
+## Fixes4 verified release
 
-Status: `FIXES4_LOCAL_VERIFIED`; the fixes3 Production release recorded below
-remains the live rollback point until the fixes4 Preview and Production gates pass.
+Status: `FIXES4_PRODUCTION_VERIFIED`. Runtime PR #8 merged normally as commit
+`c1c5a11bfc6057b92e521c19270f569a880d69c2`; no direct push to `main` occurred. GitHub
+Production deployment `5585933491` reached success at `2026-07-24T08:22:13Z`, and the canonical
+alias <https://portfolio-site-seven-murex.vercel.app> served the merged runtime. The immutable
+Vercel build URL is
+<https://portfolio-site-oxvhbt0iz-luciszhangs-projects.vercel.app>.
 
 The final local browser matrix passed all 276 cases (220 executed and 56 intentional
 project/device skips), with no failed tests. Type, lint, evidence, assistant, localization, link,
-build, dependency-audit, and performance gates are recorded again at the exact candidate commit
-before the Preview gate.
+build, dependency-audit, and performance gates passed at candidate commit
+`7da0a70fbacd340b65491284c982ada849c8a981` before the Preview gate.
 
 The owner explicitly authorized the fixes4 website branch, ready pull request, exact-SHA Preview,
 normal PR merge, Git-triggered Production deployment, and one English Claude Sonnet 4.6 plus one
 Chinese Kimi K3 live acceptance on both final Preview and Production. Model calls remain limited
 to OpenRouter ZDR routes and retrieval-selected bounded candidate excerpts. The owner separately
 authorized the exact RAG Contributor history cleanup; that narrow rewrite and the subsequent normal
-content PR are complete. No direct content push to either repository's `main` is authorized.
-
-Overall status: `FIXES3_PRODUCTION_VERIFIED`. Runtime merge commit
-`0fccdcc4929718600f053221bdcef31faebd102f` is deployed as
-`dpl_3w3vvQfFnuzFUBqhsnvjx5zxGMro` at
-<https://portfolio-site-seven-murex.vercel.app>. The deployment was Ready, matched the exact
-`main` SHA, and passed the Production checks recorded below.
+content PR are complete. No direct content push to either repository's `main` was used.
 
 The owner explicitly authorized this release's repository and website branches, ready pull
 requests, exact-SHA Preview, normal PR merges, exact-SHA Production deployment, and all English
@@ -41,7 +39,7 @@ The six recruiter-facing project repositories now resolve through normal PR merg
 
 - Release Guardian: `1be4af55301b6d4a2c1c98b1850a820b698208bb`
 - Streaming Reliability Lab: `eda2a7c156059678ecae8c57f4452ef98bd9ae89`
-- RAG Quality Lab: `bed604bb3ca49e641ba75e2999de29fa68b75754`
+- RAG Quality Lab: `88879a286104d4fe0941c07d75230610093996d3`
 - Privacy Preflight Web: `47eef37aa2aa39198c26f10fd5480c90274091ff`
 - Margin Control Tower: `bd68e65b676593dff46c5fec41a8f4879ce5066c`
 - Credit Policy Lab: `53dfd853c9b2d70476ed3b9250a7acdf01777887`
@@ -60,6 +58,13 @@ original evidence identity.
 
 ## Candidate delivery
 
+- The homepage keeps the established visual system and adds one isolated, session-once Lucis Orbit
+  entrance symbol. The flourish is removed from the entry sequence under reduced-motion.
+- English contact surfaces expose GitHub, LinkedIn, phone, email, and WeChat. Chinese surfaces
+  expose GitHub, phone, email, and WeChat without LinkedIn. WeChat opens the locale-specific QR
+  image and displays ID `ZJ_Lucis`.
+- The command palette now performs bilingual local ranking with aliases, typo tolerance, recent
+  items, suggested entries, and an explicit assistant handoff.
 - Every project detail page ends with two distinct columns: how the result was verified and what it
   does not prove. Mobile layouts preserve that order while stacking the columns.
 - Track project navigation applies relational hover, keyboard focus, sibling de-emphasis, and a
@@ -89,7 +94,7 @@ original evidence identity.
   scope, injection, ambiguity, and off-topic scope fail closed before retrieval and generation.
 - Public knowledge is pinned to 9 exact-commit repositories, 66 reviewed text files, and 532
   bounded chunks with SHA-256
-  `99127978b4aeb74d182610ad0ae3554181b1dbd81392dae520a41bf4468978a3`.
+  `a47c5bbe603da3b3efb5497d50886960cf0323d1f885a9034052697bcfd9b6ad`.
 - Private candidate material remains Git-ignored and server-only. Only retrieved bounded excerpts
   may be sent to the authorized ZDR provider route.
 
@@ -117,7 +122,32 @@ original evidence identity.
   article, language switch, headings, and expected tables without a not-found page or raw emphasis
   marker.
 
-## Production verification
+## Fixes4 Preview and Production verification
+
+- Exact candidate Preview GitHub deployment `5585781639` reached success with environment URL
+  <https://portfolio-site-czmxqs9pw-luciszhangs-projects.vercel.app>. Signed-in browser acceptance
+  covered English and Chinese desktop, Chinese mobile, locale-specific contacts and QR images,
+  session-once/reduced-motion-safe entrance behavior, typo-tolerant local search, assistant
+  handoff, the RAG page, and the complete three-page Privacy workflow.
+- Preview live acceptance passed once per locale with the configured English Claude Sonnet 4.6
+  and Chinese Kimi K3 generation paths after the independent Claude Haiku 4.5 scope gate. Each
+  request used OpenRouter ZDR and only retrieval-selected bounded material.
+- Production repeated one live acceptance per locale on the canonical alias. Both responses
+  completed with validated citations against public snapshot
+  `a47c5bbe603da3b3efb5497d50886960cf0323d1f885a9034052697bcfd9b6ad`.
+- The Production three-page Privacy path completed load, scan, review, confirmation, validated
+  raster export, and download. All three source and result canvases remained inside their outer
+  page frames before and after export, with no console errors.
+- Local Lighthouse 13.4.1 scored 97 Performance and 100 for Accessibility, Best Practices, and
+  SEO. Canonical Production Lighthouse scored 92 Performance and 100 for the other three
+  categories, remaining above the required 90 threshold. The public receipt is in
+  `docs/lighthouse-homepage-20260724.md`.
+- The final local suite passed 220 tests with 56 intentional skips and zero failures; assistant
+  verification passed 37 tests. Typecheck, lint, evidence verification, public-source snapshot,
+  production build, localization, link, dependency audit, client disclosure, performance budget,
+  and security checks passed.
+
+## Previous fixes3 Production verification
 
 - Website PR #6 merged normally to runtime commit
   `0fccdcc4929718600f053221bdcef31faebd102f`; no direct push to `main` occurred.
@@ -138,5 +168,6 @@ original evidence identity.
   client disclosure scan, localization and link checks, secret scans, and the full browser matrix
   passed. The formal browser run completed with 218 passed, 52 intentional skips, and zero errors.
 
-No direct push to `main`, force push, history rewrite, visibility change, tag, release, or
-unrelated-branch mutation occurred.
+No direct website push to `main`, website force push, visibility change, tag, release, or
+unrelated-branch mutation occurred. The only history rewrite was the separately authorized,
+narrow RAG contributor cleanup completed before RAG PR #5.
