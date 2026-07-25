@@ -16,7 +16,9 @@ const files = [
   ["node_modules/@tesseract.js-data/eng/README.md", "privacy-ocr/licenses/eng-traineddata-README.md"],
   ["node_modules/@tesseract.js-data/chi_sim/README.md", "privacy-ocr/licenses/chi-sim-traineddata-README.md"],
   ["node_modules/pdfjs-dist/build/pdf.min.mjs", "privacy-pdf/pdf.min.mjs"],
-  ["node_modules/pdfjs-dist/build/pdf.worker.min.mjs", "privacy-pdf/pdf.worker.min.mjs"],
+  ["node_modules/pdfjs-dist/build/pdf.worker.min.mjs", "privacy-pdf/pdf.worker.core.min.mjs"],
+  ["scripts/browser-assets/pdfjs-runtime-compat.mjs", "privacy-pdf/pdf.runtime-compat.mjs"],
+  ["scripts/browser-assets/pdfjs-worker-compat.mjs", "privacy-pdf/pdf.worker.compat.mjs"],
   ["node_modules/pdfjs-dist/LICENSE", "privacy-pdf/pdfjs-LICENSE"],
   ["node_modules/pdf-lib/LICENSE.md", "privacy-pdf/pdf-lib-LICENSE.md"],
 ];
