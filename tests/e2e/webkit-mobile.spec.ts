@@ -27,6 +27,8 @@ test("iPhone WebKit loads every bundled PDF when newer PDF.js platform APIs are 
     Object.defineProperty(Uint8Array, "fromBase64", { configurable: true, value: undefined });
     Object.defineProperty(Uint8Array.prototype, "toBase64", { configurable: true, value: undefined });
     Object.defineProperty(Response.prototype, "bytes", { configurable: true, value: undefined });
+    Object.defineProperty(ReadableStream.prototype, "values", { configurable: true, value: undefined });
+    Object.defineProperty(ReadableStream.prototype, Symbol.asyncIterator, { configurable: true, value: undefined });
   });
   await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "zh"));
   await page.goto("/ai/privacy-preflight-mac?lang=zh", { waitUntil: "networkidle" });
@@ -38,12 +40,16 @@ test("iPhone WebKit loads every bundled PDF when newer PDF.js platform APIs are 
       Object.defineProperty(Promise, "try", { configurable: true, value: undefined });
       Object.defineProperty(AbortSignal, "any", { configurable: true, value: undefined });
       Object.defineProperty(URL, "parse", { configurable: true, value: undefined });
+      Object.defineProperty(ReadableStream.prototype, "values", { configurable: true, value: undefined });
+      Object.defineProperty(ReadableStream.prototype, Symbol.asyncIterator, { configurable: true, value: undefined });
       import(${JSON.stringify(compatibilityUrl)})
         .then(() => postMessage([
           typeof Promise.withResolvers,
           typeof Promise.try,
           typeof AbortSignal.any,
           typeof URL.parse,
+          typeof ReadableStream.prototype.values,
+          typeof ReadableStream.prototype[Symbol.asyncIterator],
         ]))
         .catch((error) => postMessage(["error", error.message]));
     `;
@@ -64,7 +70,7 @@ test("iPhone WebKit loads every bundled PDF when newer PDF.js platform APIs are 
       reject(new Error(event.message));
     };
   }));
-  expect(workerCompatibility).toEqual(["function", "function", "function", "function"]);
+  expect(workerCompatibility).toEqual(["function", "function", "function", "function", "function", "function"]);
 
   await page.getByRole("tab", { name: "PDF" }).click();
   for (const fixture of [

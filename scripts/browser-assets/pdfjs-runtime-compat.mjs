@@ -101,3 +101,49 @@ if (typeof Response.prototype.bytes !== "function") {
     },
   });
 }
+
+/*
+ * Safari can expose ReadableStream without the async-iteration surface used by
+ * PDF.js getTextContent(). Playwright's bundled WebKit already implements this,
+ * so keep an explicit compatibility shim for real Safari/iOS WebKit.
+ */
+if (typeof ReadableStream !== "undefined") {
+  const streamPrototype = ReadableStream.prototype;
+
+  if (typeof streamPrototype.values !== "function") {
+    Object.defineProperty(streamPrototype, "values", {
+      configurable: true,
+      writable: true,
+      async *value(options = {}) {
+        const reader = this.getReader();
+        let finished = false;
+        try {
+          while (true) {
+            const result = await reader.read();
+            if (result.done) {
+              finished = true;
+              return;
+            }
+            yield result.value;
+          }
+        } finally {
+          try {
+            if (!finished && !options.preventCancel) await reader.cancel();
+          } finally {
+            reader.releaseLock();
+          }
+        }
+      },
+    });
+  }
+
+  if (typeof streamPrototype[Symbol.asyncIterator] !== "function") {
+    Object.defineProperty(streamPrototype, Symbol.asyncIterator, {
+      configurable: true,
+      writable: true,
+      value(options) {
+        return this.values(options);
+      },
+    });
+  }
+}

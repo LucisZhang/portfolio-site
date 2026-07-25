@@ -651,6 +651,7 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
         <button type="button" className="privacy-scan-primary" onClick={() => void scanDocument()} disabled={!pageCount || isLoading || isOcrRunning || isExporting}><ScanSearch aria-hidden="true" />{copy.ocr}</button>
         <button type="button" onClick={() => void reset()} disabled={!pageCount && !fileName}><RotateCcw aria-hidden="true" />{copy.reset}</button>
       </div>
+      {error ? <p className="privacy-error" role="alert">{error}</p> : null}
       <div className="privacy-pdf-grid">
         <div className="privacy-pdf-canvas-wrap privacy-main-result-area" aria-busy={isLoading}>
           {pageCount && activeDocument ? (hasCurrentOutput && !showOriginal && output
@@ -687,7 +688,6 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
           <button type="button" className="privacy-export-button" onClick={() => void exportPdf()} disabled={!canExport}><Eye aria-hidden="true" />{copy.confirm}</button>
           {hasCurrentOutput && output ? <dl className="privacy-result-meta"><div><dt>{locale === "en" ? "File" : "文件"}</dt><dd>{output.name}</dd></div><div><dt>{locale === "en" ? "Type" : "类型"}</dt><dd>{output.type}</dd></div><div><dt>{locale === "en" ? "Size" : "大小"}</dt><dd>{(output.size / 1024).toFixed(1)} KB</dd></div></dl> : null}
           {validation ? <div className={`privacy-validation ${validation.safe ? "pass" : "fail"}`}><div>{validation.safe ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}<strong>{copy.verification}</strong></div><p>{validation.safe ? copy.safe : copy.unsafe}</p><div className="privacy-pdf-checks">{validationChecks.map((key) => <span key={key}>{validation[key] ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}{copy.checks[key]}</span>)}</div><code>SHA-256 {validation.outputHash}</code></div> : null}
-          {error ? <p className="privacy-error" role="alert">{error}</p> : null}
         </aside>
       </div>
     </div>
