@@ -29,28 +29,28 @@ records package chronology; it is not the current publication status.
 Approval does not extend to the private source repository, raw reports, prompts, scenarios,
 traces, datasets, original screenshots, or any substituted asset hash.
 
-## Current verified hotfix — Privacy PDF compatibility
+## Current verified hotfix — Privacy Safari stream compatibility
 
-Website PR [#14](https://github.com/LucisZhang/portfolio-site/pull/14) merged normally as runtime
-commit `c708f8cb0ae8d65995f3f47f43dd45631afc69a8`; no direct push to `main` occurred. Preview
-deployment `dpl_J6mLtTJZWchuEJcWSHa4wn9qWxfT` verified candidate
-`37e7b4a8617edf37bb7fa983051e449f3fe7051d`. Production deployment
-`dpl_BotoNKaZHiqRTbsmrNYszdx9yPoT` serves the canonical alias
-<https://portfolio-site-seven-murex.vercel.app> and immutable build
-<https://portfolio-site-2w6f0j5bu-luciszhangs-projects.vercel.app>.
+Website PR [#16](https://github.com/LucisZhang/portfolio-site/pull/16) merged normally as runtime
+commit `1a0027654495a2af1f490377a06dde521ba6498c`; no direct push to `main` occurred. Preview
+deployment `dpl_GddsP51qYurNcaLGVK5ZQv4P5WML` verified candidate
+`98e3c17b4c044705a9a6e023ecc2298fc206caf5`. Production deployment
+`dpl_46sgy7ZdgQyLnrjXzkcmk2W9pkL3` serves the canonical alias
+<https://portfolio-site-seven-murex.vercel.app> and records GitHub Production deployment
+`5597922541` for the same merge SHA.
 
-The hotfix addresses a physical-iPhone report in which Safari and Chrome could fetch the bundled
-PDFs but PDF.js failed before opening them. A same-origin compatibility bootstrap now evaluates
-before both the page module and its independent worker. The final regression deliberately removes
-the newer APIs used by PDF.js and verifies all three fixtures as 1/1/3 pages.
+Real Safari showed that the remaining failure occurred after the loading indicator, when PDF.js
+iterated the stream returned by `getTextContent()`. The bundled Playwright WebKit supplied that
+iterator, while Safari did not. The compatibility bootstrap now conditionally provides
+`ReadableStream.values()` and `Symbol.asyncIterator` in addition to the earlier page/worker API
+surface, and the regression removes those methods before exercising all three fixtures.
 
-Local verification completed with 236 passes, 80 intentional skips, and zero failures. Preview
-and Production compatibility checks passed in iPhone WebKit; Production also passed mobile
-Chromium, with zero console errors in both engines. Lighthouse scored 97 Performance and 100 for
-Accessibility, Best Practices, and SEO. See
-[`docs/lighthouse-homepage-20260725-privacy-pdf-hotfix.md`](docs/lighthouse-homepage-20260725-privacy-pdf-hotfix.md).
-The originally affected physical iPhone still requires owner confirmation in both Safari and
-Chrome, so the release does not claim a completed physical-device retest.
+Local verification completed with 236 passes, 80 intentional skips, and zero failures. Real
+Safari 26.5.2 loaded the 1/1/3 page fixtures in normal and Private windows against public
+Production, while exact-SHA Preview also passed all three in real Safari. Lighthouse scored 97
+Performance and 100 for Accessibility, Best Practices, and SEO. The originally affected physical
+iPhone still requires owner confirmation in both Safari and Chrome; this release does not claim
+that unobserved retest has passed.
 
 ## Current verified release — mobile search and recruiter prompts
 
