@@ -119,7 +119,9 @@ test("assistant prompts follow the page context and typed project segments becom
     await page.getByTestId("assistant-widget").getByRole("button", { name: "Close", exact: true }).click();
   }
 
+  const contextualRequestBodies: Array<{ messages: Array<{ role: string; content: string }> }> = [];
   await page.route("**/api/assistant", async (route) => {
+    contextualRequestBodies.push(route.request().postDataJSON());
     // Keep the mocked request pending long enough to exercise the loading state under CI load.
     await new Promise((resolve) => setTimeout(resolve, 1_000));
     await route.fulfill({
@@ -144,6 +146,8 @@ test("assistant prompts follow the page context and typed project segments becom
   const widget = page.getByTestId("assistant-widget");
   await expect(widget.getByPlaceholder("Ask how RAG Quality Lab demonstrates Xiangguo's strengths…")).toBeVisible();
   await widget.getByRole("button", { name: "Walk me through the regression that started this project — what changed and how did the harness catch it?" }).click();
+  await expect.poll(() => contextualRequestBodies.length).toBe(1);
+  expect(contextualRequestBodies[0].messages.at(-1)?.content).toContain("Portfolio question about Xiangguo Zhang on /ai/rag-quality-lab:");
   await expect(widget.locator("i")).toHaveCount(3);
   await expect(widget).toContainText("Thinking");
   await expect(widget.getByRole("heading", { name: "Strongest match" })).toBeVisible();

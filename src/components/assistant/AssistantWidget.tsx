@@ -134,13 +134,21 @@ export default function AssistantWidget({ onClose }: { onClose: () => void }) {
     setBusy(true);
 
     try {
+      const submittedMessages = conversation.map(({ role, content: messageContent }) => ({
+        role,
+        content: role === "user" && context.prompts.includes(messageContent)
+          ? locale === "en"
+            ? `Portfolio question about Xiangguo Zhang on ${pathname}: ${messageContent}`
+            : `关于章向国在作品集页面 ${pathname} 的问题：${messageContent}`
+          : messageContent,
+      }));
       const response = await fetch("/api/assistant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           locale,
           pageContext: pathname,
-          messages: conversation.map(({ role, content: messageContent }) => ({ role, content: messageContent })),
+          messages: submittedMessages,
         }),
       });
       const payload: unknown = await response.json();
