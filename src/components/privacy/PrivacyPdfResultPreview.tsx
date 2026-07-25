@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { PDFDocumentLoadingTask, PDFDocumentProxy, RenderTask } from "pdfjs-dist";
 import type { Locale } from "@/lib/i18n";
+import { loadPdfJs } from "@/lib/load-pdfjs";
 
 function ResultPage({ document, pageIndex, locale, onError }: { document: PDFDocumentProxy; pageIndex: number; locale: Locale; onError(): void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -53,7 +54,7 @@ export default function PrivacyPdfResultPreview({ bytes, locale }: { bytes: Uint
     let active = true;
     void (async () => {
       try {
-        const pdfjs = await import("pdfjs-dist");
+        const pdfjs = await loadPdfJs();
         pdfjs.GlobalWorkerOptions.workerSrc = "/generated/privacy-pdf/pdf.worker.min.mjs";
         const loadingTask = pdfjs.getDocument({ data: bytes.slice() });
         loadingTaskRef.current = loadingTask;

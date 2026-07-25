@@ -1,4 +1,5 @@
 import MiniSearch, { type SearchResult } from "minisearch";
+import generatedProfiles from "@/data/portfolio-search-aliases.generated.json";
 import type { Locale } from "./i18n";
 import type { Project, ProjectId, Track } from "./projects";
 
@@ -17,6 +18,7 @@ interface SemanticProfile {
   capabilities: string;
   useCases: string;
   roles: string;
+  searchAliases: string;
 }
 
 interface SearchDocument {
@@ -35,61 +37,19 @@ interface SearchDocument {
   capabilities: string;
   useCases: string;
   roles: string;
+  searchAliases: string;
 }
 
-const semanticProfiles: Partial<Record<ProjectId, SemanticProfile>> = {
-  "release-guardian": {
-    aliases: "release gate AI release guard launch approval 发布门禁 上线门禁 发布审批 智能体守门",
-    domains: "AI application AI applications agent engineering release engineering LLM operations software quality governance risk control AI 应用 智能体工程 发布工程 大模型运维 软件质量 治理 风控",
-    capabilities: "agent workflow multi-agent LangGraph orchestration guardrail evaluator regression evaluation deterministic validator evidence retrieval human approval bounded retry fail closed model routing prompt injection rollback citation 智能体 工作流 多智能体 编排 护栏 评估 回归测试 确定性验证 证据检索 人工审批 有限重试 失败拦截 模型路由 提示注入 回滚 引用",
-    useCases: "decide whether an AI system can ship inspect release evidence block unsafe launch compare live and deterministic evaluation 判断 AI 系统能否发布 检查发布证据 拦截不安全上线 比较在线与确定性评估",
-    roles: "applied AI engineer AI application engineer agent engineer evaluation engineer release engineer platform engineer AI 应用工程师 智能体工程师 评估工程师 发布工程师 平台工程师",
-  },
-  "p1-reliability-lab": {
-    aliases: "streaming lab reliability lab pipeline recovery 流式实验室 可靠性实验室 数据管道恢复",
-    domains: "data engineering streaming systems reliability engineering distributed systems real time analytics 数据工程 流式系统 可靠性工程 分布式系统 实时分析",
-    capabilities: "MySQL CDC Flink Iceberg change data capture checkpoint savepoint schema evolution failure injection replay recovery exactly once data consistency source table event state 故障注入 回放 恢复 检查点 保存点 模式演进 数据一致性 源端 表 事件状态",
-    useCases: "recover a broken streaming pipeline verify CDC continuity test checkpoint restore audit event delivery 恢复故障流式管道 验证 CDC 连续性 测试检查点恢复 审计事件交付",
-    roles: "data engineer streaming engineer platform engineer reliability engineer 数据工程师 流式计算工程师 平台工程师 可靠性工程师",
-  },
-  "rag-quality-lab": {
-    aliases: "retrieval lab RAG evaluation retrieval quality knowledge base quality 检索实验室 RAG 评估 检索质量 知识库质量",
-    domains: "AI application AI applications retrieval augmented generation information retrieval AI evaluation search relevance knowledge systems AI 应用 检索增强生成 信息检索 AI 评估 搜索相关性 知识系统",
-    capabilities: "RAG retrieval agent agentic assistant ranking recall precision grounded answer citation regression benchmark corpus document adapter query set deterministic runner manifest vector database 检索 智能体 助手 排序 召回 精确率 事实依据 引用 回归 基准 语料 文档适配器 问题集 确定性运行器 清单 向量数据库",
-    useCases: "measure retrieval regressions compare search configurations verify grounded answers evaluate a knowledge base 检测检索回归 比较搜索配置 验证有依据的回答 评估知识库",
-    roles: "applied AI engineer RAG engineer evaluation engineer search engineer ML engineer AI 应用工程师 RAG 工程师 评估工程师 搜索工程师 机器学习工程师",
-  },
-  "privacy-preflight-mac": {
-    aliases: "privacy preflight redaction workbench document sanitizer 隐私预检 脱敏工作台 文档清理",
-    domains: "AI application AI applications privacy engineering document processing browser local security data protection compliance tooling AI 应用 隐私工程 文档处理 浏览器本地 安全 数据保护 合规工具",
-    capabilities: "PII redaction OCR PDF image text local processing scan sensitive information bounding box burn in image only export metadata removal validation 个人信息 脱敏 文字识别 图片 文本 本地处理 扫描 敏感信息 检测框 像素烧录 纯图像导出 元数据清理 验证",
-    useCases: "remove sensitive information before sharing inspect a PDF locally redact email phone path export a verified document 分享前删除敏感信息 本地检查 PDF 脱敏邮箱电话路径 导出已验证文档",
-    roles: "applied AI engineer privacy engineer frontend engineer document AI engineer security tooling engineer AI 应用工程师 隐私工程师 前端工程师 文档智能工程师 安全工具工程师",
-  },
-  "margin-control-tower": {
-    aliases: "margin dashboard profitability control tower profit analysis 毛利看板 利润控制塔 盈利分析",
-    domains: "ecommerce finance commercial analytics profitability unit economics category management retail operations 电商 金融 财务 商业分析 盈利能力 单位经济 品类管理 零售运营",
-    capabilities: "Olist contribution margin revenue discount return cost of goods COGS fulfillment promotion elasticity anomaly detection holdout scenario pipeline Parquet hash verification 贡献毛利 收入 折扣 退货 商品成本 履约 促销 弹性 异常检测 留出期 情景分析 数据管道 哈希校验",
-    useCases: "explain a weekly margin change diagnose lost profit test a promotion decide a category action 解释每周毛利变化 诊断利润损失 测试促销 决定品类行动",
-    roles: "data analyst analytics engineer commercial analyst business intelligence category analyst 数据分析师 分析工程师 商业分析师 BI 分析师 品类分析师",
-  },
-  "credit-policy-lab": {
-    aliases: "credit risk lab lending policy simulator loan approval 信贷风控实验室 借贷策略模拟 贷款审批",
-    domains: "finance fintech banking lending credit risk analytics risk management policy governance 金融 金融科技 银行 借贷 信贷 风险分析 风险管理 策略治理",
-    capabilities: "Lending Club credit score probability of default expected loss approval review decline threshold queue capacity calibration Brier drift PSI vintage backtest challenger swap set audit 评分 违约概率 预期损失 批准 复核 拒绝 阈值 队列容量 校准 漂移 批次 回测 挑战模型 换入换出 审计",
-    useCases: "turn model scores into lending policy test approval thresholds manage review capacity monitor credit drift record a policy decision 将模型评分转成信贷策略 测试审批阈值 管理复核容量 监控信贷漂移 记录策略决策",
-    roles: "risk analyst credit analyst data analyst decision scientist model risk analyst analytics engineer 风险分析师 信贷分析师 数据分析师 决策科学家 模型风险分析师 分析工程师",
-  },
-};
+const semanticProfiles = generatedProfiles as Partial<Record<ProjectId, SemanticProfile>>;
 
 const explicitTrackTerms: Record<string, string[]> = {
-  ai: ["ai applications", "ai application", "applied ai", "ai 应用", "人工智能应用"],
-  engineering: ["data engineering", "数据工程", "流式数据工程"],
-  analytics: ["data analytics", "data analysis", "数据分析", "商业分析方向"],
+  ai: ["ai applications", "ai application", "applied ai", "ai 应用", "ai 應用", "人工智能应用", "人工智慧應用", "ai ying yong", "aiyingyong"],
+  engineering: ["data engineering", "数据工程", "資料工程", "流式数据工程", "串流資料工程", "shu ju gong cheng", "shujugongcheng", "sjgc"],
+  analytics: ["data analytics", "data analysis", "数据分析", "資料分析", "商业分析方向", "商業分析方向", "shu ju fen xi", "shujufenxi", "sjfx"],
 };
 
 const lexicalFields = ["title", "eyebrow", "summary", "stack", "body"];
-const semanticFields = ["aliases", "domains", "capabilities", "useCases", "roles"];
+const semanticFields = ["aliases", "domains", "capabilities", "useCases", "roles", "searchAliases"];
 const RRF_K = 24;
 const explicitNoMatchMarkers = ["unrelated", "not related", "random nonsense", "无关", "随机乱码"];
 const ignoredTerms = new Set([
@@ -97,9 +57,11 @@ const ignoredTerms = new Set([
   "一个", "一些", "关于", "帮我", "完全", "无关", "查找", "项目", "页面", "看看", "内容",
 ]);
 
-function normalize(value: string) {
+export function normalizePortfolioSearchText(value: string) {
   return value.toLowerCase().normalize("NFKC").replace(/[\p{P}\p{S}]+/gu, " ").replace(/\s+/g, " ").trim();
 }
+
+const normalize = normalizePortfolioSearchText;
 
 function tokenize(value: string) {
   const normalized = normalize(value);
@@ -150,7 +112,7 @@ function queryUnits(value: string) {
 function buildDocuments(projects: Project[], locale: Locale): SearchDocument[] {
   const localized = (value: { en: string; zh: string }) => value[locale];
   return projects.filter((project) => !project.legacy).map((project) => {
-    const profile = semanticProfiles[project.slug] ?? { aliases: "", domains: "", capabilities: "", useCases: "", roles: "" };
+    const profile = semanticProfiles[project.slug] ?? { aliases: "", domains: "", capabilities: "", useCases: "", roles: "", searchAliases: "" };
     const allStack = project.stack.flatMap((item) => [item.en, item.zh]).join(" ");
     return {
       id: project.slug,
@@ -183,7 +145,7 @@ function searchOptions(fields: string[], boosts: Record<string, number>) {
   return {
     fields,
     boost: boosts,
-    prefix: (term: string) => term.length >= 3,
+    prefix: (term: string) => /\p{Script=Han}/u.test(term) || term.length >= 2,
     fuzzy: (term: string, index: number, terms: string[]) => {
       if (terms.length > 1 && index > 0) return false;
       return /^[a-z0-9]/.test(term) && term.length >= 6 ? .25 : /^[a-z0-9]/.test(term) && term.length >= 5 ? .2 : false;
@@ -197,7 +159,7 @@ function reasonFor(hit: SearchResult, locale: Locale) {
   const fields = new Set(Object.values(hit.match).flat());
   const matched = hit.queryTerms[0] || hit.terms[0] || "";
   const quoted = matched ? `“${matched}”` : locale === "en" ? "your query" : "当前查询";
-  if (fields.has("title") || fields.has("aliases")) return locale === "en" ? `Name or known term: ${quoted}` : `名称或常用说法：${quoted}`;
+  if (fields.has("title") || fields.has("aliases") || fields.has("searchAliases")) return locale === "en" ? `Name, translation, or pinyin: ${quoted}` : `名称、繁简体或拼音：${quoted}`;
   if (fields.has("domains") || fields.has("useCases")) return locale === "en" ? `Business context: ${quoted}` : `业务场景：${quoted}`;
   if (fields.has("roles")) return locale === "en" ? `Role relevance: ${quoted}` : `岗位相关：${quoted}`;
   if (fields.has("capabilities") || fields.has("stack")) return locale === "en" ? `Capability or tool: ${quoted}` : `能力或工具：${quoted}`;

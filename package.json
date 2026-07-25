@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/sync-privacy-browser-assets.mjs && node scripts/sync-duckdb-browser-assets.mjs && node scripts/generate-analytics-fixtures.mjs",
+    "predev": "node scripts/generate-portfolio-search-aliases.mjs --check && node scripts/sync-privacy-browser-assets.mjs && node scripts/sync-duckdb-browser-assets.mjs && node scripts/generate-analytics-fixtures.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/sync-privacy-browser-assets.mjs && node scripts/sync-duckdb-browser-assets.mjs && node scripts/generate-analytics-fixtures.mjs",
+    "prebuild": "node scripts/generate-portfolio-search-aliases.mjs --check && node scripts/sync-privacy-browser-assets.mjs && node scripts/sync-duckdb-browser-assets.mjs && node scripts/generate-analytics-fixtures.mjs",
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
@@ -20,6 +20,7 @@
     "generate:olist-preview": "node scripts/generate-olist-margin-preview.mjs",
     "generate:privacy": "node scripts/generate-privacy-examples.mjs && node scripts/generate-privacy-localized-proof-assets.mjs && node scripts/update-privacy-evidence-manifest.mjs",
     "generate:privacy-localized-proof": "node scripts/generate-privacy-localized-proof-assets.mjs && node scripts/update-privacy-evidence-manifest.mjs",
+    "generate:search-aliases": "node scripts/generate-portfolio-search-aliases.mjs",
     "benchmark:privacy-ocr": "node scripts/run-privacy-ocr-benchmark.mjs",
     "verify:evidence": "node scripts/generate-olist-margin-preview.mjs --check && node scripts/verify-evidence.mjs",
     "verify:performance": "node scripts/verify-performance-budget.mjs",
@@ -64,11 +65,13 @@
     "axe-core": "^4.12.1",
     "eslint": "^9",
     "eslint-config-next": "16.2.11",
+    "opencc-js": "^1.4.1",
+    "pinyin-pro": "^3.27.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   },
   "overrides": {
-    "postcss": "8.5.16",
+    "postcss": "8.5.23",
     "sharp": "0.35.3"
   }
 }

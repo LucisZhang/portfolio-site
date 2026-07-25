@@ -284,7 +284,7 @@ test("portfolio search returns bilingual, typo-tolerant, and nearest-page result
   await input.fill("a completely unrelated business phrase");
   await expect(page.locator("[cmdk-item]")).toHaveCount(0);
   await expect(page.locator(".command-empty")).toContainText("No confident project match");
-  await expect(page.locator(".command-search-note")).toContainText("bilingual concepts");
+  await expect(page.locator(".command-search-note")).toContainText("support English, Simplified and Traditional Chinese, pinyin");
   await page.getByRole("button", { name: "Ask an open-ended question" }).click();
   await expect(page.getByTestId("assistant-widget")).toBeVisible();
   await page.getByRole("button", { name: "Close portfolio assistant" }).click();

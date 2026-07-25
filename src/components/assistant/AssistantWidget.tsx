@@ -1,7 +1,8 @@
 "use client";
 
-import { type FormEvent, type KeyboardEvent as ReactKeyboardEvent, useEffect, useId, useRef, useState } from "react";
+import { type FormEvent, type KeyboardEvent as ReactKeyboardEvent, useCallback, useEffect, useId, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
+import { recruiterQuestionsByRoute } from "@/data/recruiter-content";
 import { useI18n } from "@/lib/i18n";
 import type { AssistantCitation, AssistantMessage } from "@/lib/assistant-policy";
 import { validateAssistantAnswerBlocks, type AssistantAnswerBlock } from "@/lib/assistant-project-references";
@@ -50,45 +51,17 @@ const copy = {
 
 function contextualCopy(pathname: string, locale: "en" | "zh", defaults: typeof copy.en | typeof copy.zh) {
   const segments = pathname.split("/").filter(Boolean);
+  const prompts = recruiterQuestionsByRoute[pathname]?.[locale] ?? [...defaults.prompts];
   const project = segments.length >= 2 ? projects.find((item) => item.track === segments[0] && item.slug === segments[1]) : undefined;
   if (project) {
     const title = project.title[locale];
-    return locale === "en" ? {
-      placeholder: `Ask how ${title} demonstrates Xiangguo's strengths…`,
-      prompts: [
-        `What problem does ${title} solve, and what did Xiangguo build?`,
-        `Which technical decisions in ${title} best demonstrate his strengths?`,
-        `How is ${title} relevant to a ${project.track === "ai" ? "Applied AI" : project.track === "engineering" ? "data engineering" : "data analytics"} role?`,
-      ],
-    } : {
-      placeholder: `询问${title}如何体现章向国的优势……`,
-      prompts: [
-        `${title}解决了什么问题，章向国具体做了什么？`,
-        `${title}中哪些技术决策最能体现章向国的优势？`,
-        `${title}与${project.track === "ai" ? "AI 应用" : project.track === "engineering" ? "数据工程" : "数据分析"}岗位有什么关联？`,
-      ],
-    };
+    return { placeholder: locale === "en" ? `Ask how ${title} demonstrates Xiangguo's strengths…` : `询问${title}如何体现章向国的优势……`, prompts };
   }
   const track = segments.length === 1 ? getTrack(segments[0]) : undefined;
   if (track) {
-    const names = projects.filter((item) => item.track === track.id && !item.legacy).map((item) => item.title[locale]);
-    return locale === "en" ? {
-      placeholder: `Ask about Xiangguo's ${track.label.en} work…`,
-      prompts: [
-        `Why is Xiangguo a strong candidate for ${track.label.en} roles?`,
-        `Compare ${names.join(" and ")} as examples of his work.`,
-        `What strengths recur across Xiangguo's ${track.label.en} projects?`,
-      ],
-    } : {
-      placeholder: `询问章向国的${track.label.zh}能力……`,
-      prompts: [
-        `为什么章向国适合${track.label.zh}岗位？`,
-        `请比较${names.join("与")}这几个项目。`,
-        `章向国的${track.label.zh}项目体现了哪些共同优势？`,
-      ],
-    };
+    return { placeholder: locale === "en" ? `Ask about Xiangguo's ${track.label.en} work…` : `询问章向国的${track.label.zh}能力……`, prompts };
   }
-  return { placeholder: defaults.placeholder, prompts: [...defaults.prompts] };
+  return { placeholder: defaults.placeholder, prompts };
 }
 
 interface DisplayMessage extends AssistantMessage {
@@ -137,8 +110,12 @@ export default function AssistantWidget({ onClose }: { onClose: () => void }) {
   const [draft, setDraft] = useState("");
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
+  const focusInput = useCallback(() => {
+    if (window.matchMedia("(max-width: 640px)").matches) return;
+    inputRef.current?.focus({ preventScroll: true });
+  }, []);
 
-  useEffect(() => inputRef.current?.focus(), []);
+  useEffect(() => focusInput(), [focusInput]);
   useEffect(() => {
     function handleEscape(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -157,13 +134,21 @@ export default function AssistantWidget({ onClose }: { onClose: () => void }) {
     setBusy(true);
 
     try {
+      const submittedMessages = conversation.map(({ role, content: messageContent }) => ({
+        role,
+        content: role === "user" && context.prompts.includes(messageContent)
+          ? locale === "en"
+            ? `Portfolio question about Xiangguo Zhang on ${pathname}: ${messageContent}`
+            : `关于章向国在作品集页面 ${pathname} 的问题：${messageContent}`
+          : messageContent,
+      }));
       const response = await fetch("/api/assistant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           locale,
           pageContext: pathname,
-          messages: conversation.map(({ role, content: messageContent }) => ({ role, content: messageContent })),
+          messages: submittedMessages,
         }),
       });
       const payload: unknown = await response.json();
@@ -181,7 +166,7 @@ export default function AssistantWidget({ onClose }: { onClose: () => void }) {
       setMessages((current) => [...current, { id: crypto.randomUUID(), role: "assistant", content: labels.failed }]);
     } finally {
       setBusy(false);
-      requestAnimationFrame(() => inputRef.current?.focus());
+      requestAnimationFrame(focusInput);
     }
   }
 
@@ -189,7 +174,7 @@ export default function AssistantWidget({ onClose }: { onClose: () => void }) {
     const question = content.trim();
     if (!question) {
       setNotice(labels.empty);
-      inputRef.current?.focus();
+      focusInput();
       return;
     }
 
