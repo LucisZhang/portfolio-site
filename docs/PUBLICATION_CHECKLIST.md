@@ -147,7 +147,32 @@ public-safe final state update.
 
 Only after those checks may `STATE.md` change from `V15_RELEASE_CANDIDATE` to a deployed status.
 
-## 7. 2026-07-25 mobile search and recruiter prompts release receipt
+## 7. 2026-07-25 Privacy iOS PDF compatibility hotfix receipt
+
+- [x] Website PR #14 merged normally without a direct `main` push.
+- [x] Candidate commit: `37e7b4a8617edf37bb7fa983051e449f3fe7051d`; runtime merge commit:
+  `c708f8cb0ae8d65995f3f47f43dd45631afc69a8`.
+- [x] Preview deployment `dpl_J6mLtTJZWchuEJcWSHa4wn9qWxfT` reached Ready at
+  <https://portfolio-site-hobic5lpf-luciszhangs-projects.vercel.app>.
+- [x] Production deployment `dpl_BotoNKaZHiqRTbsmrNYszdx9yPoT` reached Ready at
+  `2026-07-25 09:49:22 Asia/Shanghai` / `2026-07-25 01:49:22 UTC`; the canonical alias serves the
+  runtime at <https://portfolio-site-seven-murex.vercel.app>.
+- [x] Production reproduction with newer WebKit APIs unavailable captured the pre-hotfix failure
+  `Promise.withResolvers is not a function` before any PDF could open.
+- [x] The final compatibility bootstrap runs before PDF.js in both window and worker contexts and
+  covers the newer APIs referenced by the locked runtime without replacing native implementations.
+- [x] Exact-SHA Preview and Production loaded the text-layer, scanned, and multi-page fixtures as
+  1/1/3 pages after the APIs were deliberately unavailable. Production WebKit and Chromium had
+  zero console errors.
+- [x] Final local verification: 236 passed, 80 intentional skips, 0 failures; assistant policy:
+  37 passed. Typecheck, lint, evidence, build, performance, localization, links, production
+  dependency audit, Gitleaks, TruffleHog, and build-machine-path scans passed.
+- [x] Lighthouse: 97/100/100/100 for Performance, Accessibility, Best Practices, and SEO.
+- [ ] Owner physical-device retest remains: repeat all three buttons on the originally affected
+  iPhone in both Safari and Chrome. Record the iPhone model, iOS version, and browser versions if
+  either shell still fails; do not mark physical-device acceptance complete before that check.
+
+## 8. 2026-07-25 mobile search and recruiter prompts release receipt
 
 - [x] Website PR #12 merged normally without a direct `main` push.
 - [x] Candidate commit: `69af3866631c073dcfc0bc847f55664672d388c7`; runtime merge commit:
@@ -175,7 +200,7 @@ Only after those checks may `STATE.md` change from `V15_RELEASE_CANDIDATE` to a 
 - [x] Lighthouse 13.0.3: Production 92/100/100/100 for Performance, Accessibility, Best Practices,
   and SEO respectively.
 
-## 8. 2026-07-25 fixes5 release receipt
+## 9. 2026-07-25 fixes5 release receipt
 
 - [x] Website PR #10 merged normally without a direct `main` push.
 - [x] Candidate commit: `18ab7a49753b33aa62171f742b8be8a71afc3846`; runtime merge commit:
@@ -206,7 +231,7 @@ Only after those checks may `STATE.md` change from `V15_RELEASE_CANDIDATE` to a 
 - [x] Lighthouse 13.4.1: Production 98/100/100/100 for Performance, Accessibility, Best Practices,
   and SEO respectively.
 
-## 8. 2026-07-24 fixes4 release receipt
+## 10. 2026-07-24 fixes4 release receipt
 
 - [x] Website PR #8 merged normally without a direct `main` push.
 - [x] Candidate commit: `7da0a70fbacd340b65491284c982ada849c8a981`; runtime merge commit:
@@ -235,7 +260,7 @@ Only after those checks may `STATE.md` change from `V15_RELEASE_CANDIDATE` to a 
 - [x] Lighthouse 13.4.1: local 97/100/100/100 and Production 92/100/100/100 for Performance,
   Accessibility, Best Practices, and SEO respectively.
 
-## 9. 2026-07-23 fixes3 release receipt
+## 11. 2026-07-23 fixes3 release receipt
 
 - [x] Website PR #6 merged normally without a direct `main` push.
 - [x] Runtime merge commit: `0fccdcc4929718600f053221bdcef31faebd102f`.
@@ -256,7 +281,7 @@ Only after those checks may `STATE.md` change from `V15_RELEASE_CANDIDATE` to a 
   headers.
 - [x] Lighthouse 13.4.1: Performance 99, Accessibility 100, Best Practices 100, SEO 100.
 
-## 10. 2026-07-23 v15 release receipt
+## 12. 2026-07-23 v15 release receipt
 
 - [x] PR #3 and follow-up PR #4 merged normally without a direct `main` push.
 - [x] Runtime merge commit: `468f31ba1ce196348caa5e30a76b11ed46a609d4`.

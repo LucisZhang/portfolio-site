@@ -1,9 +1,36 @@
 # Public Portfolio state
 
-Updated: 2026-07-25 08:53 (Asia/Shanghai) / 2026-07-25 00:53 UTC
+Updated: 2026-07-25 09:49 (Asia/Shanghai) / 2026-07-25 01:49 UTC
 
 This file records the recruiter-safe state of the current release candidate. It contains no
 credentials, raw private candidate material, local source paths, or browser-session data.
+
+## Privacy iOS PDF compatibility hotfix
+
+Status: `PRIVACY_IOS_PDF_HOTFIX_PRODUCTION_AUTOMATION_VERIFIED`. Runtime PR #14 merged normally as
+commit `c708f8cb0ae8d65995f3f47f43dd45631afc69a8`; no direct push to `main` occurred. Vercel
+Production deployment `dpl_BotoNKaZHiqRTbsmrNYszdx9yPoT` reached Ready and the canonical alias
+<https://portfolio-site-seven-murex.vercel.app> serves the merged runtime. The immutable build URL
+is <https://portfolio-site-2w6f0j5bu-luciszhangs-projects.vercel.app>.
+
+The previous latest-engine WebKit check did not establish compatibility with an older physical
+iPhone. A real-device report showed that all three Privacy PDF buttons still failed in both Safari
+and Chrome. Production reproduction with newer platform APIs deliberately removed captured
+`Promise.withResolvers is not a function` before PDF.js could open the file. PDF.js 6 also relies
+on other newer APIs in its page and independent worker contexts.
+
+The hotfix installs one reviewed compatibility bootstrap before the PDF.js page module and before
+the worker bundle. It covers `Promise.withResolvers`, `Promise.try`, `AbortSignal.any`, `URL.parse`,
+typed-array Base64 helpers, and `Response.bytes` only when the browser does not provide them. The
+worker now starts through a same-origin wrapper so a page-only shim cannot mask a worker failure.
+
+The exact candidate Preview and merged Production each loaded the bundled text-layer, scanned,
+and multi-page PDFs as 1/1/3 pages after those APIs were deliberately made unavailable. Production
+WebKit and Chromium emitted zero console errors. The final local matrix passed 236 tests with 80
+intentional skips and no failures; the compatibility test exercises the page and worker contexts.
+Production Lighthouse scored 97 Performance and 100 for Accessibility, Best Practices, and SEO.
+The original physical iPhone remains an owner manual-acceptance gate in both Safari and Chrome;
+this record does not claim that unobserved physical retest has already passed.
 
 ## Mobile search and recruiter prompts verified release
 
