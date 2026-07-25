@@ -25,6 +25,7 @@ import ArtifactLink from "@/components/ArtifactLink";
 import LocaleDocumentMetadata from "@/components/LocaleDocumentMetadata";
 import LocaleLink from "@/components/LocaleLink";
 import { useI18n, type Locale, type LocalizedString } from "@/lib/i18n";
+import { loadPdfJs } from "@/lib/load-pdfjs";
 
 type ArtifactKind = "image" | "pdf" | "json" | "csv" | "markdown" | "mermaid";
 
@@ -143,7 +144,7 @@ function PdfViewer({ source }: { source: string }) {
     let task: import("pdfjs-dist").PDFDocumentLoadingTask | null = null;
     void (async () => {
       try {
-        const pdfjs = await import("pdfjs-dist");
+        const pdfjs = await loadPdfJs();
         pdfjs.GlobalWorkerOptions.workerSrc = "/generated/privacy-pdf/pdf.worker.min.mjs";
         task = pdfjs.getDocument({ url: source });
         const document = await task.promise;

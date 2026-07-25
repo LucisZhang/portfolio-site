@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import AssistantLauncher from "@/components/assistant/AssistantLauncher";
-import CommandPalette from "@/components/CommandPalette";
+import CommandPaletteLauncher from "@/components/CommandPaletteLauncher";
 import FooterContactLink from "@/components/FooterContactLink";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import LocaleLink from "@/components/LocaleLink";
@@ -49,7 +49,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 {navItems.map((item) => <LocaleLink key={item.href} href={item.href}><LocalizedText text={item.label} /></LocaleLink>)}
               </nav>
               <div className="header-tools">
-                <CommandPalette tracks={tracks} projects={featuredProjects} />
+                <CommandPaletteLauncher tracks={tracks} projects={featuredProjects} />
                 <LanguageSwitcher />
               </div>
             </div>

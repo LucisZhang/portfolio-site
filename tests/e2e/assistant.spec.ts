@@ -113,7 +113,9 @@ test("assistant prompts follow the page context and typed project segments becom
   for (const [path, placeholder] of contexts) {
     await page.goto(path, { waitUntil: "networkidle" });
     await page.getByRole("button", { name: "Ask Portfolio" }).click();
-    await expect(page.getByTestId("assistant-widget").getByPlaceholder(placeholder)).toBeVisible();
+    const contextualWidget = page.getByTestId("assistant-widget");
+    await expect(contextualWidget.getByPlaceholder(placeholder)).toBeVisible();
+    await expect(contextualWidget.locator("[class*='prompts'] button")).toHaveCount(4);
     await page.getByTestId("assistant-widget").getByRole("button", { name: "Close", exact: true }).click();
   }
 
@@ -141,7 +143,7 @@ test("assistant prompts follow the page context and typed project segments becom
   await page.getByRole("button", { name: "Ask Portfolio" }).click();
   const widget = page.getByTestId("assistant-widget");
   await expect(widget.getByPlaceholder("Ask how RAG Quality Lab demonstrates Xiangguo's strengths…")).toBeVisible();
-  await widget.getByRole("button", { name: "What problem does RAG Quality Lab solve, and what did Xiangguo build?" }).click();
+  await widget.getByRole("button", { name: "Walk me through the regression that started this project — what changed and how did the harness catch it?" }).click();
   await expect(widget.locator("i")).toHaveCount(3);
   await expect(widget).toContainText("Thinking");
   await expect(widget.getByRole("heading", { name: "Strongest match" })).toBeVisible();

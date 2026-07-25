@@ -13,22 +13,29 @@ export default defineConfig({
   reporter: [["list"], ["html", { open: "never" }]],
   use: {
     baseURL: "http://127.0.0.1:4173",
-    channel: browserChannel,
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },
   projects: [
     {
       name: "desktop",
-      use: { ...devices["Desktop Chrome"], viewport: { width: 1440, height: 900 } },
+      testIgnore: "**/webkit-mobile.spec.ts",
+      use: { ...devices["Desktop Chrome"], channel: browserChannel, viewport: { width: 1440, height: 900 } },
     },
     {
       name: "tablet",
-      use: { ...devices["Desktop Chrome"], viewport: { width: 1024, height: 768 } },
+      testIgnore: "**/webkit-mobile.spec.ts",
+      use: { ...devices["Desktop Chrome"], channel: browserChannel, viewport: { width: 1024, height: 768 } },
     },
     {
       name: "mobile",
-      use: { ...devices["Desktop Chrome"], viewport: { width: 390, height: 844 }, isMobile: true },
+      testIgnore: "**/webkit-mobile.spec.ts",
+      use: { ...devices["Desktop Chrome"], channel: browserChannel, viewport: { width: 390, height: 844 }, isMobile: true },
+    },
+    {
+      name: "iphone-webkit",
+      testMatch: "**/webkit-mobile.spec.ts",
+      use: { ...devices["iPhone 13"], browserName: "webkit" },
     },
   ],
   webServer: {

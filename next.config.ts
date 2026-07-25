@@ -27,7 +27,7 @@ const nextConfig: NextConfig = {
               "script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'",
               "style-src 'self' 'unsafe-inline'",
               "worker-src 'self' blob:",
-              "upgrade-insecure-requests",
+              ...(process.env.VERCEL ? ["upgrade-insecure-requests"] : []),
             ].join("; "),
           },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
