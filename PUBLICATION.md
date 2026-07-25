@@ -29,7 +29,33 @@ records package chronology; it is not the current publication status.
 Approval does not extend to the private source repository, raw reports, prompts, scenarios,
 traces, datasets, original screenshots, or any substituted asset hash.
 
-## Current verified release — fixes5
+## Current verified release — mobile search and recruiter prompts
+
+Website PR [#12](https://github.com/LucisZhang/portfolio-site/pull/12) merged normally as runtime
+commit `8f76b8219c13c4f5210503edd91e0c68546e0146`; no direct push to `main` occurred. Preview
+deployment `dpl_Fu6cPLmNTg5AXVRHiQSHXNNR17a1` verified candidate
+`69af3866631c073dcfc0bc847f55664672d388c7`. Production deployment
+`dpl_J2bjEc1Dx7jj2tpcg3A16Wh4WTbg` serves the canonical alias
+<https://portfolio-site-seven-murex.vercel.app> and immutable build
+<https://portfolio-site-qqai1fimj-luciszhangs-projects.vercel.app>.
+
+The release repairs mobile WebKit Privacy PDF loading, prevents assistant-triggered mobile zoom,
+and replaces each primary route's four prompts with bilingual recruiter-reviewed questions.
+Search adds live partial completions, Simplified/Traditional Chinese, pinyin/initials/mixed-input
+matching, local-only bounded history personalization, deterministic suggestion results, and a
+clear-before-close X control. Search and PDF.js are loaded on demand; the latter is served as a
+same-origin module so referenced browser chunks contain no build-machine path.
+
+The complete local matrix finished with 235 passed, 80 intentional skips, and zero failures;
+focused post-loader regression added 19 passes. Preview and Production each passed exact English
+Claude Sonnet 4.6 and Chinese Kimi K3 acceptance after the Claude Haiku 4.5 portfolio-scope gate,
+with 9 bounded retrieved chunks and one attempt per accepted request. Production browser checks
+covered mobile Chromium and WebKit, all three PDF fixtures, pinyin/Traditional/mixed search,
+two-stage X behavior, and assistant viewport stability with no console error. Lighthouse scored
+92 Performance and 100 for Accessibility, Best Practices, and SEO. See
+[`docs/lighthouse-homepage-20260725-mobile-search.md`](docs/lighthouse-homepage-20260725-mobile-search.md).
+
+## Previous verified release — fixes5
 
 Website PR [#10](https://github.com/LucisZhang/portfolio-site/pull/10) merged normally as runtime
 commit `29466dd7e0f11f9a69db3d87694929e03287ceb1`; no direct push to `main` occurred. Vercel
