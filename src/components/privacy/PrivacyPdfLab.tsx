@@ -7,7 +7,7 @@ import type { Worker } from "tesseract.js";
 import type { Locale } from "@/lib/i18n";
 import { privacySourceLabel } from "@/lib/privacy-localization";
 import { mapSensitiveOcrLine, scanSensitiveText } from "@/lib/privacy-redaction";
-import { loadPdfJs } from "@/lib/load-pdfjs";
+import { loadPdfJs, PDFJS_WORKER_URL } from "@/lib/load-pdfjs";
 import PrivacyPdfPage from "./PrivacyPdfPage";
 import PrivacyPdfResultPreview from "./PrivacyPdfResultPreview";
 import type { ActivePdfDocument, PdfRegion } from "./privacy-pdf-types";
@@ -273,7 +273,7 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
     setIsLoading(true);
     try {
       const pdfjs = await loadPdfJs();
-      pdfjs.GlobalWorkerOptions.workerSrc = "/generated/privacy-pdf/pdf.worker.min.mjs";
+      pdfjs.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_URL;
       const loadingTask = pdfjs.getDocument({ data: bytes.slice() });
       loadingTaskRef.current = loadingTask;
       const document = await loadingTask.promise;
@@ -543,7 +543,7 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
       const outputBytes = await output.save();
       const blob = new Blob([new Uint8Array(outputBytes)], { type: "application/pdf" });
       const pdfjs = await loadPdfJs();
-      pdfjs.GlobalWorkerOptions.workerSrc = "/generated/privacy-pdf/pdf.worker.min.mjs";
+      pdfjs.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_URL;
       const verificationTask = pdfjs.getDocument({ data: outputBytes.slice() });
       const verificationDocument = await verificationTask.promise;
       let text = "";
