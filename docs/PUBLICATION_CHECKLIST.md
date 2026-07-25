@@ -147,6 +147,29 @@ public-safe final state update.
 
 Only after those checks may `STATE.md` change from `V15_RELEASE_CANDIDATE` to a deployed status.
 
+## 7.1 2026-07-25 Privacy Safari stream follow-up receipt
+
+- [x] Website PR #16 merged normally without a direct `main` push.
+- [x] Candidate commit: `98e3c17b4c044705a9a6e023ecc2298fc206caf5`; runtime merge commit:
+  `1a0027654495a2af1f490377a06dde521ba6498c`.
+- [x] Preview deployment `dpl_GddsP51qYurNcaLGVK5ZQv4P5WML` reached Ready at
+  <https://portfolio-site-8i2imreob-luciszhangs-projects.vercel.app>.
+- [x] Production deployment `dpl_46sgy7ZdgQyLnrjXzkcmk2W9pkL3` reached Ready at
+  `2026-07-25 10:51:53 Asia/Shanghai` / `2026-07-25 02:51:53 UTC`; GitHub Production deployment
+  `5597922541` records the same merge SHA and the canonical alias serves the runtime.
+- [x] Real Safari reproduced the remaining failure at PDF.js `getTextContent()`: its
+  `ReadableStream` lacked `values()` and `Symbol.asyncIterator`, while bundled WebKit exposed them.
+- [x] The compatibility case now deliberately removes the stream methods in both page and worker
+  contexts and still loads the text-layer, scanned, and multi-page fixtures as 1/1/3 pages.
+- [x] Real Safari 26.5.2 passed all three fixtures on Preview and public Production; Production
+  passed in both normal and Private windows without the prior local-open error.
+- [x] Final local verification: 236 passed, 80 intentional skips, 0 failures; assistant policy:
+  37 passed. Typecheck, lint, evidence, build, performance, localization, links, and production
+  dependency audit passed.
+- [x] Lighthouse: 97/100/100/100 for Performance, Accessibility, Best Practices, and SEO.
+- [ ] Owner physical-device retest remains: repeat all three buttons on the originally affected
+  iPhone in both Safari and Chrome. This Mac Safari verification does not replace that gate.
+
 ## 7. 2026-07-25 Privacy iOS PDF compatibility hotfix receipt
 
 - [x] Website PR #14 merged normally without a direct `main` push.

@@ -1,36 +1,39 @@
 # Public Portfolio state
 
-Updated: 2026-07-25 09:49 (Asia/Shanghai) / 2026-07-25 01:49 UTC
+Updated: 2026-07-25 10:57 (Asia/Shanghai) / 2026-07-25 02:57 UTC
 
 This file records the recruiter-safe state of the current release candidate. It contains no
 credentials, raw private candidate material, local source paths, or browser-session data.
 
-## Privacy iOS PDF compatibility hotfix
+## Privacy Safari stream compatibility hotfix
 
-Status: `PRIVACY_IOS_PDF_HOTFIX_PRODUCTION_AUTOMATION_VERIFIED`. Runtime PR #14 merged normally as
-commit `c708f8cb0ae8d65995f3f47f43dd45631afc69a8`; no direct push to `main` occurred. Vercel
-Production deployment `dpl_BotoNKaZHiqRTbsmrNYszdx9yPoT` reached Ready and the canonical alias
-<https://portfolio-site-seven-murex.vercel.app> serves the merged runtime. The immutable build URL
-is <https://portfolio-site-2w6f0j5bu-luciszhangs-projects.vercel.app>.
+Status: `PRIVACY_SAFARI_STREAM_HOTFIX_PRODUCTION_VERIFIED_MAC_SAFARI`. Runtime PR #16 merged
+normally as commit `1a0027654495a2af1f490377a06dde521ba6498c`; no direct push to `main` occurred.
+Vercel Production deployment `dpl_46sgy7ZdgQyLnrjXzkcmk2W9pkL3` reached Ready and the canonical
+alias <https://portfolio-site-seven-murex.vercel.app> serves the merged runtime. GitHub recorded
+Production deployment `5597922541` for the same merge SHA.
 
-The previous latest-engine WebKit check did not establish compatibility with an older physical
-iPhone. A real-device report showed that all three Privacy PDF buttons still failed in both Safari
-and Chrome. Production reproduction with newer platform APIs deliberately removed captured
-`Promise.withResolvers is not a function` before PDF.js could open the file. PDF.js 6 also relies
-on other newer APIs in its page and independent worker contexts.
+The preceding compatibility release fixed missing newer PDF.js APIs but still did not reproduce
+real Safari's stream surface. Real macOS Safari reproduced the owner report after the loading
+indicator: PDF.js failed in `getTextContent()` because `ReadableStream` did not expose `values()`
+or `Symbol.asyncIterator`. Playwright's bundled WebKit already supplied the iterator, so its prior
+success was not sufficient evidence for Safari.
 
-The hotfix installs one reviewed compatibility bootstrap before the PDF.js page module and before
-the worker bundle. It covers `Promise.withResolvers`, `Promise.try`, `AbortSignal.any`, `URL.parse`,
-typed-array Base64 helpers, and `Response.bytes` only when the browser does not provide them. The
-worker now starts through a same-origin wrapper so a page-only shim cannot mask a worker failure.
+The shared window/worker bootstrap now adds the two stream iteration methods only when absent.
+The regression deliberately removes both methods alongside the previously covered PDF.js APIs in
+page and worker contexts. Load errors also remain beside the mobile action controls instead of
+appearing only below the review rail.
 
-The exact candidate Preview and merged Production each loaded the bundled text-layer, scanned,
-and multi-page PDFs as 1/1/3 pages after those APIs were deliberately made unavailable. Production
-WebKit and Chromium emitted zero console errors. The final local matrix passed 236 tests with 80
-intentional skips and no failures; the compatibility test exercises the page and worker contexts.
-Production Lighthouse scored 97 Performance and 100 for Accessibility, Best Practices, and SEO.
-The original physical iPhone remains an owner manual-acceptance gate in both Safari and Chrome;
-this record does not claim that unobserved physical retest has already passed.
+Candidate Preview `dpl_GddsP51qYurNcaLGVK5ZQv4P5WML` and Production loaded the text-layer,
+scanned, and multi-page fixtures as 1/1/3 pages. Real Safari 26.5.2 passed all three on Production
+in both normal and Private windows. The full local matrix passed 236 tests with 80 intentional
+skips and no failures; typecheck, lint, evidence, localization, links, dependency audit, build,
+and performance gates passed. Production Lighthouse scored 97 Performance and 100 for
+Accessibility, Best Practices, and SEO.
+
+The originally affected physical iPhone remains an owner manual-acceptance gate in both Safari
+and Chrome. This record confirms real Mac Safari and public Production, but does not convert the
+unobserved iPhone retest into a pass.
 
 ## Mobile search and recruiter prompts verified release
 
