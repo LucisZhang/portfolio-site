@@ -1,9 +1,48 @@
 # Public Portfolio state
 
-Updated: 2026-07-25 00:10 (Asia/Shanghai) / 2026-07-24 16:10 UTC
+Updated: 2026-07-25 08:53 (Asia/Shanghai) / 2026-07-25 00:53 UTC
 
 This file records the recruiter-safe state of the current release candidate. It contains no
 credentials, raw private candidate material, local source paths, or browser-session data.
+
+## Mobile search and recruiter prompts verified release
+
+Status: `MOBILE_SEARCH_PRODUCTION_VERIFIED`. Runtime PR #12 merged normally as commit
+`8f76b8219c13c4f5210503edd91e0c68546e0146`; no direct push to `main` occurred. Vercel
+Production deployment `dpl_J2bjEc1Dx7jj2tpcg3A16Wh4WTbg` reached Ready and the canonical alias
+<https://portfolio-site-seven-murex.vercel.app> served the merged runtime. The immutable build URL
+is <https://portfolio-site-qqai1fimj-luciszhangs-projects.vercel.app>.
+
+The release repairs all three bundled Privacy PDF buttons on mobile WebKit and gives immediate
+local loading/ready feedback. The assistant no longer focuses its textarea on narrow viewports, so
+opening it does not zoom the page. Ten primary routes now expose four bilingual, recruiter-reviewed
+questions each. Suggested questions retain their visible wording while the submitted question is
+explicitly contextualized to Xiangguo's portfolio before the independent scope gate.
+
+Search now updates while typing and supports English, Simplified and Traditional Chinese,
+tone-free spaced/joined pinyin, initials, and mixed input. Twelve recruiter-reviewed suggestions
+have deterministic bilingual result contracts. Browser-local, versioned history keeps at most 20
+validated entries and personalizes suggestions without entering analytics or assistant requests.
+The top-right X clears a populated query first and closes only when the query is already empty.
+
+The clean local browser matrix completed 235 passes, 80 intentional project/device skips, and no
+failures, including a real WebKit engine with an iPhone 13 device profile. Focused PDF/artifact
+regression added 19 further passes after moving PDF.js to a same-origin runtime module. Typecheck,
+lint, evidence, 37 assistant tests, source reproduction, build, localization, links, production
+dependency audit, Gitleaks, TruffleHog, client-bundle path disclosure, and performance gates passed.
+Homepage initial JavaScript was reduced to 164,052 estimated gzip bytes against the 200,000-byte
+budget.
+
+Exact candidate Preview deployment `dpl_Fu6cPLmNTg5AXVRHiQSHXNNR17a1` served candidate
+`69af3866631c073dcfc0bc847f55664672d388c7`. Preview and Production each passed English
+`anthropic/claude-sonnet-4.6` and Chinese `moonshotai/kimi-k3` acceptance after exact
+`anthropic/claude-haiku-4.5` scope approval. Every accepted request used one model attempt and 9
+retrieved bounded chunks. Production mobile Chromium and WebKit verified live pinyin/Traditional/
+mixed search, two-stage X behavior, 16 px unfocused assistant input at scale 1, and all three PDF
+fixtures with 1/1/3 pages and no console errors. Ten representative routes returned HTTP 200 with
+CSP, HSTS, nosniff, and frame denial. Production Lighthouse scored 92 Performance and 100 for
+Accessibility, Best Practices, and SEO; see
+[`docs/lighthouse-homepage-20260725-mobile-search.md`](docs/lighthouse-homepage-20260725-mobile-search.md).
 
 ## Fixes5 verified release
 

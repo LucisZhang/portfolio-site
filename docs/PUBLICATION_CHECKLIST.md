@@ -1,6 +1,6 @@
 # Portfolio publication checklist
 
-Updated: 2026-07-24 (Asia/Shanghai)
+Updated: 2026-07-25 (Asia/Shanghai)
 
 This is the release procedure for the complete portfolio and the bilingual hybrid-RAG
 assistant. It is also the stop-condition list: any unexplained diff, failed check, moved remote,
@@ -147,7 +147,35 @@ public-safe final state update.
 
 Only after those checks may `STATE.md` change from `V15_RELEASE_CANDIDATE` to a deployed status.
 
-## 7. 2026-07-25 fixes5 release receipt
+## 7. 2026-07-25 mobile search and recruiter prompts release receipt
+
+- [x] Website PR #12 merged normally without a direct `main` push.
+- [x] Candidate commit: `69af3866631c073dcfc0bc847f55664672d388c7`; runtime merge commit:
+  `8f76b8219c13c4f5210503edd91e0c68546e0146`.
+- [x] Preview deployment `dpl_Fu6cPLmNTg5AXVRHiQSHXNNR17a1` reached Ready at
+  <https://portfolio-site-7wn3u1wbx-luciszhangs-projects.vercel.app>.
+- [x] Production deployment `dpl_J2bjEc1Dx7jj2tpcg3A16Wh4WTbg` reached Ready at
+  `2026-07-25 08:49:04 Asia/Shanghai` / `2026-07-25 00:49:04 UTC`; the canonical alias served the
+  runtime at <https://portfolio-site-seven-murex.vercel.app>.
+- [x] Preview and Production each passed exact English Claude Sonnet 4.6 and Chinese Kimi K3
+  acceptance after exact Claude Haiku 4.5 scope approval. Each accepted request used one attempt,
+  retrieved 9 bounded chunks, and retained validated knowledge and payload hashes.
+- [x] Local verification: 235 passed, 80 intentional skips, 0 failures; focused post-loader PDF and
+  artifact verification: 19 passed; assistant verification: 37 passed.
+- [x] Typecheck, lint, evidence, source reproduction, build, localization, link, production
+  dependency audit, Gitleaks, TruffleHog, client-bundle local-path scan, and performance budget
+  passed. Initial homepage JavaScript measured 164,052 estimated gzip bytes against 200,000.
+- [x] Production mobile Chromium verified pinyin search, live completions, two-stage X behavior,
+  and a 16 px unfocused assistant input at viewport scale 1. Production WebKit loaded the bundled
+  text-layer, scanned, and three-page PDF fixtures as 1/1/3 pages with immediate status and no
+  console errors.
+- [x] Traditional and mixed queries `電商`, `信貸`, `資料管線`, `dian商毛利`, and `dianshang`
+  returned the intended project first. Ten representative routes returned HTTP 200 with CSP,
+  HSTS, nosniff, and frame-denial headers.
+- [x] Lighthouse 13.0.3: Production 92/100/100/100 for Performance, Accessibility, Best Practices,
+  and SEO respectively.
+
+## 8. 2026-07-25 fixes5 release receipt
 
 - [x] Website PR #10 merged normally without a direct `main` push.
 - [x] Candidate commit: `18ab7a49753b33aa62171f742b8be8a71afc3846`; runtime merge commit:
