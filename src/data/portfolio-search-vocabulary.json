@@ -7,7 +7,7 @@
     "roles": "applied AI engineer AI application engineer agent engineer evaluation engineer release engineer platform engineer AI 应用工程师 智能体工程师 评估工程师 发布工程师 平台工程师",
     "regionalTerms": "人工智慧應用 智慧代理 發布審批 發布工程 風險控管 證據檢索 人工核准"
   },
-  "p1-reliability-lab": {
+  "exactly-once-drills": {
     "aliases": "streaming lab reliability lab pipeline recovery 流式实验室 可靠性实验室 数据管道恢复",
     "domains": "data engineering streaming systems reliability engineering distributed systems real time analytics 数据工程 流式系统 可靠性工程 分布式系统 实时分析",
     "capabilities": "MySQL CDC Flink Iceberg change data capture checkpoint savepoint schema evolution failure injection replay recovery exactly once data consistency source table event state 故障注入 回放 恢复 检查点 保存点 模式演进 数据一致性 源端 表 事件状态",
@@ -39,7 +39,7 @@
     "roles": "data analyst analytics engineer commercial analyst business intelligence category analyst 数据分析师 分析工程师 商业分析师 BI 分析师 品类分析师",
     "regionalTerms": "電商 貢獻毛利 獲利分析 商業智慧 資料分析 資料管線 品類管理 零售營運"
   },
-  "credit-policy-lab": {
+  "credit-policy-desk": {
     "aliases": "credit risk lab lending policy simulator loan approval 信贷风控实验室 借贷策略模拟 贷款审批",
     "domains": "finance fintech banking lending credit risk analytics risk management policy governance 金融 金融科技 银行 借贷 信贷 风险分析 风险管理 策略治理",
     "capabilities": "Lending Club credit score probability of default expected loss approval review decline threshold queue capacity calibration Brier drift PSI vintage backtest challenger swap set audit 评分 违约概率 预期损失 批准 复核 拒绝 阈值 队列容量 校准 漂移 批次 回测 挑战模型 换入换出 审计",

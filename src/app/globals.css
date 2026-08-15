@@ -622,6 +622,26 @@ svg { flex: none; }
 .check-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
 .check-grid span { display: flex; min-height: 42px; align-items: center; gap: 8px; background: var(--gs); padding: 10px; color: var(--green); font-size: 11px; font-weight: 650; }
 .check-grid svg { width: 14px; }
+.triage-drift { margin-top: 22px; border: 1px solid var(--ld); background: var(--wh); }
+.triage-drift > div:first-child { border-bottom: 1px solid var(--li); padding: 16px 18px 14px; }
+.triage-drift h3 { margin: 6px 0 0; font-size: 19px; }
+.triage-drift-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-bottom: 1px solid var(--li); }
+.triage-drift-tabs button, .crossover-stage-tabs button { min-width: 0; display: grid; align-content: center; gap: 5px; border: 0; border-right: 1px solid var(--li); background: var(--pa); padding: 11px; color: var(--mu); cursor: pointer; text-align: left; }
+.triage-drift-tabs button:last-child, .crossover-stage-tabs button:last-child { border-right: 0; }
+.triage-drift-tabs button[aria-selected="true"], .crossover-stage-tabs button[aria-selected="true"] { background: var(--ink); color: var(--wh); }
+.triage-drift-tabs span, .crossover-stage-tabs span { font-size: 10px; font-weight: 700; }
+.triage-drift-tabs code, .crossover-stage-tabs code { overflow: hidden; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.triage-drift-bars { display: grid; gap: 9px; padding: 18px; }
+.triage-drift-row { display: grid; grid-template-columns: 64px minmax(0, 1fr) 60px; align-items: center; gap: 12px; }
+.triage-drift-row > span { color: var(--mu); font-family: var(--mono); font-size: 10px; }
+.triage-drift-row > div { height: 14px; border: 1px solid var(--li); background: var(--pa); }
+.triage-drift-row i { display: block; height: 100%; background: var(--green); transition: width .35s ease; }
+.triage-drift-row strong { font-family: var(--mono); font-size: 12px; text-align: right; }
+.triage-drift-note { margin: 0; border-top: 1px solid var(--li); padding: 13px 18px 16px; color: var(--mu); font-size: 12px; line-height: 1.6; }
+.crossover-stage-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 1px solid var(--li); }
+.crossover-stage-tabs strong { font-family: var(--mono); font-size: 16px; }
+.crossover-stage-detail { display: grid; gap: 8px; margin: 0; padding: 16px 18px 18px 34px; }
+.crossover-stage-detail li { color: var(--mu); font-size: 12px; line-height: 1.6; }
 .rag-historical-result { margin-top: 14px; border: 2px solid #c99c4d; background: #fffaf0; }
 .rag-historical-result .panel-heading svg { color: var(--amber); }
 .rag-historical-metrics { display: grid; grid-template-columns: repeat(3, 1fr); }
@@ -1287,6 +1307,10 @@ footer .page-shell { min-height: 58px; display: flex; align-items: center; justi
   .credit-chart-grid > section:first-child, .credit-queue-grid > section:first-child { border-right: 0; border-bottom: 1px solid var(--li); }
   .rag-lab-grid { grid-template-columns: 1fr; }
   .rag-editor-pane { border-right: 0; border-bottom: 1px solid var(--li); }
+  .triage-drift-tabs { grid-template-columns: 1fr 1fr; }
+  .triage-drift-tabs button { border-bottom: 1px solid var(--li); }
+  .crossover-stage-tabs { grid-template-columns: 1fr; }
+  .crossover-stage-tabs button { border-right: 0; border-bottom: 1px solid var(--li); }
   .privacy-pane { border-right: 0; border-bottom: 1px solid var(--li); }
   .privacy-pane:last-child { border-bottom: 0; }
   .privacy-entity-list { max-height: 440px; }

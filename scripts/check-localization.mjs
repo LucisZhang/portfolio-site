@@ -53,7 +53,7 @@ if (JSON.stringify(enKeys) !== JSON.stringify(zhKeys)) addFinding("error", "key 
 
 const browser = await chromium.launch({ channel: browserChannel, headless: true });
 try {
-  const routes = ["/", "/engineering", "/analytics", "/ai", "/engineering/p1-reliability-lab", "/ai/release-guardian", "/ai/rag-quality-lab", "/ai/privacy-preflight-mac", "/analytics/margin-control-tower", "/analytics/credit-policy-lab", "/analytics/analytics-tandem"];
+  const routes = ["/", "/engineering", "/analytics", "/ai", "/engineering/exactly-once-drills", "/ai/release-guardian", "/ai/rag-quality-lab", "/ai/privacy-preflight-mac", "/analytics/margin-control-tower", "/analytics/credit-policy-desk", "/analytics/analytics-tandem", "/ai/triage-router", "/engineering/crossover-study"];
   for (const route of routes) {
     const contexts = await Promise.all(["en", "zh"].map(async (locale) => {
       const context = await browser.newContext({ locale: locale === "zh" ? "zh-CN" : "en-US", serviceWorkers: "block" });

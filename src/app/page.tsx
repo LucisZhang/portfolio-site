@@ -12,11 +12,13 @@ import { siteIdentity, siteMetadata } from "@/lib/site-config";
 
 const status: Record<string, { en: string; zh: string }> = {
   "release-guardian": { en: "Live evaluation + demo", zh: "已评估运行 + 回放演示" },
-  "p1-reliability-lab": { en: "Recorded recovery replay", zh: "已记录的故障恢复回放" },
+  "exactly-once-drills": { en: "Recorded recovery replay", zh: "已记录的故障恢复回放" },
   "rag-quality-lab": { en: "Data and test baseline", zh: "数据与测试基线已核实" },
+  "triage-router": { en: "In-browser inference demo", zh: "浏览器内推理演示" },
   "privacy-preflight-mac": { en: "Local browser workflow", zh: "浏览器本地工作区" },
   "margin-control-tower": { en: "Interactive decision workbench", zh: "交互式决策工作台" },
-  "credit-policy-lab": { en: "Score-to-policy simulator", zh: "从评分到策略的模拟器" },
+  "crossover-study": { en: "Measured negative result", zh: "已实测的否定结果" },
+  "credit-policy-desk": { en: "Score-to-policy simulator", zh: "从评分到策略的模拟器" },
 };
 
 function MetricsChips({ value }: { value: string }) {
@@ -44,9 +46,9 @@ export default function Home() {
           </div>
         </div>
         <div className="workspace-index" aria-label={locale === "en" ? "Portfolio index" : "作品集索引"}>
-          <span><strong>06</strong>{locale === "en" ? "case studies" : "个案例"}</span>
+          <span><strong>08</strong>{locale === "en" ? "case studies" : "个案例"}</span>
           <span><strong>03</strong>{locale === "en" ? "disciplines" : "个方向"}</span>
-          <span><CheckCircle2 aria-hidden="true" />{locale === "en" ? "6 interactive demos" : "6 个交互式演示"}</span>
+          <span><CheckCircle2 aria-hidden="true" />{locale === "en" ? "8 interactive demos" : "8 个交互式演示"}</span>
         </div>
       </section>
 

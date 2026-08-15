@@ -10,14 +10,14 @@ import { localizeStructuralValue } from "@/lib/structural-copy";
 import { userFacingError } from "@/lib/user-facing-error";
 import styles from "./AnalyticsUpgrade.module.css";
 
-const DATA_URL = "/case-studies/credit-policy-lab/synthetic-credit-data.json";
-const CSV_URL = "/case-studies/credit-policy-lab/synthetic-credit-data.csv";
-const PARQUET_URL = "/case-studies/credit-policy-lab/synthetic-credit-data.parquet";
-const SAMPLE_URL = "/case-studies/credit-policy-lab/synthetic-credit-sample.csv";
-const CONTRACT_URL = "/case-studies/credit-policy-lab/policy-contract.json";
-const REAL_PARQUET_URL = "/case-studies/credit-policy-lab/scored-backtest.parquet";
-const REAL_REPORT_URL = "/case-studies/credit-policy-lab/backtest-report.json";
-const REAL_METHODS_URL = "/case-studies/credit-policy-lab/methods-evidence.json";
+const DATA_URL = "/case-studies/credit-policy-desk/synthetic-credit-data.json";
+const CSV_URL = "/case-studies/credit-policy-desk/synthetic-credit-data.csv";
+const PARQUET_URL = "/case-studies/credit-policy-desk/synthetic-credit-data.parquet";
+const SAMPLE_URL = "/case-studies/credit-policy-desk/synthetic-credit-sample.csv";
+const CONTRACT_URL = "/case-studies/credit-policy-desk/policy-contract.json";
+const REAL_PARQUET_URL = "/case-studies/credit-policy-desk/scored-backtest.parquet";
+const REAL_REPORT_URL = "/case-studies/credit-policy-desk/backtest-report.json";
+const REAL_METHODS_URL = "/case-studies/credit-policy-desk/methods-evidence.json";
 const REAL_PARQUET_SHA256 = "2bbc97350d28123a1b056e4d475cdc90000954df1e6226d54d4fa35f2e7e0b95";
 const PUBLIC_FIXTURE_GENERATOR_URL = "https://github.com/LucisZhang/credit-policy-lab/blob/main/scripts/generate-analytics-fixtures.mjs";
 const SYNTHETIC_CACHE_KEY = "credit:synthetic:v2";
@@ -515,7 +515,7 @@ export default function CreditPolicyLab() {
   };
 
   return (
-    <section className={`${styles.upgrade} analytics-lab credit-lab`} data-testid="credit-policy-lab" data-requested-source={requestedSource} data-active-source={activeSource} data-real-artifact-status={realArtifactStatus} data-synthetic-cache-ready={syntheticWarmReady} aria-labelledby="credit-lab-title">
+    <section className={`${styles.upgrade} analytics-lab credit-lab`} data-testid="credit-policy-desk" data-requested-source={requestedSource} data-active-source={activeSource} data-real-artifact-status={realArtifactStatus} data-synthetic-cache-ready={syntheticWarmReady} aria-labelledby="credit-lab-title">
       <header className="analytics-lab-header"><div><p className="eyebrow">{activeSource === "synthetic" ? (locale === "en" ? "Synthetic portfolio / deterministic policy engine" : "合成投资组合 / 确定性策略引擎") : (locale === "en" ? "Scored real-data backtest / deterministic policy engine" : "真实数据评分回测 / 确定性策略引擎")}</p><h3 id="credit-lab-title">{locale === "en" ? "Credit Policy Lab" : "信贷策略实验室"}</h3><p>{activeSource === "synthetic" ? (locale === "en" ? "Move from a synthetic score to calibrated probability, expected loss, policy thresholds, a capacity-limited review queue, and an audit record." : "由合成分数出发，依次完成概率校准、预期损失估算、策略阈值设定、进入有人工复核且容量受限的审核队列，最终形成审计记录。") : (locale === "en" ? "Apply the existing score-to-policy, frontier, Brier, PSI, and vintage computations to a committed offline scored backtest." : "将既有评分到策略映射、前沿分析、Brier 评分、PSI 监测及放款批次分析等计算体系，全部应用于已提交的离线评分回测。")}</p></div><div className="analytics-boundary"><ShieldCheck aria-hidden="true" /><strong>{activeSource === "synthetic" ? (locale === "en" ? "Fixed-seed scenario ready" : "固定种子情景已就绪") : (locale === "en" ? "Offline backtest loaded" : "离线回测已载入")}</strong><span>{activeSource === "synthetic" ? (locale === "en" ? "Deterministic inputs make every policy adjustment repeatable." : "确定性输入让每次策略调整都可重复。") : (locale === "en" ? "Pre-scored rows drive the same policy, economics, and audit workflow." : "预评分记录驱动同一套策略、经济性与审计工作流。")}</span></div></header>
 
       <div className="dataset-source-row"><div className="dataset-source-toggle" role="group" aria-label={locale === "en" ? "Credit dataset source" : "信贷数据源"}><button type="button" aria-pressed={requestedSource === "real"} onClick={() => selectDatasetSource("real")}>{locale === "en" ? "Real backtest" : "真实回测"}</button><button type="button" aria-pressed={requestedSource === "synthetic"} onClick={() => selectDatasetSource("synthetic")}>{locale === "en" ? "Synthetic fixture" : "合成夹具"}</button></div><span>{locale === "en" ? "Synthetic fixture / Real backtest" : "合成夹具 / 真实回测"}</span></div>

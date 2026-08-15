@@ -206,7 +206,7 @@ async function capture(page, locale, viewport, route, state, report) {
 async function runInteraction(page, route, locale, viewport, pdfFixture, report) {
   const screenshot = (state) => capture(page, locale, viewport, route, state, report);
   try {
-    if (route === "/engineering/p1-reliability-lab") {
+    if (route === "/engineering/exactly-once-drills") {
       const replay = page.getByTestId("p1-failure-replay");
       await replay.waitFor({ state: "visible" });
       await replay.locator('input[type="range"]').fill("4");
@@ -229,8 +229,8 @@ async function runInteraction(page, route, locale, viewport, pdfFixture, report)
       await lab.locator('input[type="range"]').fill("8");
       await lab.locator(".margin-week-bars button").last().click();
       await screenshot("scenario");
-    } else if (route === "/analytics/credit-policy-lab") {
-      const lab = page.getByTestId("credit-policy-lab");
+    } else if (route === "/analytics/credit-policy-desk") {
+      const lab = page.getByTestId("credit-policy-desk");
       await lab.waitFor({ state: "visible" });
       const ranges = lab.locator('input[type="range"]');
       await ranges.last().fill("360");

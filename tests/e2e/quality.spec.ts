@@ -3,12 +3,12 @@ import axe from "axe-core";
 
 const auditRoutes = [
   "/",
-  "/engineering/p1-reliability-lab",
+  "/engineering/exactly-once-drills",
   "/ai/release-guardian",
   "/ai/rag-quality-lab",
   "/ai/privacy-preflight-mac",
   "/analytics/margin-control-tower",
-  "/analytics/credit-policy-lab",
+  "/analytics/credit-policy-desk",
 ];
 
 test("security headers are present on the static application", async ({ page }) => {
@@ -27,7 +27,7 @@ test("representative workflows remain keyboard-operable with reduced motion", as
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "en"));
 
-  await page.goto("/engineering/p1-reliability-lab", { waitUntil: "networkidle" });
+  await page.goto("/engineering/exactly-once-drills", { waitUntil: "networkidle" });
   expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior)).toBe("auto");
   const nextStage = page.getByRole("button", { name: "Next stage" });
   await nextStage.focus();
@@ -46,7 +46,7 @@ test("representative workflows remain keyboard-operable with reduced motion", as
   await (await fileChooser).setFiles("public/case-studies/privacy-preflight/image-synthetic-input.png");
   await expect(page.locator(".privacy-canvas-wrap canvas")).toBeVisible();
 
-  await page.goto("/analytics/credit-policy-lab", { waitUntil: "networkidle" });
+  await page.goto("/analytics/credit-policy-desk", { waitUntil: "networkidle" });
   const capacity = page.getByRole("slider", { name: "Review capacity" });
   await capacity.focus();
   const before = Number(await capacity.inputValue());
@@ -364,7 +364,7 @@ test("artifact viewer renders and operates every supported project file type", a
   await page.getByPlaceholder("Search all fields").fill("architecture");
   await expect(page.locator("tbody tr")).toHaveCount(1);
 
-  await page.goto("/artifact?src=/case-studies/p1-reliability-lab/README.md", { waitUntil: "networkidle" });
+  await page.goto("/artifact?src=/case-studies/exactly-once-drills/README.md", { waitUntil: "networkidle" });
   await expect(page.locator(".artifact-markdown h1")).toBeVisible();
   await expect(page.locator(".artifact-markdown-layout aside a[href^='#']").first()).toBeVisible();
   const markdownDownload = page.waitForEvent("download");
@@ -387,9 +387,9 @@ test("artifact viewer renders and operates every supported project file type", a
 
 test("artifact viewer preserves the shareable Chinese locale and project return URL", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "Locale mechanics are shared across viewports.");
-  await page.goto("/artifact?src=/case-studies/p1-reliability-lab/README.md&from=/engineering/p1-reliability-lab&lang=zh", { waitUntil: "networkidle" });
+  await page.goto("/artifact?src=/case-studies/exactly-once-drills/README.md&from=/engineering/exactly-once-drills&lang=zh", { waitUntil: "networkidle" });
   await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
-  await expect(page.getByRole("link", { name: "返回项目" })).toHaveAttribute("href", /engineering\/p1-reliability-lab\?lang=zh$/);
+  await expect(page.getByRole("link", { name: "返回项目" })).toHaveAttribute("href", /engineering\/exactly-once-drills\?lang=zh$/);
   await expect(page.locator(".artifact-page-header > div:first-child > p:not(.eyebrow)")).toHaveText("流式可靠性实验室 / MARKDOWN");
   await expect(page.locator(".artifact-page-header")).not.toContainText("P1 Reliability Lab");
   await page.reload({ waitUntil: "networkidle" });

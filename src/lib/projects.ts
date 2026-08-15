@@ -3,11 +3,13 @@ import type { LocalizedString } from "./i18n";
 export type TrackId = "analytics" | "engineering" | "ai";
 export type ProjectId =
   | "release-guardian"
-  | "p1-reliability-lab"
+  | "exactly-once-drills"
   | "rag-quality-lab"
+  | "triage-router"
   | "privacy-preflight-mac"
   | "margin-control-tower"
-  | "credit-policy-lab"
+  | "crossover-study"
+  | "credit-policy-desk"
   | "analytics-tandem";
 
 export interface Track {
@@ -55,8 +57,8 @@ export const tracks: Track[] = [
     id: "ai",
     label: { en: "AI applications", zh: "AI 应用" },
     thesis: {
-      en: "I build AI applications with repeatable checks, human approval, and clear operating limits.",
-      zh: "我用可重复检查、人工审批和明确的运行限制来构建 AI 应用。",
+      en: "I build AI applications to be second-guessed: hard checks, bounded retries, and a human on the last gate.",
+      zh: "我做的 AI 应用经得起追问：硬性检查、有界重试，最后一道关口留给人。",
     },
   },
   {
@@ -71,8 +73,8 @@ export const tracks: Track[] = [
     id: "analytics",
     label: { en: "Data analytics", zh: "数据分析" },
     thesis: {
-      en: "I build decision tools from governed data and make every assumption visible.",
-      zh: "我从定义清楚的数据出发构建决策工具，并把每一项假设写明。",
+      en: "Decision tools should show their assumptions instead of burying them under a chart.",
+      zh: "决策工具应当把假设摆在明处，而不是埋在图表底下。",
     },
   },
 ];
@@ -84,8 +86,8 @@ export const projects: Project[] = [
     title: { en: "Release Guardian", zh: "发布守门人" },
     eyebrow: { en: "AI application / release engineering", zh: "AI 应用 / 发布工程" },
     summary: {
-      en: "A 13-node LangGraph release gate: four evidence retrievers, deterministic validators, bounded retries — and the publish decision stays with a human.",
-      zh: "13 节点 LangGraph 发布门禁：四个证据检索器、确定性验证器、有限重试——发布决策由人工做出。",
+      en: "A 13-node LangGraph gate that decides whether a change is safe to ship — four evidence retrievers, deterministic validators, bounded retries. The publish button stays with a human.",
+      zh: "一个判断变更能否安全发布的 13 节点 LangGraph 门禁——四路证据检索、确定性校验、有界重试。发布键始终握在人手里。",
     },
     metrics: { en: "132 live graph runs · 8/8 aggregate gates passed · 100% citation fidelity", zh: "132 次在线图运行 · 8/8 聚合门禁通过 · 引用忠实度 100%" },
     problem: {
@@ -93,16 +95,16 @@ export const projects: Project[] = [
       zh: "代码自动发布前，必须厘清影响范围，将模型约束在清晰边界内，并留存持久可查的审批记录。",
     },
     audience: {
-      en: "Platform, release-engineering, and applied-AI teams that have to review automated change decisions — and then explain them.",
-      zh: "平台、发布工程与 AI 应用团队——他们需要审阅自动化的变更判定，并解释其理由。",
+      en: "Teams that have to sign off on automated changes — and explain that sign-off six months later.",
+      zh: "需要为自动化变更签字放行的团队——而且半年后还得说清当初为什么放行。",
     },
     role: {
-      en: "I designed the four-retriever workflow and its bounded validator retries, then built the services around it in Python, Go, Java, and TypeScript: the human approval gate, the observability layer, and a tamper-evident SHA-256 audit hash chain.",
-      zh: "我先设计了一套由四类证据检索器组成的工作流，以及有界校验重试机制，再以此流程为核心，用 Python、Go、Java 和 TypeScript 构建了人工审批关卡、可观测层，以及可检测篡改的 SHA-256 审计哈希链。",
+      en: "The graph design is mine, and so is everything around it: the human approval gate, the observability layer, and a tamper-evident SHA-256 audit chain, built across Python, Go, Java, and TypeScript.",
+      zh: "图的设计是我做的，围绕它的东西也是：人工审批关卡、可观测层、防篡改的 SHA-256 审计哈希链，用 Python、Go、Java 和 TypeScript 搭起来。",
     },
     outcome: {
-      en: "In the funded live evaluation, all eight aggregate gates passed across 132 graph runs, with 100% citation fidelity, zero tool misuse, and 100% injection defense.",
-      zh: "付费在线评估覆盖 132 次图运行，八项聚合门禁全部通过；引用忠实度 100%、工具误用率为 0、注入防御率 100%。",
+      en: "All eight aggregate gates passed across 132 funded live graph runs — 100% citation fidelity, zero tool misuse, 100% injection defense.",
+      zh: "132 次付费在线图运行，八项聚合门禁全部通过——引用忠实度 100%，工具误用为零，注入防御 100%。",
     },
     stack: projectStack("LangGraph", "FastAPI", "Go", "Spring Boot", "PostgreSQL + pgvector", "OpenTelemetry", "Next.js"),
     architecture: [
@@ -145,9 +147,9 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: "p1-reliability-lab",
+    slug: "exactly-once-drills",
     track: "engineering",
-    title: { en: "Streaming Reliability Lab", zh: "流式可靠性实验室" },
+    title: { en: "Exactly-Once Drills", zh: "精确一次演练" },
     eyebrow: { en: "MySQL CDC → Flink → Iceberg · failure injection", zh: "MySQL CDC → Flink → Iceberg · 故障注入" },
     summary: {
       en: "I break a MySQL-to-Flink-to-Iceberg pipeline on purpose, then check that source state, table snapshots, and event IDs still agree after recovery.",
@@ -155,12 +157,12 @@ export const projects: Project[] = [
     },
     metrics: { en: "5 induced failure classes · 0 snapshot diffs after recovery", zh: "5 类故障注入 · 恢复后快照差异为 0" },
     problem: {
-      en: "A happy-path demo cannot show what happens when a task, coordinator, checkpoint, savepoint, or sink commit fails.",
-      zh: "成功路径演示无法展示任务、协调器、检查点、保存点或 sink 提交失败时会发生什么。",
+      en: "Anyone can demo a streaming pipeline on its good days. The question is what happens when the checkpoint, the coordinator, or the sink commit fails.",
+      zh: "跑得通的流式管道谁都能演示。真正的问题是：检查点、协调器或 sink 提交挂掉的那一刻，会发生什么。",
     },
     audience: {
-      en: "Data and platform engineers who need to inspect recovery and reconciliation before trusting a streaming pipeline.",
-      zh: "需要审计故障注入下流式正确性的数据工程与平台工程团队。",
+      en: "Engineers who won't trust a streaming pipeline until they've watched it fail and come back intact.",
+      zh: "那些没亲眼看过管道挂掉又完好恢复、就不肯信它的工程师。",
     },
     role: {
       en: "I built all of it: the deterministic event generator, the failure harness, the reconciliation checks, the incident runbook, and the recorded-run dashboard.",
@@ -208,8 +210,8 @@ export const projects: Project[] = [
     title: { en: "RAG Quality Lab", zh: "RAG 质量实验室" },
     eyebrow: { en: "Deterministic RAG evaluation", zh: "确定性 RAG 评估" },
     summary: {
-      en: "A controlled regression test caught a knowledge-base update degrading the strongest pipeline; I then extended the same evidence lifecycle into tracked evaluation infrastructure for 11,309 enterprise documents.",
-      zh: "一次受控回归测试发现知识库更新使最强流水线全面退化；我随后把同一套证据生命周期扩展为可追踪的 11,309 份企业文档评估基础设施。",
+      en: "A knowledge-base update that looked harmless degraded the strongest pipeline on 4 of 12 controlled questions. The regression run caught it; I then rebuilt the same evidence lifecycle to survive an 11,309-document corpus.",
+      zh: "一次看起来无害的知识库更新，让最强的流水线在 12 道受控问题里退化了 4 道。回归测试抓住了它；随后我把同一套证据生命周期重建到能撑住 11,309 份文档的规模。",
     },
     metrics: { en: "4/12 questions regressed · 11,309 docs · 130 enterprise questions", zh: "12 题中 4 题退化 · 11,309 份文档 · 130 道企业问题" },
     problem: {
@@ -221,8 +223,8 @@ export const projects: Project[] = [
       zh: "需要在 RAG 变更触达用户前取得可审阅证据的 AI 应用、检索与评估团队。",
     },
     role: {
-      en: "I built the A/B and regression harness, then added enterprise-corpus adapters, deterministic manifests, backend seams, a judge-free retrieval runner, verifiers, tests, and operating documentation.",
-      zh: "我先构建 A/B 对比与回归工具，再补充企业语料适配器、确定性清单、后端接口、无需裁判模型的检索运行器、校验器、测试与运行文档。",
+      en: "I built the A/B and regression harness first, then everything the scale-up needed: corpus adapters, deterministic manifests, a judge-free retrieval runner, and the verifiers that gate a run.",
+      zh: "我先做了 A/B 与回归工具，再补上规模化需要的一切：语料适配器、确定性清单、不依赖裁判模型的检索运行器，以及给每次运行把关的校验器。",
     },
     outcome: {
       en: "On the controlled 12-question set, a document-only update degraded four questions and every reported quality metric. The repository now carries the same versioned-data and verification lifecycle to 11,309 synthetic enterprise documents and 130 answerable questions.",
@@ -269,21 +271,98 @@ export const projects: Project[] = [
     ],
   },
   {
+    slug: "triage-router",
+    track: "ai",
+    title: { en: "Triage Router", zh: "投诉分流路由" },
+    eyebrow: { en: "Three model tiers · cost-aware routing", zh: "三层模型 · 成本感知路由" },
+    summary: {
+      en: "Before paying for an LLM, know your frontier. TF-IDF linear models, fine-tuned transformers, and Claude models triage the same CFPB consumer complaints; a confidence cascade routes each one to the cheapest tier that can handle it, measured against 11 years of distribution drift.",
+      zh: "为 LLM 付费之前，先弄清自己的成本-质量前沿。TF-IDF 线性模型、微调 Transformer 和 Claude 模型对同一批 CFPB 消费者投诉做分流；置信级联把每条投诉路由到能处理它的最便宜一层，并在 11 年的分布漂移上实测。",
+    },
+    metrics: {
+      en: "Router +0.037 macro-F1 over baseline · −$120.58 expected cost per 1k · drift measured 2015–2026",
+      zh: "路由较基线 +0.037 macro-F1 · 每千条预期成本 −$120.58 · 实测 2015–2026 漂移",
+    },
+    problem: {
+      en: "Most teams pick one model for a classification task and never learn what the smaller, cheaper tiers could have done — or when drift will quietly break the one they chose.",
+      zh: "多数团队给分类任务选定一个模型就不再回头，既不知道更小更便宜的层级本来能做到什么，也不知道漂移什么时候会悄悄弄坏他们选的那个。",
+    },
+    audience: {
+      en: "Anyone deciding whether a task needs an LLM at all — and what it should cost.",
+      zh: "所有在纠结「这个任务到底要不要上 LLM、该花多少钱」的人。",
+    },
+    role: {
+      en: "I built the full ladder: calibrated TF-IDF baselines, ModernBERT and DistilBERT fine-tunes, Claude tiers over OpenRouter, the explicit cost model, the cascade router, and the append-only results log every number traces back to.",
+      zh: "整个阶梯都是我搭的：带校准的 TF-IDF 基线、ModernBERT 与 DistilBERT 微调、经 OpenRouter 调用的 Claude 层、显式成本模型、级联路由器，以及每个数字都能回溯到的只增结果日志。",
+    },
+    outcome: {
+      en: "On held-out data the cascade beats the linear baseline by +0.0370 macro-F1 (95% CI +0.0337 to +0.0402) while cutting expected cost by $120.58 per thousand complaints. On the 2026-H1 drift slice the linear tier drops 9.2 points; Claude Sonnet gains ground instead.",
+      zh: "在留出集上，级联路由比线性基线高 +0.0370 macro-F1（95% CI +0.0337 ~ +0.0402），每千条投诉的预期成本下降 $120.58。到 2026 上半年的漂移切片上，线性层掉了 9.2 个百分点，Claude Sonnet 反而在涨。",
+    },
+    stack: projectStack(
+      "Python",
+      "scikit-learn",
+      "ModernBERT / DistilBERT",
+      { en: "int8 ONNX in-browser", zh: "浏览器内 int8 ONNX" },
+      { en: "Claude via OpenRouter", zh: "经 OpenRouter 调用 Claude" },
+      { en: "uv + frozen lockfile", zh: "uv + 冻结 lockfile" },
+    ),
+    architecture: [
+      { label: { en: "Freeze", zh: "冻结" }, detail: { en: "Snapshot the CFPB corpus by hash and split it by time: train, calibration, IID test, drift slices.", zh: "按哈希冻结 CFPB 语料，再按时间切分：训练、校准、同分布测试与漂移切片。" } },
+      { label: { en: "Ladder", zh: "阶梯" }, detail: { en: "Train each tier on identical splits: TF-IDF, ModernBERT ×3 seeds, DistilBERT int8, Claude zero-shot.", zh: "在完全相同的切分上训练各层：TF-IDF、三个 seed 的 ModernBERT、int8 DistilBERT、Claude 零样本。" } },
+      { label: { en: "Cost", zh: "成本" }, detail: { en: "Price every path with an explicit model: inference dollars, misroute cost, human review.", zh: "用显式成本模型给每条路径定价：推理费用、误分流成本、人工复核。" } },
+      { label: { en: "Route", zh: "路由" }, detail: { en: "Fit cascade thresholds on the calibration slice only — never on test.", zh: "级联阈值只在校准切片上拟合，绝不碰测试集。" } },
+      { label: { en: "Drift", zh: "漂移" }, detail: { en: "Replay 2023–2026 yearly slices and decompose what actually moved: class mix, not vocabulary.", zh: "回放 2023–2026 年度切片，分解真正变化的因素：是类别构成，不是词表。" } },
+    ],
+    provenance: [
+      {
+        en: "Every headline number is a record in the append-only results log (results/runs.jsonl) carrying its git SHA, config hash, dataset snapshot hash, and a 95% bootstrap confidence interval (n=1,000, fixed seed).",
+        zh: "每个关键数字都是只增结果日志 results/runs.jsonl 里的一条记录，带 git SHA、配置哈希、数据快照哈希和 95% 自举置信区间（n=1,000，固定 seed）。",
+      },
+      {
+        en: "The full reproduction target re-ran end-to-end on a 16 GB laptop in 12 h 53 m: 27 of 27 committed outputs byte-identical, metrics verified to 1e-9.",
+        zh: "完整复现目标在一台 16 GB 笔记本上端到端重跑，用时 12 小时 53 分：27 个已提交产物全部字节一致，指标校验到 1e-9。",
+      },
+      {
+        en: "The public demo runs Tier A and int8 DistilBERT inference in the browser; every displayed number opens the results-log record it came from.",
+        zh: "公开演示在浏览器内运行 Tier A 与 int8 DistilBERT 推理；页面上每个数字都能点开它来自的结果日志记录。",
+      },
+    ],
+    boundaries: [
+      {
+        en: "A pre-registered hypothesis — that the fine-tuned transformer would behave like the LLM tiers under drift — was refuted: its 2026-H1 drop splits roughly evenly between class-mix shift and within-class decay.",
+        zh: "一个预先登记的假设——微调 Transformer 在漂移下会像 LLM 层一样稳——被推翻了：它在 2026 上半年的下跌，大约一半来自类别构成变化，一半来自类内衰减。",
+      },
+      {
+        en: "The obvious explanation did not survive either: out-of-vocabulary rate barely moved, so lexical drift is ruled out; the cliff is class mix.",
+        zh: "最顺手的解释也没能成立：词表外比例几乎没动，词汇漂移被排除；悬崖来自类别构成。",
+      },
+      {
+        en: "Results apply to this task, this corpus, and the price sheets at measurement time; the router's dollar savings follow from the disclosed cost model, not a universal claim.",
+        zh: "结果只适用于这个任务、这份语料和测量当时的价目表；路由省下的钱由公开披露的成本模型算得，不是普适结论。",
+      },
+    ],
+    links: [
+      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/nlp-eval-lab" },
+      { label: { en: "Live demo", zh: "在线演示" }, href: "https://luciszhang.github.io/nlp-eval-lab/" },
+    ],
+  },
+  {
     slug: "privacy-preflight-mac",
     track: "ai",
     title: { en: "Privacy Preflight Web", zh: "隐私预检网页版" },
     eyebrow: { en: "Browser-local redaction workbench", zh: "浏览器本地脱敏工作台" },
     summary: {
-      en: "A browser-local workbench for reviewing sensitive text, images, and multi-page PDFs with English + Simplified Chinese OCR and destructive export checks.",
-      zh: "一套浏览器本地工作台，用于审阅敏感文本、图片与多页 PDF，支持英文与简体中文 OCR 及破坏式导出检查。",
+      en: "A black box drawn over text is not redaction. This browser workbench detects sensitive content locally, destroys it, then re-opens the output to prove it is gone — or blocks the export. English and Simplified Chinese OCR included.",
+      zh: "在文字上盖个黑块不叫脱敏。这个浏览器工作台在本地检测敏感内容、做破坏性清除，再重新打开输出文件验证内容确实消失——验证不过就拦下导出。支持英文与简体中文 OCR。",
     },
     metrics: {
       en: "96 embedded-worker tests · 67 recorded browser cases · OCR 19/19 hits / 2 false positives",
       zh: "96 项嵌入式 worker 测试 · 67 个已记录浏览器案例 · OCR 命中 19/19 / 误报 2",
     },
     problem: {
-      en: "Sensitive material needs a careful review step before sharing, and a visual black box is not proof of redaction — the destruction itself has to be checked.",
-      zh: "敏感材料分享前需仔细审阅，而视觉上的黑块覆盖不等于完成脱敏——破坏性处理本身必须被核验。",
+      en: "Sensitive files get shared in a hurry, and uploading a document somewhere to check it for leaks defeats the point. The review has to happen locally, and the destruction itself has to be checked.",
+      zh: "敏感文件往往是在匆忙中发出去的，而为了查泄露先把原件上传到别处，本身就是本末倒置。审查必须在本地完成，破坏性处理本身也必须被核验。",
     },
     audience: {
       en: "Anyone reviewing sensitive material in a desktop or mobile browser, plus developers who want the same review step inside their own applications.",
@@ -338,11 +417,11 @@ export const projects: Project[] = [
     track: "analytics",
     title: { en: "Margin Control Tower", zh: "毛利控制塔" },
     eyebrow: { en: "Analytics engineering / margin decisions", zh: "分析工程 / 毛利决策" },
-    summary: { en: "When weekly contribution margin changes, this browser tool starts from a hash-verified Olist aggregate, traces discounts, returns, cost of goods, and fulfillment, then tests a bounded promotion scenario before recording an action.", zh: "每周贡献毛利变化时，这个浏览器工具先校验 Olist 聚合产物的哈希，再拆解折扣、退货、商品成本与履约驱动，并在记录行动前测试一个有边界的促销情景。" },
+    summary: { en: "When weekly contribution margin moves, this browser tool shows where it went — discounts, returns, cost of goods, or fulfillment — starting from a hash-verified Olist aggregate. A category manager can test a bounded promotion scenario before recording an action.", zh: "周度贡献毛利一动，这个浏览器工具就能拆出它去了哪——折扣、退货、货品成本还是履约——起点是经过哈希校验的 Olist 聚合数据。品类经理可以先在有边界的促销情景里试一遍，再记录行动。" },
     metrics: { en: "15,809 Olist aggregate rows · 99,441 source orders · 10 fail-closed contract checks", zh: "15,809 条 Olist 聚合记录 · 99,441 个源订单 · 10 项 fail-closed（失败即拦截）契约检查" },
     problem: { en: "A revenue-only view hides the margin lost to discounts, returns, cost of goods, and fulfillment, and gives a category manager no way to test a response.", zh: "只看收入会看不见折扣、退货、商品成本、履约这四类因素造成的毛利损失，品类经理也没法测试应对方案。" },
     audience: { en: "E-commerce category managers and analytics engineers who need to test a margin decision, not just chart it.", zh: "本页面面向电商品类经理与数据分析工程师，帮助他们验证毛利决策，而非仅将决策绘制成图表。" },
-    role: { en: "I built the six-table Olist pipeline, source locks, data contracts, metric definitions, diagnosis and scenario engine, holdout check, browser UI, governed fixture, and tests.", zh: "我搭建了六表 Olist 管线、来源锁、数据契约、指标定义、诊断与情景引擎、留出期校验、浏览器界面、受治理夹具和测试。" },
+    role: { en: "The whole path is mine: the six-table Olist pipeline, the data contracts and source locks that police it, the diagnosis and scenario engine, and the browser UI.", zh: "整条链路都是我搭的：六表 Olist 管线、负责把关的数据契约与来源锁、诊断与情景引擎，以及浏览器界面。" },
     outcome: { en: "The default path verifies the committed Olist artifact before rendering, exposes measured detection and elasticity reports, recomputes a bounded scenario, and records a category action for review.", zh: "默认路径会在渲染前校验已提交的 Olist 产物，展示实测的检测与弹性报告，重算有边界的情景，并记录品类行动供复核。" },
     stack: projectStack(
       { en: "Data contracts", zh: "数据契约" },
@@ -377,15 +456,94 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: "credit-policy-lab",
+    slug: "crossover-study",
+    track: "engineering",
+    title: { en: "Crossover Study", zh: "交叉点研究" },
+    eyebrow: { en: "Spark + Iceberg lakehouse · recommender evaluation", zh: "Spark + Iceberg 湖仓 · 推荐系统评估" },
+    summary: {
+      en: "How much history does a user need before personalization beats popularity? I pushed 43.9M Amazon reviews through a contract-checked Spark + Iceberg lakehouse on a 16 GB laptop to find the crossover point. At every measured history depth, it never came.",
+      zh: "用户要攒下多少历史，个性化推荐才能赢过热门榜？我在一台 16 GB 笔记本上，把 43.9M 条亚马逊评论灌进带契约检查的 Spark + Iceberg 湖仓去找这个交叉点。在所有实测的历史深度上，它始终没有出现。",
+    },
+    metrics: {
+      en: "43.9M reviews ingested · 15.5M five-core interactions · crossover: not found",
+      zh: "灌入 43.9M 条评论 · 五核过滤后剩 15.5M 条交互 · 交叉点：未出现",
+    },
+    problem: {
+      en: "Personalization is assumed to win once you have data. Nobody says how much data, and few evaluations use full-catalog ranking — the setting where the answer would actually show.",
+      zh: "大家默认只要有了数据，个性化就会赢。但没人说清要多少数据；而真正能让答案现形的全目录排序评估，很少有人做。",
+    },
+    audience: {
+      en: "Recommender and data-platform engineers who want the evaluation governed as strictly as the pipeline.",
+      zh: "希望评估环节和数据管道一样受严格治理的推荐系统与数据平台工程师。",
+    },
+    role: {
+      en: "I built the lakehouse and the evaluation on top of it: bronze-to-gold Iceberg tables with enforced contracts, a reconciliation waterfall accounted to the row, four model families, and a routing policy fitted only on validation.",
+      zh: "湖仓和它上面的评估都是我做的：带强制契约的 bronze 到 gold Iceberg 表、逐行对得上的对账瀑布、四类模型，以及只在验证集上拟合的路由策略。",
+    },
+    outcome: {
+      en: "43,886,944 raw reviews reconcile to 15,473,536 five-core interactions with every dropped row accounted for. Popularity holds the top of the full-catalog ranking at every observed history depth — the honest headline is the crossover that never came.",
+      zh: "43,886,944 条原始评论对账到 15,473,536 条五核交互，每一条被剔除的记录都有去处。在所有观测到的历史深度上，热门榜都守住了全目录排序的头名——诚实的结论就是：交叉点没有出现。",
+    },
+    stack: projectStack(
+      "PySpark",
+      "Apache Iceberg",
+      { en: "MinHash dedup", zh: "MinHash 去重" },
+      { en: "Implicit ALS", zh: "隐式反馈 ALS" },
+      { en: "MiniLM embeddings", zh: "MiniLM 向量" },
+      { en: "Bootstrap CIs", zh: "自举置信区间" },
+    ),
+    architecture: [
+      { label: { en: "Ingest", zh: "落库" }, detail: { en: "Land 43.9M raw reviews and 1.61M items into schema-enforced bronze Iceberg tables.", zh: "把 43.9M 条原始评论与 1.61M 件商品落入强制 schema 的 bronze Iceberg 表。" } },
+      { label: { en: "Gate", zh: "门禁" }, detail: { en: "Contracts drop 521,520 rows — rating violations, duplicates, superseded records — each one counted.", zh: "契约共剔除 521,520 行——评分越界、重复、被覆盖的记录——每一行都有计数。" } },
+      { label: { en: "Core", zh: "过滤" }, detail: { en: "Iterative five-core filtering converges in 16 rounds to 15.5M interactions.", zh: "迭代式五核过滤 16 轮收敛，得到 15.5M 条交互。" } },
+      { label: { en: "Rank", zh: "排序" }, detail: { en: "Score popularity, item-kNN, ALS, and semantic retrieval on full-catalog ranking over 368k items.", zh: "在 368k 件商品的全目录排序上评估热门、item-kNN、ALS 与语义检索。" } },
+      { label: { en: "Route", zh: "路由" }, detail: { en: "Fit a history-depth routing threshold on validation; report only on the untouched test window.", zh: "在验证集上拟合历史深度路由阈值，只在从未动过的测试窗口上报告。" } },
+    ],
+    provenance: [
+      {
+        en: "Temporal splits are frozen in config: train through 2022-06-30, validation on 2022-H2, test from 2023-01-01. The test window was untouched during iteration.",
+        zh: "时间切分冻结在配置里：训练截至 2022-06-30，验证用 2022 下半年，测试从 2023-01-01 起。迭代期间从未碰过测试窗口。",
+      },
+      {
+        en: "Every reported number is a results-log record bound to its config hash, git SHA, and Iceberg snapshot ID, with 95% user-bootstrap confidence intervals (n=1,000).",
+        zh: "每个报告数字都是结果日志记录，绑定配置哈希、git SHA 与 Iceberg 快照 ID，附 95% 用户自举置信区间（n=1,000）。",
+      },
+      {
+        en: "The demo reads only committed projections of that log; user IDs are re-hashed and the research-licensed raw data is never redistributed.",
+        zh: "演示只读取该日志的已提交投影；用户 ID 经过重新哈希，研究许可的原始数据不做再分发。",
+      },
+    ],
+    boundaries: [
+      {
+        en: "\"Personalization never crossed\" applies to this catalog, five-core filtering, and the observed history depths — not to recommenders in general.",
+        zh: "「个性化没有跨过热门榜」只适用于这份商品目录、五核过滤和观测到的历史深度，不是对推荐系统的普遍结论。",
+      },
+      {
+        en: "Absolute NDCG values are small because ranking runs over the full 368k-item catalog with no sampled negatives; the comparisons between models are the meaningful part.",
+        zh: "NDCG 绝对值很小，因为排序在 368k 件商品的全目录上进行、不做负采样；有意义的是模型之间的比较。",
+      },
+      {
+        en: "Single-machine batch evaluation only: no serving system, no online metric, no A/B test.",
+        zh: "仅为单机批式评估：没有服务系统、没有在线指标、没有 A/B 测试。",
+      },
+    ],
+    links: [
+      {
+        label: { en: "GitHub repository", zh: "GitHub 仓库" },
+        pending: { en: "Repository opens with this release", zh: "仓库将随本次更新公开" },
+      },
+    ],
+  },
+  {
+    slug: "credit-policy-desk",
     track: "analytics",
-    title: { en: "Credit Policy Lab", zh: "信贷策略实验室" },
+    title: { en: "Credit Policy Desk", zh: "信贷策略工作台" },
     eyebrow: { en: "Risk analytics / policy governance", zh: "风险分析 / 策略治理" },
-    summary: { en: "This browser lab starts from a hash-verified Lending Club backtest and keeps offline scores separate from expected-loss math, policy thresholds, review capacity, monitoring, and the final recorded decision.", zh: "这个浏览器实验室从经哈希校验的 Lending Club 回测开始，将离线评分与预期损失计算、策略阈值、复核容量、监控和最终决策留档分层处理。" },
+    summary: { en: "A score is not a policy. This workbench starts from a hash-verified Lending Club backtest and walks the rest of the way: expected loss, approval thresholds, review capacity, monitoring, and a recorded human decision at the end.", zh: "评分不等于策略。这个工作台从经哈希校验的 Lending Club 回测出发，把剩下的路走完：预期损失、审批阈值、复核容量、监控，最后落到一条留档的人工决策。" },
     metrics: { en: "120,000 scored loans · 24,000 later backtest rows · capacity-gated policy audit", zh: "120,000 笔已评分贷款 · 24,000 条后续回测记录 · 容量门控的策略审计" },
     problem: { en: "A probability and one cutoff cannot capture loss economics, review capacity, score drift, or the human decision that sets policy.", zh: "单一概率与阈值无法涵盖损失经济学、复核容量、评分漂移，以及制定策略所需的人工决策。" },
     audience: { en: "Credit policy managers, risk analysts, and applied-ML governance teams whose job starts where the score ends.", zh: "信贷策略经理、风险分析师和机器学习治理团队——评分结束后，才进入他们负责的决策工作。" },
-    role: { en: "I built the time-disciplined Lending Club training/backtest pipeline, source locks, score-to-policy contracts, expected-loss and queue engine, monitoring, audit flow, browser UI, governed fixture, and tests.", zh: "我构建了遵守时间顺序的 Lending Club 训练/回测管线、来源锁、评分到策略契约、预期损失与队列引擎、监控、审计流程、浏览器界面、受治理夹具和测试。" },
+    role: { en: "I built the time-disciplined training and backtest pipeline, the score-to-policy contracts, the expected-loss and queue engine, and the browser UI that holds it together.", zh: "我构建了严格按时间切分的训练与回测管线、评分到策略的契约、预期损失与队列引擎，以及把这一切串起来的浏览器界面。" },
     outcome: { en: "The default path verifies committed offline scores, then recomputes approve/review/decline bands, swap sets, queue overflow, expected loss, calibration, vintage drift, descriptive slices, and a policy audit record.", zh: "默认路径先校验已提交的离线评分，再重算批准/复核/拒绝区间、换入换出集合、队列溢出、预期损失、校准、批次漂移、描述性切片与策略审计记录。" },
     stack: projectStack(
       "PD × LGD × EAD",
@@ -479,10 +637,12 @@ export const projects: Project[] = [
 const featuredProjectOrder: ProjectId[] = [
   "release-guardian",
   "rag-quality-lab",
+  "triage-router",
   "privacy-preflight-mac",
   "margin-control-tower",
-  "p1-reliability-lab",
-  "credit-policy-lab",
+  "exactly-once-drills",
+  "crossover-study",
+  "credit-policy-desk",
 ];
 
 export const featuredProjects = featuredProjectOrder

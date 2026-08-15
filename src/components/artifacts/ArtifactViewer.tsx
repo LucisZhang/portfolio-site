@@ -35,9 +35,9 @@ const KIND_BY_EXTENSION: Record<string, ArtifactKind> = {
 
 const PROJECT_LABEL_BY_DIRECTORY: Record<string, LocalizedString> = {
   "analytics-tandem": { en: "Analytics Tandem", zh: "分析双项目" },
-  "credit-policy-lab": { en: "Credit Policy Lab", zh: "信贷策略实验室" },
+  "credit-policy-desk": { en: "Credit Policy Desk", zh: "信贷策略工作台" },
   "margin-control-tower": { en: "Margin Control Tower", zh: "毛利控制塔" },
-  "p1-reliability-lab": { en: "Streaming Reliability Lab", zh: "流式可靠性实验室" },
+  "exactly-once-drills": { en: "Exactly-Once Drills", zh: "精确一次演练" },
   "privacy-preflight": { en: "Privacy Preflight Web", zh: "隐私预检网页版" },
   "rag-quality-lab": { en: "RAG Quality Lab", zh: "RAG 质量实验室" },
   "release-guardian": { en: "Release Guardian", zh: "发布守门人" },

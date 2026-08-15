@@ -219,8 +219,8 @@ const creditDataset = {
   rows_sha256: hash(creditRows),
   rows: creditRows,
 };
-await output("public/case-studies/credit-policy-lab/synthetic-credit-data.json", creditDataset);
-await outputCsv("public/case-studies/credit-policy-lab/synthetic-credit-data.csv", creditRows);
-await outputCsv("public/case-studies/credit-policy-lab/synthetic-credit-sample.csv", creditRows.slice(-200));
+await output("public/case-studies/credit-policy-desk/synthetic-credit-data.json", creditDataset);
+await outputCsv("public/case-studies/credit-policy-desk/synthetic-credit-data.csv", creditRows);
+await outputCsv("public/case-studies/credit-policy-desk/synthetic-credit-sample.csv", creditRows.slice(-200));
 
 console.log(`Generated analytics fixtures: ${marginRows.length} margin rows, ${creditRows.length} credit rows.`);

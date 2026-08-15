@@ -97,7 +97,7 @@ export const recruiterQuestionsByRoute: Record<string, { en: string[]; zh: strin
       "这个流程中的哪些环节仍必须人工复核？为什么不能完全依赖 OCR？",
     ],
   },
-  "/engineering/p1-reliability-lab": {
+  "/engineering/exactly-once-drills": {
     en: [
       "Which five failure classes do you induce, and why did you choose those?",
       "After recovery, how do you prove the pipeline didn't silently lose or duplicate events?",
@@ -125,7 +125,7 @@ export const recruiterQuestionsByRoute: Record<string, { en: string[]; zh: strin
       "促销场景依赖弹性假设——这个假设如何披露和检查，又明确不主张什么？",
     ],
   },
-  "/analytics/credit-policy-lab": {
+  "/analytics/credit-policy-desk": {
     en: [
       "Your premise is that a probability and one cutoff aren't a policy — what does the lab add on top of the model score?",
       "How does the time-disciplined backtest prevent leakage between the training, calibration, and later backtest windows?",
@@ -137,6 +137,34 @@ export const recruiterQuestionsByRoute: Record<string, { en: string[]; zh: strin
       "遵守时间边界的回测如何防止训练、校准和后续回测窗口之间发生泄漏？",
       "复核容量与队列溢出如何共同影响批准、复核和拒绝阈值？",
       "数据档案只覆盖已放款贷款——这会限制哪些结论？你如何处理这一边界？",
+    ],
+  },
+  "/ai/triage-router": {
+    en: [
+      "How does the three-tier cascade decide when to escalate a complaint instead of routing it at the cheapest tier?",
+      "What does cost-aware routing mean here, and how do you measure the cost and accuracy tradeoff?",
+      "Why CFPB complaint data specifically, and what does that dataset let you claim or not claim?",
+      "What happens when a complaint is ambiguous across tiers, and how does the router avoid silent misrouting?",
+    ],
+    zh: [
+      "三层级联路由如何决定何时升级投诉，而不是用最低成本层级处理？",
+      "这里的成本感知路由具体指什么？你如何衡量成本与准确率之间的权衡？",
+      "为什么选择 CFPB 投诉数据？这个数据集能支持哪些结论，又不能支持哪些？",
+      "当一条投诉在多个层级之间界限模糊时会发生什么？路由器如何避免静默误判？",
+    ],
+  },
+  "/engineering/crossover-study": {
+    en: [
+      "What does the 43.9M-review Spark and Iceberg lakehouse pipeline actually build and evaluate?",
+      "You ran a full-catalog recsys evaluation and popularity never crossed — what does that negative result mean, and why report it?",
+      "What would need to change for a popularity-based baseline to be overtaken in this setup?",
+      "How does the Spark and Iceberg layer keep the full-catalog evaluation reproducible at that scale?",
+    ],
+    zh: [
+      "这个基于 4390 万条评论的 Spark + Iceberg 数据湖仓管道具体构建并评估了什么？",
+      "你进行了全目录推荐系统评估，热门基线始终未被超越——这个否定结果说明了什么？为什么要报告它？",
+      "在这个实验设置下，要让基于热门度的基线被超越，需要改变什么？",
+      "在这个规模下，Spark 与 Iceberg 这一层如何保证全目录评估的可复现性？",
     ],
   },
 };
@@ -155,11 +183,15 @@ export const recruiterSearchSuggestions: RecruiterSearchSuggestion[] = [
   { id: "rag-regression-evaluation", label: { en: "RAG regression evaluation", zh: "RAG 回归评估" }, intent: "capability", expectedId: "rag-quality-lab", acceptableIds: ["track-ai"] },
   { id: "browser-local-pdf-redaction", label: { en: "browser-local PDF redaction", zh: "浏览器本地 PDF 脱敏" }, intent: "use-case", expectedId: "privacy-preflight-mac", acceptableIds: ["track-ai"] },
   { id: "simplified-chinese-ocr", label: { en: "Simplified Chinese OCR", zh: "简体中文 OCR" }, intent: "capability", expectedId: "privacy-preflight-mac", acceptableIds: ["track-ai"] },
-  { id: "streaming-failure-injection", label: { en: "streaming failure injection", zh: "流式故障注入" }, intent: "capability", expectedId: "p1-reliability-lab", acceptableIds: ["track-engineering"] },
-  { id: "flink-cdc-iceberg", label: { en: "Flink CDC to Iceberg", zh: "Flink CDC 到 Iceberg" }, intent: "tool", expectedId: "p1-reliability-lab", acceptableIds: ["track-engineering"] },
+  { id: "streaming-failure-injection", label: { en: "streaming failure injection", zh: "流式故障注入" }, intent: "capability", expectedId: "exactly-once-drills", acceptableIds: ["track-engineering"] },
+  { id: "flink-cdc-iceberg", label: { en: "Flink CDC to Iceberg", zh: "Flink CDC 到 Iceberg" }, intent: "tool", expectedId: "exactly-once-drills", acceptableIds: ["track-engineering"] },
   { id: "contribution-margin-analysis", label: { en: "contribution margin analysis", zh: "贡献毛利分析" }, intent: "business-problem", expectedId: "margin-control-tower", acceptableIds: ["track-analytics"] },
   { id: "promotion-scenario-elasticity", label: { en: "promotion scenario elasticity", zh: "促销场景弹性" }, intent: "capability", expectedId: "margin-control-tower", acceptableIds: ["track-analytics"] },
-  { id: "credit-policy-thresholds", label: { en: "credit approval policy thresholds", zh: "信贷审批策略阈值" }, intent: "business-problem", expectedId: "credit-policy-lab", acceptableIds: ["track-analytics"] },
-  { id: "risk-analyst", label: { en: "risk analyst", zh: "风险分析师" }, intent: "role", expectedId: "credit-policy-lab", acceptableIds: ["track-analytics"] },
-  { id: "data-engineering", label: { en: "data engineering", zh: "数据工程" }, intent: "role", expectedId: "track-engineering", acceptableIds: ["p1-reliability-lab"] },
+  { id: "credit-policy-thresholds", label: { en: "credit approval policy thresholds", zh: "信贷审批策略阈值" }, intent: "business-problem", expectedId: "credit-policy-desk", acceptableIds: ["track-analytics"] },
+  { id: "risk-analyst", label: { en: "risk analyst", zh: "风险分析师" }, intent: "role", expectedId: "credit-policy-desk", acceptableIds: ["track-analytics"] },
+  { id: "data-engineering", label: { en: "data engineering", zh: "数据工程" }, intent: "role", expectedId: "track-engineering", acceptableIds: ["exactly-once-drills"] },
+  { id: "complaint-triage-cascade", label: { en: "complaint triage cascade routing", zh: "投诉分级级联路由" }, intent: "capability", expectedId: "triage-router", acceptableIds: ["track-ai"] },
+  { id: "cost-aware-routing", label: { en: "cost-aware routing", zh: "成本感知路由" }, intent: "capability", expectedId: "triage-router", acceptableIds: ["track-ai"] },
+  { id: "spark-iceberg-lakehouse", label: { en: "Spark and Iceberg lakehouse", zh: "Spark 与 Iceberg 数据湖仓" }, intent: "tool", expectedId: "crossover-study", acceptableIds: ["track-engineering"] },
+  { id: "recsys-popularity-baseline", label: { en: "recsys popularity baseline evaluation", zh: "推荐系统热门基线评估" }, intent: "business-problem", expectedId: "crossover-study", acceptableIds: ["track-engineering"] },
 ];

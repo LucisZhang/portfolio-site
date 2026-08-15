@@ -55,8 +55,8 @@ test("Margin Control Tower uses the expanded dataset for linked diagnosis and sc
 test("Credit Policy Lab recomputes model, thresholds, capacity, queue, and audit record", async ({ page }, testInfo) => {
   const browserErrors: string[] = [];
   page.on("pageerror", (error) => browserErrors.push(error.message));
-  await page.goto("/analytics/credit-policy-lab", { waitUntil: "networkidle" });
-  const lab = page.getByTestId("credit-policy-lab");
+  await page.goto("/analytics/credit-policy-desk", { waitUntil: "networkidle" });
+  const lab = page.getByTestId("credit-policy-desk");
   await expect(lab).toHaveAttribute("data-active-source", "real", { timeout: 60_000 });
   await lab.getByRole("button", { name: "Synthetic fixture" }).click();
   await expect(lab).toHaveAttribute("data-active-source", "synthetic");

@@ -31,7 +31,7 @@ import { useI18n } from "@/lib/i18n";
 import { localizeStructuralValue } from "@/lib/structural-copy";
 import { userFacingError } from "@/lib/user-facing-error";
 
-const EVIDENCE_ROOT = "/case-studies/p1-reliability-lab/results/u6-local-mac";
+const EVIDENCE_ROOT = "/case-studies/exactly-once-drills/results/u6-local-mac";
 const RESULT_URL = `${EVIDENCE_ROOT}/eo_reconciliation-all.json`;
 const MANIFEST_URL = `${EVIDENCE_ROOT}/manifest.json`;
 const LAST_STEP = 7;

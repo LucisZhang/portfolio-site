@@ -25,8 +25,8 @@ const datasets = [
   },
   {
     id: "credit_data",
-    csv: "public/case-studies/credit-policy-lab/synthetic-credit-data.csv",
-    parquet: "public/case-studies/credit-policy-lab/synthetic-credit-data.parquet",
+    csv: "public/case-studies/credit-policy-desk/synthetic-credit-data.csv",
+    parquet: "public/case-studies/credit-policy-desk/synthetic-credit-data.parquet",
   },
 ];
 

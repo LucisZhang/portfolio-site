@@ -8,6 +8,20 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_RESUME_AVAILABLE: String(existsSync(join(process.cwd(), "public", "resume.pdf"))),
   },
+  async redirects() {
+    return [
+      {
+        source: "/engineering/p1-reliability-lab",
+        destination: "/engineering/exactly-once-drills",
+        permanent: true,
+      },
+      {
+        source: "/analytics/credit-policy-lab",
+        destination: "/analytics/credit-policy-desk",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

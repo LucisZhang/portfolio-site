@@ -59,12 +59,12 @@ for (const forbidden of ["/Users/", "/home/", "hsiangkuochang", "scenario_id", "
   assert(!releaseReplayText.toLowerCase().includes(forbidden.toLowerCase()), `Release synthetic replay contains forbidden private marker: ${forbidden}`);
 }
 
-const p1 = await verifyManifest("public/case-studies/p1-reliability-lab/results/u6-local-mac/manifest.json");
+const p1 = await verifyManifest("public/case-studies/exactly-once-drills/results/u6-local-mac/manifest.json");
 assert(p1.result.failure_classes.length === 5, "p1 must retain all five induced failure classes");
 assert(p1.result.passed && p1.result.all_snapshot_diffs_zero && p1.result.all_event_id_audits_consistent, "p1 U6 result contract failed");
-const p1Index = await json("public/case-studies/p1-reliability-lab/results/index.json");
+const p1Index = await json("public/case-studies/exactly-once-drills/results/index.json");
 assert(p1Index.artifacts.length === 5, "p1 historical artifact index must retain all five exports");
-const reproductionGuide = await readFile(join(root, "public/case-studies/p1-reliability-lab/workstation-reproduction-guide.md"), "utf8");
+const reproductionGuide = await readFile(join(root, "public/case-studies/exactly-once-drills/workstation-reproduction-guide.md"), "utf8");
 assert(reproductionGuide.includes("make eo-verify ARGS=\"--failure all\""), "p1 reproduction guide is incomplete");
 
 const privacy = await verifyManifest("public/case-studies/privacy-preflight/manifest.json");
@@ -241,8 +241,8 @@ assert(marginFixture.rows.filter((row) => row.period_split === "holdout").length
 assert(marginFixture.rows_sha256 === createHash("sha256").update(JSON.stringify(marginFixture.rows)).digest("hex"), "Margin fixture row hash drifted");
 assert(marginContract.checks.length === 10 && marginContract.failure_policy.includes("fails closed"), "Margin data contract is incomplete");
 assert(marginRegistry.metrics.length === 4, "Margin metric registry is incomplete");
-const creditFixture = await json("public/case-studies/credit-policy-lab/synthetic-credit-data.json");
-const creditContract = await json("public/case-studies/credit-policy-lab/policy-contract.json");
+const creditFixture = await json("public/case-studies/credit-policy-desk/synthetic-credit-data.json");
+const creditContract = await json("public/case-studies/credit-policy-desk/policy-contract.json");
 assert(creditFixture.seed === 2026071302 && creditFixture.rows.length === 12_000 && creditFixture.rows.every((row) => row.provenance === "synthetic"), "Credit Policy Lab fixture boundary failed");
 assert(
   JSON.stringify(creditFixture.dimensions) === JSON.stringify({ applications: 12_000, loans: 9_945, vintages: 12, channels: 3, income_bands: 4, audit_groups: 3, feature_count: 8 }),

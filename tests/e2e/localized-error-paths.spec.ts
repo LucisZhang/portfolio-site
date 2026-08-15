@@ -33,9 +33,9 @@ test.describe("Chinese runtime failures use bounded display copy", () => {
   });
 
   test("Credit network failure never renders the browser Error message", async ({ page }) => {
-    await page.route("**/case-studies/credit-policy-lab/scored-backtest.parquet", (route) => route.abort("connectionfailed"));
-    await page.route("**/case-studies/credit-policy-lab/synthetic-credit-data.json", (route) => route.abort("connectionfailed"));
-    await page.goto("/analytics/credit-policy-lab?lang=zh", { waitUntil: "domcontentloaded" });
+    await page.route("**/case-studies/credit-policy-desk/scored-backtest.parquet", (route) => route.abort("connectionfailed"));
+    await page.route("**/case-studies/credit-policy-desk/synthetic-credit-data.json", (route) => route.abort("connectionfailed"));
+    await page.goto("/analytics/credit-policy-desk?lang=zh", { waitUntil: "domcontentloaded" });
 
     await expect(page.locator(".analytics-lab-loading.error")).toHaveText(/数据集不可用。/, { timeout: 60_000 });
     await expectNoRawRuntimeEnglish(page);
@@ -58,8 +58,8 @@ test.describe("Chinese runtime failures use bounded display copy", () => {
   });
 
   test("P1 evidence HTTP failure uses the fixed Chinese message", async ({ page }) => {
-    await page.route("**/case-studies/p1-reliability-lab/results/u6-local-mac/eo_reconciliation-all.json", (route) => route.fulfill({ status: 503 }));
-    await page.goto("/engineering/p1-reliability-lab?lang=zh", { waitUntil: "domcontentloaded" });
+    await page.route("**/case-studies/exactly-once-drills/results/u6-local-mac/eo_reconciliation-all.json", (route) => route.fulfill({ status: 503 }));
+    await page.goto("/engineering/exactly-once-drills?lang=zh", { waitUntil: "domcontentloaded" });
 
     const error = page.locator(".p1-replay-error");
     await expect(error).toContainText("录制证据不可用");

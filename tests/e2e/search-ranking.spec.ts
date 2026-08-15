@@ -7,34 +7,40 @@ import type { Locale } from "../../src/lib/i18n";
 
 const cases: Array<{ query: string; locale: Locale; first: string; includes?: string[] }> = [
   { query: "agent", locale: "en", first: "release-guardian", includes: ["rag-quality-lab"] },
-  { query: "金融", locale: "zh", first: "credit-policy-lab", includes: ["margin-control-tower"] },
+  { query: "金融", locale: "zh", first: "credit-policy-desk", includes: ["margin-control-tower"] },
   { query: "release approval", locale: "en", first: "release-guardian" },
   { query: "发布审批", locale: "zh", first: "release-guardian" },
-  { query: "Flink checkpoint", locale: "en", first: "p1-reliability-lab" },
-  { query: "流式故障恢复", locale: "zh", first: "p1-reliability-lab" },
+  { query: "Flink checkpoint", locale: "en", first: "exactly-once-drills" },
+  { query: "流式故障恢复", locale: "zh", first: "exactly-once-drills" },
   { query: "retrieval regression", locale: "en", first: "rag-quality-lab" },
   { query: "知识库评估", locale: "zh", first: "rag-quality-lab" },
+  { query: "complaint classification cost", locale: "en", first: "triage-router" },
+  { query: "投诉分流", locale: "zh", first: "triage-router" },
+  { query: "model routing cascade", locale: "en", first: "triage-router" },
+  { query: "recommender popularity baseline", locale: "en", first: "crossover-study" },
+  { query: "推荐系统评估", locale: "zh", first: "crossover-study" },
+  { query: "Spark Iceberg lakehouse", locale: "en", first: "crossover-study" },
   { query: "OCR PDF", locale: "en", first: "privacy-preflight-mac" },
   { query: "隐私脱敏", locale: "zh", first: "privacy-preflight-mac" },
   { query: "ecommerce profit", locale: "en", first: "margin-control-tower" },
   { query: "电商毛利", locale: "zh", first: "margin-control-tower" },
-  { query: "credit default risk", locale: "en", first: "credit-policy-lab" },
-  { query: "信贷回测", locale: "zh", first: "credit-policy-lab" },
+  { query: "credit default risk", locale: "en", first: "credit-policy-desk" },
+  { query: "信贷回测", locale: "zh", first: "credit-policy-desk" },
   { query: "local document sanitizer", locale: "en", first: "privacy-preflight-mac" },
   { query: "promotion elasticity", locale: "en", first: "margin-control-tower" },
-  { query: "expected loss", locale: "en", first: "credit-policy-lab" },
-  { query: "schema evolution", locale: "en", first: "p1-reliability-lab" },
+  { query: "expected loss", locale: "en", first: "credit-policy-desk" },
+  { query: "schema evolution", locale: "en", first: "exactly-once-drills" },
   { query: "prompt injection", locale: "en", first: "release-guardian" },
   { query: "retrval", locale: "en", first: "rag-quality-lab" },
   { query: "relese gate", locale: "en", first: "release-guardian" },
   { query: "dian", locale: "en", first: "margin-control-tower" },
   { query: "dianshang", locale: "zh", first: "margin-control-tower" },
   { query: "maoli", locale: "zh", first: "margin-control-tower" },
-  { query: "shu ju gong", locale: "zh", first: "p1-reliability-lab" },
-  { query: "sjgc", locale: "zh", first: "track-engineering", includes: ["p1-reliability-lab"] },
+  { query: "shu ju gong", locale: "zh", first: "exactly-once-drills" },
+  { query: "sjgc", locale: "zh", first: "track-engineering", includes: ["exactly-once-drills"] },
   { query: "電商", locale: "zh", first: "margin-control-tower" },
-  { query: "信貸", locale: "zh", first: "credit-policy-lab" },
-  { query: "資料管線", locale: "zh", first: "p1-reliability-lab" },
+  { query: "信貸", locale: "zh", first: "credit-policy-desk" },
+  { query: "資料管線", locale: "zh", first: "exactly-once-drills" },
   { query: "dian商毛利", locale: "zh", first: "margin-control-tower" },
 ];
 
@@ -56,7 +62,7 @@ test("hybrid bilingual search ranks project meaning instead of hard-coded exampl
 test("discipline pages require explicit discipline queries and irrelevant text does not produce filler", async ({}, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "The deterministic search index only needs one runtime matrix pass.");
   for (const item of [
-    { query: "data engineering", locale: "en" as const, track: "track-engineering", project: "p1-reliability-lab" },
+    { query: "data engineering", locale: "en" as const, track: "track-engineering", project: "exactly-once-drills" },
     { query: "数据分析", locale: "zh" as const, track: "track-analytics", project: "margin-control-tower" },
     { query: "AI 应用", locale: "zh" as const, track: "track-ai", project: "release-guardian" },
   ]) {
@@ -90,12 +96,12 @@ test("local selection history changes diverse suggestions and partial input yiel
 
   const personalized = rankPortfolioSearchSuggestions({
     locale: "en",
-    history: [{ query: "credit default risk", resultId: "credit-policy-lab", at: Date.now() }],
+    history: [{ query: "credit default risk", resultId: "credit-policy-desk", at: Date.now() }],
     query: "",
     results: [],
     limit: 3,
   });
-  expect(personalized[0]?.expectedId).toBe("credit-policy-lab");
+  expect(personalized[0]?.expectedId).toBe("credit-policy-desk");
 
   const partialResults = searchPortfolio("dian", tracks, featuredProjects, "zh");
   const completions = rankPortfolioSearchSuggestions({ locale: "zh", history: [], query: "dian", results: partialResults, limit: 3 });
@@ -124,8 +130,8 @@ test("search history stays local, bounded, persistent, and isolated by browser c
   await page.goto("/", { waitUntil: "networkidle" });
   await page.getByRole("button", { name: /Search/ }).click();
   await page.getByPlaceholder("Search projects, systems, or tools").fill("credit default risk");
-  await page.locator("[cmdk-item]").filter({ hasText: "Credit Policy Lab" }).first().click();
-  await expect(page).toHaveURL(/\/analytics\/credit-policy-lab/);
+  await page.locator("[cmdk-item]").filter({ hasText: "Credit Policy Desk" }).first().click();
+  await expect(page).toHaveURL(/\/analytics\/credit-policy-desk/);
   const stored = await page.evaluate(() => JSON.parse(window.localStorage.getItem("portfolio-search-history-v2") ?? "[]") as unknown[]);
   expect(stored).toHaveLength(20);
   expect(JSON.stringify(outboundBodies)).not.toContain("credit default risk");
@@ -146,9 +152,9 @@ test("search history stays local, bounded, persistent, and isolated by browser c
   await freshContext.close();
 });
 
-test("the ten primary recruiter routes each expose four distinct bilingual questions", async ({}, testInfo) => {
+test("the twelve primary recruiter routes each expose four distinct bilingual questions", async ({}, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "Static recruiter content needs one deterministic pass.");
-  expect(Object.keys(recruiterQuestionsByRoute)).toHaveLength(10);
+  expect(Object.keys(recruiterQuestionsByRoute)).toHaveLength(12);
   for (const [route, questions] of Object.entries(recruiterQuestionsByRoute)) {
     expect(questions.en, `${route} English`).toHaveLength(4);
     expect(questions.zh, `${route} Chinese`).toHaveLength(4);

@@ -8,7 +8,7 @@ function decodedParquetFixture(name: "margin" | "credit") {
 }
 
 function syntheticCreditRows() {
-  const value = JSON.parse(readFileSync(resolve(process.cwd(), "public/case-studies/credit-policy-lab/synthetic-credit-data.json"), "utf8")) as {
+  const value = JSON.parse(readFileSync(resolve(process.cwd(), "public/case-studies/credit-policy-desk/synthetic-credit-data.json"), "utf8")) as {
     rows: Array<{ application_id: string; vintage: string }>;
   };
   return value.rows;
@@ -20,7 +20,7 @@ function isDuckDBHeavyRuntimeRequest(url: string) {
 
 async function measureCachedSwitch(
   page: import("@playwright/test").Page,
-  testId: "margin-control-tower" | "credit-policy-lab",
+  testId: "margin-control-tower" | "credit-policy-desk",
   buttonName: string,
   expectedSource: "synthetic" | "real",
 ) {
@@ -67,7 +67,7 @@ test.describe("analytics real-data evidence", () => {
   test("both project pages mount the dedicated methods section and authoritative dataset source", async ({ page }) => {
     for (const [route, project, sourceHref] of [
       ["/analytics/margin-control-tower", "margin", "https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce"],
-      ["/analytics/credit-policy-lab", "credit", "https://zenodo.org/records/11295916"],
+      ["/analytics/credit-policy-desk", "credit", "https://zenodo.org/records/11295916"],
     ] as const) {
       await page.goto(route, { waitUntil: "networkidle" });
       const methods = page.getByTestId(`analytics-methods-${project}`);
@@ -237,8 +237,8 @@ test.describe("analytics real-data evidence", () => {
   });
 
   test("Credit requests the real backtest by default and reveals outcome-window swap-set rates", async ({ page }) => {
-    await page.goto("/analytics/credit-policy-lab", { waitUntil: "networkidle" });
-    const lab = page.getByTestId("credit-policy-lab");
+    await page.goto("/analytics/credit-policy-desk", { waitUntil: "networkidle" });
+    const lab = page.getByTestId("credit-policy-desk");
     await expect(lab).toHaveAttribute("data-requested-source", "real", { timeout: 60_000 });
     await expect(lab).toHaveAttribute("data-active-source", "real", { timeout: 60_000 });
     await expect(lab.getByRole("button", { name: "Real backtest" })).toHaveAttribute("aria-pressed", "true");
@@ -259,8 +259,8 @@ test.describe("analytics real-data evidence", () => {
     const finalRows = rows.filter((row) => row.vintage === finalVintage);
     const searchedRow = finalRows[500];
 
-    await page.goto("/analytics/credit-policy-lab", { waitUntil: "networkidle" });
-    const lab = page.getByTestId("credit-policy-lab");
+    await page.goto("/analytics/credit-policy-desk", { waitUntil: "networkidle" });
+    const lab = page.getByTestId("credit-policy-desk");
     await lab.getByRole("button", { name: "Synthetic fixture" }).click();
     await expect(lab).toHaveAttribute("data-active-source", "synthetic");
 
@@ -303,12 +303,12 @@ test.describe("analytics real-data evidence", () => {
   });
 
   test("warmed Credit source switches stay below the interaction budget", async ({ page }) => {
-    await page.goto("/analytics/credit-policy-lab", { waitUntil: "networkidle" });
-    const lab = page.getByTestId("credit-policy-lab");
+    await page.goto("/analytics/credit-policy-desk", { waitUntil: "networkidle" });
+    const lab = page.getByTestId("credit-policy-desk");
     await expect(lab).toHaveAttribute("data-active-source", "real", { timeout: 60_000 });
     await expect(lab).toHaveAttribute("data-synthetic-cache-ready", "true", { timeout: 30_000 });
-    const toSynthetic = await measureCachedSwitch(page, "credit-policy-lab", "Synthetic fixture", "synthetic");
-    const toReal = await measureCachedSwitch(page, "credit-policy-lab", "Real backtest", "real");
+    const toSynthetic = await measureCachedSwitch(page, "credit-policy-desk", "Synthetic fixture", "synthetic");
+    const toReal = await measureCachedSwitch(page, "credit-policy-desk", "Real backtest", "real");
     expect(toSynthetic).toBeLessThan(200);
     expect(toReal).toBeLessThan(200);
   });
@@ -393,11 +393,11 @@ test.describe("analytics real-data evidence", () => {
     }
 
     for (const artifact of ["scored-backtest.parquet", "methods-evidence.json"]) {
-      await page.route(`**/case-studies/credit-policy-lab/${artifact}`, (route) => route.fulfill({ status: 404 }));
+      await page.route(`**/case-studies/credit-policy-desk/${artifact}`, (route) => route.fulfill({ status: 404 }));
     }
-    await page.goto("/analytics/credit-policy-lab", { waitUntil: "networkidle" });
+    await page.goto("/analytics/credit-policy-desk", { waitUntil: "networkidle" });
     await expect(page.getByTestId("analytics-methods-credit")).toContainText("The methods report is being prepared with the real-data artifact.");
-    const credit = page.getByTestId("credit-policy-lab");
+    const credit = page.getByTestId("credit-policy-desk");
     await expect(credit).toHaveAttribute("data-requested-source", "real");
     await expect(credit).toHaveAttribute("data-active-source", "synthetic");
     await expect(credit.getByRole("status")).toContainText("real-data artifact pending");
@@ -443,16 +443,16 @@ test.describe("analytics real-data evidence", () => {
   test("Credit rejects a readable Parquet artifact whose SHA-256 is not the recorded backtest identity", async ({ page }) => {
     const differentValidParquet = readFileSync(resolve(
       process.cwd(),
-      "public/case-studies/credit-policy-lab/synthetic-credit-data.parquet",
+      "public/case-studies/credit-policy-desk/synthetic-credit-data.parquet",
     ));
-    await page.route("**/case-studies/credit-policy-lab/scored-backtest.parquet", (route) => route.fulfill({
+    await page.route("**/case-studies/credit-policy-desk/scored-backtest.parquet", (route) => route.fulfill({
       status: 200,
       contentType: "application/octet-stream",
       body: differentValidParquet,
     }));
 
-    await page.goto("/analytics/credit-policy-lab", { waitUntil: "networkidle" });
-    const credit = page.getByTestId("credit-policy-lab");
+    await page.goto("/analytics/credit-policy-desk", { waitUntil: "networkidle" });
+    const credit = page.getByTestId("credit-policy-desk");
     await expect(credit).toHaveAttribute("data-requested-source", "real");
     await expect(credit).toHaveAttribute("data-real-artifact-status", "invalid", { timeout: 60_000 });
     await expect(credit).toHaveAttribute("data-active-source", "synthetic");
@@ -470,9 +470,9 @@ test.describe("analytics real-data evidence", () => {
     await expect(margin).toContainText("Margin Synthetic v2");
 
     await page.unrouteAll({ behavior: "wait" });
-    await page.route("**/case-studies/credit-policy-lab/scored-backtest.parquet", (route) => route.fulfill({ status: 200, contentType: "application/octet-stream", body: "not-a-parquet-file" }));
-    await page.goto("/analytics/credit-policy-lab", { waitUntil: "networkidle" });
-    const credit = page.getByTestId("credit-policy-lab");
+    await page.route("**/case-studies/credit-policy-desk/scored-backtest.parquet", (route) => route.fulfill({ status: 200, contentType: "application/octet-stream", body: "not-a-parquet-file" }));
+    await page.goto("/analytics/credit-policy-desk", { waitUntil: "networkidle" });
+    const credit = page.getByTestId("credit-policy-desk");
     await expect(credit.getByRole("status")).toContainText("real backtest artifact blocked", { timeout: 60_000 });
     await expect(credit).toHaveAttribute("data-active-source", "synthetic");
     await expect(credit).toContainText("Credit Synthetic v2");
@@ -496,13 +496,13 @@ test.describe("analytics real-data evidence", () => {
     expect(heavyRuntimeRequests).toEqual([]);
 
     await page.unrouteAll({ behavior: "wait" });
-    await page.route("**/case-studies/credit-policy-lab/scored-backtest.parquet", (route) => route.fulfill({
+    await page.route("**/case-studies/credit-policy-desk/scored-backtest.parquet", (route) => route.fulfill({
       status: 200,
       contentType: "application/octet-stream",
       body: decodedParquetFixture("credit"),
     }));
-    await page.goto("/analytics/credit-policy-lab", { waitUntil: "networkidle" });
-    const credit = page.getByTestId("credit-policy-lab");
+    await page.goto("/analytics/credit-policy-desk", { waitUntil: "networkidle" });
+    const credit = page.getByTestId("credit-policy-desk");
     await expect(credit.getByRole("status")).toContainText("real backtest artifact blocked", { timeout: 60_000 });
     await expect(credit.getByRole("status")).toContainText("Dataset unavailable.");
     await expect(credit).toContainText("Credit Synthetic v2");

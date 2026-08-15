@@ -37,7 +37,7 @@ type EvidenceState = { kind: "loading" | "pending" | "invalid" } | { kind: "read
 
 const PATHS: Record<Project, string> = {
   margin: "/case-studies/margin-control-tower/methods-evidence.json",
-  credit: "/case-studies/credit-policy-lab/methods-evidence.json",
+  credit: "/case-studies/credit-policy-desk/methods-evidence.json",
 };
 
 function isLocalized(value: unknown): value is Localized {

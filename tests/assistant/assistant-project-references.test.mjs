@@ -15,7 +15,7 @@ test("project references use canonical localized destinations", () => {
     kind: "portfolio",
   });
   assert.equal(projectReference("release-guardian", "en")?.href, "/ai/release-guardian");
-  assert.equal(projectReference("streaming-reliability-lab", "en")?.href, "/engineering/p1-reliability-lab");
+  assert.equal(projectReference("streaming-reliability-lab", "en")?.href, "/engineering/exactly-once-drills");
   assert.equal(projectReference("ex-solver", "zh")?.href, "https://github.com/LucisZhang/ex-solver");
   assert.equal(projectReference("Voice-in-Security", "en")?.href, "https://github.com/LucisZhang/Voice-in-Security");
   assert.equal(projectReference("Risk-Control-Portfolio", "en")?.href, "https://github.com/LucisZhang/Risk-Control-Portfolio");

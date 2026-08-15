@@ -13,7 +13,7 @@ const desktopProjects = [
   ["/ai/release-guardian", "20260717-project-release-guardian-desktop-full.png"],
   ["/ai/rag-quality-lab", "20260717-project-rag-quality-lab-desktop-full.png"],
   ["/ai/privacy-preflight-mac", "20260717-project-privacy-preflight-desktop-full.png"],
-  ["/engineering/p1-reliability-lab", "20260717-project-p1-reliability-lab-desktop-full.png"],
+  ["/engineering/exactly-once-drills", "20260717-project-exactly-once-drills-desktop-full.png"],
 ];
 
 async function prepareCapture(page) {
@@ -55,14 +55,14 @@ try {
     fullPage: true,
   });
 
-  await desktop.goto(new URL("/analytics/credit-policy-lab", baseUrl).toString(), {
+  await desktop.goto(new URL("/analytics/credit-policy-desk", baseUrl).toString(), {
     waitUntil: "networkidle",
   });
   await desktop.getByRole("button", { name: "Real backtest" }).click();
   await desktop.getByText("Scored backtest artifact", { exact: true }).waitFor({ timeout: 60_000 });
   await prepareCapture(desktop);
   await desktop.screenshot({
-    path: path.join(outputDirectory, "20260717-project-credit-policy-lab-real-desktop-full.png"),
+    path: path.join(outputDirectory, "20260717-project-credit-policy-desk-real-desktop-full.png"),
     fullPage: true,
   });
 

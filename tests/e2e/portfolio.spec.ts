@@ -6,14 +6,16 @@ import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 const routes = [
   "/",
   "/engineering",
-  "/engineering/p1-reliability-lab",
+  "/engineering/exactly-once-drills",
+  "/engineering/crossover-study",
   "/ai",
   "/ai/release-guardian",
   "/ai/rag-quality-lab",
   "/ai/privacy-preflight-mac",
+  "/ai/triage-router",
   "/analytics",
   "/analytics/margin-control-tower",
-  "/analytics/credit-policy-lab",
+  "/analytics/credit-policy-desk",
   "/analytics/analytics-tandem",
 ];
 
@@ -61,18 +63,20 @@ for (const locale of ["en", "zh"] as const) {
         await expect(footerContact).toBeVisible();
         await expect(footerContact).toHaveAttribute("href", locale === "en" ? "/#contact" : "/?lang=zh#contact");
         await expect(page.locator('a[href="/resume.pdf"]')).toHaveCount(0);
-        await expect(page.locator(".workspace-index")).toContainText(locale === "en" ? "6 interactive demos" : "6 个交互式演示");
+        await expect(page.locator(".workspace-index")).toContainText(locale === "en" ? "8 interactive demos" : "8 个交互式演示");
         await expect(page.locator(".index-heading p")).toHaveText(locale === "en"
           ? "Open any project to see what I built, how it works, and how to verify it."
           : "打开任意项目，了解我做了什么、项目如何运作，以及如何验证结果。");
         const projectLinks = page.locator(".project-table > a");
-        await expect(projectLinks).toHaveCount(6);
+        await expect(projectLinks).toHaveCount(8);
         await expect(projectLinks.nth(0)).toHaveAttribute("href", /^\/ai\/release-guardian(?:\?lang=zh)?$/);
         await expect(projectLinks.nth(1)).toHaveAttribute("href", /^\/ai\/rag-quality-lab(?:\?lang=zh)?$/);
-        await expect(projectLinks.nth(2)).toHaveAttribute("href", /^\/ai\/privacy-preflight-mac(?:\?lang=zh)?$/);
-        await expect(projectLinks.nth(3)).toHaveAttribute("href", /^\/analytics\/margin-control-tower(?:\?lang=zh)?$/);
-        await expect(projectLinks.nth(4)).toHaveAttribute("href", /^\/engineering\/p1-reliability-lab(?:\?lang=zh)?$/);
-        await expect(projectLinks.nth(5)).toHaveAttribute("href", /^\/analytics\/credit-policy-lab(?:\?lang=zh)?$/);
+        await expect(projectLinks.nth(2)).toHaveAttribute("href", /^\/ai\/triage-router(?:\?lang=zh)?$/);
+        await expect(projectLinks.nth(3)).toHaveAttribute("href", /^\/ai\/privacy-preflight-mac(?:\?lang=zh)?$/);
+        await expect(projectLinks.nth(4)).toHaveAttribute("href", /^\/analytics\/margin-control-tower(?:\?lang=zh)?$/);
+        await expect(projectLinks.nth(5)).toHaveAttribute("href", /^\/engineering\/exactly-once-drills(?:\?lang=zh)?$/);
+        await expect(projectLinks.nth(6)).toHaveAttribute("href", /^\/engineering\/crossover-study(?:\?lang=zh)?$/);
+        await expect(projectLinks.nth(7)).toHaveAttribute("href", /^\/analytics\/credit-policy-desk(?:\?lang=zh)?$/);
         await expect(projectLinks.nth(0).locator(".metrics-chips")).toContainText(locale === "en" ? "132 live graph runs" : "132 次在线图运行");
         if (testInfo.project.name === "mobile") {
           await expect(page.locator(".discipline-strip .page-shell")).toHaveCSS("display", "flex");
@@ -96,7 +100,7 @@ for (const locale of ["en", "zh"] as const) {
           await expect(repositoryLink).toHaveAttribute("href", /^https:\/\/github\.com\/LucisZhang\/[^/]+$/);
         }
       }
-      if (route === "/engineering/p1-reliability-lab") {
+      if (route === "/engineering/exactly-once-drills") {
         await expect(page.locator('a[href="https://github.com/LucisZhang/streaming-reliability-lab"]')).toBeVisible();
         await expect(page.locator(".artifact-table > a")).toHaveCount(5);
         await expect(page.locator('a[href^="/artifact?"][href*="workstation-reproduction-guide.md"]')).toHaveCount(0);
@@ -105,8 +109,8 @@ for (const locale of ["en", "zh"] as const) {
         await expect(page.getByAltText(locale === "en" ? "Historical Iceberg small-file rewrite evidence" : "历史 Iceberg 小文件重写证据")).toHaveAttribute(
           "src",
           locale === "en"
-            ? "/case-studies/p1-reliability-lab/media/phase-2.2-small-file-rewrite.svg"
-            : "/case-studies/p1-reliability-lab/media/phase-2.2-small-file-rewrite-zh.svg",
+            ? "/case-studies/exactly-once-drills/media/phase-2.2-small-file-rewrite.svg"
+            : "/case-studies/exactly-once-drills/media/phase-2.2-small-file-rewrite-zh.svg",
         );
       }
       if (route === "/ai/release-guardian") {
@@ -219,7 +223,7 @@ test("homepage and non-analytics routes do not load the DuckDB browser runtime",
     if (request.url().includes("/duckdb/")) duckDbRequests.push(request.url());
   });
 
-  for (const route of ["/", "/engineering/p1-reliability-lab", "/ai/release-guardian", "/ai/rag-quality-lab", "/ai/privacy-preflight-mac"]) {
+  for (const route of ["/", "/engineering/exactly-once-drills", "/ai/release-guardian", "/ai/rag-quality-lab", "/ai/privacy-preflight-mac"]) {
     await page.goto(route, { waitUntil: "networkidle" });
   }
 
@@ -229,7 +233,7 @@ test("homepage and non-analytics routes do not load the DuckDB browser runtime",
 test.describe("p1 Failure Replay Console", () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "en"));
-    await page.goto("/engineering/p1-reliability-lab", { waitUntil: "networkidle" });
+    await page.goto("/engineering/exactly-once-drills", { waitUntil: "networkidle" });
     await expect(page.getByTestId("p1-failure-replay")).toBeVisible();
   });
 
@@ -543,8 +547,8 @@ test.describe("Analytics decision vertical slices", () => {
 
   test("Credit Policy Lab separates score, economics, policy, capacity, monitoring, and audit", async ({ page }) => {
     test.setTimeout(90_000);
-    await page.goto("/analytics/credit-policy-lab", { waitUntil: "networkidle" });
-    const lab = page.getByTestId("credit-policy-lab");
+    await page.goto("/analytics/credit-policy-desk", { waitUntil: "networkidle" });
+    const lab = page.getByTestId("credit-policy-desk");
     await expect(lab).toBeVisible({ timeout: 60_000 });
     await expect(lab).toHaveAttribute("data-requested-source", "real", { timeout: 60_000 });
     await expect(lab).toHaveAttribute("data-active-source", "real", { timeout: 60_000 });
@@ -577,7 +581,7 @@ test.describe("Analytics decision vertical slices", () => {
     await page.goto("/analytics/analytics-tandem", { waitUntil: "networkidle" });
     await expect(page.locator(".analytics-migration")).toContainText("has been split into two operable case studies");
     await expect(page.locator('.analytics-migration a[href="/analytics/margin-control-tower"]')).toBeVisible();
-    await expect(page.locator('.analytics-migration a[href="/analytics/credit-policy-lab"]')).toBeVisible();
+    await expect(page.locator('.analytics-migration a[href="/analytics/credit-policy-desk"]')).toBeVisible();
   });
 });
 
