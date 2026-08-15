@@ -201,7 +201,7 @@ export const projects: Project[] = [
       },
     ],
     links: [
-      { label: { en: "GitHub repository", zh: "公开源码仓库" }, href: "https://github.com/LucisZhang/streaming-reliability-lab" },
+      { label: { en: "GitHub repository", zh: "公开源码仓库" }, href: "https://github.com/LucisZhang/exactly-once-drills" },
     ],
   },
   {
@@ -343,8 +343,8 @@ export const projects: Project[] = [
       },
     ],
     links: [
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/nlp-eval-lab" },
-      { label: { en: "Live demo", zh: "在线演示" }, href: "https://luciszhang.github.io/nlp-eval-lab/" },
+      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/triage-router" },
+      { label: { en: "Live demo", zh: "在线演示" }, href: "https://luciszhang.github.io/triage-router/" },
     ],
   },
   {
@@ -528,10 +528,7 @@ export const projects: Project[] = [
       },
     ],
     links: [
-      {
-        label: { en: "GitHub repository", zh: "GitHub 仓库" },
-        pending: { en: "Repository opens with this release", zh: "仓库将随本次更新公开" },
-      },
+      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/crossover-study" },
     ],
   },
   {
@@ -574,7 +571,7 @@ export const projects: Project[] = [
       { en: "This granted-loan-only archive does not represent rejected applicants or identify acceptance-population policy effects; it is an offline historical backtest, not causal impact, live or production decisioning, regulatory validation, or real-world fairness evidence.", zh: "该档案仅含已授信贷款，不代表被拒申请人，也不能识别完整受理人群的策略效果；它是离线历史回测，不构成因果影响、在线或生产决策、监管验证或真实世界公平性证据。" },
     ],
     links: [
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/credit-policy-lab" },
+      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/credit-policy-desk" },
     ],
   },
   {

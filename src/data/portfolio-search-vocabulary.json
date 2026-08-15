@@ -46,5 +46,21 @@
     "useCases": "turn model scores into lending policy test approval thresholds manage review capacity monitor credit drift record a policy decision 将模型评分转成信贷策略 测试审批阈值 管理复核容量 监控信贷漂移 记录策略决策",
     "roles": "risk analyst credit analyst data analyst decision scientist model risk analyst analytics engineer 风险分析师 信贷分析师 数据分析师 决策科学家 模型风险分析师 分析工程师",
     "regionalTerms": "信貸策略 貸款審批 違約機率 預期損失 風險分析 資料分析 決策科學 回測"
+  },
+  "triage-router": {
+    "aliases": "triage router complaint router NLP eval lab model ladder cost frontier 投诉分流 投诉路由 模型阶梯 成本前沿",
+    "domains": "NLP applied AI model evaluation machine learning operations text classification cost optimization AI 应用 自然语言处理 模型评估 文本分类 成本优化",
+    "capabilities": "complaint classification TF-IDF logistic regression ModernBERT DistilBERT fine-tune ONNX quantization LLM zero-shot Claude confidence cascade model routing calibration expected calibration error bootstrap confidence interval cost model distribution drift class mix OOV 投诉分类 微调 量化 零样本 置信级联 模型路由 校准 自举置信区间 成本模型 分布漂移 类别构成",
+    "useCases": "decide whether a task needs an LLM route requests to cheaper models measure model drift over years compare model cost and quality 判断任务是否需要大模型 把请求路由到更便宜的模型 测量多年模型漂移 对比模型成本与质量",
+    "roles": "ML engineer applied AI engineer NLP engineer data scientist evaluation engineer 机器学习工程师 AI 应用工程师 NLP 工程师 数据科学家 评估工程师",
+    "regionalTerms": "模型評估 文本分類 成本優化 模型路由 分佈漂移"
+  },
+  "crossover-study": {
+    "aliases": "crossover study batch recsys lab recommender lab lakehouse study 交叉点研究 推荐实验 湖仓研究",
+    "domains": "data engineering recommender systems lakehouse batch processing large scale evaluation 数据工程 推荐系统 数据湖仓 批处理 大规模评估",
+    "capabilities": "Spark Iceberg bronze silver gold data contracts reconciliation waterfall deduplication five-core filtering item-kNN ALS collaborative filtering MiniLM embeddings semantic retrieval popularity baseline full-catalog ranking NDCG recall MRR temporal split user bootstrap 数据契约 对账瀑布 去重 五核过滤 协同过滤 语义检索 热门基线 全目录排序 时间切分 用户自举",
+    "useCases": "evaluate recommenders on full catalog ranking build a governed lakehouse on a laptop measure when personalization beats popularity account for every dropped row 在全目录排序上评估推荐系统 在笔记本上搭建受治理湖仓 测量个性化何时赢过热门榜 对账每一条被剔除的记录",
+    "roles": "data engineer recommender engineer ML engineer data platform engineer 数据工程师 推荐系统工程师 机器学习工程师 数据平台工程师",
+    "regionalTerms": "資料工程 推薦系統 資料湖倉 批次處理 排序評估"
   }
 }

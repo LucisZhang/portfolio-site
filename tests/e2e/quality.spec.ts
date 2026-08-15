@@ -390,7 +390,7 @@ test("artifact viewer preserves the shareable Chinese locale and project return 
   await page.goto("/artifact?src=/case-studies/exactly-once-drills/README.md&from=/engineering/exactly-once-drills&lang=zh", { waitUntil: "networkidle" });
   await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
   await expect(page.getByRole("link", { name: "返回项目" })).toHaveAttribute("href", /engineering\/exactly-once-drills\?lang=zh$/);
-  await expect(page.locator(".artifact-page-header > div:first-child > p:not(.eyebrow)")).toHaveText("流式可靠性实验室 / MARKDOWN");
+  await expect(page.locator(".artifact-page-header > div:first-child > p:not(.eyebrow)")).toHaveText("精确一次演练 / MARKDOWN");
   await expect(page.locator(".artifact-page-header")).not.toContainText("P1 Reliability Lab");
   await page.reload({ waitUntil: "networkidle" });
   await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");

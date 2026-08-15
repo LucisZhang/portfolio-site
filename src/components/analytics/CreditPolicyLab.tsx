@@ -19,7 +19,7 @@ const REAL_PARQUET_URL = "/case-studies/credit-policy-desk/scored-backtest.parqu
 const REAL_REPORT_URL = "/case-studies/credit-policy-desk/backtest-report.json";
 const REAL_METHODS_URL = "/case-studies/credit-policy-desk/methods-evidence.json";
 const REAL_PARQUET_SHA256 = "2bbc97350d28123a1b056e4d475cdc90000954df1e6226d54d4fa35f2e7e0b95";
-const PUBLIC_FIXTURE_GENERATOR_URL = "https://github.com/LucisZhang/credit-policy-lab/blob/main/scripts/generate-analytics-fixtures.mjs";
+const PUBLIC_FIXTURE_GENERATOR_URL = "https://github.com/LucisZhang/credit-policy-desk/blob/main/scripts/generate-analytics-fixtures.mjs";
 const SYNTHETIC_CACHE_KEY = "credit:synthetic:v2";
 const REAL_CACHE_KEY = "credit:real:scored-backtest-parquet-v1";
 

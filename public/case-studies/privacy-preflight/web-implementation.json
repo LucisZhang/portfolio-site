@@ -36,7 +36,7 @@
   },
   "runtime_packages": {
     "tesseract.js": "7.0.0",
-    "pdfjs-dist": "6.1.200",
+    "pdfjs-dist": "6.2.108",
     "pdf-lib": "1.17.1",
     "@tesseract.js-data/eng": "1.0.0",
     "@tesseract.js-data/chi_sim": "1.0.0"

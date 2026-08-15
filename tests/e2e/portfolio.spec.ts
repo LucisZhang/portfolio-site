@@ -101,7 +101,7 @@ for (const locale of ["en", "zh"] as const) {
         }
       }
       if (route === "/engineering/exactly-once-drills") {
-        await expect(page.locator('a[href="https://github.com/LucisZhang/streaming-reliability-lab"]')).toBeVisible();
+        await expect(page.locator('a[href="https://github.com/LucisZhang/exactly-once-drills"]')).toBeVisible();
         await expect(page.locator(".artifact-table > a")).toHaveCount(5);
         await expect(page.locator('a[href^="/artifact?"][href*="workstation-reproduction-guide.md"]')).toHaveCount(0);
         await expect(page.locator(".p1-pressure-evidence")).toContainText("55 ms → 19,022 ms");

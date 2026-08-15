@@ -86,7 +86,7 @@ function expandedQuery(value: string) {
   const expansions: string[] = [];
   const rules: Array<[RegExp, string]> = [
     [/(?:hire|hiring|candidate|recruiter|strength|why him|role fit|job fit|position)/u, "candidate profile skills experience strengths role fit applied AI data engineering analytics Release Guardian RAG Quality Lab Streaming Reliability Lab Privacy Preflight Margin Control Tower Credit Policy Lab"],
-    [/(?:候选人|招聘|录用|优势|亮点|岗位|职位|匹配|胜任)/u, "候选人 个人背景 技能 经历 优势 岗位匹配 AI应用 数据工程 数据分析 发布守门人 RAG质量实验室 流式可靠性实验室 隐私预检 毛利控制塔 信贷策略实验室"],
+    [/(?:候选人|招聘|录用|优势|亮点|岗位|职位|匹配|胜任)/u, "候选人 个人背景 技能 经历 优势 岗位匹配 AI应用 数据工程 数据分析 发布守门人 RAG质量实验室 流式可靠性实验室 精确一次演练 投诉分流路由 交叉点研究 隐私预检 毛利控制塔 信贷策略实验室 信贷策略工作台"],
     [/(?:background|education|school|university|major|graduate)/u, "candidate education Beijing Institute of Technology data science graduation"],
     [/(?:背景|教育|学校|大学|专业|毕业)/u, "候选人 教育 北京理工大学 数据科学与大数据技术 2027届"],
     [/(?:working style|work style|collaborat|communicat|leadership)/u, "working style ownership evidence automation communication collaboration"],
