@@ -1,0 +1,26 @@
+#!/bin/sh
+set -eu
+
+SERVICE=portfolio-preview-tunnel.service
+
+if [ "$(id -u)" -ne 0 ]; then
+  printf '%s\n' "error: run as root" >&2
+  exit 1
+fi
+
+proxy_pid_before=$(systemctl show x-ui.service -p MainPID --value)
+proxy_started_before=$(systemctl show x-ui.service -p ExecMainStartTimestamp --value)
+xray_pid_before=$(pidof xray-linux-amd64)
+systemctl stop "$SERVICE"
+systemctl is-active --quiet "$SERVICE" && {
+  printf '%s\n' "error: tunnel service is still active" >&2
+  exit 1
+}
+curl -fsS --max-time 3 http://127.0.0.1:18080/_vps/health >/dev/null
+proxy_pid_after=$(systemctl show x-ui.service -p MainPID --value)
+proxy_started_after=$(systemctl show x-ui.service -p ExecMainStartTimestamp --value)
+xray_pid_after=$(pidof xray-linux-amd64)
+[ "$proxy_pid_before" = "$proxy_pid_after" ]
+[ "$proxy_started_before" = "$proxy_started_after" ]
+[ "$xray_pid_before" = "$xray_pid_after" ]
+printf '%s\n' "temporary public tunnel stopped; loopback Preview and proxy remain active"

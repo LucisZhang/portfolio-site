@@ -1,0 +1,71 @@
+#!/bin/sh
+set -eu
+
+SERVICE=portfolio-preview-tunnel.service
+LOCAL_HEALTH=http://127.0.0.1:18081/_vps/health
+PUBLIC_DOH=https://cloudflare-dns.com/dns-query
+PROXY_SERVICE=x-ui.service
+
+fail() {
+  printf '%s\n' "error: $*" >&2
+  exit 1
+}
+
+[ "$(id -u)" -eq 0 ] || fail "run as root"
+systemctl is-active --quiet portfolio-preview.service || fail "portfolio service is not active"
+systemctl is-active --quiet nginx.service || fail "nginx is not active"
+systemctl is-active --quiet "$PROXY_SERVICE" || fail "proxy service is not active"
+! systemctl is-active --quiet "$SERVICE" || fail "tunnel service is already active"
+curl -fsS --max-time 3 "$LOCAL_HEALTH" >/dev/null || fail "tunnel ingress health check failed"
+
+if runuser -u portfolio-tunnel -- test -r /etc/portfolio-preview.env; then
+  fail "tunnel user can read the portfolio secret file"
+fi
+
+proxy_pid_before=$(systemctl show "$PROXY_SERVICE" -p MainPID --value)
+proxy_started_before=$(systemctl show "$PROXY_SERVICE" -p ExecMainStartTimestamp --value)
+xray_pid_before=$(pidof xray-linux-amd64)
+started_at=$(date +%s)
+started=0
+stop_failed_start() {
+  if [ "$started" -eq 1 ]; then systemctl stop "$SERVICE" >/dev/null 2>&1 || true; fi
+}
+trap stop_failed_start EXIT HUP INT TERM
+systemctl start "$SERVICE"
+started=1
+
+public_url=
+attempt=0
+while [ "$attempt" -lt 30 ]; do
+  public_url=$(journalctl --quiet -u "$SERVICE" --since "@$started_at" --no-pager -o cat \
+    | sed -n 's#.*\(https://[-a-z0-9]*\.trycloudflare\.com\).*#\1#p' \
+    | tail -n 1)
+  [ -n "$public_url" ] && break
+  systemctl is-active --quiet "$SERVICE" || fail "tunnel service stopped before publishing a URL"
+  attempt=$((attempt + 1))
+  sleep 1
+done
+[ -n "$public_url" ] || fail "Quick Tunnel URL was not reported"
+
+attempt=0
+while [ "$attempt" -lt 30 ]; do
+  # Quick Tunnel hostnames can be published before the VPS resolver's negative
+  # cache expires. Pin the public health gate to DNS-over-HTTPS so a healthy
+  # tunnel is not rolled back merely because that local cache is stale.
+  if curl --doh-url "$PUBLIC_DOH" -fsS --max-time 8 "$public_url/_vps/health" >/dev/null; then break; fi
+  attempt=$((attempt + 1))
+  sleep 1
+done
+[ "$attempt" -lt 30 ] || fail "public tunnel health check failed"
+
+proxy_pid_after=$(systemctl show "$PROXY_SERVICE" -p MainPID --value)
+proxy_started_after=$(systemctl show "$PROXY_SERVICE" -p ExecMainStartTimestamp --value)
+xray_pid_after=$(pidof xray-linux-amd64)
+[ "$proxy_pid_before" = "$proxy_pid_after" ] || fail "proxy PID changed"
+[ "$proxy_started_before" = "$proxy_started_after" ] || fail "proxy start time changed"
+[ "$xray_pid_before" = "$xray_pid_after" ] || fail "xray PID changed"
+
+trap - EXIT HUP INT TERM
+printf '%s\n' "public_preview_url=$public_url"
+printf '%s\n' "proxy_unchanged=yes"
+printf '%s\n' "rollback=/usr/local/sbin/portfolio-preview-tunnel-stop"
