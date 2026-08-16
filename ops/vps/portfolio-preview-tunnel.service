@@ -1,0 +1,47 @@
+[Unit]
+Description=Temporary outbound-only portfolio Preview tunnel
+Wants=network-online.target
+After=network-online.target nginx.service portfolio-preview.service
+ConditionPathIsExecutable=/opt/cloudflared-2026.7.2/cloudflared
+
+[Service]
+Type=simple
+User=portfolio-tunnel
+Group=portfolio-tunnel
+Environment=HOME=/var/empty
+ExecStart=/opt/cloudflared-2026.7.2/cloudflared tunnel --no-autoupdate --protocol http2 --url http://127.0.0.1:18081
+Restart=on-failure
+RestartSec=5s
+TimeoutStartSec=30s
+TimeoutStopSec=15s
+KillSignal=SIGTERM
+UMask=0077
+
+# Keep the 1 GB VPS usable for the existing proxy and portfolio services.
+MemoryHigh=96M
+MemoryMax=128M
+TasksMax=64
+LimitNOFILE=4096
+
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RestrictRealtime=true
+RestrictNamespaces=true
+SystemCallArchitectures=native
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+
+[Install]
+# Intentionally not enabled at boot: every Quick Tunnel URL is temporary and
+# public exposure must be started by an explicit owner-approved action.
+WantedBy=multi-user.target

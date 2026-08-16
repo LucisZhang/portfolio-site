@@ -4,6 +4,14 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 
 const nextConfig: NextConfig = {
+  // Vercel keeps its native build path. The VPS release builder opts in explicitly so a
+  // self-contained Node.js server can be packaged without changing Production behavior.
+  output: process.env.PORTFOLIO_STANDALONE === "1" ? "standalone" : undefined,
+  // Immutable VPS release directories are mounted read-only by systemd. Serve original local
+  // images there instead of requiring Next.js to create an on-disk optimization cache.
+  images: {
+    unoptimized: process.env.PORTFOLIO_STANDALONE === "1",
+  },
   pageExtensions: ["ts", "tsx", "md", "mdx"],
   env: {
     NEXT_PUBLIC_RESUME_AVAILABLE: String(existsSync(join(process.cwd(), "public", "resume.pdf"))),

@@ -1,0 +1,101 @@
+#!/bin/sh
+set -eu
+
+BASE=/srv/portfolio
+SERVICE=portfolio-preview.service
+NGINX_HEALTH=http://127.0.0.1:18080/_vps/health
+LOCK=/run/lock/portfolio-preview-deploy.lock
+
+fail() {
+  printf '%s\n' "portfolio-release: $*" >&2
+  exit 1
+}
+
+[ "$(id -u)" -eq 0 ] || fail "must run as root"
+[ "$#" -eq 3 ] || fail "usage: portfolio-release <archive> <sha256> <source-commit>"
+
+archive=$1
+expected_archive_sha=$2
+source_commit=$3
+
+case "$expected_archive_sha" in
+  *[!0-9a-f]*|'') fail "invalid archive SHA-256" ;;
+esac
+[ "${#expected_archive_sha}" -eq 64 ] || fail "invalid archive SHA-256 length"
+case "$source_commit" in
+  *[!0-9a-f]*|'') fail "invalid source commit" ;;
+esac
+[ "${#source_commit}" -eq 40 ] || fail "invalid source commit length"
+[ -f "$archive" ] || fail "archive not found"
+
+exec 9>"$LOCK"
+flock -n 9 || fail "another deployment is in progress"
+
+actual_archive_sha=$(sha256sum "$archive" | awk '{print $1}')
+[ "$actual_archive_sha" = "$expected_archive_sha" ] || fail "archive checksum mismatch"
+
+tar -tzf "$archive" | while IFS= read -r entry; do
+  case "$entry" in
+    release|release/*) ;;
+    *) fail "archive entry outside release/: $entry" ;;
+  esac
+  case "/$entry/" in
+    */../*) fail "archive contains parent traversal" ;;
+  esac
+done
+
+release_dir="$BASE/releases/$source_commit"
+incoming="$BASE/releases/.incoming-$source_commit-$$"
+previous_target=
+if [ -L "$BASE/current" ]; then
+  previous_target=$(readlink -f "$BASE/current")
+fi
+
+if [ ! -d "$release_dir" ]; then
+  mkdir -p "$incoming"
+  tar -xzf "$archive" -C "$incoming"
+  [ -f "$incoming/release/release-metadata.json" ] || fail "release metadata missing"
+  grep -Fq "\"sourceCommit\": \"$source_commit\"" "$incoming/release/release-metadata.json" \
+    || fail "release metadata commit mismatch"
+  chown -R portfolio:portfolio "$incoming/release"
+
+  # Nginx serves only release-local public artifacts. Keep the standalone
+  # server tree private to the portfolio user/group while permitting an
+  # unprivileged Nginx worker to traverse the release root and read public/.
+  chmod -R u=rwX,g=rX,o= "$incoming/release"
+  chmod o+x "$incoming/release"
+  chmod -R o=rX "$incoming/release/public"
+  mv "$incoming/release" "$release_dir"
+  rmdir "$incoming"
+fi
+
+if [ -n "$previous_target" ] && [ "$previous_target" != "$release_dir" ]; then
+  ln -sfn "$previous_target" "$BASE/previous.new"
+  mv -Tf "$BASE/previous.new" "$BASE/previous"
+fi
+
+ln -sfn "$release_dir" "$BASE/current.new"
+mv -Tf "$BASE/current.new" "$BASE/current"
+
+systemctl restart "$SERVICE"
+health_ok=0
+attempt=1
+while [ "$attempt" -le 20 ]; do
+  if curl --fail --silent --show-error --max-time 3 "$NGINX_HEALTH" >/dev/null; then
+    health_ok=1
+    break
+  fi
+  sleep 1
+  attempt=$((attempt + 1))
+done
+
+if [ "$health_ok" -ne 1 ]; then
+  if [ -n "$previous_target" ] && [ -d "$previous_target" ]; then
+    ln -sfn "$previous_target" "$BASE/current.new"
+    mv -Tf "$BASE/current.new" "$BASE/current"
+    systemctl restart "$SERVICE" || true
+  fi
+  fail "health check failed; previous release restored when available"
+fi
+
+printf '%s\n' "deployed source commit $source_commit"

@@ -1,0 +1,48 @@
+#!/bin/sh
+set -eu
+
+BASE=/srv/portfolio
+SERVICE=portfolio-preview.service
+HEALTH=http://127.0.0.1:18080/_vps/health
+LOCK=/run/lock/portfolio-preview-deploy.lock
+
+fail() {
+  printf '%s\n' "portfolio-rollback: $*" >&2
+  exit 1
+}
+
+[ "$(id -u)" -eq 0 ] || fail "must run as root"
+[ "$#" -eq 0 ] || fail "usage: portfolio-rollback"
+[ -L "$BASE/current" ] || fail "current release link missing"
+[ -L "$BASE/previous" ] || fail "previous release link missing"
+
+exec 9>"$LOCK"
+flock -n 9 || fail "another deployment is in progress"
+
+current_target=$(readlink -f "$BASE/current")
+previous_target=$(readlink -f "$BASE/previous")
+[ -d "$previous_target" ] || fail "previous release directory missing"
+[ "$current_target" != "$previous_target" ] || fail "current and previous releases are identical"
+
+ln -sfn "$previous_target" "$BASE/current.new"
+mv -Tf "$BASE/current.new" "$BASE/current"
+ln -sfn "$current_target" "$BASE/previous.new"
+mv -Tf "$BASE/previous.new" "$BASE/previous"
+
+systemctl restart "$SERVICE"
+attempt=1
+while [ "$attempt" -le 20 ]; do
+  if curl --fail --silent --show-error --max-time 3 "$HEALTH" >/dev/null; then
+    printf '%s\n' "rolled back to $previous_target"
+    exit 0
+  fi
+  sleep 1
+  attempt=$((attempt + 1))
+done
+
+ln -sfn "$current_target" "$BASE/current.new"
+mv -Tf "$BASE/current.new" "$BASE/current"
+ln -sfn "$previous_target" "$BASE/previous.new"
+mv -Tf "$BASE/previous.new" "$BASE/previous"
+systemctl restart "$SERVICE" || true
+fail "rollback health check failed; original release restored"
