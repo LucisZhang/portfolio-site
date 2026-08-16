@@ -87,5 +87,7 @@ const proofByProject: Record<ProjectId, () => React.JSX.Element> = {
 
 export default function ProjectProof({ project }: { project: Project }) {
   const Proof = proofByProject[project.slug];
-  return <><Architecture project={project} /><Proof /><FieldNotes project={project} /><Notes project={project} /></>;
+  // The interactive proof is the first thing after the intro: a visitor who
+  // only reads one screen should get the running instrument, not the diagram.
+  return <><Proof /><Architecture project={project} /><FieldNotes project={project} /><Notes project={project} /></>;
 }

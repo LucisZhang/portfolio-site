@@ -84,8 +84,8 @@ export default function CrossoverProof() {
     : ["强制 schema 的 bronze 表", "去重与覆盖台账", "冻结的时间切分", "全目录排序，不做负采样", "用户自举置信区间", "每个数字背后都有凭据"];
   return (
     <ProjectProofSection title={dict.evidence} className="tinted-section">
-      <section className="triage-drift" aria-labelledby="crossover-waterfall-title">
-        <div><p className="eyebrow">{locale === "en" ? "Reconciliation waterfall" : "对账瀑布"}</p><h3 id="crossover-waterfall-title">{locale === "en" ? "43.9M rows in, 15.5M rows out — click a stage to see where the rest went" : "进来 43.9M 行，出去 15.5M 行——点开每一级，看其余的行去了哪"}</h3></div>
+      <figure className="figure" aria-labelledby="crossover-waterfall-title">
+        <div className="fig-title"><p className="eyebrow">{locale === "en" ? "Reconciliation waterfall" : "对账瀑布"}</p><h3 id="crossover-waterfall-title">{locale === "en" ? "43.9M rows in, 15.5M rows out — click a stage to see where the rest went" : "进来 43.9M 行，出去 15.5M 行——点开每一级，看其余的行去了哪"}</h3></div>
         <div className="crossover-stage-tabs" role="tablist" aria-label={locale === "en" ? "Pipeline stage" : "管线阶段"}>
           {STAGES.map((s) => (
             <button key={s.id} role="tab" aria-selected={s.id === stageId} onClick={() => setStageId(s.id)}>
@@ -98,7 +98,10 @@ export default function CrossoverProof() {
         <ul className="crossover-stage-detail">
           {(locale === "en" ? stage.detail.en : stage.detail.zh).map((line) => <li key={line}>{line}</li>)}
         </ul>
-      </section>
+        <figcaption className="fig-caption">
+          <span className="fig-source">{locale === "en" ? "Source · the project's reconciliation waterfall and data manifest." : "来源 · 项目的对账瀑布与数据清单。"}</span>
+        </figcaption>
+      </figure>
       <div className="analytics-boundary"><CircleAlert aria-hidden="true" /><span>{locale === "en" ? "The lab was built to find the history depth where personalization starts beating popularity, and to route users accordingly. The measured answer on this data: that depth was never reached. The result stays published as measured." : "这个实验的目标是找到个性化开始赢过热门榜的历史深度，并据此路由用户。这份数据上的实测答案是：这个深度从未到达。结果按实测原样发布。"}</span></div>
       <div className="rag-floor">
         <div><span>{locale === "en" ? "Orphan rows in the foreign-key check" : "外键检查中的孤儿行"}</span><strong>0</strong></div>
