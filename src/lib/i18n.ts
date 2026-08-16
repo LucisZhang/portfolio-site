@@ -35,6 +35,7 @@ export interface Dictionary {
   links: string;
   architecture: string;
   evidence: string;
+  fieldNotes: string;
   provenance: string;
   boundaries: string;
   backHome: string;
@@ -69,6 +70,7 @@ const en: Dictionary = {
   links: "Links",
   architecture: "How it works",
   evidence: "Try it",
+  fieldNotes: "Field notes",
   provenance: "How this was verified",
   boundaries: "What this does not prove",
   backHome: "All projects",
@@ -103,6 +105,7 @@ const zh: Dictionary = {
   links: "链接",
   architecture: "工作原理",
   evidence: "动手体验",
+  fieldNotes: "实况记录",
   provenance: "如何验证",
   boundaries: "这项结果不能说明什么",
   backHome: "全部项目",
