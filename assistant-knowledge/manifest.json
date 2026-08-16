@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "snapshotId": "public-github-portfolio-20260724-v3",
+  "snapshotId": "public-github-portfolio-20260816-v1",
   "repositories": [
     {
       "owner": "LucisZhang",
@@ -99,30 +99,16 @@
       "files": [
         "README.md",
         "README.zh-CN.md",
-        "public/case-studies/credit-policy-desk/README.md",
-        "public/case-studies/credit-policy-desk/architecture.mmd",
-        "public/case-studies/credit-policy-desk/backtest-report.json",
-        "public/case-studies/credit-policy-desk/methods-evidence.json",
-        "public/case-studies/credit-policy-desk/policy-contract.json",
+        "public/case-studies/credit-policy-lab/README.md",
+        "public/case-studies/credit-policy-lab/architecture.mmd",
+        "public/case-studies/credit-policy-lab/backtest-report.json",
+        "public/case-studies/credit-policy-lab/methods-evidence.json",
+        "public/case-studies/credit-policy-lab/policy-contract.json",
         "pipelines/credit-backtest/README.md",
         "pipelines/credit-backtest/PROVENANCE.md",
         "pipelines/credit-backtest/source-lock.json",
         "pipelines/credit-backtest/build.py",
         "src/components/analytics/CreditPolicyLab.tsx"
-      ]
-    },
-    {
-      "owner": "LucisZhang",
-      "repo": "ex-solver",
-      "commit": "eae2731571fc3a30ee322bad1132505b5b47ca69",
-      "label": { "en": "Exam Solver", "zh": "考试题求解器" },
-      "aliases": ["ex-solver", "exam solver", "考试题求解器", "vision", "视觉", "ensemble", "集成", "judge", "裁决", "OpenRouter"],
-      "files": [
-        "README.md",
-        "app/schemas.py",
-        "app/pipeline/orchestrator.py",
-        "app/pipeline/rag.py",
-        "app/pipeline/judge.py"
       ]
     },
     {
@@ -137,14 +123,6 @@
         "backend/speaker_engine.py",
         "backend/augmentations.py"
       ]
-    },
-    {
-      "owner": "LucisZhang",
-      "repo": "Risk-Control-Portfolio",
-      "commit": "675980c0c411d5ae05ae15d00a859c24c9ac60f0",
-      "label": { "en": "Risk Control Portfolio", "zh": "风控作品" },
-      "aliases": ["Risk-Control-Portfolio", "risk control", "风控", "Streamlit", "credit risk", "信用风险"],
-      "files": ["app.py", "requirements.txt"]
     }
   ]
 }
