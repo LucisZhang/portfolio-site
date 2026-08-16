@@ -10,15 +10,32 @@ import { featuredProjects, tracks } from "@/lib/projects";
 import { siteMetadata } from "@/lib/site-config";
 import "./globals.css";
 
-const flourishLatin = localFont({
-  src: "./fonts/InterVariable-Latin.woff2",
-  variable: "--font-flourish-latin",
-  weight: "100 900",
+// Latin text is self-hosted IBM Plex; Chinese stays on system faces so no CJK
+// webfont ships. Arial survives only as the metric reference for the synthesized
+// fallback face (adjustFontFallback), which is what keeps CLS near zero.
+const plexSans = localFont({
+  src: "./fonts/IBMPlexSansVar-Latin.woff2",
+  variable: "--font-geist-sans",
+  weight: "100 700",
   style: "normal",
   display: "swap",
-  preload: false,
-  fallback: ["Arial"],
+  preload: true,
+  fallback: ["PingFang SC", "Microsoft YaHei", "Arial", "sans-serif"],
   adjustFontFallback: "Arial",
+});
+
+// Plex Mono has no variable release, so two static cuts cover the whole range
+// without the browser synthesizing a fake bold.
+const plexMono = localFont({
+  src: [
+    { path: "./fonts/IBMPlexMono-Latin-400.woff2", weight: "100 500", style: "normal" },
+    { path: "./fonts/IBMPlexMono-Latin-600.woff2", weight: "501 900", style: "normal" },
+  ],
+  variable: "--font-geist-mono",
+  display: "swap",
+  preload: false,
+  fallback: ["SFMono-Regular", "Consolas", "Liberation Mono", "PingFang SC", "Microsoft YaHei", "monospace"],
+  adjustFontFallback: false,
 });
 
 export const metadata: Metadata = {
@@ -38,7 +55,7 @@ function FooterCopy() {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={flourishLatin.variable}>
+    <html lang="en" className={`${plexSans.variable} ${plexMono.variable}`}>
       <body>
         <LanguageProvider>
           <header className="site-header">
