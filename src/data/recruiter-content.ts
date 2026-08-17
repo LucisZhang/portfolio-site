@@ -153,20 +153,6 @@ export const recruiterQuestionsByRoute: Record<string, { en: string[]; zh: strin
       "当一条投诉在多个层级之间界限模糊时会发生什么？路由器如何避免静默误判？",
     ],
   },
-  "/engineering/crossover-study": {
-    en: [
-      "What does the 43.9M-review Spark and Iceberg lakehouse pipeline actually build and evaluate?",
-      "You ran a full-catalog recsys evaluation and popularity never crossed — what does that negative result mean, and why report it?",
-      "What would need to change for a popularity-based baseline to be overtaken in this setup?",
-      "How does the Spark and Iceberg layer keep the full-catalog evaluation reproducible at that scale?",
-    ],
-    zh: [
-      "这个基于 4390 万条评论的 Spark + Iceberg 数据湖仓管道具体构建并评估了什么？",
-      "你进行了全目录推荐系统评估，热门基线始终未被超越——这个否定结果说明了什么？为什么要报告它？",
-      "在这个实验设置下，要让基于热门度的基线被超越，需要改变什么？",
-      "在这个规模下，Spark 与 Iceberg 这一层如何保证全目录评估的可复现性？",
-    ],
-  },
 };
 
 export interface RecruiterSearchSuggestion {
@@ -192,6 +178,4 @@ export const recruiterSearchSuggestions: RecruiterSearchSuggestion[] = [
   { id: "data-engineering", label: { en: "data engineering", zh: "数据工程" }, intent: "role", expectedId: "track-engineering", acceptableIds: ["exactly-once-drills"] },
   { id: "complaint-triage-cascade", label: { en: "complaint triage cascade routing", zh: "投诉分级级联路由" }, intent: "capability", expectedId: "triage-router", acceptableIds: ["track-ai"] },
   { id: "cost-aware-routing", label: { en: "cost-aware routing", zh: "成本感知路由" }, intent: "capability", expectedId: "triage-router", acceptableIds: ["track-ai"] },
-  { id: "spark-iceberg-lakehouse", label: { en: "Spark and Iceberg lakehouse", zh: "Spark 与 Iceberg 数据湖仓" }, intent: "tool", expectedId: "crossover-study", acceptableIds: ["track-engineering"] },
-  { id: "recsys-popularity-baseline", label: { en: "recsys popularity baseline evaluation", zh: "推荐系统热门基线评估" }, intent: "business-problem", expectedId: "crossover-study", acceptableIds: ["track-engineering"] },
 ];

@@ -7,7 +7,6 @@ const routes = [
   "/",
   "/engineering",
   "/engineering/exactly-once-drills",
-  "/engineering/crossover-study",
   "/ai",
   "/ai/release-guardian",
   "/ai/rag-quality-lab",
@@ -63,20 +62,19 @@ for (const locale of ["en", "zh"] as const) {
         await expect(footerContact).toBeVisible();
         await expect(footerContact).toHaveAttribute("href", locale === "en" ? "/#contact" : "/?lang=zh#contact");
         await expect(page.locator('a[href="/resume.pdf"]')).toHaveCount(0);
-        await expect(page.locator(".workspace-index")).toContainText(locale === "en" ? "8 interactive demos" : "8 个交互式演示");
+        await expect(page.locator(".workspace-index")).toContainText(locale === "en" ? "7 interactive demos" : "7 个交互式演示");
         await expect(page.locator(".index-heading p")).toHaveText(locale === "en"
           ? "Open any project to see what I built, how it works, and how to verify it."
           : "打开任意项目，了解我做了什么、项目如何运作，以及如何验证结果。");
         const projectLinks = page.locator(".project-table > a");
-        await expect(projectLinks).toHaveCount(8);
+        await expect(projectLinks).toHaveCount(7);
         await expect(projectLinks.nth(0)).toHaveAttribute("href", /^\/ai\/release-guardian(?:\?lang=zh)?$/);
         await expect(projectLinks.nth(1)).toHaveAttribute("href", /^\/ai\/rag-quality-lab(?:\?lang=zh)?$/);
         await expect(projectLinks.nth(2)).toHaveAttribute("href", /^\/ai\/triage-router(?:\?lang=zh)?$/);
         await expect(projectLinks.nth(3)).toHaveAttribute("href", /^\/ai\/privacy-preflight-mac(?:\?lang=zh)?$/);
         await expect(projectLinks.nth(4)).toHaveAttribute("href", /^\/analytics\/margin-control-tower(?:\?lang=zh)?$/);
         await expect(projectLinks.nth(5)).toHaveAttribute("href", /^\/engineering\/exactly-once-drills(?:\?lang=zh)?$/);
-        await expect(projectLinks.nth(6)).toHaveAttribute("href", /^\/engineering\/crossover-study(?:\?lang=zh)?$/);
-        await expect(projectLinks.nth(7)).toHaveAttribute("href", /^\/analytics\/credit-policy-desk(?:\?lang=zh)?$/);
+        await expect(projectLinks.nth(6)).toHaveAttribute("href", /^\/analytics\/credit-policy-desk(?:\?lang=zh)?$/);
         await expect(projectLinks.nth(0).locator(".metrics-chips")).toContainText(locale === "en" ? "132 live graph runs" : "132 次在线图运行");
         if (testInfo.project.name === "mobile") {
           await expect(page.locator(".discipline-strip .page-shell")).toHaveCSS("display", "flex");
@@ -216,6 +214,20 @@ for (const locale of ["en", "zh"] as const) {
     });
   }
 }
+
+test("withdrawn Crossover Study is absent from public routes and navigation", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "The withdrawal contract only needs one runtime pass.");
+
+  const response = await page.goto("/engineering/crossover-study", { waitUntil: "networkidle" });
+  expect(response?.status()).toBe(404);
+
+  for (const route of ["/", "/engineering"]) {
+    await page.goto(route, { waitUntil: "networkidle" });
+    await expect(page.locator('a[href^="/engineering/crossover-study"]')).toHaveCount(0);
+    await expect(page.locator("main")).not.toContainText("Crossover Study");
+    await expect(page.locator("main")).not.toContainText("交叉点研究");
+  }
+});
 
 test("homepage and non-analytics routes do not load the DuckDB browser runtime", async ({ page }) => {
   const duckDbRequests: string[] = [];

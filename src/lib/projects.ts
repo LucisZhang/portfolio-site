@@ -32,6 +32,7 @@ export interface ArchitectureStep {
 export interface Project {
   slug: ProjectId;
   track: TrackId;
+  published?: boolean;
   title: LocalizedString;
   eyebrow: LocalizedString;
   summary: LocalizedString;
@@ -79,7 +80,7 @@ export const tracks: Track[] = [
   },
 ];
 
-export const projects: Project[] = [
+const projectCatalog: Project[] = [
   {
     slug: "release-guardian",
     track: "ai",
@@ -458,6 +459,7 @@ export const projects: Project[] = [
   {
     slug: "crossover-study",
     track: "engineering",
+    published: false,
     title: { en: "Crossover Study", zh: "交叉点研究" },
     eyebrow: { en: "Spark + Iceberg lakehouse · recommender evaluation", zh: "Spark + Iceberg 湖仓 · 推荐系统评估" },
     summary: {
@@ -630,6 +632,8 @@ export const projects: Project[] = [
     legacy: true,
   },
 ];
+
+export const projects = projectCatalog.filter((project) => project.published !== false);
 
 const featuredProjectOrder: ProjectId[] = [
   "release-guardian",

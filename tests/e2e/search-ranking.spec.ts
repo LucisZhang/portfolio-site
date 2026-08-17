@@ -17,9 +17,6 @@ const cases: Array<{ query: string; locale: Locale; first: string; includes?: st
   { query: "complaint classification cost", locale: "en", first: "triage-router" },
   { query: "投诉分流", locale: "zh", first: "triage-router" },
   { query: "model routing cascade", locale: "en", first: "triage-router" },
-  { query: "recommender popularity baseline", locale: "en", first: "crossover-study" },
-  { query: "推荐系统评估", locale: "zh", first: "crossover-study" },
-  { query: "Spark Iceberg lakehouse", locale: "en", first: "crossover-study" },
   { query: "OCR PDF", locale: "en", first: "privacy-preflight-mac" },
   { query: "隐私脱敏", locale: "zh", first: "privacy-preflight-mac" },
   { query: "ecommerce profit", locale: "en", first: "margin-control-tower" },
@@ -57,6 +54,17 @@ test("hybrid bilingual search ranks project meaning instead of hard-coded exampl
     results.filter((result) => !result.id.startsWith("track-")).forEach((result) => covered.add(result.id));
   }
   expect(covered).toEqual(new Set(featuredProjects.map((project) => project.slug)));
+});
+
+test("withdrawn Crossover Study is absent from search and recruiter suggestions", async ({}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "The withdrawal contract only needs one runtime pass.");
+  expect(featuredProjects.some((project) => project.slug === "crossover-study")).toBe(false);
+  expect(recruiterSearchSuggestions.some((suggestion) => suggestion.expectedId === "crossover-study")).toBe(false);
+
+  for (const query of ["Crossover Study", "Spark Iceberg lakehouse", "推荐系统评估"]) {
+    expect(searchPortfolio(query, tracks, featuredProjects, "en").some((result) => result.id === "crossover-study")).toBe(false);
+    expect(searchPortfolio(query, tracks, featuredProjects, "zh").some((result) => result.id === "crossover-study")).toBe(false);
+  }
 });
 
 test("discipline pages require explicit discipline queries and irrelevant text does not produce filler", async ({}, testInfo) => {
@@ -152,9 +160,14 @@ test("search history stays local, bounded, persistent, and isolated by browser c
   await freshContext.close();
 });
 
-test("the twelve primary recruiter routes each expose four distinct bilingual questions", async ({}, testInfo) => {
+test("every primary recruiter route exposes four distinct bilingual questions", async ({}, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "Static recruiter content needs one deterministic pass.");
-  expect(Object.keys(recruiterQuestionsByRoute)).toHaveLength(12);
+  const expectedRoutes = new Set([
+    "/",
+    ...tracks.map((track) => `/${track.id}`),
+    ...featuredProjects.map((project) => `/${project.track}/${project.slug}`),
+  ]);
+  expect(new Set(Object.keys(recruiterQuestionsByRoute))).toEqual(expectedRoutes);
   for (const [route, questions] of Object.entries(recruiterQuestionsByRoute)) {
     expect(questions.en, `${route} English`).toHaveLength(4);
     expect(questions.zh, `${route} Chinese`).toHaveLength(4);

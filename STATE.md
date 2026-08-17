@@ -5,6 +5,19 @@ Updated: 2026-07-25 10:57 (Asia/Shanghai) / 2026-07-25 02:57 UTC
 This file records the recruiter-safe state of the current release candidate. It contains no
 credentials, raw private candidate material, local source paths, or browser-session data.
 
+## 2026-08-17 Crossover Study withdrawal authorization
+
+Status: `OWNER_AUTHORIZED_FOR_PREVIEW_AND_PRODUCTION`.
+
+On 2026-08-17 Asia/Shanghai, the owner explicitly directed that Crossover Study be withdrawn from
+the online portfolio. The authorized release scope is limited to removing the project from the
+homepage, engineering track, static project routes, local portfolio search, recruiter prompts,
+the canonical ECS-hosted site, and the Vercel fallback. The authorization does not include DNS,
+firewall, proxy, unrelated-service, project-repository, billing, or paid-model changes.
+
+The immutable candidate, Preview, Production, Vercel fallback, and public-route verification
+receipts remain pending until those actions complete.
+
 ## Privacy Safari stream compatibility hotfix
 
 Status: `PRIVACY_SAFARI_STREAM_HOTFIX_PRODUCTION_VERIFIED_MAC_SAFARI`. Runtime PR #16 merged
