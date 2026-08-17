@@ -23,8 +23,6 @@ const coldStartOrder = [
   "simplified-chinese-ocr",
   "complaint-triage-cascade",
   "cost-aware-routing",
-  "spark-iceberg-lakehouse",
-  "recsys-popularity-baseline",
 ];
 
 function targetIds(suggestion: RecruiterSearchSuggestion) {
