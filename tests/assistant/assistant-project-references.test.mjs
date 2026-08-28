@@ -16,11 +16,11 @@ test("project references use canonical localized destinations", () => {
   });
   assert.equal(projectReference("release-guardian", "en")?.href, "/ai/release-guardian");
   assert.equal(projectReference("streaming-reliability-lab", "en")?.href, "/engineering/exactly-once-drills");
-  assert.equal(projectReference("ex-solver", "zh")?.href, "https://github.com/LucisZhang/ex-solver");
+  assert.equal(projectReference("ex-solver", "zh"), null);
   assert.equal(projectReference("Voice-in-Security", "en")?.href, "https://github.com/LucisZhang/Voice-in-Security");
-  assert.equal(projectReference("Risk-Control-Portfolio", "en")?.href, "https://github.com/LucisZhang/Risk-Control-Portfolio");
+  assert.equal(projectReference("Risk-Control-Portfolio", "en"), null);
   assert.equal(projectReference("unknown", "en"), null);
-  assert.equal(ASSISTANT_PROJECT_IDS.length, 9);
+  assert.equal(ASSISTANT_PROJECT_IDS.length, 7);
 });
 
 test("answer block validation accepts only bounded typed project segments", () => {
@@ -64,14 +64,14 @@ test("answer block validation accepts only bounded typed project segments", () =
 test("plain-text known project mentions become canonical project segments", () => {
   assert.deepEqual(canonicalizeAssistantProjectMentions([{
     type: "paragraph",
-    segments: [{ type: "text", text: "Compare Release Guardian with ex-solver, then inspect 毛利控制塔。", strong: true }],
+    segments: [{ type: "text", text: "Compare Release Guardian with Voice-in-Security, then inspect 毛利控制塔。", strong: true }],
   }]), [{
     type: "paragraph",
     segments: [
       { type: "text", text: "Compare ", strong: true },
       { type: "project", projectId: "release-guardian", strong: true },
       { type: "text", text: " with ", strong: true },
-      { type: "project", projectId: "ex-solver", strong: true },
+      { type: "project", projectId: "Voice-in-Security", strong: true },
       { type: "text", text: ", then inspect ", strong: true },
       { type: "project", projectId: "margin-control-tower", strong: true },
       { type: "text", text: "。", strong: true },

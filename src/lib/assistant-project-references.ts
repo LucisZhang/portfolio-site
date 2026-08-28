@@ -5,9 +5,7 @@ export const ASSISTANT_PROJECT_IDS = [
   "privacy-preflight-web",
   "margin-control-tower",
   "credit-policy-lab",
-  "ex-solver",
   "Voice-in-Security",
-  "Risk-Control-Portfolio",
 ] as const;
 
 export type AssistantProjectId = (typeof ASSISTANT_PROJECT_IDS)[number];
@@ -37,9 +35,7 @@ const catalog: Record<AssistantProjectId, {
   "privacy-preflight-web": { label: { en: "Privacy Preflight Web", zh: "隐私预检网页版" }, href: "/ai/privacy-preflight-mac", kind: "portfolio" },
   "margin-control-tower": { label: { en: "Margin Control Tower", zh: "毛利控制塔" }, href: "/analytics/margin-control-tower", kind: "portfolio" },
   "credit-policy-lab": { label: { en: "Credit Policy Desk", zh: "信贷策略工作台" }, href: "/analytics/credit-policy-desk", kind: "portfolio" },
-  "ex-solver": { label: { en: "ex-solver", zh: "ex-solver" }, href: "https://github.com/LucisZhang/ex-solver", kind: "github" },
   "Voice-in-Security": { label: { en: "Voice-in-Security", zh: "Voice-in-Security" }, href: "https://github.com/LucisZhang/Voice-in-Security", kind: "github" },
-  "Risk-Control-Portfolio": { label: { en: "Risk-Control-Portfolio", zh: "Risk-Control-Portfolio" }, href: "https://github.com/LucisZhang/Risk-Control-Portfolio", kind: "github" },
 };
 
 const projectIds = new Set<string>(ASSISTANT_PROJECT_IDS);

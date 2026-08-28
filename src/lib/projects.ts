@@ -43,6 +43,7 @@ export interface Project {
   outcome: LocalizedString;
   stack: LocalizedString[];
   architecture: ArchitectureStep[];
+  fieldNotes?: LocalizedString[];
   provenance: LocalizedString[];
   boundaries: LocalizedString[];
   links: ProjectLink[];
@@ -115,6 +116,20 @@ const projectCatalog: Project[] = [
       { label: { en: "Approval", zh: "审批" }, detail: { en: "Pause and wait for a human decision before publish.", zh: "发布前持久化中断并等待审批。" } },
       { label: { en: "Audit", zh: "审计" }, detail: { en: "Publish through the approved branch and record the decision.", zh: "仅通过获批分支发布并记录决策。" } },
     ],
+    fieldNotes: [
+      {
+        en: "The first live rerun after Phase L ran out of OpenRouter credit halfway through: 3 graph failures, 42 judge calls answered with HTTP 402, citation fidelity 0.977. I funded a clean rerun, kept the burned one out of the handoff archive, and it is not tracked in the repository either.",
+        zh: "L 阶段之后的第一次在线重跑，跑到一半 OpenRouter 额度就用光了：3 次图运行失败、42 次裁判调用收到 HTTP 402、引用忠实度 0.977。我付费重跑了一份干净的，那份烧光额度的报告没有进交付归档，仓库里也没有跟踪它。",
+      },
+      {
+        en: "One scenario kept dying on \"'NoneType' object has no attribute 'strip'\". OpenRouter was returning a null message.content and my code called .strip() on it. Routing null content back through the structured-validation retry fixed it; citation fidelity moved 0.984848 → 1.000000 in the same window, which I report as an operational before-and-after rather than a causal estimate.",
+        zh: "有个场景反复挂在 \"'NoneType' object has no attribute 'strip'\" 上。OpenRouter 返回了空的 message.content，而我的代码直接对它调用了 .strip()。把空内容重新走一遍结构化校验重试就解决了；同一时间窗里引用忠实度从 0.984848 变成 1.000000——我只把它当作运维层面的前后对比，不当因果估计。",
+      },
+      {
+        en: "Eight aggregate gates pass, and the agent still misses roughly 17% of the dependencies it should find: missed_dependency_rate 0.1742 against a ≤0.25 threshold. Scenario by scenario it reads worse — 30 of 44 fail at least one criterion in at least one of their three trials. Both views are on this page.",
+        zh: "八项聚合门禁全部通过，可它依然漏掉了大约 17% 本该找出来的依赖：missed_dependency_rate 0.1742，阈值是 ≤0.25。逐场景看更难看——44 个场景里有 30 个，在三次试验中至少一次至少有一项标准没过。这两种视角都摆在本页上。",
+      },
+    ],
     provenance: [
       {
         en: "Funded live report dated 2026-07-11: 44 scenarios, three trials, 132 graph runs; raw report is archive-only and not tracked in the source repository.",
@@ -181,6 +196,20 @@ const projectCatalog: Project[] = [
       { label: { en: "Failure", zh: "故障" }, detail: { en: "The harness triggers one recorded failure type at a time.", zh: "框架每次触发一种已记录的故障类型。" } },
       { label: { en: "Reconcile", zh: "对账" }, detail: { en: "Check source, snapshot, and event-ID sets after recovery.", zh: "恢复后审计源数据、快照与事件 ID 集合。" } },
     ],
+    fieldNotes: [
+      {
+        en: "The task-crash drill fires from a one-shot marker file. A marker left behind by an earlier local run can swallow the next run's induced failure, and the drill then reports a clean recovery it never performed. The note I left in the runbook is to keep the marker path unique per run.",
+        zh: "任务崩溃演练靠一个一次性标记文件触发。上一次本地运行遗留的标记，会把下一次注入的故障吞掉，于是演练报告的是一次它根本没做过的恢复。我在手册里留的处置办法是：每次运行都用不同的标记路径。",
+      },
+      {
+        en: "Restoring from a retained checkpoint looks like reading a path and handing it to flink run -s. It is not. The checkpoint the REST API reports can be superseded by a later retained checkpoint during shutdown, so the path has to be resolved after cancellation, not before it.",
+        zh: "从保留的检查点恢复，看上去就是读一个路径、交给 flink run -s。并不是。REST 接口报出来的那个检查点，可能在停机过程中被更晚的保留检查点顶掉，所以路径必须在作业取消之后再解析，不能提前。",
+      },
+      {
+        en: "After I restarted the JobManager container the session job was simply gone, and waiting for a registered worker got me nothing. The TaskManager has to be brought back first; only then does the restore from chk-7 take. Reconciliation still came out at zero snapshot differences, but that ordering belongs to this single-node Compose setup, not to Flink.",
+        zh: "重启 JobManager 容器之后，会话作业就那么没了，干等注册上来的 worker 也等不到。得先把 TaskManager 拉回来，从 chk-7 的恢复才生效。对账结果依然是零快照差异，但这个先后顺序属于我这套单节点 Compose 环境，不属于 Flink 本身。",
+      },
+    ],
     provenance: [
       {
         en: "The May public run files come from commit 47b4268 and include result JSON, charts, a dashboard capture, and incident notes.",
@@ -246,6 +275,16 @@ const projectCatalog: Project[] = [
       { label: { en: "Manifest", zh: "清单" }, detail: { en: "Bind datasets, adapters, and outputs to deterministic hashes.", zh: "以确定性哈希绑定数据集、适配器与输出。" } },
       { label: { en: "Gate", zh: "门禁" }, detail: { en: "Fail on data drift, contract breaks, or measured regression.", zh: "发现数据漂移、契约破坏或已测退化时直接失败。" } },
     ],
+    fieldNotes: [
+      {
+        en: "I changed documents only — no code, no configuration — and Pipeline B's faithfulness fell from 0.988 to 0.867 across the 12 controlled questions. Four questions got worse, eight held, none improved. The regression run is the only reason I know that happened.",
+        zh: "我只动了文档——没改代码，也没动配置——12 道受控问题上，流水线 B 的忠实度就从 0.988 掉到 0.867。4 道变差、8 道持平、一道也没变好。我之所以知道这件事，只是因为跑了回归。",
+      },
+      {
+        en: "The hybrid-plus-rerank pipeline wins all five quality metrics and retrieves 4.6× slower at 50K documents: P50 128.44 ms against 28.13 ms, P99 212.43 ms against 39.65 ms. I keep the two tables side by side, because the quality table on its own makes the choice look obvious.",
+        zh: "混合加重排的流水线赢下了全部五项质量指标，而在 50K 文档规模上，它的检索慢 4.6 倍：P50 128.44 毫秒对 28.13 毫秒，P99 212.43 毫秒对 39.65 毫秒。我把两张表并排放着，因为只看质量那张表，会觉得这个选择根本不用想。",
+      },
+    ],
     provenance: [
       {
         en: "The saved 2026-04 controlled run was deterministically re-parsed in 2026-07: Pipeline B moved from 0.988 to 0.867 faithfulness after the V1-to-V2 document update, with 4 degraded, 0 improved, and 8 stable questions.",
@@ -277,8 +316,8 @@ const projectCatalog: Project[] = [
     title: { en: "Triage Router", zh: "投诉分流路由" },
     eyebrow: { en: "Three model tiers · cost-aware routing", zh: "三层模型 · 成本感知路由" },
     summary: {
-      en: "Before paying for an LLM, know your frontier. TF-IDF linear models, fine-tuned transformers, and Claude models triage the same CFPB consumer complaints; a confidence cascade routes each one to the cheapest tier that can handle it, measured against 11 years of distribution drift.",
-      zh: "为 LLM 付费之前，先弄清自己的成本-质量前沿。TF-IDF 线性模型、微调 Transformer 和 Claude 模型对同一批 CFPB 消费者投诉做分流；置信级联把每条投诉路由到能处理它的最便宜一层，并在 11 年的分布漂移上实测。",
+      en: "The expensive model was the wrong default: on held-out IID data Claude Sonnet 5 is statistically indistinguishable from Haiku 4.5 at 2.8× the cost, and under a shared output budget it silently answers nothing on up to 2.5% of calls. TF-IDF linear models, fine-tuned transformers, and Claude tiers triage the same CFPB consumer complaints; a confidence cascade routes each one to the cheapest tier that can handle it, measured against 11 years of distribution drift.",
+      zh: "贵的模型并不是稳妥的默认选项：在留出的同分布数据上，Claude Sonnet 5 与 Haiku 4.5 在统计上分不出高下，成本却是 2.8 倍；在共用的输出预算下，它还会在最多 2.5% 的调用上悄无声息地什么都不答。TF-IDF 线性模型、微调 Transformer 和 Claude 各层对同一批 CFPB 消费者投诉做分流；置信级联把每条投诉路由到能处理它的最便宜一层，并在 11 年的分布漂移上实测。",
     },
     metrics: {
       en: "Router +0.037 macro-F1 over baseline · −$120.58 expected cost per 1k · drift measured 2015–2026",
@@ -314,6 +353,20 @@ const projectCatalog: Project[] = [
       { label: { en: "Cost", zh: "成本" }, detail: { en: "Price every path with an explicit model: inference dollars, misroute cost, human review.", zh: "用显式成本模型给每条路径定价：推理费用、误分流成本、人工复核。" } },
       { label: { en: "Route", zh: "路由" }, detail: { en: "Fit cascade thresholds on the calibration slice only — never on test.", zh: "级联阈值只在校准切片上拟合，绝不碰测试集。" } },
       { label: { en: "Drift", zh: "漂移" }, detail: { en: "Replay 2023–2026 yearly slices and decompose what actually moved: class mix, not vocabulary.", zh: "回放 2023–2026 年度切片，分解真正变化的因素：是类别构成，不是词表。" } },
+    ],
+    fieldNotes: [
+      {
+        en: "I assumed the expensive tier was the safe default. On the same 1,500 held-out IID rows, Sonnet 5 minus Haiku 4.5 comes out at −0.0073 macro-F1, CI [−0.0427, +0.0263], McNemar p=1.00 — indistinguishable, at 2.8× the cost per thousand complaints ($3.66 against $1.32) and 2.3× the p50 latency. It earns its price only on the post-cutoff slice, where the paired gain is +0.0458 macro-F1.",
+        zh: "我本来以为贵的那一层就是稳妥的默认选项。在同样的 1,500 条留出同分布样本上，Sonnet 5 减 Haiku 4.5 的结果是 macro-F1 −0.0073，置信区间 [−0.0427, +0.0263]，McNemar p=1.00——分不出高下，代价却是每千条投诉 2.8 倍的成本（$3.66 对 $1.32）和 2.3 倍的 p50 延迟。它只在训练截止之后的切片上才值这个价：配对增益 macro-F1 +0.0458。",
+      },
+      {
+        en: "Under the shared 64-token completion budget the stronger model sometimes answers with nothing at all: 12 of 1,500 calls on the IID slice (0.8%) and 37 of 1,500 on the post-cutoff slice (2.5%), every one with finish_reason \"length\" and no parseable JSON — its reasoning consumed the budget before an answer appeared. Haiku did that on 0 of 10,000 calls. The failures are worst on the drifted slice, which is exactly where you would escalate to the stronger model.",
+        zh: "在共用的 64 token 输出预算下，更强的那个模型有时候干脆什么也不答：同分布切片上 1,500 次调用里失败 12 次（0.8%），训练截止后的切片上 1,500 次里失败 37 次（2.5%），每一次的 finish_reason 都是 \"length\"，没有可解析的 JSON——预算被它自己的推理吃光了，答案还没出来。Haiku 在 10,000 次调用里一次都没有。失败率最高的正是漂移切片，而那恰恰是你会想升级到更强模型的地方。",
+      },
+      {
+        en: "I thought Tier C was pinned to Anthropic. Reading the request builder showed nothing of the kind: the body never carried an OpenRouter provider preference — no order, no only, no allow_fallbacks — so the pin never was in effect. Across all 16,050 committed Tier C calls, 16,020 (99.81%) were served by Amazon Bedrock, and every Phase 3 latency figure had to be relabeled as a route through OpenRouter to Bedrock.",
+        zh: "我一直以为 Tier C 固定走 Anthropic。翻了一遍请求构造代码才发现根本没有：请求体里从来没带过 OpenRouter 的 provider 偏好——没有 order，没有 only，没有 allow_fallbacks——所谓的固定供应商从未生效。全部 16,050 次已提交的 Tier C 调用里，16,020 次（99.81%）由 Amazon Bedrock 服务，Phase 3 的每一个延迟数字都得重新标注为「经 OpenRouter 路由到 Bedrock」。",
+      },
     ],
     provenance: [
       {
@@ -385,6 +438,16 @@ const projectCatalog: Project[] = [
       { label: { en: "Validate", zh: "验证" }, detail: { en: "Reopen outputs and check hashes, pixels, text layers, annotations, and document structure.", zh: "重新打开输出文件，逐一校验哈希值、像素、文本图层、批注与文档结构。" } },
       { label: { en: "Export", zh: "导出" }, detail: { en: "Release only the reviewed redacted result.", zh: "仅导出已审查的脱敏结果。" } },
     ],
+    fieldNotes: [
+      {
+        en: "On the seven fixed OCR fixtures the detector found every expected value — 19 of 19 — and then reported 21 detections in total. The two extras are false positives, precision 90.5%. Something that misses nothing and also invents two regions is why nothing leaves the workbench before a person confirms each box.",
+        zh: "在 7 组固定的 OCR 夹具上，19 项预期值一项不落地全被检测器找到了，可它一共报出了 21 处。多出来的 2 处是误报，精确率 90.5%。一个既不漏、又会凭空多框两块的东西，就是这个工作台坚持让人逐块确认之后才允许导出的原因。",
+      },
+      {
+        en: "The macOS worker suite passed 95 tests alongside five PyMuPDF/SWIG deprecation warnings I had been stepping over. What actually pushed PyMuPDF out was its license, not the warnings: the 0.1.0 runtime rebuilds the PDF path on pypdfium2/PDFium, pypdf, Pillow, and ReportLab, and the final source snapshot replays 96 passed. It is not a clean before-and-after — the 95 predates the general Chinese-mobile regression.",
+        zh: "macOS worker 测试套件当时是 95 项通过，外加 5 条我一直视而不见的 PyMuPDF/SWIG 弃用警告。真正把 PyMuPDF 挤出去的是它的许可证，不是这些警告：0.1.0 运行时把 PDF 路径重建在 pypdfium2/PDFium、pypdf、Pillow 和 ReportLab 上，最终源码快照重放为 96 项通过。这不是一次干净的前后对比——95 那次还在通用中文手机号回归之前。",
+      },
+    ],
     provenance: [
       {
         en: "The fixed seven-fixture OCR benchmark ran the complete browser-equivalent multi-pass union: 19/19 expected-value hits, 21 detections, 2 false positives, and 90.5% precision. This is synthetic fixture evidence, not a claim of general OCR accuracy.",
@@ -437,6 +500,16 @@ const projectCatalog: Project[] = [
       { label: { en: "Contract", zh: "契约" }, detail: { en: "Stop if source hashes, schema, grain, accounting math, or browser artifact drift.", zh: "源哈希、模式、粒度、核算逻辑或浏览器产物任一漂移，即刻中止。" } },
       { label: { en: "Diagnose", zh: "诊断" }, detail: { en: "Decompose contribution-margin drivers and load artifact-bound detection and elasticity reports.", zh: "拆解贡献毛利驱动项，并载入与产物哈希绑定的检测和弹性报告。" } },
       { label: { en: "Test", zh: "测试" }, detail: { en: "Apply disclosed scenario assumptions, inspect the later holdout, and record an action.", zh: "应用已披露的情景假设，检查后续留出期并记录行动。" } },
+    ],
+    fieldNotes: [
+      {
+        en: "The replay detector catches every injected anomaly and cries wolf more often than it is right: 6 true positives, 13 false positives, 0 false negatives — recall 1.000000, precision 0.315789. Roughly two of every three alerts is noise. I left the threshold where it was and wrote both numbers into the audit.",
+        zh: "回放检测器把注入的异常一个不漏地抓住了，同时也一直在喊狼来了：6 个真阳性、13 个假阳性、0 个假阴性——召回率 1.000000，精确率 0.315789。差不多每三条告警里有两条是噪声。我没有去动阈值，把这两个数字一起写进了审计。",
+      },
+      {
+        en: "Every category's first observed week shows exactly zero discount, and that says nothing about Olist sellers. It is my cold-start rule: with no earlier week to price against, the reference price falls back to the current item price, so the proxy discount collapses to zero. It is documented rather than fixed.",
+        zh: "每个品类的第一个观测周，折扣都恰好是零——这跟 Olist 的卖家没有关系。那是我的冷启动规则：没有更早的一周可以作参照，参考价就回落到当前商品价，代理折扣于是塌成零。这件事我是记录下来，而不是修掉。",
+      },
     ],
     provenance: [
       { en: "The source toggle requests real data first: the browser loads and verifies olist-margin.parquet through DuckDB-WASM by default. If that offline-pipeline artifact is missing or invalid, the real path fails closed, stays labeled pending or blocked, and falls back to the governed synthetic fixture.", zh: "来源切换优先请求真实数据：浏览器默认通过 DuckDB-WASM 加载并校验 olist-margin.parquet。若该离线管道产物缺失或无效，真实路径直接阻断，状态保持标注为 pending 或 blocked，并单独回退至受约束的合成数据。" },
@@ -501,6 +574,20 @@ const projectCatalog: Project[] = [
       { label: { en: "Rank", zh: "排序" }, detail: { en: "Score popularity, item-kNN, ALS, and semantic retrieval on full-catalog ranking over 368k items.", zh: "在 368k 件商品的全目录排序上评估热门、item-kNN、ALS 与语义检索。" } },
       { label: { en: "Route", zh: "路由" }, detail: { en: "Fit a history-depth routing threshold on validation; report only on the untouched test window.", zh: "在验证集上拟合历史深度路由阈值，只在从未动过的测试窗口上报告。" } },
     ],
+    fieldNotes: [
+      {
+        en: "I built the lakehouse to find the history depth where personalization overtakes popularity, and there isn't one. ALS trails trailing-12-month popularity in every warm segment, every CI excluding zero: −0.00256 at 1–4 interactions, −0.00230 at 5–9, −0.00257 at 10–19, −0.00146 at 20+. The deficit does shrink as history deepens. It never reaches zero inside the depths I can observe.",
+        zh: "我搭这套湖仓，是为了找出个性化超过热门榜的那个历史深度——它不存在。在每一个暖用户分段上，ALS 都落后于近 12 个月的热门榜，每个置信区间都不含零：1–4 次交互 −0.00256，5–9 次 −0.00230，10–19 次 −0.00257，20+ 次 −0.00146。差距确实随历史加深而收窄，但在我能观测到的深度里，它从未走到零。",
+      },
+      {
+        en: "Rank-128 ALS died mid-training on java.io.IOException: No space left on device, with about 24GB free. Each iteration shuffles roughly 7.3GB at that rank, and Spark only reclaims shuffle files when checkpointing truncates lineage — at checkpointInterval=5 that keeps about 36GB alive. checkpoint_interval=2 bounded retention to about 15GB, and the retry finished in 1,034 s.",
+        zh: "rank=128 的 ALS 训练到一半就死在 java.io.IOException: No space left on device 上，当时磁盘大约还剩 24GB。这个 rank 下每轮迭代的 shuffle 大约 7.3GB，而 Spark 只有在检查点截断血缘时才回收 shuffle 文件——checkpointInterval=5 意味着留着大约 36GB 不放。改成 checkpoint_interval=2 把留存压到大约 15GB，重试用 1,034 秒跑完。",
+      },
+      {
+        en: "Two chained grid runs were killed by external SIGTERMs. I checked the obvious explanation — a timeout — and it did not hold: every run was already backgrounded, and longer chains completed fine. I never found the source. The per-point background execution and RSS capture I added to survive it are still in the harness.",
+        zh: "有两次串起来跑的网格实验被外部 SIGTERM 杀掉了。我查了最顺手的解释——超时——但站不住脚：所有运行本来就在后台，更长的链条反而跑完了。原因我始终没有找到。为了扛过它而加的逐点后台执行和 RSS 记录，至今还留在框架里。",
+      },
+    ],
     provenance: [
       {
         en: "Temporal splits are frozen in config: train through 2022-06-30, validation on 2022-H2, test from 2023-01-01. The test window was untouched during iteration.",
@@ -558,6 +645,16 @@ const projectCatalog: Project[] = [
       { label: { en: "Policy", zh: "策略" }, detail: { en: "Apply approve, review, and decline thresholds.", zh: "应用批准、复核与拒绝阈值。" } },
       { label: { en: "Review", zh: "复核" }, detail: { en: "Enforce analyst-capacity constraints.", zh: "执行分析师容量约束。" } },
       { label: { en: "Monitor", zh: "监控" }, detail: { en: "Backtest vintages, PSI, slices, and audit changes.", zh: "回测放款批次、PSI、切片并审计变更。" } },
+    ],
+    fieldNotes: [
+      {
+        en: "I expected the 240-tree XGBoost challenger to pull away from the calibrated logistic baseline on the 24,000 later-backtest rows. It didn't: Brier 0.159253 against 0.159280, log loss 0.494320 against 0.493403, ROC AUC 0.675262 against 0.674615. Better on two of the three, worse on one, every margin far too small to act on.",
+        zh: "我以为那个 240 棵树的 XGBoost 挑战者模型，会在 24,000 条后期回测记录上把校准过的逻辑回归基线甩开。并没有：Brier 0.159253 对 0.159280，对数损失 0.494320 对 0.493403，ROC AUC 0.675262 对 0.674615。三项里赢两项、输一项，每一项的差距都小到不足以据此做任何决定。",
+      },
+      {
+        en: "The workbench opens on a policy that cannot be published, and that is deliberate. At approve ≤12% / review ≤28% with a review capacity of 180, the fixture's final vintage sends 345 applications to manual review — 165 over capacity — so the capacity gate blocks publication. I did not slide the threshold until the queue fit.",
+        zh: "工作台一打开，摆在那里的就是一条无法发布的策略，这是故意的。批准 ≤12% / 复核 ≤28%、复核容量 180 时，夹具最后一个放款批次会把 345 笔申请推进人工复核——超出容量 165 笔——容量门禁于是拦下发布。我没有为了让队列装得下而去挪阈值。",
+      },
     ],
     provenance: [
       { en: "The source toggle requests real data first: the browser verifies scored-backtest.parquet through DuckDB-WASM by default. If that offline training artifact is missing or invalid, the real backtest fails closed, stays labeled pending or blocked, and falls back to the governed synthetic fixture.", zh: "来源切换优先请求真实数据：浏览器默认通过 DuckDB-WASM 校验 scored-backtest.parquet。若该离线训练产物缺失或无效，真实回测直接阻断，状态保持标注为 pending 或 blocked，并单独回退至受约束的合成数据。" },
@@ -627,7 +724,10 @@ const projectCatalog: Project[] = [
       },
     ],
     links: [
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/Risk-Control-Portfolio" },
+      {
+        label: { en: "GitHub repository", zh: "GitHub 仓库" },
+        pending: { en: "The legacy Risk-Control-Portfolio repository is private; its rebuilt successor is Credit Policy Desk.", zh: "旧的 Risk-Control-Portfolio 仓库已转为私有；重建后的继任项目是信贷策略工作台。" },
+      },
     ],
     legacy: true,
   },

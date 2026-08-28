@@ -1,0 +1,51 @@
+[Unit]
+Description=Xiangguo Zhang portfolio VPS Preview
+Wants=network-online.target
+After=network-online.target
+ConditionPathIsDirectory=/srv/portfolio/current
+
+[Service]
+Type=simple
+User=portfolio
+Group=portfolio
+WorkingDirectory=/srv/portfolio/current
+Environment=NODE_ENV=production
+Environment=NEXT_TELEMETRY_DISABLED=1
+Environment=HOSTNAME=127.0.0.1
+Environment=PORT=3100
+EnvironmentFile=/etc/portfolio-preview.env
+ExecStart=/opt/node-v24.18.0-linux-x64/bin/node server.js
+Restart=on-failure
+RestartSec=3s
+TimeoutStartSec=30s
+TimeoutStopSec=20s
+KillSignal=SIGTERM
+UMask=0077
+
+# Keep the 1 GB VPS usable for the existing proxy service.
+MemoryHigh=220M
+MemoryMax=256M
+TasksMax=64
+LimitNOFILE=4096
+
+# The portfolio runtime needs outbound HTTPS and local TCP only; it writes no application files.
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RestrictRealtime=true
+RestrictNamespaces=true
+SystemCallArchitectures=native
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+
+[Install]
+WantedBy=multi-user.target

@@ -26,11 +26,13 @@
 .upgrade :global(.margin-trend-panel .margin-week-bars button) { min-width: 28px; width: 28px; flex: 0 0 28px; }
 .upgrade :global(.waterfall-zero) { stroke: var(--line-dark); stroke-width: 1; stroke-dasharray: 4 4; }
 .upgrade :global(.waterfall-connector) { stroke: var(--line-dark); stroke-width: 1; stroke-dasharray: 3 3; }
-.upgrade :global(.waterfall-step rect), .upgrade :global(.waterfall-step.total rect) { fill: var(--blue); }
-.upgrade :global(.waterfall-step.negative rect) { fill: var(--red); }
-.upgrade :global(.waterfall-step.positive rect) { fill: var(--green); }
-.upgrade :global(.waterfall-value), .upgrade :global(.waterfall-label) { fill: var(--ink); font-family: var(--font-geist-mono); font-size: 9px; }
-.upgrade :global(.waterfall-label) { fill: var(--muted); font-size: 8px; }
+/* Waterfall bars are directional categories, not gate verdicts, so they read
+   from the categorical palette (--fig-*) rather than the pass/fail tokens. */
+.upgrade :global(.waterfall-step rect), .upgrade :global(.waterfall-step.total rect) { fill: var(--fig-1); }
+.upgrade :global(.waterfall-step.negative rect) { fill: var(--fig-4); }
+.upgrade :global(.waterfall-step.positive rect) { fill: var(--fig-3); }
+.upgrade :global(.waterfall-value), .upgrade :global(.waterfall-label) { fill: var(--ink); font-family: var(--font-geist-mono); font-size: 10px; }
+.upgrade :global(.waterfall-label) { fill: var(--muted); }
 
 .upgrade :global(.analytics-offline-grid) { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line-dark); }
 .upgrade :global(.analytics-offline-panel) { min-width: 0; border-right: 1px solid var(--line); }

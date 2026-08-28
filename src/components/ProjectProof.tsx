@@ -48,6 +48,19 @@ function Architecture({ project }: { project: Project }) {
   );
 }
 
+function FieldNotes({ project }: { project: Project }) {
+  const { dict } = useI18n();
+  if (!project.fieldNotes?.length) return null;
+  return (
+    <section className="field-notes">
+      <div className="page-shell">
+        <h2>{dict.fieldNotes}</h2>
+        <ol>{project.fieldNotes.map((note) => <li key={note.en}><p><LocalizedText text={note} /></p></li>)}</ol>
+      </div>
+    </section>
+  );
+}
+
 function Notes({ project }: { project: Project }) {
   const { dict } = useI18n();
   return (
@@ -74,5 +87,7 @@ const proofByProject: Record<ProjectId, () => React.JSX.Element> = {
 
 export default function ProjectProof({ project }: { project: Project }) {
   const Proof = proofByProject[project.slug];
-  return <><Architecture project={project} /><Proof /><Notes project={project} /></>;
+  // The interactive proof is the first thing after the intro: a visitor who
+  // only reads one screen should get the running instrument, not the diagram.
+  return <><Proof /><Architecture project={project} /><FieldNotes project={project} /><Notes project={project} /></>;
 }

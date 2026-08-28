@@ -231,7 +231,7 @@ test("payload uses locale-specific model, ZDR routing, structured citations, and
   assert.deepEqual(segmentSchemas[0].properties.text, { type: "string" });
   assert.deepEqual(payload.response_format.json_schema.schema.properties.blocks.items.properties.segments.items.anyOf[1].properties.projectId.enum, [
     "release-guardian", "streaming-reliability-lab", "rag-quality-lab", "privacy-preflight-web",
-    "margin-control-tower", "credit-policy-lab", "ex-solver", "Voice-in-Security", "Risk-Control-Portfolio",
+    "margin-control-tower", "credit-policy-lab", "Voice-in-Security",
   ]);
   assert.deepEqual(payload.response_format.json_schema.schema.properties.citation_ids.items.enum, chunks.map((chunk) => chunk.id));
   assert.equal(payload.messages.length, 4);

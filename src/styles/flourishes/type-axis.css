@@ -1,28 +1,20 @@
-/* The layout-level next/font/local variable is the only font-loading hook for this module. */
-:where(
-  .workspace-head h1,
-  .index-heading h2,
-  .site-header nav a,
-  .discipline-strip a,
-  .project-name strong,
-  .track-projects h2
-) {
-  font-family: var(--font-flourish-latin), Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
-}
-
+/* Font loading lives in layout.tsx (next/font/local); the Latin face is already
+   the document face, so this module only drives the weight axis.
+   Direction C: display type settles low (size carries hierarchy, not weight);
+   only interactive affordances lean on weight change to signal state. */
 @supports (font-variation-settings: "wght" 400) {
   @keyframes flourish-type-axis-settle {
     from {
-      font-variation-settings: "wght" 560;
+      font-variation-settings: "wght" 340;
     }
 
     to {
-      font-variation-settings: "wght" 620;
+      font-variation-settings: "wght" 400;
     }
   }
 
   .workspace-head h1 {
-    font-variation-settings: "wght" 620;
+    font-variation-settings: "wght" 400;
     animation: flourish-type-axis-settle 400ms ease-out both;
   }
 
@@ -31,21 +23,23 @@
     transition: font-variation-settings 200ms ease-out;
   }
 
-  .discipline-strip a,
+  /* Scoped to the label itself, not the link: font-variation-settings inherits
+     and would otherwise force the muted description text to the same weight. */
+  .discipline-strip strong,
   .project-name strong,
   .track-projects h2 {
-    font-variation-settings: "wght" 700;
+    font-variation-settings: "wght" 450;
     transition: font-variation-settings 200ms ease-out;
   }
 
   .site-header nav a:is(:hover, :focus-visible) {
-    font-variation-settings: "wght" 470;
+    font-variation-settings: "wght" 500;
   }
 
-  .discipline-strip a:is(:hover, :focus-visible),
+  .discipline-strip a:is(:hover, :focus-visible) strong,
   .project-table > a:is(:hover, :focus-visible) .project-name strong,
   .track-projects > a:is(:hover, :focus-visible) h2 {
-    font-variation-settings: "wght" 770;
+    font-variation-settings: "wght" 600;
   }
 }
 
@@ -53,7 +47,7 @@
   @supports (font-variation-settings: "wght" 400) {
     .workspace-head h1 {
       animation: none;
-      font-variation-settings: "wght" 620;
+      font-variation-settings: "wght" 400;
     }
 
     .site-header nav a,
@@ -62,14 +56,14 @@
       font-variation-settings: "wght" 400;
     }
 
-    .discipline-strip a,
-    .discipline-strip a:is(:hover, :focus-visible),
+    .discipline-strip strong,
+    .discipline-strip a:is(:hover, :focus-visible) strong,
     .project-name strong,
     .project-table > a:is(:hover, :focus-visible) .project-name strong,
     .track-projects h2,
     .track-projects > a:is(:hover, :focus-visible) h2 {
       transition: none;
-      font-variation-settings: "wght" 700;
+      font-variation-settings: "wght" 450;
     }
   }
 }

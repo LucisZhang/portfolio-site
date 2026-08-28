@@ -82,8 +82,8 @@ export default function TriageProof() {
         </div>
         <p className="rag-historical-scale"><strong>{locale === "en" ? "The point:" : "重点在于："}</strong> {locale === "en" ? "the LLM tiers are not the best classifiers here — they are the most drift-resistant ones. The router buys each complaint the cheapest tier that can handle it." : "在这个任务上，LLM 层并不是最准的分类器——而是最抗漂移的。路由为每条投诉买到能处理它的最便宜一层。"}</p>
       </aside>
-      <section className="triage-drift" aria-labelledby="triage-drift-title">
-        <div><p className="eyebrow">{locale === "en" ? "Eleven years of measured drift" : "十一年实测漂移"}</p><h3 id="triage-drift-title">{locale === "en" ? "Pick a tier, watch what 2026 does to it" : "选一个层级，看 2026 年对它做了什么"}</h3></div>
+      <figure className="figure" aria-labelledby="triage-drift-title">
+        <div className="fig-title"><p className="eyebrow">{locale === "en" ? "Eleven years of measured drift" : "十一年实测漂移"}</p><h3 id="triage-drift-title">{locale === "en" ? "Pick a tier, watch what 2026 does to it" : "选一个层级，看 2026 年对它做了什么"}</h3></div>
         <div className="triage-drift-tabs" role="tablist" aria-label={locale === "en" ? "Model tier" : "模型层级"}>
           {DRIFT_TIERS.map((t) => (
             <button key={t.id} role="tab" aria-selected={t.id === tierId} onClick={() => setTierId(t.id)}>
@@ -104,8 +104,11 @@ export default function TriageProof() {
             );
           })}
         </div>
-        <p className="triage-drift-note">{locale === "en" ? tier.note.en : tier.note.zh}</p>
-      </section>
+        <figcaption className="fig-caption">
+          <span>{locale === "en" ? tier.note.en : tier.note.zh}</span>
+          <span className="fig-source">{locale === "en" ? "Source · the project's append-only results log; macro-F1 on the held-out test split." : "来源 · 项目的只增结果日志；留出测试集上的 macro-F1。"}</span>
+        </figcaption>
+      </figure>
       <div className="analytics-boundary"><CircleAlert aria-hidden="true" /><span>{locale === "en" ? "The first explanation — new vocabulary the old models never saw — was tested and ruled out: out-of-vocabulary mass barely moved. The cliff is class mix, and the drilldown lives in the results log." : "第一个解释——旧模型没见过的新词——经过检验被排除了：词表外占比几乎没动。悬崖来自类别构成，细节都在结果日志里。"}</span></div>
       <div className="rag-floor">
         <div><span>{locale === "en" ? "Committed outputs byte-identical on full re-run" : "完整重跑后字节一致的已提交产物"}</span><strong>27 / 27</strong></div>
