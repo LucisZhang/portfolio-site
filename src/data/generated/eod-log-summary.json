@@ -1,0 +1,486 @@
+[
+  {
+    "id": "duplicate-redelivery",
+    "faultName": "DUPLICATE-REDELIVERY",
+    "file": "/case-studies/exactly-once-drills/results/duplicate_redelivery_drill.json",
+    "startedAtIso": "2026-08-20T13:07:00Z",
+    "sameDay": true,
+    "timeLabel": "13:07:00Z",
+    "dateLabel": null,
+    "phase": "B3",
+    "seed": 302,
+    "runIdShort": "063CE577",
+    "gitShaShort": "3A981F39",
+    "recoverMs": 50696,
+    "diff": 0,
+    "sentence": {
+      "zh": "把消费位点重置到最早，36 条事件整批再投递一次；流水线识别出全部 36 次重复投递，最终状态一行未多。",
+      "en": "Rewind the consumer offsets to earliest and redeliver 36 events as one batch; the pipeline recognizes all 36 redeliveries as duplicates — final state gains not one extra row."
+    },
+    "sentenceProgress": {
+      "en": "Rewind the consumer offsets to earliest and redeliver 36 events as one batch…",
+      "zh": "把消费位点重置到最早……"
+    },
+    "transcript": [
+      {
+        "offsetMs": 0,
+        "offsetLabel": "T+0.0s",
+        "text": "INJECT kafka-consumer-groups.sh --reset-offsets --to-earliest --execute",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "DETECT 36 duplicate deliveries · distinct_event_ids 36",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "RECOVER restart Path B from rewound committed offsets",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "VERIFY snapshot_diff_count 0 · redelivery_job 9fa6b5152416",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "id": "ordering-miskey",
+    "faultName": "MIS-KEYING",
+    "file": "/case-studies/exactly-once-drills/results/ordering_miskey_drill.json",
+    "startedAtIso": "2026-08-20T13:11:03Z",
+    "sameDay": true,
+    "timeLabel": "13:11:03Z",
+    "dateLabel": null,
+    "phase": "B3",
+    "seed": 303,
+    "runIdShort": "8531BEBF",
+    "gitShaShort": "3A981F39",
+    "recoverMs": 24456,
+    "diff": 0,
+    "sentence": {
+      "zh": "一条错键记录被隔离进 probe 主题，主路径一行未收；乱序上限被证明，而不是被掩盖。",
+      "en": "A mis-keyed record is quarantined into the probe topic — the main path never receives it; the ordering ceiling is proven, not papered over."
+    },
+    "sentenceProgress": {
+      "en": "A mis-keyed record is quarantined into the probe topic — the main path never receives it…",
+      "zh": "一条错键记录被隔离进 probe 主题……"
+    },
+    "transcript": [
+      {
+        "offsetMs": 0,
+        "offsetLabel": "T+0.0s",
+        "text": "INJECT mis-keyed batch (wrong partition key) · order_id 9200303",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "DETECT audit gate: rejected before main-pipeline admission",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "RECOVER audit gate rejects mis-keyed batch; retain PK-keyed main path",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "VERIFY non_monotonic_transition_count 1 · snapshot_diff_count 0",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "id": "poison-dlq",
+    "faultName": "POISON-DLQ",
+    "file": "/case-studies/exactly-once-drills/results/poison_dlq_drill.json",
+    "startedAtIso": "2026-08-20T13:17:52Z",
+    "sameDay": true,
+    "timeLabel": "13:17:52Z",
+    "dateLabel": null,
+    "phase": "B3",
+    "seed": 304,
+    "runIdShort": "2AEA4B71",
+    "gitShaShort": "103ECD1E",
+    "recoverMs": 52414,
+    "diff": 0,
+    "sentence": {
+      "zh": "毒丸消息落入 DLQ，主流水线不停；修复后重放，最终状态与源端逐行一致。",
+      "en": "A poison message drops into the DLQ; the main pipeline never stops. Repaired and replayed, the final state matches the source row for row."
+    },
+    "sentenceProgress": {
+      "en": "A poison message drops into the DLQ…",
+      "zh": "毒丸消息落入 DLQ……"
+    },
+    "transcript": [
+      {
+        "offsetMs": 0,
+        "offsetLabel": "T+0.0s",
+        "text": "INJECT malformed UTF-8 JSON bytes on an Avro order topic · topic broker.cdc_lab.orders",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "DETECT connector PAUSED · dlq offset 0 partition 0",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "RECOVER decode intended row, re-encode registered Avro, replay with PK key",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "VERIFY iceberg_snapshot_row_count 13 · snapshot_diff_count 0",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "id": "broker-restart",
+    "faultName": "BROKER-RESTART",
+    "file": "/case-studies/exactly-once-drills/results/broker_restart_drill.json",
+    "startedAtIso": "2026-08-20T12:53:51Z",
+    "sameDay": true,
+    "timeLabel": "12:53:51Z",
+    "dateLabel": null,
+    "phase": "B3",
+    "seed": 301,
+    "runIdShort": "0B79472B",
+    "gitShaShort": "F27AC1D1",
+    "recoverMs": 47688,
+    "diff": 0,
+    "sentence": {
+      "zh": "直接杀死 Kafka broker 容器。5.8 秒后容器回到 running，Flink 从检查点 chk-1 续跑，47.688 秒完成恢复；对账 120 行对 120 行，快照差异 0。",
+      "en": "Kill the Kafka broker container outright. It's back to running in 5.8s; Flink resumes from checkpoint chk-1 and finishes recovery in 47.688s — reconciliation is 120 rows against 120 rows, snapshot diff 0."
+    },
+    "sentenceProgress": {
+      "en": "Kill the Kafka broker container outright. It's back to running in 5.8s…",
+      "zh": "直接杀死 Kafka broker 容器。5.8 秒后容器回到 running……"
+    },
+    "transcript": [
+      {
+        "offsetMs": 0,
+        "offsetLabel": "T+0.0s",
+        "text": "INJECT docker compose kill kafka · exit 137 · partitions 0/1/2 lag 3·0·2",
+        "ok": false
+      },
+      {
+        "offsetMs": 5800,
+        "offsetLabel": "T+5.8s",
+        "text": "RECOVER container running again · started 12:54:24Z",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "RESUME checkpoint chk-1 · da52d7f2ccb2 · connector p1-orders-connector RUNNING",
+        "ok": false
+      },
+      {
+        "offsetMs": 47688,
+        "offsetLabel": "T+47.7s",
+        "text": "VERIFY mysql 120 = iceberg 120 · sha256 ab3a445b8ee0… = ab3a445b8ee0… · diff 0 · 10/10 checks",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "id": "offset-replay",
+    "faultName": "OFFSET-REPLAY",
+    "file": "/case-studies/exactly-once-drills/results/offset_replay_drill.json",
+    "startedAtIso": "2026-08-20T13:52:36Z",
+    "sameDay": true,
+    "timeLabel": "13:52:36Z",
+    "dateLabel": null,
+    "phase": "B3",
+    "seed": 305,
+    "runIdShort": "411754B4",
+    "gitShaShort": "FD3AE84F",
+    "recoverMs": 38008,
+    "diff": 0,
+    "sentence": {
+      "zh": "按时间戳整表重建，时间戳差异 0，位点差异 0——重放本身就是一次对账。",
+      "en": "Rebuild the whole table by timestamp: timestamp diff 0, offset diff 0 — the replay itself is a reconciliation."
+    },
+    "sentenceProgress": {
+      "en": "Rebuild the whole table by timestamp: timestamp diff 0…",
+      "zh": "按时间戳整表重建……"
+    },
+    "transcript": [
+      {
+        "offsetMs": 0,
+        "offsetLabel": "T+0.0s",
+        "text": "INJECT consumer group rewound to offset 0 · group p1-b3-replay-offset-zero-305",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "RECOVER fresh-table rebuild from offset 0 and chosen timestamp · job 3cb3b30705ac",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "VERIFY offset_zero_diff_count 0 · timestamp_diff_count 0 · snapshot_diff_count 0",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "id": "schema-contract",
+    "faultName": "SCHEMA-CONTRACT",
+    "file": "/case-studies/exactly-once-drills/results/schema_contract_drill.json",
+    "startedAtIso": "2026-08-20T11:59:57Z",
+    "sameDay": true,
+    "timeLabel": "11:59:57Z",
+    "dateLabel": null,
+    "phase": "B2",
+    "seed": 211,
+    "runIdShort": "7E40ACD6",
+    "gitShaShort": "17EFB81F",
+    "recoverMs": null,
+    "diff": 0,
+    "sentence": {
+      "zh": "向 Schema Registry 提交一份删掉字段的不兼容 Avro schema，注册请求被拒绝（HTTP 409）；主流水线不停，拒绝之后又有 3 条事件正常落地，源端与 Iceberg 差异 0。",
+      "en": "Submit an incompatible Avro schema (a field removed) to the Schema Registry; registration is rejected with HTTP 409. The main pipeline keeps running — 3 more events land cleanly after the rejection, source-to-Iceberg diff 0."
+    },
+    "sentenceProgress": {
+      "en": "Submit an incompatible Avro schema (a field removed) to the Schema Registry…",
+      "zh": "向 Schema Registry 提交一份删掉字段的不兼容 Avro schema……"
+    },
+    "transcript": [
+      {
+        "offsetMs": 0,
+        "offsetLabel": "T+0.0s",
+        "text": "INJECT incompatible Avro schema (removed field) · candidate_schema_sha256 2e4885c50a…",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "DETECT registration rejected · http_status 409",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "RECOVER old-schema pipeline continues · connector_running_after_rejection true",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "VERIFY iceberg_row_count 3 · post_rejection_source_iceberg_diff_zero true",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "id": "small-file-rewrite",
+    "faultName": "SMALL-FILE-REWRITE",
+    "file": "/case-studies/exactly-once-drills/results/iceberg_small_file_rewrite.json",
+    "startedAtIso": "2026-05-27T15:55:18Z",
+    "sameDay": false,
+    "timeLabel": "15:55:18Z",
+    "dateLabel": "2026-05-27",
+    "phase": "2.2",
+    "seed": null,
+    "runIdShort": "A88E18F6",
+    "gitShaShort": "AD7AD52A",
+    "recoverMs": null,
+    "diff": 0,
+    "sentence": {
+      "zh": "48 个小数据文件被 rewrite_data_files 压实为 2 个，manifest 从 24 个收窄到 1 个，查询计划延迟从 54.92ms 降到 44.57ms，表状态不变。",
+      "en": "48 small data files get compacted by rewrite_data_files down to 2; manifests shrink from 24 to 1, query-planning latency drops from 54.92ms to 44.57ms, table state unchanged."
+    },
+    "sentenceProgress": {
+      "en": "48 small data files get compacted by rewrite_data_files down to 2…",
+      "zh": "48 个小数据文件被 rewrite_data_files 压实为 2 个……"
+    },
+    "transcript": [
+      {
+        "offsetMs": 0,
+        "offsetLabel": "T+0.0s",
+        "text": "RUN before-state 48 data files · 24 manifests · table cdc_lab.orders_current",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "REWRITE rewrite_data_files + rewrite_manifests maintenance",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "VERIFY after-state 2 data files (-46 delta) · 1 manifests · planning latency -10.35ms delta",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "id": "eo-reconciliation",
+    "faultName": "EO-RECONCILIATION",
+    "file": "/case-studies/exactly-once-drills/results/eo_reconciliation.json",
+    "startedAtIso": "2026-07-11T03:47:48Z",
+    "sameDay": false,
+    "timeLabel": "03:47:48Z",
+    "dateLabel": "2026-07-11",
+    "phase": "2.1",
+    "seed": null,
+    "runIdShort": "B518D211",
+    "gitShaShort": "05738DD8",
+    "recoverMs": null,
+    "diff": 0,
+    "sentence": {
+      "zh": "Flink 内部连续制造 5 种失败（task-crash、checkpoint-restore、jobmanager-restart、savepoint-restore、sink-commit-fault），每一种都对账一次，全部快照差异为 0。",
+      "en": "Flink is put through 5 internal failure scenarios in a row (task-crash, checkpoint-restore, jobmanager-restart, savepoint-restore, sink-commit-fault), reconciled after each one — every snapshot diff comes back 0."
+    },
+    "sentenceProgress": {
+      "en": "Flink is put through 5 internal failure scenarios in a row (task-crash…",
+      "zh": "Flink 内部连续制造 5 种失败（task-crash、checkpoint-restore、jobmanager-restart、savepoint-restore、sink-commit-fault）……"
+    },
+    "transcript": [
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "RUN task-crash: one-shot Flink operator exception on event_id=1303 · snapshot_diff_count 0 · passed true",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "RUN checkpoint-restore: cancel running job and restore from latest completed checkpoint · snapshot_diff_count 0 · passed true",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "RUN jobmanager-restart: restart the Flink JobManager container after a completed checkpoint · snapshot_diff_count 0 · passed true",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "RUN savepoint-restore: create a Flink savepoint, cancel the job, and restore from that savepoint · snapshot_diff_count 0 · passed true",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "RUN sink-commit-fault: test-only checkpoint-complete fault after event_id=9303 · snapshot_diff_count 0 · passed true",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "id": "broker-parity",
+    "faultName": "BROKER-PARITY",
+    "file": "/case-studies/exactly-once-drills/results/broker_parity.json",
+    "startedAtIso": "2026-08-20T10:21:56Z",
+    "sameDay": true,
+    "timeLabel": "10:21:56Z",
+    "dateLabel": null,
+    "phase": "B1",
+    "seed": 17,
+    "runIdShort": "5BBEC087",
+    "gitShaShort": "4A98C462",
+    "recoverMs": null,
+    "diff": 0,
+    "sentence": {
+      "zh": "MySQL binlog 与 MySQL GTID 两条完全独立的投递路径各推 1,000 行，落到同一张 Iceberg 表；两份快照摘要逐字节相同，逐行差异 0。",
+      "en": "Two fully independent delivery paths — MySQL binlog and MySQL GTID — each push 1,000 rows into the same Iceberg table; the two snapshot digests match byte-for-byte, row-level diff 0."
+    },
+    "sentenceProgress": {
+      "en": "Two fully independent delivery paths — MySQL binlog and MySQL GTID — each push 1…",
+      "zh": "MySQL binlog 与 MySQL GTID 两条完全独立的投递路径各推 1,000 行……"
+    },
+    "transcript": [
+      {
+        "offsetMs": 0,
+        "offsetLabel": "T+0.0s",
+        "text": "RUN path A (1000 rows, MySQL binlog -> embedded Debezium -> Flink -> Iceberg) and path B (1000 rows, MySQL GTID -> standalone Debezium at-least-once -> Kafka offsets -> Flink checkpoint -> Iceberg keyed upsert) in parallel",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "VERIFY iceberg_snapshot(path_A) == iceberg_snapshot(path_B): true · row_level_diff_count 0",
+        "ok": true
+      }
+    ]
+  },
+  {
+    "id": "broker-slo",
+    "faultName": "BROKER-SLO",
+    "file": "/case-studies/exactly-once-drills/results/broker_slo.json",
+    "startedAtIso": "2026-08-20T16:23:53Z",
+    "sameDay": true,
+    "timeLabel": "16:23:53Z",
+    "dateLabel": null,
+    "phase": "B4",
+    "seed": 401,
+    "runIdShort": "0828BDBB",
+    "gitShaShort": "C82E30DF",
+    "recoverMs": null,
+    "diff": 0,
+    "sentence": {
+      "zh": "在 5 类故障同时叠加的压测下，吞吐维持 1,791 events/s，端到端新鲜度 p50 15.2 秒、p95 20.6 秒，最终快照差异 0。",
+      "en": "Under load with all 5 fault classes stacked, throughput holds at 1,791 events/s, end-to-end freshness p50 15.2s / p95 20.6s, final snapshot diff 0."
+    },
+    "sentenceProgress": {
+      "en": "Under load with all 5 fault classes stacked…",
+      "zh": "在 5 类故障同时叠加的压测下……"
+    },
+    "transcript": [
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "RUN broker-restart: recovered in 47.688s under 100,000 events",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "RUN duplicate-redelivery: recovered in 50.696s under 100,000 events",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "RUN mis-keying: recovered in 24.456s under 100,000 events",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "RUN poison-dlq: recovered in 52.414s under 100,002 events",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "RUN offset-replay: recovered in 38.008s under 100,002 events",
+        "ok": false
+      },
+      {
+        "offsetMs": null,
+        "offsetLabel": "T+—",
+        "text": "VERIFY sustained 1791.665 events/s · freshness p50 15.2s p95 20.6s · snapshot_diff_count 0",
+        "ok": true
+      }
+    ]
+  }
+]

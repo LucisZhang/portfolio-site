@@ -1,6 +1,19 @@
 import { expect, test } from "@playwright/test";
+import { SEL } from "./selectors";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
+import questionBank from "../../src/data/generated/ask-question-bank.json";
+
+// Task F13b: the assistant launcher/panel's 3 preset chips are the current
+// route's entries from the verified question bank (task F13a), falling back
+// to the home ("/") set for any route the bank doesn't carry. Mirrors the
+// exact-path-with-home-fallback resolution in src/lib/ask-question-bank.ts.
+type QuestionBank = Record<string, { questions: Array<{ id: string; q_en: string; q_zh: string }> }>;
+const bank = questionBank as QuestionBank;
+function bankPrompts(route: string, locale: "en" | "zh" = "en"): string[] {
+  const entry = bank[route] ?? bank["/"];
+  return entry.questions.map((question) => (locale === "en" ? question.q_en : question.q_zh));
+}
 
 function javascriptFiles(directory: string): string[] {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -46,6 +59,88 @@ test("assistant widget code loads only after the launcher opens", async ({ page 
   await widget.getByRole("button", { name: "Close", exact: true }).click();
   await expect(widget).toHaveCount(0);
   await expect(launcher).toBeFocused();
+});
+
+// Task F12: the floating launcher comes from RootLayout (a sibling of
+// {children}, outside any per-route wrapper) so every route should render
+// and open it identically -- including the four routes that were pulled out
+// of the shared src/app/[track]/[project]/page.tsx into their own literal
+// static routes for bundle-isolation reasons (see that file's git history /
+// ForgeForgeRoute's comment). An audit against this branch's HEAD (dev
+// server, a production `next build`+`next start`, desktop/mobile Chromium,
+// and real WebKit) found the launcher already visible, topmost, and
+// clickable on every one of these routes with no code change needed; this
+// is a cheap regression guard against that ever silently breaking again.
+test("the floating Ask Portfolio launcher is visible and opens on every standalone route", async ({ page }) => {
+  for (const route of [
+    "/",
+    "/ai/frontier-forge",
+    "/engineering/exactly-once-drills",
+    "/ai/triage-router",
+    "/ai/privacy-preflight",
+    "/artifact",
+  ]) {
+    await page.goto(route, { waitUntil: "networkidle" });
+    const launcher = page.getByRole("button", { name: "Ask Portfolio" });
+    await expect(launcher).toBeVisible();
+    await launcher.click();
+    await expect(page.getByTestId("assistant-widget")).toBeVisible();
+    await page.getByTestId("assistant-widget").getByRole("button", { name: "Close", exact: true }).click();
+    await expect(page.getByTestId("assistant-widget")).toHaveCount(0);
+  }
+});
+
+// Task F13b: the launcher/panel's 3 preset chips are the current route's
+// entries from the verified question bank (task F13a's src/data/generated/
+// ask-question-bank.json), resolved by exact pathname with a home ("/")
+// fallback for any route the bank doesn't carry.
+//
+// Task-suite-reconcile (2026-08-30): this test used to also navigate to
+// "/analytics/analytics-tandem" as a second banked route, specifically to
+// prove the lookup "isn't tied to how the route is rendered" -- at the
+// time, frontier-forge had its own static route folder while
+// analytics-tandem (src/lib/projects.ts's one remaining `legacy: true`
+// project) was served entirely through the shared dynamic
+// src/app/[track]/[project] catch-all, so the two routes exercised
+// genuinely different rendering mechanisms. Task 5.2 (route closure) made
+// analytics-tandem 308-redirect to "/#archive" instead of rendering at
+// all (root-caused live: 63-failure full-suite run, HEAD cb11fdc --
+// page.goto follows the redirect to the homepage, where the Ask Portfolio
+// launcher's presets are the "/" bank entries, not analytics-tandem's, so
+// `toHaveText(bankPrompts("/analytics/analytics-tandem"))` never matches).
+// By this point every other project has also migrated to its own literal
+// route folder (see tests/e2e/portfolio.spec.ts's `routes` array comment
+// for the full list) -- there is no project left anywhere that still
+// renders through the dynamic catch-all, so the "proves it isn't tied to
+// render mechanism" angle no longer has a second mechanism to test
+// against, not just a broken example route. Narrowed to frontier-forge
+// alone; the surviving assertions below (exact-pathname resolution for a
+// banked route, home-fallback for an unbanked one) still cover the test's
+// core intent.
+test("assistant panel presets resolve per route from the verified question bank, with a home fallback for unbanked routes", async ({ page }) => {
+  const bankedRoutes = ["/ai/frontier-forge"];
+  for (const route of bankedRoutes) {
+    await page.goto(route, { waitUntil: "networkidle" });
+    await page.getByRole("button", { name: "Ask Portfolio" }).click();
+    const widget = page.getByTestId("assistant-widget");
+    await expect(widget.locator(SEL.classPromptsButton)).toHaveText(bankPrompts(route));
+    await widget.getByRole("button", { name: "Close", exact: true }).click();
+  }
+
+  // "/artifact" carries no bank entry -- F13a's route set is "/" plus 11
+  // leaf project routes only -- so it must fall back to the home set.
+  await page.goto("/artifact", { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: "Ask Portfolio" }).click();
+  const fallbackWidget = page.getByTestId("assistant-widget");
+  await expect(fallbackWidget.locator(SEL.classPromptsButton)).toHaveText(bankPrompts("/"));
+});
+
+test("assistant panel presets stay locale-pure in Chinese for a banked route", async ({ page }) => {
+  await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "zh"));
+  await page.goto("/ai/frontier-forge", { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: "询问作品集" }).click();
+  const widget = page.getByTestId("assistant-widget");
+  await expect(widget.locator(SEL.classPromptsButton)).toHaveText(bankPrompts("/ai/frontier-forge", "zh"));
 });
 
 test("assistant gives local bilingual guardrail replies without calling a model", async ({ page }) => {
@@ -104,18 +199,39 @@ test("assistant renders public and private evidence citations without overflow",
 });
 
 test("assistant prompts follow the page context and typed project segments become canonical links", async ({ page }) => {
+  // Task-suite-reconcile (2026-08-30): this array used to also carry
+  // ["/ai", ...], ["/engineering", ...], and ["/analytics", ...] to
+  // exercise contextualCopy()'s `getTrack(segments[0])` branch (a
+  // track-index-page placeholder, distinct from both the "/" default and
+  // a project-page placeholder). Task 5.2 made all three of those routes
+  // 308-redirect straight to a homepage anchor (next.config.ts's
+  // `redirects()`: "/ai" -> "/#agent-systems", "/engineering" ->
+  // "/#systems", "/analytics" -> "/#archive") -- root-caused live
+  // (assistant.spec.ts's own failure, HEAD cb11fdc): `page.goto("/ai",
+  // ...)` follows the redirect before the client ever mounts, so
+  // `usePathname()` reports "/" the whole time and the widget shows the
+  // homepage's default placeholder/prompts, not the track-specific ones
+  // this test expected -- confirmed via the failure's DOM snapshot, which
+  // is the full homepage markup, not a track index page. `getTrack()`'s
+  // branch in contextualCopy() (src/components/assistant/
+  // AssistantWidget.tsx) is therefore unreachable via any real navigation
+  // now -- there is no live route whose pathname is exactly one track
+  // segment -- so testing it has nothing left to exercise. Narrowed to
+  // "/" alone, which still exercises the default-placeholder fallback
+  // path; the project-specific placeholder path is separately covered
+  // below via "/ai/rag-quality-lab", a route this redirect closure did
+  // not touch.
   const contexts = [
     ["/", "Why is Xiangguo a strong Applied AI candidate?"],
-    ["/ai", "Ask about Xiangguo's AI applications work…"],
-    ["/engineering", "Ask about Xiangguo's Data engineering work…"],
-    ["/analytics", "Ask about Xiangguo's Data analytics work…"],
   ];
   for (const [path, placeholder] of contexts) {
     await page.goto(path, { waitUntil: "networkidle" });
     await page.getByRole("button", { name: "Ask Portfolio" }).click();
     const contextualWidget = page.getByTestId("assistant-widget");
     await expect(contextualWidget.getByPlaceholder(placeholder)).toBeVisible();
-    await expect(contextualWidget.locator("[class*='prompts'] button")).toHaveCount(4);
+    const promptButtons = contextualWidget.locator(SEL.classPromptsButton);
+    await expect(promptButtons).toHaveCount(3);
+    await expect(promptButtons).toHaveText(bankPrompts(path));
     await page.getByTestId("assistant-widget").getByRole("button", { name: "Close", exact: true }).click();
   }
 
@@ -145,13 +261,14 @@ test("assistant prompts follow the page context and typed project segments becom
   await page.getByRole("button", { name: "Ask Portfolio" }).click();
   const widget = page.getByTestId("assistant-widget");
   await expect(widget.getByPlaceholder("Ask how RAG Quality Lab demonstrates Xiangguo's strengths…")).toBeVisible();
-  await widget.getByRole("button", { name: "Walk me through the regression that started this project — what changed and how did the harness catch it?" }).click();
+  const [ragOverviewPrompt] = bankPrompts("/ai/rag-quality-lab");
+  await widget.getByRole("button", { name: ragOverviewPrompt, exact: true }).click();
   await expect.poll(() => contextualRequestBodies.length).toBe(1);
   expect(contextualRequestBodies[0].messages.at(-1)?.content).toContain("Portfolio question about Xiangguo Zhang on /ai/rag-quality-lab:");
-  await expect(widget.locator("i")).toHaveCount(3);
+  await expect(widget.locator(SEL.i)).toHaveCount(3);
   await expect(widget).toContainText("Thinking");
   await expect(widget.getByRole("heading", { name: "Strongest match" })).toBeVisible();
-  await expect(widget.locator("strong", { hasText: "RAG Quality Lab" })).toBeVisible();
+  await expect(widget.locator(SEL.strong, { hasText: "RAG Quality Lab" })).toBeVisible();
   await expect(widget.getByRole("link", { name: "RAG Quality Lab" })).toHaveAttribute("href", "/ai/rag-quality-lab");
   await expect(widget).not.toContainText("**");
 });
@@ -203,7 +320,7 @@ test("assistant exposes a retryable failure without duplicating the user message
   await widget.getByRole("button", { name: "Send", exact: true }).click();
   await widget.getByRole("button", { name: "Retry", exact: true }).click();
   await expect(widget.getByRole("link", { name: "RAG Quality Lab" })).toBeVisible();
-  await expect(widget.locator("article").filter({ hasText: question })).toHaveCount(1);
+  await expect(widget.locator(SEL.article).filter({ hasText: question })).toHaveCount(1);
   expect(requestBodies).toHaveLength(2);
   expect(requestBodies[0].messages.filter((message) => message.role === "user")).toHaveLength(1);
   expect(requestBodies[1].messages.filter((message) => message.role === "user")).toHaveLength(1);
@@ -214,6 +331,9 @@ test("assistant API rejects cross-site and non-JSON requests before rate limitin
   const textPlain = await request.post("/api/assistant", { data: body, headers: { "Content-Type": "text/plain" } });
   expect(textPlain.status()).toBe(415);
   expect(textPlain.headers()["x-ratelimit-remaining-minute"]).toBeUndefined();
+  expect(textPlain.headers()["x-assistant-request-id"]).toMatch(/^[0-9a-f-]{36}$/);
+  expect(Number(textPlain.headers()["x-assistant-duration-ms"])).toBeGreaterThanOrEqual(0);
+  expect(textPlain.headers()["server-timing"]).toMatch(/^assistant;dur=\d+$/);
 
   const crossOrigin = await request.post("/api/assistant", {
     data: body,
@@ -221,6 +341,7 @@ test("assistant API rejects cross-site and non-JSON requests before rate limitin
   });
   expect(crossOrigin.status()).toBe(403);
   expect(crossOrigin.headers()["x-ratelimit-remaining-minute"]).toBeUndefined();
+  expect(crossOrigin.headers()["x-assistant-request-id"]).toMatch(/^[0-9a-f-]{36}$/);
 });
 
 test("assistant route discloses hybrid RAG mode on a local refusal", async ({ request }) => {

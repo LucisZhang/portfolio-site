@@ -1,0 +1,78 @@
+.scope { display: grid; gap: 1px; background: var(--hairline); border: 1px solid var(--hairline); }
+.scope :global(.crossover-panel) { min-width: 0; background: var(--paper-bright); }
+.scope :global(.crossover-panel > header) { display: grid; grid-template-columns: minmax(0, .72fr) minmax(280px, 1.28fr); gap: 10px 34px; padding: 26px; border-bottom: 1px solid var(--hairline); }
+.scope :global(.crossover-panel > header .eyebrow) { grid-column: 1; }
+.scope :global(.crossover-panel > header h3) { grid-column: 1; margin: 3px 0 0; font-size: clamp(21px, 2.7vw, 34px); line-height: 1.1; }
+.scope :global(.crossover-panel > header > p:last-child) { grid-column: 2; grid-row: 1 / 3; align-self: center; max-width: 62ch; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.65; }
+.scope :global(.crossover-chart-scroll) { overflow-x: auto; background: var(--paper); padding: 18px 14px 4px; }
+.scope :global(.crossover-line-chart) { display: block; width: 100%; min-width: 600px; height: auto; }
+.scope :global(.crossover-gridline line) { stroke: var(--hairline); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.scope :global(.crossover-gridline text), .scope :global(.crossover-axis-label), .scope :global(.crossover-marker text) { fill: var(--muted); font-family: var(--mono); font-size: 10px; }
+.scope :global(.crossover-gridline text) { text-anchor: end; }
+.scope :global(.crossover-marker line) { stroke: var(--accent); stroke-dasharray: 4 3; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.scope :global(.crossover-marker text) { fill: var(--accent); font-weight: 700; }
+.scope :global(.crossover-series > path) { fill: none; stroke-width: 2; vector-effect: non-scaling-stroke; }
+.scope :global(.crossover-series rect) { stroke: var(--paper-bright); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.scope :global(.crossover-ci line) { stroke-width: 1; opacity: .52; vector-effect: non-scaling-stroke; }
+.scope :global(.crossover-series.series-1 > path), .scope :global(.crossover-series.series-1 .crossover-ci line) { stroke: var(--fig-2); }
+.scope :global(.crossover-series.series-1 rect), .scope :global(.crossover-legend .series-1 i) { fill: var(--fig-2); background: var(--fig-2); }
+.scope :global(.crossover-series.series-2 > path), .scope :global(.crossover-series.series-2 .crossover-ci line) { stroke: var(--fig-1); }
+.scope :global(.crossover-series.series-2 rect), .scope :global(.crossover-legend .series-2 i) { fill: var(--fig-1); background: var(--fig-1); }
+.scope :global(.crossover-legend) { display: flex; flex-wrap: wrap; gap: 8px 22px; padding: 10px 24px 18px; background: var(--paper); }
+.scope :global(.crossover-legend span) { display: grid; grid-template-columns: 8px auto; gap: 3px 7px; align-items: center; color: var(--ink); font-size: 10px; }
+.scope :global(.crossover-legend i) { width: 8px; height: 8px; }
+.scope :global(.crossover-legend code) { grid-column: 2; color: var(--muted); font-size: 8px; }
+.scope :global(.crossover-verdict) { display: grid; grid-template-columns: minmax(180px, .45fr) auto minmax(260px, 1fr); align-items: center; gap: 18px; border-top: 1px solid var(--hairline); padding: 18px 24px; }
+.scope :global(.crossover-verdict span) { color: var(--muted); font-family: var(--mono); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+.scope :global(.crossover-verdict strong) { font-family: var(--mono); font-size: 29px; }
+.scope :global(.crossover-verdict p) { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.5; }
+.scope :global(.crossover-deep-grid) { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--hairline); }
+.scope :global(.crossover-deep-grid > div) { display: grid; gap: 5px; min-height: 96px; padding: 16px 20px; border-right: 1px solid var(--hairline); }
+.scope :global(.crossover-deep-grid > div:last-child) { border-right: 0; }
+.scope :global(.crossover-deep-grid span), .scope :global(.crossover-deep-grid code) { color: var(--muted); font-family: var(--mono); font-size: 9px; }
+.scope :global(.crossover-deep-grid strong) { font-family: var(--mono); font-size: 22px; }
+.scope :global(.crossover-caveat) { margin: 0; border-left: 3px solid var(--accent); background: color-mix(in srgb, var(--accent) 7%, var(--paper-bright)); padding: 13px 20px; color: var(--muted); font-size: 10px; line-height: 1.55; }
+.scope :global(.crossover-churn-bars) { padding: 28px 24px 20px; background: var(--paper); }
+.scope :global(.crossover-stacked-bar) { display: flex; height: 58px; border: 1px solid var(--hairline); }
+.scope :global(.crossover-stacked-bar span) { min-width: 0; display: grid; place-items: center; border-right: 1px solid var(--paper-bright); }
+.scope :global(.crossover-stacked-bar span:last-child) { border-right: 0; }
+.scope :global(.crossover-stacked-bar i) { color: var(--paper-bright); font-family: var(--mono); font-size: 11px; font-style: normal; font-weight: 700; }
+.scope :global(.crossover-stacked-bar .zero) { background: var(--accent); }
+.scope :global(.crossover-stacked-bar .low) { background: var(--fig-4d); }
+.scope :global(.crossover-stacked-bar .high) { background: var(--fig-3d); }
+.scope :global(.crossover-support-legend) { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 12px; }
+.scope :global(.crossover-support-legend span) { display: grid; grid-template-columns: 8px 1fr auto; align-items: center; gap: 7px; color: var(--muted); font-size: 9px; }
+.scope :global(.crossover-support-legend i) { width: 8px; height: 8px; }
+.scope :global(.crossover-support-legend .zero i) { background: var(--accent); }
+.scope :global(.crossover-support-legend .low i) { background: var(--fig-4d); }
+.scope :global(.crossover-support-legend .high i) { background: var(--fig-3d); }
+.scope :global(.crossover-support-legend strong) { color: var(--ink); font-family: var(--mono); }
+.scope :global(.crossover-regime-contrast) { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--hairline); }
+.scope :global(.crossover-regime-contrast > div) { display: grid; gap: 7px; min-width: 0; padding: 20px 24px; border-right: 1px solid var(--hairline); }
+.scope :global(.crossover-regime-contrast > div:nth-child(2)) { border-right: 0; }
+.scope :global(.crossover-regime-contrast span) { color: var(--muted); font-size: 10px; }
+.scope :global(.crossover-regime-contrast strong) { font-family: var(--mono); font-size: 31px; }
+.scope :global(.crossover-regime-contrast code) { overflow: hidden; color: var(--muted); font-size: 8px; text-overflow: ellipsis; }
+.scope :global(.crossover-regime-contrast p) { grid-column: 1 / -1; margin: 0; border-top: 1px solid var(--hairline); padding: 13px 24px; color: var(--muted); font-size: 10px; line-height: 1.55; }
+.scope :global(.crossover-receipts) { background: var(--ink); color: var(--ink-invert-fg); }
+.scope :global(.crossover-receipts > summary) { padding: 19px 24px; cursor: pointer; font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.scope :global(.crossover-receipts > p) { margin: 0; border-top: 1px solid color-mix(in srgb, var(--ink-invert-fg) 18%, transparent); padding: 14px 24px 0; color: color-mix(in srgb, var(--ink-invert-fg) 70%, transparent); font-size: 10px; }
+.scope :global(.crossover-receipts > div) { padding: 14px 24px 24px; }
+.scope :global(.crossover-receipts details) { border-top: 1px solid color-mix(in srgb, var(--ink-invert-fg) 18%, transparent); }
+.scope :global(.crossover-receipts details > summary) { display: flex; justify-content: space-between; gap: 14px; padding: 12px 0; cursor: pointer; font-size: 9px; }
+.scope :global(.crossover-receipts details > summary span) { color: color-mix(in srgb, var(--ink-invert-fg) 64%, transparent); }
+.scope :global(.crossover-receipts dl) { display: grid; grid-template-columns: 1fr 1fr; margin: 0 0 15px; border: 1px solid color-mix(in srgb, var(--ink-invert-fg) 18%, transparent); }
+.scope :global(.crossover-receipts dl > div) { min-width: 0; padding: 9px; border-right: 1px solid color-mix(in srgb, var(--ink-invert-fg) 18%, transparent); border-bottom: 1px solid color-mix(in srgb, var(--ink-invert-fg) 18%, transparent); }
+.scope :global(.crossover-receipts dt) { color: color-mix(in srgb, var(--ink-invert-fg) 58%, transparent); font-size: 8px; }
+.scope :global(.crossover-receipts dd) { margin: 4px 0 0; overflow-wrap: anywhere; font-size: 8px; }
+
+@media (max-width: 720px) {
+  .scope :global(.crossover-panel > header) { grid-template-columns: 1fr; padding: 20px; }
+  .scope :global(.crossover-panel > header > p:last-child) { grid-column: 1; grid-row: auto; }
+  .scope :global(.crossover-verdict) { grid-template-columns: 1fr; gap: 7px; }
+  .scope :global(.crossover-deep-grid), .scope :global(.crossover-support-legend), .scope :global(.crossover-regime-contrast), .scope :global(.crossover-receipts dl) { grid-template-columns: 1fr; }
+  .scope :global(.crossover-deep-grid > div), .scope :global(.crossover-regime-contrast > div) { border-right: 0; border-bottom: 1px solid var(--hairline); }
+  .scope :global(.crossover-regime-contrast p) { grid-column: 1; }
+  .scope :global(.crossover-support-legend) { gap: 8px; }
+  .scope :global(.crossover-stacked-bar i) { font-size: 8px; }
+}

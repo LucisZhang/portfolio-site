@@ -6,7 +6,7 @@ import ArtifactLink from "@/components/ArtifactLink";
 import DetectionPanel from "@/components/analytics/DetectionPanel";
 import ElasticityPanel from "@/components/analytics/ElasticityPanel";
 import MarginWaterfall from "@/components/analytics/MarginWaterfall";
-import { getAnalyticsDatasetCacheState, materializeAnalyticsDataset, peekAnalyticsDataset, scheduleAnalyticsDatasetWarm } from "@/lib/analytics-data-cache";
+import { getAnalyticsDatasetCacheState, materializeAnalyticsDataset, peekAnalyticsDataset } from "@/lib/analytics-data-cache";
 import { useI18n } from "@/lib/i18n";
 import { loadMarginReports, MarginReportValidationError, type MarginReports } from "@/lib/margin-report-validation";
 import { OLIST_MARGIN_ARTIFACT_SHA256 } from "@/lib/olist-margin-identity";
@@ -30,7 +30,7 @@ const HEATMAP_REGIONS = ["North", "South", "West"] as const;
 type DatasetSource = "synthetic" | "real";
 type RealArtifactStatus = "idle" | "loading" | "loaded" | "pending" | "invalid";
 type RealMaterializationStatus = "idle" | "preview" | "loading" | "full" | "unavailable";
-type RealFullWarmStatus = "scheduled" | "loading" | "ready" | "unavailable";
+type RealFullWarmStatus = "idle" | "loading" | "ready" | "unavailable";
 type DatasetActivationOptions = { preservePromo?: boolean };
 
 type MarginRow = {
@@ -239,23 +239,19 @@ type RealMarginMaterialization = {
   dataset: MarginDataset;
   sha256: string;
   reports: MarginReports;
-  artifactIdentity: ParquetArtifactIdentity;
+  artifactIdentity?: ParquetArtifactIdentity;
 };
 
 function loadRealMarginPreview() {
   return materializeAnalyticsDataset<RealMarginMaterialization>(REAL_PREVIEW_CACHE_KEY, async () => {
-    const { fetchParquetArtifactIdentity } = await import("@/lib/duckdb");
-    const artifact = await fetchParquetArtifactIdentity(REAL_PARQUET_URL);
-    if (artifact.sha256 !== OLIST_MARGIN_ARTIFACT_SHA256) throw new Error("Olist Parquet contract failed: artifact_sha256 does not match the recorded SHA-256.");
     const [{ buildOlistMarginCompactPreview }, reports] = await Promise.all([
       import("@/lib/olist-margin-compact"),
-      loadMarginReports(artifact.sha256),
+      loadMarginReports(OLIST_MARGIN_ARTIFACT_SHA256),
     ]);
     const preview = await buildOlistMarginCompactPreview();
-    if (preview.sourceSha256 !== artifact.sha256) throw new Error("Olist compact preview source identity does not match the fetched artifact.");
+    if (preview.sourceSha256 !== OLIST_MARGIN_ARTIFACT_SHA256) throw new Error("Olist compact preview source identity does not match the recorded artifact.");
     return {
-      sha256: artifact.sha256,
-      artifactIdentity: artifact,
+      sha256: preview.sourceSha256,
       reports,
       dataset: {
         ...preview.dataset,
@@ -314,7 +310,7 @@ export default function MarginControlTower() {
   const [realMaterializationStatus, setRealMaterializationStatus] = useState<RealMaterializationStatus>("idle");
   const [realFullWarmStatus, setRealFullWarmStatus] = useState<RealFullWarmStatus>(() => {
     const cacheState = getAnalyticsDatasetCacheState(REAL_CACHE_KEY);
-    return cacheState === "ready" ? "ready" : cacheState === "loading" ? "loading" : "scheduled";
+    return cacheState === "ready" ? "ready" : cacheState === "loading" ? "loading" : "idle";
   });
   const [realArtifactDetail, setRealArtifactDetail] = useState("");
   const [realArtifactSha256, setRealArtifactSha256] = useState<string | null>(null);
@@ -394,7 +390,7 @@ export default function MarginControlTower() {
       setRealFullWarmStatus("loading");
     } else {
       const fullCacheState = getAnalyticsDatasetCacheState(REAL_CACHE_KEY);
-      setRealFullWarmStatus(fullCacheState === "ready" ? "ready" : fullCacheState === "loading" ? "loading" : "scheduled");
+      setRealFullWarmStatus(fullCacheState === "ready" ? "ready" : fullCacheState === "loading" ? "loading" : "idle");
     }
     if (!alreadyShowingVerifiedPreview) {
       setRealArtifactStatus("loading");
@@ -457,65 +453,13 @@ export default function MarginControlTower() {
   }, [activateDataset]);
 
   useEffect(() => {
-    let mounted = true;
-    const cancelSyntheticWarm = scheduleAnalyticsDatasetWarm(SYNTHETIC_CACHE_KEY, async () => {
-      const warmed = await loadSyntheticMarginDataset();
-      if (mounted) setSyntheticWarmReady(true);
-      return warmed;
-    }, { startAfterMs: 8_000, idleTimeoutMs: 2_000 });
-    const initialRealMode = getAnalyticsDatasetCacheState(REAL_CACHE_KEY) === "ready" ? "full" : "preview";
+    const initialRealMode = getAnalyticsDatasetCacheState(REAL_CACHE_KEY) === "missing" ? "preview" : "full";
     const initialRequest = window.setTimeout(() => selectDatasetSource("real", initialRealMode), 0);
     return () => {
-      mounted = false;
       window.clearTimeout(initialRequest);
-      cancelSyntheticWarm();
       sourceRequest.current += 1;
     };
   }, [selectDatasetSource]);
-
-  useEffect(() => {
-    if (requestedSource !== "real" || realMaterializationStatus !== "preview") return;
-
-    let mounted = true;
-    const promoteFullMaterialization = async () => {
-      if (mounted) setRealFullWarmStatus("loading");
-      try {
-        const warmed = await loadRealMarginDataset();
-        if (mounted) {
-          setRealFullWarmStatus("ready");
-          if (activeSourceRef.current === "real" && realPreviewVerifiedRef.current) {
-            setRealArtifactSha256(warmed.sha256);
-            setRealReports(warmed.reports);
-            setRealArtifactStatus("loaded");
-            setRealMaterializationStatus("full");
-            activateDataset(warmed.dataset, selectionRef.current, { preservePromo: true });
-          }
-        }
-        return warmed;
-      } catch (error) {
-        if (mounted) setRealFullWarmStatus("unavailable");
-        throw error;
-      }
-    };
-
-    const cacheState = getAnalyticsDatasetCacheState(REAL_CACHE_KEY);
-    if (cacheState === "loading" || cacheState === "ready") {
-      void promoteFullMaterialization().catch(() => undefined);
-      return () => {
-        mounted = false;
-      };
-    }
-
-    const cancelRealFullWarm = scheduleAnalyticsDatasetWarm(
-      REAL_CACHE_KEY,
-      promoteFullMaterialization,
-      { startAfterMs: 8_000, idleTimeoutMs: 2_000 },
-    );
-    return () => {
-      mounted = false;
-      cancelRealFullWarm();
-    };
-  }, [activateDataset, realMaterializationStatus, requestedSource]);
 
   const contractChecks = useMemo(() => dataset ? dataset.recorded_contract_checks ?? checksFor(dataset.rows, activeSource) : [], [activeSource, dataset]);
   const allPass = contractChecks.every((check) => check.pass);
@@ -620,7 +564,7 @@ export default function MarginControlTower() {
       : (locale === "en" ? "Verified compact real preview" : "已验证的轻量真实预览");
   const realBoundaryDetail = realMaterializationStatus === "full"
     ? (locale === "en" ? "All artifact rows were queried in-browser and are ready for interactive scenario comparison." : "浏览器内已查询全部产物行，可用于交互式情景比较。")
-    : (locale === "en" ? "Exact Parquet bytes and linked reports are verified; the compact cells were generated under the recorded full-artifact contract, while the full browser query remains deferred." : "Parquet 精确字节与关联报告已验证；轻量单元格基于已记录的完整产物契约生成，浏览器端完整查询仍保持挂起。");
+    : (locale === "en" ? "The compact cells are build-time bound to the exact Parquet SHA-256 and full-artifact contract; downloading and querying the complete artifact remains deferred." : "轻量单元格在构建时已绑定精确 Parquet SHA-256 与完整产物契约；完整产物的下载与查询保持挂起。");
   const reset = () => {
     setWeek(dataset.guided_scenario.week);
     setCategory(dataset.guided_scenario.category);
@@ -664,7 +608,7 @@ export default function MarginControlTower() {
       <header className="analytics-lab-header">
         <div>
           <p className="eyebrow">{activeSource === "synthetic" ? (locale === "en" ? "Synthetic dataset / linked decision workspace" : "合成数据集 / 联动决策工作区") : (locale === "en" ? "Olist Parquet / browser-native decision workspace" : "Olist Parquet / 浏览器原生决策工作区")}</p>
-          <h3 id="margin-lab-title">{locale === "en" ? "Margin Control Tower" : "毛利控制塔"}</h3>
+          <h3 id="margin-lab-title">Margin Control Tower</h3>
           <p>{activeSource === "synthetic"
             ? (locale === "en" ? "Find where contribution margin breaks, trace the cost driver, and test one bounded operating change against a held-out synthetic period." : "定位贡献毛利异常点，追溯成本驱动因素，并以预留的合成周期验证一项有限运营调整。")
             : compactRealVisible
@@ -687,7 +631,7 @@ export default function MarginControlTower() {
         <p>{activeSource === "synthetic"
           ? (locale === "en" ? "Versioned generator, fixed rules, and fixed seed. The final eight weeks are excluded from diagnosis and kept for verification." : "生成器有版本记录，规则和 seed 固定。最后八周不参与诊断，仅用于验证。")
           : compactRealVisible
-            ? (locale === "en" ? "The browser verifies the served Parquet SHA-256 and both linked reports before showing this compact slice. The full ten-check artifact contract was recorded at build time; DuckDB has not queried every row yet." : "浏览器会先验证当前 Parquet 的 SHA-256 与两份关联报告，再显示轻量切片。完整十项产物契约在构建时记录；DuckDB 尚未查询全部行。")
+            ? (locale === "en" ? "The browser verifies the hash-bound compact payload and both linked reports before showing this slice. The full ten-check artifact contract was recorded at build time; the complete Parquet has not been downloaded or queried yet." : "浏览器会先验证哈希绑定的轻量载荷与两份关联报告，再显示该切片。完整十项产物契约在构建时记录；完整 Parquet 尚未下载或查询。")
             : (locale === "en" ? "The browser verifies the exact final-eight-week split and SHA-256 of the committed category-level Parquet before any linked report can render." : "浏览器会校验已提交品类级 Parquet 的最后八周切分与实际 SHA-256；只有通过后才会显示关联报告。")}</p>
         {activeSource === "synthetic" ? <div className="analytics-download-row"><ArtifactLink href={DATA_URL}>{locale === "en" ? "Explore full JSON" : "浏览完整 JSON"}</ArtifactLink><a href={CSV_URL} download><Download aria-hidden="true" />{locale === "en" ? "Download full CSV" : "下载完整 CSV"}</a><a href={PARQUET_URL} download><Download aria-hidden="true" />{locale === "en" ? "Download synthetic Parquet" : "下载合成 Parquet"}</a><ArtifactLink href={SAMPLE_URL}>{locale === "en" ? "Browse CSV sample" : "浏览 CSV 样本"}</ArtifactLink></div> : <div className="analytics-download-row"><a href={REAL_PARQUET_URL} download><Download aria-hidden="true" />{locale === "en" ? "Download Olist aggregate" : "下载 Olist 聚合产物"}</a><ArtifactLink href="/case-studies/margin-control-tower/methods-evidence.json">{locale === "en" ? "Open methods evidence" : "查看方法证据"}</ArtifactLink><ArtifactLink href="/case-studies/margin-control-tower/README.md">{locale === "en" ? "Artifact notes" : "产物说明"}</ArtifactLink></div>}
       </section>

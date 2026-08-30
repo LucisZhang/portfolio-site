@@ -86,13 +86,19 @@ function expandedQuery(value: string) {
   const expansions: string[] = [];
   const rules: Array<[RegExp, string]> = [
     [/(?:hire|hiring|candidate|recruiter|strength|why him|role fit|job fit|position)/u, "candidate profile skills experience strengths role fit applied AI data engineering analytics Release Guardian RAG Quality Lab Streaming Reliability Lab Privacy Preflight Margin Control Tower Credit Policy Lab"],
-    [/(?:候选人|招聘|录用|优势|亮点|岗位|职位|匹配|胜任)/u, "候选人 个人背景 技能 经历 优势 岗位匹配 AI应用 数据工程 数据分析 发布守门人 RAG质量实验室 流式可靠性实验室 精确一次演练 投诉分流路由 交叉点研究 隐私预检 毛利控制塔 信贷策略实验室 信贷策略工作台"],
+    [/(?:候选人|招聘|录用|优势|亮点|岗位|职位|匹配|胜任)/u, "候选人 个人背景 技能 经历 优势 岗位匹配 AI 应用 数据工程 数据分析 Release Guardian RAG Quality Lab Exactly-Once Drills Triage Router Crossover Study Privacy Preflight Margin Control Tower Credit Policy Desk"],
     [/(?:background|education|school|university|major|graduate)/u, "candidate education Beijing Institute of Technology data science graduation"],
     [/(?:背景|教育|学校|大学|专业|毕业)/u, "候选人 教育 北京理工大学 数据科学与大数据技术 2027届"],
     [/(?:working style|work style|collaborat|communicat|leadership)/u, "working style ownership evidence automation communication collaboration"],
     [/(?:工作方式|工作风格|协作|沟通|领导力|执行力)/u, "工作方式 主动性 证据 自动化 沟通 协作"],
     [/(?:project|portfolio|built|architecture|technical)/u, "projects portfolio architecture implementation outcomes workflow strengths"],
     [/(?:项目|作品集|技术|架构|实现)/u, "项目 作品集 架构 实现 成果 工作流 优势"],
+    [/(?:upload|nothing leaves|away from the browser|process files locally)/u, "browser-local local-only no upload nothing leaves the browser redaction"],
+    [/(?:上传|不出浏览器|离开浏览器|本地处理)/u, "浏览器本地 全程不出浏览器 不上传 脱敏"],
+    [/(?:promotion|elasticity|forecast|scenario assumption)/u, "promotion elasticity disclosed assumption not a forecast non-causal scenario"],
+    [/(?:促销|弹性|预测|情景假设)/u, "促销 弹性 公开假设 不是预测 非因果 情景"],
+    [/(?:inject failures|break.*pipeline|reconcile.*pipeline)/u, "failure injection reconciliation source snapshots event IDs zero diff recovery"],
+    [/(?:注入故障|管道.*故障|管道.*对账)/u, "故障注入 对账 源端 快照 事件 ID 零差异 恢复"],
   ];
   for (const [pattern, expansion] of rules) if (pattern.test(normalized)) expansions.push(expansion);
   return `${value} ${expansions.join(" ")}`;
@@ -176,10 +182,11 @@ function sourceBucket(chunk: AssistantKnowledgeChunk) {
 function rankChunks(question: string, chunks: AssistantKnowledgeChunk[]) {
   const queryText = expandedQuery(question);
   const queryTokens = [...new Set(tokens(queryText))];
-  const tokenized = chunks.map((chunk) => {
+  const tokenized = chunks.flatMap((chunk) => {
+    if (tokens(chunk.content).length === 0) return [];
     const text = `${chunk.aliases.join(" ")} ${chunk.project?.en ?? ""} ${chunk.project?.zh ?? ""} ${chunk.content}`;
     const documentTokens = tokens(text);
-    return { chunk, documentTokens, normalizedText: normalize(text) };
+    return [{ chunk, documentTokens, normalizedText: normalize(text) }];
   });
   const documentFrequency = new Map<string, number>();
   for (const { documentTokens } of tokenized) {
@@ -196,13 +203,15 @@ function rankChunks(question: string, chunks: AssistantKnowledgeChunk[]) {
       const frequency = frequencies.get(token) ?? 0;
       if (!frequency) continue;
       const df = documentFrequency.get(token) ?? 0;
-      const idf = Math.log(1 + (chunks.length - df + 0.5) / (df + 0.5));
+      const idf = Math.log(1 + (tokenized.length - df + 0.5) / (df + 0.5));
       const denominator = frequency + 1.2 * (0.25 + 0.75 * documentTokens.length / Math.max(1, averageLength));
       score += idf * frequency * 2.2 / denominator;
     }
     for (const alias of chunk.aliases) {
       const normalizedAlias = normalize(alias);
-      if (normalizedAlias.length > 2 && normalizedQuestion.includes(normalizedAlias)) score += 10;
+      if (normalizedAlias.length > 2 && normalizedQuestion.includes(normalizedAlias)) {
+        score += 10;
+      }
     }
     if (candidateQuestion && chunk.kind === "private-profile") score += 2.5;
     if (candidateQuestion && chunk.kind === "private-profile"
@@ -227,13 +236,22 @@ export function retrieveAssistantKnowledge(
   const normalizedQuestion = normalize(question);
   const candidateQuestion = /(?:candidate|hire|hiring|recruiter|strength|role|job|background|education|school|university|major|候选人|录用|招聘|优势|岗位|职位|背景|教育|学校|大学|专业)/u.test(normalizedQuestion);
   const target = Math.min(MAX_RETRIEVED_CHUNKS, Math.max(1, limit));
+  const currentSiteMatches = ranked.filter(({ chunk }) => (
+    chunk.repository === "LucisZhang/portfolio-site"
+    && chunk.aliases.some((alias) => {
+      const normalizedAlias = normalize(alias);
+      return normalizedAlias.length > 2 && normalizedQuestion.includes(normalizedAlias);
+    })
+  ));
+  const currentSitePriority = currentSiteMatches.slice(0, 2);
   const ordered = candidateQuestion && privatePayload
     ? [
         ...ranked.filter(({ chunk }) => chunk.kind === "private-profile").slice(0, 4),
+        ...currentSitePriority,
         ...ranked.filter(({ chunk }) => chunk.kind === "public-github").slice(0, 6),
         ...ranked,
       ]
-    : ranked;
+    : [...currentSitePriority, ...ranked];
   const seenChunks = new Set<string>();
   for (const { chunk } of ordered) {
     if (seenChunks.has(chunk.id)) continue;

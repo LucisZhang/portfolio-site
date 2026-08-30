@@ -1,0 +1,23 @@
+{
+  "generator": "scripts/generate-ask-recorded-example.mjs",
+  "mechanism": "offline retrieval only (src/lib/assistant-retrieval.ts retrieveAssistantKnowledge) -- no model call, no network request, reproducible with no API key",
+  "question": {
+    "id": "home-site-overview",
+    "q_en": "What can I explore on this portfolio site?",
+    "q_zh": "这个作品集里最值得先看哪些内容？"
+  },
+  "answer": {
+    "en": "Data engineering, decision analytics, and applied-AI projects — interactive demos with clear boundaries on what each proves.",
+    "zh": "数据工程、决策分析与 AI 应用项目——交互式演示，并明确每项所能验证的范围。"
+  },
+  "citation": {
+    "sourceId": "portfolio-site:home:src/lib/site-config.ts:L60-L69",
+    "kind": "public-github",
+    "label": {
+      "en": "Xiangguo Zhang portfolio · src/lib/site-config.ts · lines 60-69",
+      "zh": "章向国作品集 · src/lib/site-config.ts · 第 60-69 行"
+    },
+    "url": "https://github.com/LucisZhang/portfolio-site/blob/e8821702bfe69ee5846a617aa178486f216b5346/src/lib/site-config.ts#L60-L69"
+  },
+  "publicSnapshotSha256": "f4d1886ffeeb03b747b4a273d7484557ecf7f2d50545af098e902ebea0042db0"
+}

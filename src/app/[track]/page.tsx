@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { ExhibitShell } from "@/components/exhibition/ExhibitShell";
+import LegacyRailTools from "@/components/exhibition/LegacyRailTools";
+import { legacyRail } from "@/components/exhibition/legacyRail";
 import TrackPageView from "@/components/TrackPageView";
 import { getTrack, isTrackId, tracks } from "@/lib/projects";
 
@@ -19,5 +22,9 @@ export async function generateMetadata({ params }: { params: Promise<{ track: st
 export default async function TrackPage({ params }: { params: Promise<{ track: string }> }) {
   const { track } = await params;
   if (!isTrackId(track)) notFound();
-  return <TrackPageView trackId={track} />;
+  return (
+    <ExhibitShell rail={legacyRail} railTools={<LegacyRailTools />}>
+      <TrackPageView trackId={track} />
+    </ExhibitShell>
+  );
 }

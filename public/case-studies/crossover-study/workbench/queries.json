@@ -1,0 +1,40 @@
+{
+  "queries": [
+    {
+      "id": "data-scale",
+      "title": "01 · Establish the data scale",
+      "sql": "SELECT\n  'silver.interactions' AS dataset,\n  count(*) AS row_count,\n  count(DISTINCT user_id) AS entity_count\nFROM silver_interactions\nUNION ALL\nSELECT\n  'silver.items' AS dataset,\n  count(*) AS row_count,\n  count(DISTINCT parent_asin) AS entity_count\nFROM silver_items\nORDER BY dataset\nLIMIT 20",
+      "comment": "How large is the current contract-checked silver data plane?\nThe counts come from the full local DuckDB silver mirrors, not display constants."
+    },
+    {
+      "id": "category-distribution",
+      "title": "02 · Map the catalog concentration",
+      "sql": "SELECT\n  coalesce(nullif(trim(main_category), ''), 'Unknown') AS category,\n  count(*) AS items,\n  round(100.0 * count(*) / sum(count(*)) OVER (), 2) AS catalog_pct\nFROM silver_items\nGROUP BY 1\nORDER BY items DESC, category\nLIMIT 20",
+      "comment": "Which product categories dominate the 1.61M-item catalog?\nConcentration is measured over every silver item at the current build state."
+    },
+    {
+      "id": "cross-purchase",
+      "title": "03 · Trace cross-category purchase paths",
+      "sql": "WITH top_categories AS (\n  SELECT coalesce(nullif(trim(main_category), ''), 'Unknown') AS category\n  FROM silver_items\n  GROUP BY 1\n  ORDER BY count(*) DESC\n  LIMIT 12\n), user_categories AS (\n  SELECT DISTINCT\n    i.user_id,\n    coalesce(nullif(trim(m.main_category), ''), 'Unknown') AS category\n  FROM silver_interactions AS i\n  JOIN silver_items AS m USING (parent_asin)\n  JOIN top_categories AS t\n    ON t.category = coalesce(nullif(trim(m.main_category), ''), 'Unknown')\n  WHERE i.verified_purchase IS TRUE\n), category_pairs AS (\n  SELECT\n    a.category AS category_a,\n    b.category AS category_b,\n    count(*) AS shared_buyers\n  FROM user_categories AS a\n  JOIN user_categories AS b\n    ON a.user_id = b.user_id AND a.category < b.category\n  GROUP BY 1, 2\n)\nSELECT category_a, category_b, shared_buyers\nFROM category_pairs\nORDER BY shared_buyers DESC, category_a, category_b\nLIMIT 20",
+      "comment": "Which leading category pairs share the most verified purchasers?\nThe query scans the interaction-item join and deduplicates each user-category edge first."
+    },
+    {
+      "id": "amazon-null-test",
+      "title": "04 · Test the personalization crossover",
+      "sql": "SELECT\n  model,\n  history_depth,\n  ndcg10_delta_vs_popularity,\n  ci_lo,\n  ci_hi,\n  excludes_zero\nFROM amazon_null_segments\nORDER BY model, history_order\nLIMIT 20",
+      "comment": "Does any personalized Amazon arm beat recent popularity as user history grows?\nThese paired TEST deltas retain their bootstrap intervals across all five frozen depth buckets."
+    },
+    {
+      "id": "ml32m-counterexample",
+      "title": "05 · Find the contrast-regime crossover",
+      "sql": "SELECT\n  history_depth,\n  n_users,\n  ndcg10_delta_vs_popularity,\n  ci_lo,\n  ci_hi,\n  q_value,\n  bh_significant\nFROM ml32m_deep_buckets\nORDER BY history_order\nLIMIT 20",
+      "comment": "Does the null survive in the lower-churn ML-32M contrast regime?\nThe confirmatory deep buckets show the declared n*=20 NDCG@10 counterexample."
+    },
+    {
+      "id": "counterexample-caveat",
+      "title": "06 · Stress-test the counterexample",
+      "sql": "SELECT\n  history_depth,\n  n_users,\n  ndcg10_delta_vs_popularity,\n  ci_lo,\n  ci_hi,\n  q_value,\n  bh_significant,\n  recall20_metric_robust\nFROM ml32m_caveat_buckets\nORDER BY history_order\nLIMIT 20",
+      "comment": "What prevents the ML-32M crossover from becoming a universal win claim?\nDepth-0 users lose sharply and the independent Recall@20 guard does not confirm the winning buckets."
+    }
+  ]
+}

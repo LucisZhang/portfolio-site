@@ -1,0 +1,13 @@
+{
+  "releaseJson": {
+    "sha256": "9e547b3418ce1f633914e8dfe7b818fa6f7e064a891cee8e4c73837e6ce45f4d",
+    "bytes": 29330
+  },
+  "overloadReceipt": {
+    "sha256": "d132ebece698c98ab996b154067679ea1d74b52e9528834ed19a21a132137929",
+    "bytes": 1526788
+  },
+  "totalMeasuredSpendUsd": 35.68,
+  "snapshotId": "ff-qwen3.5-4b-r1b_sft_rule_20k_s0",
+  "generatedAt": "2026-08-22"
+}

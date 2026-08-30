@@ -1,0 +1,50 @@
+{
+  "rows": [
+    {
+      "history_depth": "0",
+      "n_users": 3882,
+      "ndcg10_delta_vs_popularity": -0.38441919421593973,
+      "ci_lo": -0.3925536913043543,
+      "ci_hi": -0.37504946428358243,
+      "q_value": 0.005328005328005328,
+      "bh_significant": true,
+      "recall20_metric_robust": false
+    },
+    {
+      "history_depth": "20-49",
+      "n_users": 242,
+      "ndcg10_delta_vs_popularity": 0.03331706067297835,
+      "ci_lo": 0.010695782804417651,
+      "ci_hi": 0.05517465473104838,
+      "q_value": 0.011988011988011988,
+      "bh_significant": true,
+      "recall20_metric_robust": false
+    },
+    {
+      "history_depth": "50-99",
+      "n_users": 431,
+      "ndcg10_delta_vs_popularity": 0.01980916723878097,
+      "ci_lo": 0.003372089979447112,
+      "ci_hi": 0.038052283198016935,
+      "q_value": 0.025574425574425574,
+      "bh_significant": true,
+      "recall20_metric_robust": false
+    },
+    {
+      "history_depth": "100+",
+      "n_users": 4191,
+      "ndcg10_delta_vs_popularity": 0.011180539577156215,
+      "ci_lo": 0.007070239237351424,
+      "ci_hi": 0.014887620046157757,
+      "q_value": 0.005328005328005328,
+      "bh_significant": true,
+      "recall20_metric_robust": false
+    }
+  ],
+  "telemetry": {
+    "rowsScanned": 8,
+    "elapsedMs": 0.704,
+    "bytesScanned": 0
+  },
+  "builtAt": "2026-08-22T15:48:15.683Z"
+}

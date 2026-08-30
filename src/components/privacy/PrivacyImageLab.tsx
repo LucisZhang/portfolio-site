@@ -5,6 +5,7 @@ import NextImage from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { Locale } from "@/lib/i18n";
 import { privacyOcrProgressStatus, privacySourceLabel } from "@/lib/privacy-localization";
+import { cancelPrivacyOcrWorker, withPrivacyOcrTimeout, withPrivacyOcrWorker } from "@/lib/privacy-ocr-worker";
 import { mapSensitiveOcrLine } from "@/lib/privacy-redaction";
 
 interface RedactionBox {
@@ -75,27 +76,27 @@ function drawPreview(canvas: HTMLCanvasElement, image: HTMLImageElement, boxes: 
   context.setLineDash([context.lineWidth * 3, context.lineWidth * 2]);
   for (const box of [...boxes, ...(draft ? [draft] : [])]) {
     const active = box.accepted !== false;
-    context.fillStyle = active ? "rgba(138, 47, 47, .2)" : "rgba(93, 101, 97, .12)";
-    context.strokeStyle = active ? "#8a2f2f" : "#5d6561";
+    context.fillStyle = active ? "rgba(157, 43, 38, .2)" : "rgba(90, 100, 114, .12)";
+    context.strokeStyle = active ? "#9d2b26" : "#5a6472";
     context.fillRect(box.x, box.y, box.width, box.height);
     context.strokeRect(box.x, box.y, box.width, box.height);
     const handle = context.lineWidth * 4;
-    context.fillStyle = active ? "#8a2f2f" : "#5d6561";
+    context.fillStyle = active ? "#9d2b26" : "#5a6472";
     context.fillRect(box.x + box.width - handle / 2, box.y + box.height - handle / 2, handle, handle);
   }
   context.restore();
 }
 
-export default function PrivacyImageLab({ locale }: { locale: Locale }) {
+export default function PrivacyImageLab({ locale, sampleTrigger }: { locale: Locale; sampleTrigger?: number }) {
   const copy = locale === "en" ? {
     choose: "Choose image", drop: "or drop PNG/JPEG here", manual: "Local OCR + burn-in review", note: "OCR runs from same-origin worker, WASM, and language assets. Review every detected or manual region before export.",
     boxes: "Redaction regions", none: "Draw a rectangle over sensitive pixels.", preview: "Confirm review and show result", download: "Download redacted file", reset: "Reset", zoom: "Zoom", blackout: "Blackout", pixelate: "Pixelate",
-    invalid: "Choose a PNG or JPEG up to 15 MB and 8,000 px per side.", verify: "Export verification", pass: "Pass: a fresh PNG was decoded after burn-in; dimensions match and its SHA-256 differs from the source.",
+    invalid: "Choose a PNG or JPEG up to 15 MB and 8,000 px per side.", verify: "Export verification", unsafeStatus: "UNSAFE TO EXPORT", pass: "Pass: a fresh PNG was decoded after burn-in; dimensions match and its SHA-256 differs from the source.",
     fail: "Verification failed. No safe export is available.", ocrError: "Local OCR could not finish. Try again or draw the regions manually.", exportError: "The safe image export could not be completed. No download was created.", metadata: "Canvas export rebuilds pixels into a new PNG and does not preserve source metadata.", local: "Text recognition runs locally in your browser. Your file is not uploaded.", region: "Region", delete: "Delete region", source: "source", output: "output", ocr: "Scan for sensitive information", english: "English", bilingual: "English + 简体中文", ocrIdle: "OCR not run", ocrNone: "OCR finished; no rule-matched sensitive token was found. Add regions manually if needed.", accept: "Accept", reject: "Reject", exampleEnglish: "Load English image example", exampleChinese: "Load Chinese image example", before: "Before", detected: "Detected", redacted: "Redacted", processing: "Orientation candidates, grayscale, contrast, threshold, and multi-pass OCR", compare: "Before / after", originalView: "Original image", redactedView: "Redacted image",
   } : {
     choose: "选择图片", drop: "或将 PNG/JPEG 拖到此处", manual: "本地 OCR + 像素烧录复核", note: "OCR 使用同源 worker、WASM 和语言包运行。导出前请复核每个自动或手动区域。",
     boxes: "脱敏区域", none: "请在敏感像素上拖动绘制矩形。", preview: "确认复核并显示结果", download: "下载脱敏文件", reset: "重置", zoom: "缩放", blackout: "黑色遮盖", pixelate: "像素化",
-    invalid: "请选择不超过 15 MB、单边不超过 8,000 px 的 PNG 或 JPEG。", verify: "导出验证", pass: "通过：烧录后重新解码了全新 PNG；尺寸一致且 SHA-256 与原文件不同。",
+    invalid: "请选择不超过 15 MB、单边不超过 8,000 px 的 PNG 或 JPEG。", verify: "导出验证", unsafeStatus: "禁止导出", pass: "通过：烧录后重新解码了全新 PNG；尺寸一致且 SHA-256 与原文件不同。",
     fail: "验证失败，暂无可用的安全导出。", ocrError: "本地文字识别未能完成，请重试或手动框选区域。", exportError: "无法完成安全图片导出，因此没有生成下载文件。", metadata: "Canvas 会将像素重建为新 PNG，不保留源文件元数据。", local: "文字识别在本机浏览器中完成，文件不会上传。", region: "区域", delete: "删除区域", source: "源文件", output: "输出文件", ocr: "扫描并查找敏感信息", english: "英语", bilingual: "英语 + 简体中文", ocrIdle: "尚未运行 OCR", ocrNone: "OCR 已完成，但规则未匹配到敏感内容；如有需要请手动新增区域。", accept: "接受", reject: "拒绝", exampleEnglish: "加载英文图片示例", exampleChinese: "加载中文图片示例", before: "原始文件", detected: "检测结果", redacted: "脱敏结果", processing: "方向候选、灰度、对比度、阈值与多轮文字识别", compare: "前后对照", originalView: "原始图片", redactedView: "脱敏图片",
   };
   const [image, setImage] = useState<HTMLImageElement | null>(null);
@@ -117,10 +118,22 @@ export default function PrivacyImageLab({ locale }: { locale: Locale }) {
   const [isOcrRunning, setIsOcrRunning] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const ocrSequence = useRef(0);
 
   useEffect(() => {
     if (image && canvasRef.current) drawPreview(canvasRef.current, image, output ? [] : boxes, output ? null : draft);
   }, [image, boxes, draft, output, showOriginal]);
+
+  // Task 3.2 (spec §6.4 "USE A SAMPLE FILE" -- recruiters have no file on
+  // hand): PrivacyPreflightLab's shared toolbar button increments this
+  // counter to request the English sample without duplicating a second
+  // "load example" affordance in the shared chrome. Effect (not a direct
+  // call) so it also fires the first time this tab mounts with a trigger
+  // already pending.
+  useEffect(() => {
+    if (sampleTrigger) void loadExample("/case-studies/privacy-preflight/image-example-english.png", "privacy-english-example.png", "eng");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sampleTrigger]);
 
   function clearOutput() {
     setOutput((current) => {
@@ -243,26 +256,20 @@ export default function PrivacyImageLab({ locale }: { locale: Locale }) {
 
   async function runOcr() {
     if (!image || isOcrRunning) return;
+    const requestId = ++ocrSequence.current;
     setIsOcrRunning(true);
     setError("");
     clearOutput();
     setOcrProgress(0);
     setOcrStatus(locale === "en" ? "Loading local OCR runtime" : "正在载入本地 OCR 运行时");
     try {
-      const { createWorker, OEM } = await import("tesseract.js");
-      const languages = ocrLanguage === "eng" ? "eng" : ["eng", "chi_sim"];
-      const worker = await createWorker(languages, OEM.LSTM_ONLY, {
-        workerPath: "/generated/privacy-ocr/worker.min.js",
-        corePath: "/generated/privacy-ocr/core",
-        langPath: "/generated/privacy-ocr/lang",
-        cacheMethod: "none",
-        logger: (message) => {
+      const language = ocrLanguage === "eng" ? "eng" : "eng+chi_sim";
+      await withPrivacyOcrWorker(language, (message) => {
+          if (requestId !== ocrSequence.current) return;
           const progress = Math.round(message.progress * 100);
           setOcrStatus(privacyOcrProgressStatus(locale, message.status, progress, copy.processing));
           setOcrProgress(progress);
-        },
-      });
-      try {
+        }, async (worker) => {
         const passes: { mode: "contrast" | "threshold"; rotated: boolean }[] = [
           { mode: "contrast", rotated: false },
           { mode: "threshold", rotated: false },
@@ -293,7 +300,9 @@ export default function PrivacyImageLab({ locale }: { locale: Locale }) {
             }
             context.putImageData(pixels, 0, 0);
           }
-          const result = await worker.recognize(canvas, {}, { blocks: true });
+          if (requestId !== ocrSequence.current) return;
+          const result = await withPrivacyOcrTimeout(worker.recognize(canvas, {}, { blocks: true }));
+          if (requestId !== ocrSequence.current) return;
           const lines = result.data.blocks?.flatMap((block) => block.paragraphs.flatMap((paragraph) => paragraph.lines)) ?? [];
           for (const line of lines) {
             for (const mapped of mapSensitiveOcrLine(line)) {
@@ -317,19 +326,19 @@ export default function PrivacyImageLab({ locale }: { locale: Locale }) {
           canvas.width = 0;
           canvas.height = 0;
         }
+        if (requestId !== ocrSequence.current) return;
         const ocrBoxes = [...found.values()];
         setBoxes((current) => [...current.filter((box) => box.source !== "ocr"), ...ocrBoxes]);
         setOcrStatus(ocrBoxes.length ? `${ocrBoxes.length} ${locale === "en" ? "rule-matched OCR regions" : "个规则匹配 OCR 区域"}` : copy.ocrNone);
         setOcrProgress(100);
-      } finally {
-        await worker.terminate();
-      }
+      });
     } catch (cause) {
+      if (requestId !== ocrSequence.current) return;
       console.error("Privacy image OCR could not finish.", cause);
       setOcrStatus(copy.ocrError);
       setError(copy.ocrError);
     } finally {
-      setIsOcrRunning(false);
+      if (requestId === ocrSequence.current) setIsOcrRunning(false);
     }
   }
 
@@ -394,6 +403,8 @@ export default function PrivacyImageLab({ locale }: { locale: Locale }) {
   }
 
   function reset() {
+    ocrSequence.current += 1;
+    void cancelPrivacyOcrWorker();
     setImage(null);
     setFileName("");
     setOriginalHash("");
@@ -437,7 +448,7 @@ export default function PrivacyImageLab({ locale }: { locale: Locale }) {
           <p className="privacy-metadata-note">{copy.metadata}</p>
           <button type="button" className="privacy-export-button" onClick={() => void exportImage()} disabled={!image || !boxes.some((box) => box.accepted !== false)}><Eye aria-hidden="true" />{copy.preview}</button>
           {output && verification?.safe ? <dl className="privacy-result-meta"><div><dt>{locale === "en" ? "File" : "文件"}</dt><dd>{output.name}</dd></div><div><dt>{locale === "en" ? "Type" : "类型"}</dt><dd>{output.type}</dd></div><div><dt>{locale === "en" ? "Size" : "大小"}</dt><dd>{(output.size / 1024).toFixed(1)} KB</dd></div></dl> : null}
-          {verification ? <div className={`privacy-validation ${verification.safe ? "pass" : "fail"}`}><div>{verification.safe ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}<strong>{copy.verify}</strong></div><p>{verification.message}</p><code>{verification.dimensions}</code><code>{copy.source} {verification.originalHash.slice(0, 16)}...</code><code>{copy.output} {verification.outputHash.slice(0, 16)}...</code></div> : null}
+          {verification ? <div className={`privacy-validation ${verification.safe ? "pass" : "fail"}`}><div>{verification.safe ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}<strong>{verification.safe ? copy.verify : copy.unsafeStatus}</strong></div><p>{verification.message}</p><code>{verification.dimensions}</code><code>{copy.source} {verification.originalHash.slice(0, 16)}...</code><code>{copy.output} {verification.outputHash.slice(0, 16)}...</code></div> : null}
           {error ? <p className="privacy-error" role="alert">{error}</p> : null}
         </aside>
       </div>

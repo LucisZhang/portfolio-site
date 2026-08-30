@@ -25,8 +25,17 @@
 !/public/duckdb/extensions/
 !/public/duckdb/extensions/**
 
+# Triage Router Tier B2 model + vendored onnxruntime-web browser assets
+# (task 3.1, spec section 6.3): copied on-site by hand from
+# the local nlp-eval-lab source repository and scripts/sync-triage-ort-assets.mjs,
+# never committed. Real sizes are registered in heavy-assets.json instead;
+# release-archive provisioning of these files is a Task 5.2/R7 item (see
+# docs/evidence/digits-triage.md).
+/public/models/
+
 # production
 /build
+/.artifacts/
 
 # misc
 .DS_Store

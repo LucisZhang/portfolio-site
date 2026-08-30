@@ -1,0 +1,5 @@
+{
+  "task-success": "make reproduce-headline",
+  "sustained-overload": "make reproduce-headline",
+  "distilled-sft-delta": "make reproduce-headline"
+}

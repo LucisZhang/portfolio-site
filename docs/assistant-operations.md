@@ -1,6 +1,6 @@
 # Portfolio assistant operations
 
-Updated: 2026-07-23 (Asia/Shanghai)
+Updated: 2026-08-29 (Asia/Shanghai)
 
 The built-in assistant is a bilingual, recruiter-facing hybrid RAG service. It retrieves a small
 set of relevant evidence from a commit-pinned public GitHub snapshot and an optional encrypted-at-
@@ -21,9 +21,9 @@ The browser never receives the full knowledge stores or any provider credential.
 - Chinese default: `moonshotai/kimi-k3`
 - English fallback order: `openai/gpt-5.4`, then `qwen/qwen3.5-397b-a17b`.
 - Chinese fallback order: `qwen/qwen3.5-397b-a17b`, then `openai/gpt-5.4`.
-- Public snapshot: 9 repositories, 66 reviewed files, 532 bounded chunks
+- Public snapshot: 8 repositories, 206 reviewed source selections, 1,410 bounded chunks
 - Public snapshot SHA-256:
-  `99127978b4aeb74d182610ad0ae3554181b1dbd81392dae520a41bf4468978a3`
+  `de5ef8b12c853264e170a40a9c35aee3edea395bce59addc039ebfd89fdbb139`
 - Current local private packet: 7 reviewed source files, 74 chunks; it is ignored by Git and its
   hash is reported at runtime without exposing its content or local source paths.
 - Retrieval: deterministic bilingual lexical scoring, alias/query expansion, per-source diversity,
@@ -32,9 +32,32 @@ The browser never receives the full knowledge stores or any provider credential.
   characters.
 
 The public manifest is `assistant-knowledge/manifest.json`. Every source is tied to an exact
-40-character commit and a reviewed path. `scripts/build-assistant-knowledge.mjs` fetches those raw
-files only at build or explicit refresh time, rejects oversized/non-text responses, chunks them,
-and writes `src/data/assistant-knowledge.generated.json`. Runtime requests do not fetch GitHub.
+40-character commit and a reviewed path. Seven upstream repositories retain their existing pinned
+source lists. The Round-2 `portfolio-site` layer adds 11 route-scoped source groups at commit
+`e8821702bfe69ee5846a617aa178486f216b5346`: current bilingual page copy, project registry and
+site identity, all five digits audits, selected compact evidence payloads, and route-scoped
+bilingual localization tables. Project entries and shared page wrappers are sliced to reviewed
+line ranges before chunking. The generated payload
+remains version 1 and its runtime `chunks` contract is unchanged. Existing full-file `files` fields
+keep their meanings; selected rows add optional `selectionBytes` and `selectionSha256` fields so
+full cited-file integrity is distinct from the text actually chunked. `generatedAt` is the pinned
+site commit's committer timestamp, a deterministic source-cutline time rather than build wall time.
+
+`scripts/build-assistant-knowledge.mjs` prefers a fresh fetch for upstream GitHub files. When DNS or
+the network is unavailable, it may reuse only the upstream portion of the last committed snapshot
+read with `git show HEAD:src/data/assistant-knowledge.generated.json`. It recomputes the committed
+envelope hash, requires exact manifest repository/commit/path membership, and validates file record
+bounds plus every chunk's file-hash link, ID, aliases, line range, and citation URL. That trust is
+anchored in the committed Git blob; it is not a new comparison with unavailable remote bytes. HTTP
+errors, manifest drift, cache tampering, and source-integrity failures still fail closed. Round-2
+site sources are always rebuilt from the pinned local Git object with `git show`. Runtime requests
+never fetch GitHub.
+
+The source question bank is `assistant-knowledge/question-bank.json`; the build writes
+`src/data/generated/ask-question-bank.json`. It contains three simple bilingual first-touch entries
+for home and each of the ten routable project pages. `npm run verify:assistant-question-bank` sends
+all 66 language variants through `retrieveAssistantKnowledge` and requires a route-matched,
+commit-pinned structured citation.
 
 The private builder accepts explicit owner-selected local files. It strips HTML, removes contact
 details and secret-shaped values, excludes superseded project claims, chunks the remaining text,
@@ -122,11 +145,14 @@ Refresh and verify the public snapshot:
 ```sh
 npm run build:assistant-knowledge
 npm run verify:assistant-public-sources
+npm run verify:assistant-question-bank
 ```
 
-The first command performs the explicit network refresh. The second rebuilds to a temporary
-representation and requires an exact match with the tracked generated snapshot. A changed remote
-default branch does not affect the build because every manifest entry uses an exact commit.
+The first command refreshes the knowledge snapshot and question bank. It fetches upstream sources
+when networking is available and otherwise uses the validated committed-cache path described above.
+The second rebuilds to a temporary representation and requires an exact match with the tracked
+generated snapshot; the third verifies every preset against the production retriever. A changed
+remote default branch does not affect the build because every manifest entry uses an exact commit.
 
 Build the private packet from explicitly reviewed local files (repeat `--source` as needed):
 

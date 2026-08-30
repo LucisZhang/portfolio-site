@@ -1,0 +1,110 @@
+{
+  "rows": [
+    {
+      "category": "Computers",
+      "items": 418868,
+      "catalog_pct": 26.02
+    },
+    {
+      "category": "All Electronics",
+      "items": 376435,
+      "catalog_pct": 23.38
+    },
+    {
+      "category": "Camera & Photo",
+      "items": 223690,
+      "catalog_pct": 13.89
+    },
+    {
+      "category": "Cell Phones & Accessories",
+      "items": 138237,
+      "catalog_pct": 8.59
+    },
+    {
+      "category": "Home Audio & Theater",
+      "items": 106516,
+      "catalog_pct": 6.62
+    },
+    {
+      "category": "Unknown",
+      "items": 106334,
+      "catalog_pct": 6.6
+    },
+    {
+      "category": "Industrial & Scientific",
+      "items": 50555,
+      "catalog_pct": 3.14
+    },
+    {
+      "category": "Car Electronics",
+      "items": 27332,
+      "catalog_pct": 1.7
+    },
+    {
+      "category": "Tools & Home Improvement",
+      "items": 24042,
+      "catalog_pct": 1.49
+    },
+    {
+      "category": "Amazon Home",
+      "items": 21299,
+      "catalog_pct": 1.32
+    },
+    {
+      "category": "Office Products",
+      "items": 21250,
+      "catalog_pct": 1.32
+    },
+    {
+      "category": "AMAZON FASHION",
+      "items": 18391,
+      "catalog_pct": 1.14
+    },
+    {
+      "category": "Sports & Outdoors",
+      "items": 14581,
+      "catalog_pct": 0.91
+    },
+    {
+      "category": "Automotive",
+      "items": 13956,
+      "catalog_pct": 0.87
+    },
+    {
+      "category": "GPS & Navigation",
+      "items": 9339,
+      "catalog_pct": 0.58
+    },
+    {
+      "category": "Amazon Devices",
+      "items": 8484,
+      "catalog_pct": 0.53
+    },
+    {
+      "category": "Portable Audio & Accessories",
+      "items": 8050,
+      "catalog_pct": 0.5
+    },
+    {
+      "category": "Musical Instruments",
+      "items": 6668,
+      "catalog_pct": 0.41
+    },
+    {
+      "category": "Toys & Games",
+      "items": 3944,
+      "catalog_pct": 0.24
+    },
+    {
+      "category": "Health & Personal Care",
+      "items": 3073,
+      "catalog_pct": 0.19
+    }
+  ],
+  "telemetry": {
+    "rowsScanned": 6440048,
+    "elapsedMs": 24.039,
+    "bytesScanned": 7168
+  },
+  "builtAt": "2026-08-22T15:48:15.683Z"
+}

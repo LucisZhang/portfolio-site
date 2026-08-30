@@ -10,6 +10,29 @@ Published: 2026-07-24
 - Pre-publication checks: TypeScript, ESLint, evidence contracts, production build, 54 browser
   tests, npm audit, Gitleaks, and TruffleHog passed.
 
+## Verified withdrawal — 2026-08-17 Crossover Study
+
+Website PR [#19](https://github.com/LucisZhang/portfolio-site/pull/19) merged normally at
+`653b76ef4193fd902ff75766876ee517a01f41a7` from exact candidate
+`6960093e5c871a5f92b8efa2812b5986043106d8`. GitHub Preview deployment `5942914064` and
+Production deployment `5943024610` succeeded for their exact SHAs. The Vercel Production alias
+now returns HTTP 404 for `/engineering/crossover-study`; its homepage returns HTTP 200 with seven
+case studies and no Crossover Study text or link.
+
+The corresponding canonical-host candidate is `90d97b0649826291a0601d123f63c06f3745581f`. That
+exact candidate passed 244 browser tests with 84 intentional skips and no failures, 37 assistant
+tests, typecheck, lint, evidence, dependency, bilingual, and secret gates; Lighthouse scored
+96/100/100/100.
+
+The old `/engineering/crossover-study` route returns HTTP 404 on the apex, canonical Preview, and Vercel
+Production aliases. Each homepage returns HTTP 200. Canonical English and Chinese browser checks
+show seven case studies with no withdrawn-project text or link; the engineering page has no
+Crossover Study entry, and `/ai/release-guardian?lang=zh` returns HTTP 200. `www` 308-redirects to
+the apex. CSP, HSTS, Referrer-Policy, nosniff, frame denial, and assistant `no-store` remain intact.
+Production Lighthouse 13.4.0 scored 91/100/100/100. No paid-model request was made.
+
+Final receipt time: 2026-08-17 19:51:41 Asia/Shanghai / 2026-08-17 11:51:41 UTC.
+
 ## Release Guardian approval
 
 The Release Guardian evidence manifest was generated while the package was still a candidate and

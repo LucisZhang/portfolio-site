@@ -1,0 +1,979 @@
+/* Round-2 exhibition grammar (spec §2.1/§2.2/§2.5): ExhibitShell's fixed
+   ink-blue rail + full-bleed exhibits, and the shared exhibit primitives
+   (Exhibit / Finding / StatGrid / InstrumentFrame). Kept out of globals.css
+   deliberately (task 0.4 scope) so this file can land independently of the
+   concurrent token migration. Zero border-radius, zero shadow, zero
+   gradient, zero icon/emoji throughout — hue x line-weight x label word
+   carry all semantics. */
+
+.exhibit-shell {
+  --exhibit-rail-width: 260px;
+  position: relative;
+  color: var(--ink);
+}
+
+/* ---------- Rail: fixed sidebar (>=980px) ---------- */
+
+.exhibit-rail-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+  width: var(--exhibit-rail-width);
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--ink-invert);
+  padding: 34px 26px;
+  color: var(--ink-invert-fg);
+}
+
+.exhibit-rail-wordmark {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.exhibit-rail-mark {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--ink-invert-fg) 60%, transparent);
+}
+
+.exhibit-rail-lines {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--display-serif);
+  font-size: 1.5rem;
+  line-height: 1.15;
+}
+
+.exhibit-rail-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.exhibit-rail-copy-en {
+  margin: 0;
+  color: color-mix(in srgb, var(--ink-invert-fg) 78%, transparent);
+  font-size: .85rem;
+  line-height: 1.5;
+}
+
+.exhibit-rail-copy-zh {
+  margin: 0;
+  color: color-mix(in srgb, var(--ink-invert-fg) 62%, transparent);
+  /* Task F4: the rail's zh positioning line is display-adjacent copy sitting
+     right below the sans .exhibit-rail-copy-en, so it gets the self-hosted
+     zh serif (--display-serif-zh) rather than inheriting body sans. */
+  font-family: var(--display-serif-zh);
+  font-size: .78rem;
+  line-height: 1.6;
+}
+
+.exhibit-rail-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex: 1 1 auto;
+}
+
+.exhibit-rail-nav a {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 7px 0;
+  color: color-mix(in srgb, var(--ink-invert-fg) 72%, transparent);
+  text-decoration: none;
+}
+
+.exhibit-rail-nav a:hover,
+.exhibit-rail-nav a:focus-visible {
+  color: var(--ink-invert-fg);
+}
+
+.exhibit-rail-nav a[aria-current] {
+  color: var(--accent-on-ink);
+}
+
+.exhibit-rail-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .04em;
+  /* Was 45% (~3.96:1 against --ink-invert): a pre-existing task-0.4
+     contrast bug that only became visible to axe once real routes started
+     rendering inside ExhibitShell (task 0.5) — the dev fixture route isn't
+     in the accessibility audit's route list. 60% matches the convention
+     already used for equivalent dim mono text elsewhere in this file
+     (.exhibit-rail-mobile-mark) and clears WCAG AA (~5.97:1). */
+  color: color-mix(in srgb, var(--ink-invert-fg) 60%, transparent);
+}
+
+.exhibit-rail-nav a[aria-current] .exhibit-rail-num {
+  color: var(--accent-on-ink);
+}
+
+.exhibit-rail-label {
+  font-size: .82rem;
+}
+
+.exhibit-rail-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  padding-top: 14px;
+  border-top: 1px solid color-mix(in srgb, var(--ink-invert-fg) 24%, transparent);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.exhibit-rail-footer a {
+  color: color-mix(in srgb, var(--ink-invert-fg) 72%, transparent);
+  text-decoration: none;
+}
+
+.exhibit-rail-footer a:hover,
+.exhibit-rail-footer a:focus-visible {
+  color: var(--ink-invert-fg);
+}
+
+/* ---------- Rail: mobile sticky index bar (<980px) ---------- */
+
+.exhibit-rail-mobile {
+  display: none;
+}
+
+.exhibit-rail-mobile-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 56px;
+  padding: 0 16px;
+  list-style: none;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.exhibit-rail-mobile-bar::-webkit-details-marker {
+  display: none;
+}
+
+.exhibit-rail-mobile-mark {
+  color: color-mix(in srgb, var(--ink-invert-fg) 60%, transparent);
+}
+
+.exhibit-rail-mobile-sep {
+  color: color-mix(in srgb, var(--ink-invert-fg) 35%, transparent);
+}
+
+.exhibit-rail-mobile-index-label {
+  margin-left: auto;
+}
+
+.exhibit-rail-mobile-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 8px 16px 24px;
+}
+
+/* Task F1 (spec §2.5 touch targets >= 44px): the mobile <details> INDEX
+   panel is the primary mobile nav (every page, spec §2.5's "cell 列表用于
+   移动端索引" mandate) -- 10px top/bottom padding measured at only 40px
+   tall. min-height + align-items:center keeps the visible text unchanged
+   while guaranteeing the full row is tappable. */
+.exhibit-rail-mobile-panel .exhibit-rail-nav a {
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 0;
+}
+
+/* Same fix for the INDEX panel's footer link row (RESUME / ALL WORK /
+   SEARCH etc, shared RailFooterList) -- was plain 10px mono text with no
+   padding, ~15px tall. */
+.exhibit-rail-mobile-panel .exhibit-rail-footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+/* ---------- Main content offset ---------- */
+
+.exhibit-shell > main {
+  margin-left: var(--exhibit-rail-width);
+}
+
+/* ---------- Rail: auto-rail v3 (task W3) ----------
+   Entry-open, push-mode, off-rail-intent retract. Behavior lives in
+   RailAuto.tsx (a client island toggling classes on the .exhibit-shell
+   root — never on <body>); this block is the styling half. Approved
+   prototype: output/design-genres/rail-proto/rail-proto-v3.html +
+   .superpowers/sdd/2026-08-22-site-revamp-r2/task-rail-proto-report.md.
+
+   Polarity is deliberately inverted from the prototype: the prototype's
+   default (no JS class) was COLLAPSED and an added `.rail-open` class
+   revealed it. Here the default (no JS class, i.e. also the no-JS state)
+   is OPEN, and an added `.rail-collapsed` class retracts it — so a page
+   with JavaScript disabled, or before RailAuto's effect has run, always
+   renders the rail open with the anchor list intact, never a blank
+   margin (spec's binding no-JS requirement). Everything below this
+   point only matters once RailAuto adds/removes `.rail-collapsed` /
+   `.rail-hint` / `.rail-cascade`. Desktop/tablet only: the 979.98px
+   mobile breakpoint below already zeroes --exhibit-rail-width and hides
+   .exhibit-rail-fixed regardless of these classes. */
+
+.exhibit-shell[data-rail-mode="auto"] {
+  --rail-ease-in: cubic-bezier(.16, 1, .3, 1);    /* expo-out: rail panel reveal (leads) */
+  --rail-ease-push: cubic-bezier(.22, 1, .36, 1); /* quint-out: content push reveal + item cascade (follows) */
+  --rail-ease-out: cubic-bezier(.4, 0, .2, 1);    /* retract: rail + content, exact lockstep */
+  --rail-in-duration: 360ms;
+  --push-in-duration: 380ms;
+  --rail-out-duration: 240ms;
+}
+
+/* Collapsed-state affordance: hairline + rotated mono tab. Invisible
+   (opacity 0) while open; shown only under .rail-collapsed. Decorative —
+   pointer-events: none throughout, the hot zone below does hit-testing. */
+.exhibit-rail-affordance {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 15;
+  width: 6px;
+  height: 100vh;
+  background: color-mix(in srgb, var(--ink) 30%, transparent);
+  opacity: 0;
+  transition: opacity 140ms ease-out, background 140ms ease-out;
+  pointer-events: none;
+}
+
+.exhibit-rail-tab {
+  position: fixed;
+  left: 3px;
+  top: 50%;
+  z-index: 16;
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(-90deg);
+  transform-origin: center;
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  pointer-events: none;
+  transition: opacity 140ms ease-out, color 140ms ease-out;
+}
+
+.exhibit-shell.rail-collapsed .exhibit-rail-affordance,
+.exhibit-shell.rail-collapsed .exhibit-rail-tab {
+  opacity: 1;
+}
+
+.exhibit-shell.rail-collapsed.rail-hint .exhibit-rail-affordance {
+  background: color-mix(in srgb, var(--ink) 55%, transparent);
+}
+
+.exhibit-shell.rail-collapsed.rail-hint .exhibit-rail-tab {
+  color: var(--ink);
+}
+
+/* 24px left-edge hot zone: the actual reveal trigger (separate from the
+   decorative affordance so hit-testing never depends on its width). */
+.exhibit-rail-hotzone {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 25;
+  width: 24px;
+  height: 100vh;
+  background: transparent;
+}
+
+/* The rail panel itself. Default = open (translateX(0), inherited from
+   .exhibit-rail-fixed's plain `left: 0`); .rail-collapsed slides it out.
+   Reveal (removing .rail-collapsed) uses the slower expo-out "gesture"
+   curve; retract (adding it) uses the faster shared exit curve — CSS
+   transitions read duration/easing from the state being transitioned
+   *into*, so the two directions can carry different timing this way. */
+.exhibit-shell[data-rail-mode="auto"] .exhibit-rail-fixed {
+  transition: transform var(--rail-out-duration) var(--rail-ease-out);
+}
+
+.exhibit-shell[data-rail-mode="auto"].rail-collapsed .exhibit-rail-fixed {
+  transform: translateX(-100%);
+}
+
+.exhibit-shell[data-rail-mode="auto"]:not(.rail-collapsed) .exhibit-rail-fixed {
+  transition-duration: var(--rail-in-duration);
+  transition-timing-function: var(--rail-ease-in);
+}
+
+/* Separation from content: a hairline right edge only (no box-shadow,
+   matching the site's zero-shadow rule). Moved to ::after (rather than a
+   plain border) so it can draw in top-to-bottom on the reveal cascade. */
+.exhibit-shell[data-rail-mode="auto"] .exhibit-rail-fixed::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 1px;
+  background: color-mix(in srgb, var(--ink-invert-fg) 18%, transparent);
+}
+
+/* Content push: main's existing margin-left: var(--exhibit-rail-width)
+   rule (above) already supplies the two endpoint values (0 under
+   .rail-collapsed via the override below is not even needed at <980px,
+   since --exhibit-rail-width is already 0 there) — this block only adds
+   the animated transition and the collapsed-state override. */
+.exhibit-shell[data-rail-mode="auto"] > main {
+  transition: margin-left var(--rail-out-duration) var(--rail-ease-out);
+}
+
+.exhibit-shell[data-rail-mode="auto"]:not(.rail-collapsed) > main {
+  transition-duration: var(--push-in-duration);
+  transition-timing-function: var(--rail-ease-push);
+}
+
+.exhibit-shell[data-rail-mode="auto"].rail-collapsed > main {
+  margin-left: 0;
+}
+
+/* ---------- Auto-rail: reveal cascade (task W3 choreography) ----------
+   Plays only when RailAuto adds .rail-cascade — a reveal from a fully
+   settled collapsed state. Entry (rail already open on load) never
+   cascades; a grace-window flicker back to open rides the panel slide
+   alone, items static. Wordmark -> nav rows (18ms apart, delay computed
+   per-row via --rail-cascade-delay in ExhibitShell.tsx) -> footer, each
+   opacity 0->1 with a 6px rise; the hairline edge draws in alongside. */
+
+@keyframes exhibit-rail-item-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes exhibit-rail-edge-draw {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+.exhibit-shell.rail-cascade .exhibit-rail-wordmark,
+.exhibit-shell.rail-cascade .exhibit-rail-nav li,
+.exhibit-shell.rail-cascade .exhibit-rail-footer {
+  animation: exhibit-rail-item-in 260ms var(--rail-ease-push) both;
+}
+
+.exhibit-shell.rail-cascade .exhibit-rail-wordmark {
+  animation-delay: 60ms;
+}
+
+.exhibit-shell.rail-cascade .exhibit-rail-nav li {
+  animation-delay: var(--rail-cascade-delay, 96ms);
+}
+
+.exhibit-shell.rail-cascade .exhibit-rail-footer {
+  animation-delay: var(--rail-cascade-delay, 200ms);
+}
+
+.exhibit-shell.rail-cascade .exhibit-rail-fixed::after {
+  transform-origin: top;
+  animation: exhibit-rail-edge-draw 420ms var(--rail-ease-push) 40ms both;
+}
+
+/* Note on the prototype's "entry settle" one-shot load fade (rail-proto-v3
+   §c: a quiet opacity/4px-rise on the whole composition, purely cosmetic,
+   "reads as the page settling, not the rail performing"): NOT carried over
+   here. It isn't in task W3's binding choreography table (which only
+   specifies reveal-from-collapsed / retract / cascade-from-settled, and
+   says the cascade never plays "on entry" -- i.e. entry has no animation
+   at all, full stop). Implemented and then reverted during this task:
+   animating `main`'s transform on load raced with Playwright's
+   scroll-into-view stability check on pages with content below the fold
+   (reproduced as a real, intermittent flake against real Chrome on
+   eod-r2.spec.ts's no-JS duplicate-redelivery disclosure test -- Chrome,
+   not Chromium, which is why it wasn't caught by the first test pass).
+   Fully removed: ExhibitShell renders no `entry-settle` class and no
+   keyframes/rules for it remain -- see task-W3-report.md. */
+
+@media (prefers-reduced-motion: reduce) {
+  .exhibit-shell[data-rail-mode="auto"] .exhibit-rail-fixed,
+  .exhibit-shell[data-rail-mode="auto"] > main,
+  .exhibit-rail-affordance,
+  .exhibit-rail-tab {
+    transition: none !important;
+  }
+
+  .exhibit-shell.rail-cascade .exhibit-rail-wordmark,
+  .exhibit-shell.rail-cascade .exhibit-rail-nav li,
+  .exhibit-shell.rail-cascade .exhibit-rail-footer,
+  .exhibit-shell.rail-cascade .exhibit-rail-fixed::after {
+    animation: none !important;
+  }
+}
+
+/* <980px: the mechanic (hot zone + affordance) never applies — these are
+   siblings of .exhibit-rail, not covered by .exhibit-rail-fixed's own
+   display:none below, so they need their own rule to avoid a dead 24px
+   tap strip over the unrelated mobile sticky bar / page content. */
+@media (max-width: 979.98px) {
+  .exhibit-rail-hotzone,
+  .exhibit-rail-affordance,
+  .exhibit-rail-tab {
+    display: none;
+  }
+}
+
+/* ---------- Rail: optional wordmark mark box + status stamp (task W3) ----
+   Both are RailSpec-driven opt-in slots (RailSpec.wordmark.markBoxed /
+   RailSpec.stamp) — undefined on every rail except Forge's (RAIL-SCOPE.md
+   / FORGE-DIFF.md §1.7's reference-demo mark box + status line). Fixed
+   sidebar only; never rendered into the mobile <details> panel. */
+
+.exhibit-rail-mark[data-boxed="true"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--accent-on-ink);
+  color: var(--accent-on-ink);
+}
+
+.exhibit-rail-stamp {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid color-mix(in srgb, var(--ink-invert-fg) 24%, transparent);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  /* Box-grammar ruling (task F8): no icon/dot glyph -- tone is carried by
+     color on the label word alone. */
+  color: color-mix(in srgb, var(--ink-invert-fg) 55%, transparent);
+}
+
+.exhibit-rail-stamp[data-tone="live"] {
+  color: var(--ok-on-ink);
+}
+
+/* ---------- Breakpoints (spec §2.1 / §2.5) ---------- */
+
+@media (max-width: 1179.98px) and (min-width: 980px) {
+  .exhibit-shell {
+    --exhibit-rail-width: 208px;
+  }
+
+  .exhibit-rail-copy {
+    display: none;
+  }
+}
+
+@media (max-width: 979.98px) {
+  .exhibit-shell {
+    --exhibit-rail-width: 0px;
+  }
+
+  .exhibit-rail-fixed {
+    display: none;
+  }
+
+  .exhibit-rail-mobile {
+    display: block;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--ink-invert);
+    color: var(--ink-invert-fg);
+  }
+
+  .exhibit-shell > main {
+    margin-left: 0;
+  }
+}
+
+/* ---------- Exhibit: full-bleed section + opening formula ---------- */
+
+.exhibit {
+  scroll-margin-top: 72px;
+  padding: clamp(54px, 7vw, 105px) clamp(34px, 7vw, 110px);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.exhibit[data-bg="paper"] {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.exhibit[data-bg="paper-alt"] {
+  background: var(--paper-alt);
+  color: var(--ink);
+}
+
+.exhibit[data-bg="white"] {
+  background: var(--paper-bright);
+  color: var(--ink);
+}
+
+.exhibit[data-bg="ink"] {
+  background: var(--ink-invert);
+  color: var(--ink-invert-fg);
+}
+
+.exhibit-opening-row {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin: 0;
+}
+
+.exhibit-number {
+  font-family: var(--mono);
+  font-size: .8rem;
+  font-weight: 650;
+  color: var(--accent);
+}
+
+.exhibit[data-bg="ink"] .exhibit-number {
+  color: var(--accent-on-ink);
+}
+
+.exhibit-eyebrow {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: .7rem;
+  font-weight: 650;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.exhibit[data-bg="ink"] .exhibit-eyebrow {
+  color: color-mix(in srgb, var(--ink-invert-fg) 68%, transparent);
+}
+
+.exhibit-title {
+  margin: 18px 0 0;
+  max-width: 20ch;
+  font-family: var(--display-serif);
+  font-size: clamp(2.3rem, 4vw, 4.4rem);
+  font-weight: 400;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+:lang(zh) .exhibit-title {
+  font-family: var(--display-serif-zh);
+}
+
+.exhibit[data-bg="ink"] .exhibit-title em {
+  color: var(--accent-display-on-ink);
+  font-style: italic;
+}
+
+.exhibit:not([data-bg="ink"]) .exhibit-title em {
+  color: var(--accent);
+  font-style: italic;
+}
+
+.exhibit-intro {
+  margin: 18px 0 0;
+  max-width: 760px;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.exhibit[data-bg="ink"] .exhibit-intro {
+  color: color-mix(in srgb, var(--ink-invert-fg) 78%, transparent);
+}
+
+.exhibit-body {
+  margin-top: clamp(30px, 4vw, 56px);
+}
+
+/* ---------- Finding: hairline / 3px top line + mono label, no fill ---------- */
+
+.exhibit-finding {
+  max-width: 900px;
+  padding-top: 10px;
+  border-top: 1px solid var(--hairline);
+}
+
+.exhibit[data-bg="ink"] .exhibit-finding {
+  border-top-color: color-mix(in srgb, var(--ink-invert-fg) 28%, transparent);
+}
+
+.exhibit-finding[data-finding="limitation"] {
+  border-top: 3px solid var(--ink);
+}
+
+.exhibit[data-bg="ink"] .exhibit-finding[data-finding="limitation"] {
+  border-top-color: var(--ink-invert-fg);
+}
+
+.exhibit-finding-label {
+  margin: 0 0 6px;
+  font-family: var(--mono);
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.exhibit-finding[data-finding="negative"] .exhibit-finding-label {
+  color: var(--accent);
+}
+
+.exhibit[data-bg="ink"] .exhibit-finding[data-finding="negative"] .exhibit-finding-label {
+  color: var(--accent-on-ink);
+}
+
+.exhibit-finding[data-finding="limitation"] .exhibit-finding-label {
+  color: var(--ink);
+}
+
+.exhibit[data-bg="ink"] .exhibit-finding[data-finding="limitation"] .exhibit-finding-label {
+  color: var(--ink-invert-fg);
+}
+
+.exhibit-finding[data-finding="pass"] .exhibit-finding-label {
+  color: var(--ok);
+}
+
+.exhibit[data-bg="ink"] .exhibit-finding[data-finding="pass"] .exhibit-finding-label {
+  color: var(--ok-on-ink);
+}
+
+.exhibit[data-bg="ink"] .exhibit-finding[data-finding="note"] .exhibit-finding-label {
+  color: color-mix(in srgb, var(--ink-invert-fg) 68%, transparent);
+}
+
+.exhibit-finding-body {
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+.exhibit[data-bg="ink"] .exhibit-finding-body {
+  color: var(--ink-invert-fg);
+}
+
+/* ---------- StatGrid: typographic stat row (task F10) ----------
+   Plain inline label:value list, a single hairline rule above the row, no
+   per-cell fill and no grid track to overflow (see the component comment
+   for why that also retires the mobile orphan-cell bug). Cells wrap as a
+   flex row rather than a grid so any item count — 3 on the EOD/Privacy/
+   Forge hero, 4 on the home hero, 6-8 on Forge's Serving Boundary — reflows
+   without ever leaving a dangling column. */
+
+.exhibit-stat-grid {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: clamp(28px, 4vw, 56px);
+  row-gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--hairline);
+}
+
+.exhibit-stat-grid[data-on-ink="true"] {
+  border-top-color: color-mix(in srgb, var(--ink-invert-fg) 22%, transparent);
+}
+
+.exhibit-stat-cell {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.exhibit-stat-value {
+  font-family: var(--mono);
+  font-size: clamp(1.35rem, 2vw, 2.4rem);
+  font-weight: 600;
+  letter-spacing: -.02em;
+  color: var(--ink);
+}
+
+.exhibit-stat-grid[data-on-ink="true"] .exhibit-stat-value {
+  color: var(--ink-invert-fg);
+}
+
+.exhibit-stat-label {
+  font-family: var(--mono);
+  font-size: .68rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.exhibit-stat-grid[data-on-ink="true"] .exhibit-stat-label {
+  color: color-mix(in srgb, var(--ink-invert-fg) 68%, transparent);
+}
+
+/* ---------- Legacy rail tools (task 0.5 R0 re-shelling) ----------
+   Single-mount utility row: re-homes the deleted site-header's search
+   trigger + language switcher, plus the deleted global footer's contact
+   jump-link and the brand/home link. Deliberately unstyled-into-the-rail
+   (still the old white-paper button/toggle look) — full ink-blue-rail
+   integration is deferred to the real per-page rebuild. */
+.exhibit-rail-tools {
+  position: fixed;
+  top: 10px;
+  right: 12px;
+  z-index: 40;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+.rail-home-link {
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 650;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.rail-home-link:hover,
+.rail-home-link:focus-visible {
+  text-decoration: underline;
+}
+
+/* ---------- Project rail tools (task F14) ----------
+   The 10 standalone project routes' SEARCH ⌘K / EN·中 / contact trio,
+   re-parented into the rail's own footer band exactly the way home.css's
+   `.exhibit-rail-tools:has(.home-rail-tools)` re-parents HomeRailTools —
+   this is that rule's project-page sibling, deliberately kept in this file
+   under its own class so this task never has to touch home.css or
+   HomeRailTools.tsx (see ProjectRailTools.tsx's header comment for why that
+   mattered: task-suite-reconcile's reverted attempt at this same feature
+   blew home's hard 50,000 gzip route-own ceiling). Reuses
+   `.exhibit-rail-footer`'s own quiet-mono-text-link grammar (border-top,
+   mono, uppercase, flex-wrap) verbatim via the shared class on the
+   component's root div; the rules below only add what that class doesn't
+   already cover — the bottom-fixed placement outside `.exhibit-rail-fixed`,
+   full four-side padding to match the rail's own edges, an explicit
+   ink-invert-on-dark color base (this div isn't a descendant of
+   `.exhibit-rail-fixed`, so it can't inherit that color), and resets for
+   the two non-`<a>` controls (the search button, the language-switcher's
+   buttons) `.exhibit-rail-footer a` doesn't style. */
+.exhibit-rail-tools:has(.project-rail-tools) {
+  position: fixed;
+  top: auto;
+  right: auto;
+  bottom: 0;
+  left: 0;
+  z-index: 30;
+  width: var(--exhibit-rail-width, 260px);
+}
+
+.project-rail-tools {
+  align-items: center;
+  width: 100%;
+  padding: 14px 26px;
+  background: var(--ink-invert);
+  color: color-mix(in srgb, var(--ink-invert-fg) 78%, transparent);
+}
+
+.project-rail-tools .search-button,
+.project-rail-tools a {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.project-rail-tools .search-button kbd {
+  margin-left: 4px;
+  border-left: 0;
+  padding-left: 0;
+  color: color-mix(in srgb, var(--ink-invert-fg) 70%, var(--ink-invert));
+  font-family: var(--mono);
+}
+
+.project-rail-tools a:hover,
+.project-rail-tools a:focus-visible,
+.project-rail-tools .search-button:hover,
+.project-rail-tools .search-button:focus-visible {
+  color: var(--accent-on-ink);
+}
+
+.project-rail-tools .language-switcher {
+  display: flex;
+  gap: 8px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.project-rail-tools .language-switcher button {
+  min-width: 0;
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  color: color-mix(in srgb, var(--ink-invert-fg) 55%, transparent);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.project-rail-tools .language-switcher button.active {
+  background: transparent;
+  color: var(--accent-on-ink);
+}
+
+/* ---------- Project rail tools: auto-rail retract/reveal (fix round 1) ----------
+   Bug this fixes (reviewer-reproduced, live on /ai/frontier-forge): the trio's
+   wrapper (.exhibit-rail-tools) is a SIBLING of .exhibit-rail-fixed inside
+   <nav class="exhibit-rail"> (ExhibitShell.tsx), not a descendant of it.
+   RailAuto's `.rail-collapsed` only ever translateX(-100%)s
+   .exhibit-rail-fixed -- the trio's own `position: fixed; bottom:0; left:0`
+   above was untouched by that class, so retracting the rail left a solid
+   ink-invert rectangle floating over page content, clipping copy and
+   intercepting clicks underneath it. Nesting the trio inside
+   .exhibit-rail-fixed was considered and rejected: that element gains a
+   real `transform` only while collapsed, and CSS makes a transformed
+   element the containing block for its `position: fixed` descendants --
+   so a nested fixed child would silently flip between "fixed to the
+   viewport" (open) and "fixed to the rail's own box" (collapsed), a
+   cross-browser-fragile quirk to depend on. Instead this gives the trio's
+   own wrapper the identical transform + transition timing
+   .exhibit-rail-fixed uses, scoped to mode="auto" only (mode="fixed" --
+   privacy-preflight and home -- has no collapse mechanic and is
+   unaffected), so the two slide in exact lockstep at every breakpoint the
+   mechanic runs at (>=980px only; RailAuto never adds `.rail-collapsed`
+   below that width, and this file already hides the whole fixed rail
+   there via the max-width:979.98px query, so there is nothing to
+   desync). `pointer-events: none` while collapsed is redundant with being
+   genuinely off-screen (translateX(-100%) tucks it fully behind the left
+   viewport edge, the same math .exhibit-rail-fixed already relies on) but
+   costs nothing and directly targets the reviewer's "intercepting clicks"
+   wording. Deliberately NOT added to the `.rail-cascade` opacity/rise
+   group below: that keyframe also animates `transform` (translateY), and
+   layering a CSS `animation` on the same property this block already
+   drives via `transition` would have the two mechanisms fight over one
+   property. The trio isn't one of the rail's own cascading children
+   (wordmark/nav/footer) -- sliding in perfectly synchronized with the
+   panel via the same transition already reads as "attached to the rail",
+   which is what re-entering "exactly like the rest of the rail content"
+   requires; the cascade fade is an additional flourish on top of that,
+   not a substitute for it. Wrapped in the same >=980px query RailAuto's
+   own `isDesktop()` gate uses (belt-and-braces against a transient
+   `.rail-collapsed` class surviving into a mobile layout mid-resize --
+   the mobile rule right below switches this same selector to
+   `position: static`, and a stray `translateX(-100%)` on a static,
+   full-width block would shift it off-canvas instead of being the
+   harmless no-op it is on the fixed-positioned desktop/tablet box). */
+@media (min-width: 980px) {
+  .exhibit-shell[data-rail-mode="auto"] .exhibit-rail-tools:has(.project-rail-tools) {
+    transition: transform var(--rail-out-duration) var(--rail-ease-out);
+  }
+
+  .exhibit-shell[data-rail-mode="auto"].rail-collapsed .exhibit-rail-tools:has(.project-rail-tools) {
+    transform: translateX(-100%);
+    pointer-events: none;
+  }
+
+  .exhibit-shell[data-rail-mode="auto"]:not(.rail-collapsed) .exhibit-rail-tools:has(.project-rail-tools) {
+    transition-duration: var(--rail-in-duration);
+    transition-timing-function: var(--rail-ease-in);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exhibit-rail-tools:has(.project-rail-tools) {
+    transition: none !important;
+  }
+}
+
+@media (max-width: 979.98px) {
+  /* Same reasoning as home.css's identical breakpoint block: below 980px
+     the desktop fixed sidebar is gone, so a fixed bottom bar here would
+     float over page content instead of belonging to a rail. Flowing it in
+     place (right after the 56px sticky index bar, before <main> — its DOM
+     position in ExhibitShell.tsx) keeps every control reachable. Touch
+     targets >=44px per spec §2.5, same padding-transfer technique. */
+  .exhibit-rail-tools:has(.project-rail-tools) {
+    position: static;
+    width: 100%;
+  }
+
+  .project-rail-tools {
+    justify-content: space-between;
+    padding-block: 0;
+  }
+
+  .project-rail-tools .search-button,
+  .project-rail-tools .language-switcher button,
+  .project-rail-tools a {
+    min-height: 44px;
+    padding-block: 14px;
+  }
+
+  .project-rail-tools a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+  }
+
+  .project-rail-tools .search-button {
+    width: 44px;
+    min-width: 44px;
+  }
+
+  .project-rail-tools .language-switcher {
+    gap: 4px;
+  }
+
+  .project-rail-tools .language-switcher button {
+    min-width: 44px;
+    padding-inline: 8px;
+  }
+}
+
+/* ---------- InstrumentFrame ---------- */
+
+.instrument-frame {
+  padding: clamp(16px, 2vw, 28px);
+  font-family: var(--mono);
+}
+
+.instrument-frame[data-instrument-variant="compact"] {
+  max-width: 420px;
+}
+
+.instrument-frame[data-instrument-variant="full"] {
+  width: 100%;
+}

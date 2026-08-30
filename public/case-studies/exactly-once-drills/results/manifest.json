@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "package": "exactly-once-drills-dashboard-results",
+  "source": {
+    "repository": "LucisZhang/exactly-once-drills",
+    "revision": "50d88bb4cc9b6e4e6e64cc2d643cdf90ed75e103",
+    "path": "dashboard/public/results/index.json"
+  },
+  "assets": [
+    {
+      "path": "index.json",
+      "bytes": 5315,
+      "sha256": "14b7053ea11825104cff138439593f0fc67895c54c4980241c8be75d7a3db36b",
+      "kind": "dashboard_result_index"
+    },
+    {
+      "path": "broker_parity.json",
+      "bytes": 4699,
+      "sha256": "48be70bbe064112add6478c5beecf896149bf48d3bef867cfc2ece09a15b88d2",
+      "kind": "recorded_result"
+    },
+    {
+      "path": "broker_restart_drill.json",
+      "bytes": 79102,
+      "sha256": "78896060dfa5b32a1717d8add8e2fe01447c2fd84c3f0d05fcd207eb0ac821f1",
+      "kind": "recorded_result"
+    },
+    {
+      "path": "broker_slo.json",
+      "bytes": 105652,
+      "sha256": "5176dd0ac38d977813693de85fa2a6fc3fcfb9307048cc149b0408237488e200",
+      "kind": "recorded_result"
+    },
+    {
+      "path": "checkpoint_metrics.json",
+      "bytes": 22126,
+      "sha256": "6410dc9fe5af084e3412b9b668d0fe7712647dc68cefe90469f52895e77099ed",
+      "kind": "recorded_result"
+    },
+    {
+      "path": "duplicate_redelivery_drill.json",
+      "bytes": 28683,
+      "sha256": "d62685a0bdf3168d3159b04e7c98926be402e6f3c63fa2070884a5df86be8e61",
+      "kind": "recorded_result"
+    },
+    {
+      "path": "eo_reconciliation.json",
+      "bytes": 22821,
+      "sha256": "e6c613bc1dc0be55f88c1a10cdd199cbc2d9ca6ec74cc30e5e1a361dc93bb91a",
+      "kind": "recorded_result"
+    },
+    {
+      "path": "iceberg_small_file_rewrite.json",
+      "bytes": 4052,
+      "sha256": "3ed9659a57bdd1169d00adc08cb7f306589ef745b7e83751f8339afa54438709",
+      "kind": "recorded_result"
+    },
+    {
+      "path": "offset_replay_drill.json",
+      "bytes": 62845,
+      "sha256": "444d5a19ed576f153416b86cda905c9bd2220539568cebf5411d5c0af1024bc1",
+      "kind": "recorded_result"
+    },
+    {
+      "path": "ordering_miskey_drill.json",
+      "bytes": 18348,
+      "sha256": "38ca7d6d0ded8fbe098bc02ca39379606a917b06a79951256257f4e3baeb7840",
+      "kind": "recorded_result"
+    },
+    {
+      "path": "phase-1.1-smoke.json",
+      "bytes": 1296,
+      "sha256": "084e80b95f2428cd839bc4cfff0f865ce4d4927f92e55c391fb3a0a3ff9cd290",
+      "kind": "recorded_result"
+    },
+    {
+      "path": "phase-1.2-cdc-smoke.json",
+      "bytes": 2421,
+      "sha256": "514fc0198564b7cdf66ac6614a348e1a803416629b4386e71ba89979ba980d33",
+      "kind": "recorded_result"
+    },
+    {
+      "path": "poison_dlq_drill.json",
+      "bytes": 25519,
+      "sha256": "8920a86ab10a09f603c97a31c304a9cee3ce2288fdb5192c395e5193bbbdcf14",
+      "kind": "recorded_result"
+    },
+    {
+      "path": "schema_contract_drill.json",
+      "bytes": 22235,
+      "sha256": "3c655119608857619b0b00e8e74d2ad9f848f1680c5b7067b1174929418aa91d",
+      "kind": "recorded_result"
+    }
+  ],
+  "coverage": {
+    "path_a_failure_classes": 5,
+    "path_b_failure_classes": 5,
+    "path_b_slo_runs": 1
+  },
+  "ui_boundary": "P1FailureReplay remains pinned to the five-class U6 Path A reconciliation schema; Path B artifacts are synchronized but not normalized into that replay UI."
+}

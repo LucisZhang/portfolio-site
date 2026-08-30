@@ -1,0 +1,854 @@
+/* Triage Router "market terminal" page (task 3.1, spec section 6.3).
+   Builds on exhibition.css's shared primitives (Exhibit/Finding/StatGrid/
+   InstrumentFrame) -- this file only adds the triage-specific instrument
+   internals. De-box grammar (task F2): hairlines only, no card boxes, no
+   icons; sliders/chips/drawers get pressable affordance via hairline +
+   active vermilion (--accent) only -- zero border-radius, zero shadow,
+   zero gradient. */
+
+.triage-page {
+  color: var(--ink);
+}
+
+/* ---------- Hero ---------- */
+
+.triage-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 410px);
+  gap: clamp(30px, 5vw, 64px);
+  margin-top: clamp(24px, 4vw, 44px);
+  /* Task W2 (Option B): the right column is now a short naked figure, not a
+     full-height terminal card -- centering it against the copy block reads
+     better than start-aligning it to the eyebrow row (matches the approved
+     mock, output/design-align-r4/triage-hero-b.html). */
+  align-items: center;
+  /* Task W3 (RAIL-SCOPE.md's triage verdict, "尚可" -- adopt auto-rail but
+     cap the copy column's stretch): with the rail retracted this grid's
+     `1fr` first column can stretch to the full collapsed-state width
+     (up to ~1416px of content), pulling the naked-figure column to the far
+     right and opening a wide dead gap between the two -- the drift the doc
+     flags. Capping the grid at 1180px keeps the composition the same
+     whether the rail is open (260px push) or retracted. */
+  max-width: 1180px;
+}
+
+.triage-hero-copy,
+.triage-hero-instrument {
+  min-width: 0;
+}
+
+.triage-hero-copy .exhibit-title {
+  margin-top: 14px;
+}
+
+.triage-hero-copy .exhibit-intro {
+  max-width: 62ch;
+}
+
+.triage-hero-copy .exhibit-stat-grid {
+  margin-top: clamp(24px, 3vw, 36px);
+  max-width: 560px;
+}
+
+@media (max-width: 1179.98px) {
+  .triage-hero-instrument {
+    display: none;
+  }
+
+  .triage-hero-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Hero naked frontier figure (task W2, Option B) ----------
+   Pure figure: the hairline cost-accuracy curve + the single vermilion
+   point, one caption hairline, one fineprint line. No border, no card, no
+   sliders -- that interaction lives only in the full instrument
+   (PolicyTerminal variant="full") below. Reuses FrontierChart.tsx's SVG
+   (same .triage-frontier-* classes below), so this block only styles the
+   figure's own chrome: the chart's default top hairline is turned off here
+   since the figcaption's own top hairline plays that separator role
+   instead (matches output/design-align-r4/triage-hero-b.html). */
+
+.triage-hero-figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.triage-hero-figure .triage-frontier-chart {
+  border-top: none;
+  padding-top: 0;
+}
+
+.triage-hero-figure figcaption {
+  border-top: 1px solid var(--hairline);
+  padding-top: 10px;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.triage-hero-figure figcaption .triage-hero-figure-point {
+  color: var(--accent);
+}
+
+.triage-hero-figure-fineprint {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* ---------- PolicyTerminal instrument ---------- */
+
+.triage-terminal {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  font-family: var(--mono);
+}
+
+.triage-frontier-chart {
+  width: 100%;
+  height: auto;
+  border-top: 1px solid var(--hairline);
+  padding-top: 10px;
+}
+
+.triage-frontier-line {
+  stroke: var(--muted);
+  stroke-width: 1;
+}
+
+.triage-frontier-whisker {
+  stroke: var(--hairline);
+  stroke-width: 1;
+}
+
+.triage-frontier-point {
+  fill: var(--accent);
+}
+
+.triage-pareto-chart {
+  width: 100%;
+  height: auto;
+}
+
+.triage-pareto-whisker {
+  stroke: var(--hairline);
+  stroke-width: 1;
+}
+
+.triage-pareto-point {
+  fill: var(--accent);
+}
+
+.triage-slider-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.triage-slider-row label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.triage-slider-label {
+  color: var(--muted);
+  font-size: .64rem;
+  font-weight: 650;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.triage-slider-value {
+  font-size: .82rem;
+  font-weight: 650;
+  color: var(--ink);
+}
+
+/* Native range input, restyled to the hairline-track / vermilion-thumb
+   grammar -- no rounded pill, no drop shadow.
+
+   Task F1 (spec §2.5: "sliders may need bigger thumb hit areas"): the
+   input's own box is the real hit target for a native range control (the
+   browser centers the thumb inside whatever height the input is given),
+   so it's grown from 18px to 44px -- the painted track stays a 1px
+   hairline and the painted thumb stays a 15px square, both now just
+   centered in a taller invisible box instead of a shorter one. */
+.triage-slider-row input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 44px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.triage-slider-row input[type="range"]::-webkit-slider-runnable-track {
+  height: 1px;
+  background: var(--hairline);
+}
+
+.triage-slider-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -7px;
+  width: 15px;
+  height: 15px;
+  border-radius: 0;
+  background: var(--accent);
+  border: 0;
+}
+
+.triage-slider-row input[type="range"]::-moz-range-track {
+  height: 1px;
+  background: var(--hairline);
+}
+
+.triage-slider-row input[type="range"]::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  border-radius: 0;
+  background: var(--accent);
+  border: 0;
+}
+
+.triage-strategy-card {
+  margin: 0;
+  border-top: 1px solid var(--hairline);
+  padding-top: 10px;
+  font-family: var(--display-serif);
+  font-size: clamp(1rem, 1.4vw, 1.2rem);
+  line-height: 1.5;
+}
+
+:lang(zh) .triage-strategy-card {
+  font-family: var(--display-serif-zh);
+}
+
+.triage-readout-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+  background: var(--hairline);
+}
+
+.triage-drawer {
+  flex: 1 1 auto;
+  background: var(--paper-bright);
+}
+
+.triage-drawer[data-drawer] summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.triage-drawer summary::-webkit-details-marker {
+  display: none;
+}
+
+.triage-drawer[open] summary {
+  color: var(--accent);
+}
+
+.triage-drawer-label {
+  font-size: .6rem;
+  font-weight: 650;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.triage-drawer-value {
+  font-size: .82rem;
+  font-weight: 650;
+}
+
+.triage-drawer-body {
+  border-top: 1px solid var(--hairline);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.triage-drawer-caption {
+  margin: 0;
+  color: var(--muted);
+  font-size: .66rem;
+}
+
+.triage-drawer-samples {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.triage-drawer-samples li {
+  border-top: 1px solid var(--hairline);
+  padding-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: baseline;
+}
+
+.triage-drawer-route {
+  font-size: .62rem;
+  font-weight: 650;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.triage-drawer-samples li[data-route="escalate"] .triage-drawer-route {
+  color: var(--accent);
+}
+
+.triage-drawer-confidence {
+  color: var(--muted);
+  font-size: .68rem;
+}
+
+.triage-drawer-verdict-wrong {
+  color: var(--accent);
+}
+
+.triage-drawer-narrative {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--display-serif);
+  font-size: .84rem;
+  line-height: 1.5;
+}
+
+:lang(zh) .triage-drawer-narrative {
+  font-family: var(--display-serif-zh);
+}
+
+.triage-syntax-line {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 8px;
+}
+
+.triage-syntax-line code {
+  font-size: .82rem;
+  font-weight: 650;
+}
+
+/* Task F1 (spec §2.5 touch targets >= 44px): was a 15px-tall, padding:0
+   inline text button. inline-flex + min-height grows its own hit box
+   (and, via the row's align-items:center, the row's cross-axis size)
+   without any other layout change. */
+.triage-syntax-line button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: .62rem;
+  font-weight: 650;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.triage-syntax-line button:hover,
+.triage-syntax-line button:focus-visible {
+  color: var(--accent);
+}
+
+.triage-headcount-line {
+  margin: 0;
+  color: var(--muted);
+  font-size: .68rem;
+}
+
+.triage-academic-anchor {
+  margin: 0;
+  color: var(--muted);
+  font-size: .64rem;
+  letter-spacing: .02em;
+  border-top: 1px solid var(--hairline);
+  padding-top: 8px;
+}
+
+.triage-disclosure {
+  margin: 0;
+  color: var(--muted);
+  font-size: .68rem;
+  line-height: 1.6;
+}
+
+/* ---------- LocalInference ---------- */
+
+.triage-local-inference {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 12px;
+}
+
+/* Fix (audit3 B3): was a bordered box button; the site's established
+   command-line-style trigger grammar (.privacy-actionbar button.primary /
+   .privacy-action-link.current) is an underlined text link, vermilion on
+   hover/focus -- no rectangle. */
+.triage-local-inference [data-run-model] {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  padding: 0;
+  font-family: var(--mono);
+  font-size: .72rem;
+  font-weight: 650;
+  letter-spacing: .04em;
+  cursor: pointer;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+}
+
+.triage-local-inference [data-run-model]:hover:not(:disabled),
+.triage-local-inference [data-run-model]:focus-visible {
+  color: var(--accent);
+}
+
+.triage-local-inference [data-run-model]:disabled {
+  color: var(--muted);
+  text-decoration-color: var(--muted);
+  cursor: default;
+}
+
+.triage-model-manifest {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.triage-model-manifest li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--muted);
+  font-size: .62rem;
+}
+
+.triage-progress {
+  margin: 0;
+  color: var(--muted);
+  font-size: .68rem;
+}
+
+.triage-fallback-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: .68rem;
+}
+
+.triage-local-result {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.triage-local-cache-note {
+  margin: 0;
+  color: var(--accent);
+  font-size: .64rem;
+  font-weight: 650;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.triage-inference-compare {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--hairline);
+}
+
+.triage-inference-compare > div {
+  background: var(--paper-bright);
+  padding: 8px 10px;
+}
+
+.triage-inference-compare dt {
+  font-size: .62rem;
+  font-weight: 650;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.triage-inference-compare [data-compare-row="local"] dt {
+  color: var(--accent);
+}
+
+.triage-inference-compare dd {
+  margin: 4px 0 0;
+  font-size: .8rem;
+  font-weight: 650;
+}
+
+.triage-engine-meta {
+  margin: 0;
+  color: var(--muted);
+  font-size: .6rem;
+}
+
+/* Task F1: shared horizontal-scroll wrapper for the three data tables
+   (known failures, frontier pareto, drift) -- follows the same pattern as
+   forge.css's .forge-claim-table-scroll. Below the table's natural
+   min-width, the wrapper scrolls instead of the table (and the page)
+   blowing out past the viewport. */
+.triage-table-scroll {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+/* ---------- Exhibit 02: known failures table ---------- */
+
+.triage-known-failures-table {
+  width: 100%;
+  min-width: 480px;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: .76rem;
+}
+
+.triage-known-failures-table th,
+.triage-known-failures-table td {
+  border-top: 1px solid var(--hairline);
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.triage-known-failures-table td code {
+  overflow-wrap: anywhere;
+}
+
+.triage-known-failures-attribution {
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--muted);
+  font-size: .74rem;
+}
+
+.triage-known-failures-attribution li {
+  border-top: 1px solid var(--hairline);
+  padding-top: 8px;
+}
+
+/* Task F7 (direction B mobile tables, approved mock
+   output/design-align/direction-mobile-table-b.html): aligned two-column
+   ledger, mobile-only. Hidden by default (desktop keeps the real
+   .triage-known-failures-table above); the media query at the bottom of
+   this section swaps which of the two is visible. */
+.triage-pairs {
+  display: none;
+}
+
+.triage-pairs-head {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding-bottom: 6px;
+  font-family: var(--mono);
+  font-size: .62rem;
+  font-weight: 650;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.triage-pairs-head span:last-child {
+  color: var(--accent);
+}
+
+.triage-pair-entry {
+  border-top: 1px solid var(--hairline);
+  padding: 10px 0 12px;
+}
+
+.triage-pair-meta {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: .66rem;
+  color: var(--muted);
+}
+
+.triage-pair-meta b {
+  font-weight: 650;
+  color: var(--ink);
+  font-size: .72rem;
+}
+
+.triage-pair-meta code {
+  overflow-wrap: anywhere;
+}
+
+.triage-pair-values {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 6px;
+  font-size: .8rem;
+  line-height: 1.5;
+}
+
+.triage-pair-read {
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.triage-pair-truth {
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+/* Below 768px the real <table> (which needs a horizontal-scroll wrapper
+   to hold its 5 columns + unwrappable route chain) gives way to the
+   aligned-pair ledger above -- direction B's binding rule that mobile
+   tables never keep a scrollable multi-column layout. */
+@media (max-width: 767.98px) {
+  #exhibit-02 .triage-table-scroll {
+    display: none;
+  }
+
+  .triage-pairs {
+    display: block;
+  }
+}
+
+/* ---------- Exhibit 03: tier frontier table ---------- */
+
+.triage-pareto-table {
+  width: 100%;
+  min-width: 460px;
+  margin-top: 14px;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: .76rem;
+}
+
+.triage-pareto-table th,
+.triage-pareto-table td {
+  border-top: 1px solid var(--hairline);
+  padding: 8px 10px;
+  text-align: left;
+}
+
+/* ---------- Exhibit 04: drift chart ---------- */
+
+.triage-drift-narrative {
+  max-width: 62ch;
+  color: var(--muted);
+  font-size: .82rem;
+  line-height: 1.6;
+}
+
+.triage-drift-chart {
+  width: 100%;
+  height: auto;
+  margin-top: 18px;
+}
+
+/* Ink-lightness ramp by default (spec §2.2); only the selected series
+   turns vermilion -- opacity is set inline per-series from INK_RAMP, this
+   just fixes the stroke color and weight. */
+.triage-drift-line {
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+
+.triage-drift-line-selected {
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.triage-drift-whisker {
+  stroke: var(--accent);
+  stroke-width: 1;
+  opacity: .5;
+}
+
+.triage-drift-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+  background: var(--hairline);
+  margin-top: 10px;
+}
+
+.triage-drift-legend button {
+  flex: 1 1 auto;
+  min-height: 44px;
+  border: 0;
+  background: var(--paper-bright);
+  padding: 8px 10px;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: .64rem;
+  font-weight: 650;
+  text-align: left;
+}
+
+.triage-drift-legend button[aria-selected="true"] {
+  color: var(--accent);
+}
+
+.triage-drift-legend-pending {
+  flex: 1 1 auto;
+  background: var(--paper-bright);
+  padding: 8px 10px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: .64rem;
+  font-weight: 650;
+  font-style: italic;
+}
+
+.triage-drift-table {
+  width: 100%;
+  min-width: 560px;
+  margin-top: 18px;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: .74rem;
+}
+
+.triage-drift-table th,
+.triage-drift-table td {
+  border-top: 1px solid var(--hairline);
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.triage-drift-table small {
+  display: block;
+  color: var(--muted);
+}
+
+.triage-drift-table [data-drift-pending="true"] td {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.triage-drift-source-note {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: .68rem;
+}
+
+/* ---------- Exhibit 05: receipts ---------- */
+
+.triage-receipts-dl {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 20px;
+}
+
+.triage-receipts-dl > div {
+  border-top: 1px solid color-mix(in srgb, var(--ink-invert-fg) 22%, transparent);
+  padding-top: 8px;
+}
+
+.triage-receipts-dl dt code,
+.triage-receipts-dl dd code {
+  font-size: .72rem;
+  word-break: break-all;
+}
+
+.triage-reproduce-command {
+  overflow-x: auto;
+}
+
+.triage-reproduce-command code {
+  font-size: .74rem;
+  white-space: pre;
+}
+
+/* Task F1 (spec §2.5 touch targets >= 44px): see forge.css's identical
+   fix on .forge-repo-link a. */
+.triage-repo-link a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--accent-on-ink);
+}
+
+/* ---------- Report layer (Architecture flow) ---------- */
+
+.triage-report-section {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: clamp(48px, 8vw, 96px) clamp(20px, 5vw, 48px);
+}
+
+.triage-architecture-flow {
+  list-style: none;
+  margin: 24px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.triage-architecture-flow li {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 12px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 14px;
+}
+
+.triage-architecture-flow li span {
+  font-family: var(--mono);
+  color: var(--muted);
+}

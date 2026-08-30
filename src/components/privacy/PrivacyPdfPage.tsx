@@ -129,12 +129,12 @@ export default function PrivacyPdfPage({
     context.setLineDash([context.lineWidth * 3, context.lineWidth * 2]);
     for (const region of [...regions, ...(draft ? [draft] : [])]) {
       const rect = pixelRect(region, overlay.width, overlay.height);
-      context.fillStyle = region.accepted ? "rgba(138, 47, 47, .2)" : "rgba(93, 101, 97, .12)";
-      context.strokeStyle = region.accepted ? "#8a2f2f" : "#5d6561";
+      context.fillStyle = region.accepted ? "rgba(157, 43, 38, .2)" : "rgba(90, 100, 114, .12)";
+      context.strokeStyle = region.accepted ? "#9d2b26" : "#5a6472";
       context.fillRect(rect.x, rect.y, rect.width, rect.height);
       context.strokeRect(rect.x, rect.y, rect.width, rect.height);
       const handle = context.lineWidth * 4;
-      context.fillStyle = region.accepted ? "#8a2f2f" : "#5d6561";
+      context.fillStyle = region.accepted ? "#9d2b26" : "#5a6472";
       context.fillRect(rect.x + rect.width - handle / 2, rect.y + rect.height - handle / 2, handle, handle);
     }
   }, [draft, pageSize, readOnly, regions, scanned]);

@@ -15,14 +15,14 @@ export const recruiterQuestionsByRoute: Record<string, { en: string[]; zh: strin
   },
   "/ai": {
     en: [
-      "Your AI thesis emphasizes repeatable checks, human approval, and clear operating limits — how do the three projects on this page put that into practice?",
-      "Which of these three projects is your strongest evidence for an Applied AI engineering role, and what does it show?",
+      "Your AI thesis emphasizes measured runs, repeatable checks, human approval, and clear operating limits — how do the five projects on this page put that into practice?",
+      "Which of these five projects is your strongest evidence for an Applied AI engineering role, and what does it show?",
       "Release Guardian and RAG Quality Lab both gate changes with evaluation — how do their approaches differ?",
       "Are any of these AI systems production deployments, or are they evaluation and workbench environments?",
     ],
     zh: [
-      "你的 AI 主张强调可重复检查、人工批准和清晰的运行边界——本页三个项目如何把这些原则落到实践？",
-      "这三个项目中，哪一个最能证明你适合 AI 应用工程岗位？它具体展示了什么？",
+      "你的 AI 主张强调实测记录、可重复检查、人工批准和清晰的运行边界——本页五个项目如何把这些原则落到实践？",
+      "这五个项目中，哪一个最能证明你适合 AI 应用工程岗位？它具体展示了什么？",
       "Release Guardian 和 RAG Quality Lab 都以评估门控变更——两者的做法有何不同？",
       "这些 AI 系统中有生产部署吗，还是目前属于评估与工作台环境？",
     ],
@@ -55,6 +55,20 @@ export const recruiterQuestionsByRoute: Record<string, { en: string[]; zh: strin
       "你使用公开的 Olist 和 Lending Club 数据——这些分析能在多大程度上迁移到企业真实的毛利或信贷问题？",
     ],
   },
+  "/ai/frontier-forge": {
+    en: [
+      "How did the selected SFT run move task success from 66.35% to 99.05%, and what does the paired confidence interval establish?",
+      "Why did free rule labels beat API distillation by 14.2 percentage points, and how did that negative result change model selection?",
+      "What does zero upstream 5xx at 3× overload versus the bare vLLM crash at 5× prove, and what does it not prove?",
+      "How can I reproduce the $35.681 recorded spend from the Phase 1–5 subtotal and the Phase 7 GPU ledgers?",
+    ],
+    zh: [
+      "入选的 SFT 实验如何把任务成功率从 66.35% 提到 99.05%？配对置信区间能说明什么？",
+      "免费的规则标签为什么比 API 蒸馏高 14.2 个百分点？这个负结果如何影响模型选择？",
+      "3 倍过载时上游零 5xx，而裸 vLLM 在 5 倍过载时崩溃——这能证明什么，又不能证明什么？",
+      "如何用 Phase 1–5 小计和 Phase 7 GPU ledger 复算 $35.681 实测支出？",
+    ],
+  },
   "/ai/release-guardian": {
     en: [
       "Why does the publish decision stay with a human, and how does the workflow enforce that pause?",
@@ -83,7 +97,7 @@ export const recruiterQuestionsByRoute: Record<string, { en: string[]; zh: strin
       "确定性清单与 Manifest and Drift Lab 分别核验什么？为什么这些检查会影响结果的可信度？",
     ],
   },
-  "/ai/privacy-preflight-mac": {
+  "/ai/privacy-preflight": {
     en: [
       "Why did you build the redaction workbench to run entirely in the browser, and what constraints did that impose?",
       "What do the destructive export checks verify before a redacted file is released?",
@@ -99,16 +113,30 @@ export const recruiterQuestionsByRoute: Record<string, { en: string[]; zh: strin
   },
   "/engineering/exactly-once-drills": {
     en: [
-      "Which five failure classes do you induce, and why did you choose those?",
+      "Which ten failure classes do you induce, and why did you choose those?",
       "After recovery, how do you prove the pipeline didn't silently lose or duplicate events?",
       "The page shows a May benchmark run and a later July reproduction on a local Mac — what does the second run add?",
       "What are the stated limits of this evidence — would the zero-snapshot-diff result hold on different hardware?",
     ],
     zh: [
-      "你会注入哪五类故障？为什么选择这五类？",
+      "你会注入哪十类故障？为什么选择这十类？",
       "恢复后，你如何证明流水线没有静默丢失或重复处理事件？",
       "页面展示了 5 月的基准运行和后来在本地 Mac 上完成的 7 月复现——第二次运行补充了什么？",
       "这项证据明确写出的边界是什么？零快照差异的结果在不同硬件上还会成立吗？",
+    ],
+  },
+  "/engineering/crossover-study": {
+    en: [
+      "Why did the Amazon personalization curve remain a null result across every depth segment, and what decision did that negative finding support?",
+      "What does the ML-32M crossover at n*=20 establish, and why does the failed Recall@20 robustness check limit the claim?",
+      "How does 41.11% catalog churn constrain the attainable personalization ceiling, and why is that mechanism evidence not a causal estimate?",
+      "How can I trace the three exhibits back to the recorded run IDs and inspect the full demo without shipping the MiniLM browser model here?",
+    ],
+    zh: [
+      "为什么 Amazon 个性化曲线在所有深度分段上仍是空结果？这个负结果支持了什么决策？",
+      "ML-32M 在 n*=20 的交叉点能说明什么？Recall@20 稳健性检查失败又如何限制这一结论？",
+      "41.11% 的目录换血如何约束可达到的个性化上限？为什么这属于机制证据而不是因果估计？",
+      "如何把三件展品追溯到已记录的 run_id，并在本站不移植 MiniLM 浏览器模型的前提下查看完整 demo？",
     ],
   },
   "/analytics/margin-control-tower": {
@@ -153,6 +181,20 @@ export const recruiterQuestionsByRoute: Record<string, { en: string[]; zh: strin
       "当一条投诉在多个层级之间界限模糊时会发生什么？路由器如何避免静默误判？",
     ],
   },
+  "/ai/ask-portfolio": {
+    en: [
+      "How does the assistant ground its answers in this site's own repositories instead of generating from general knowledge?",
+      "What happens between a live question you type and the cited reply — where do the guard model and the retrieval step each sit?",
+      "Why does a failed request fall back to static route suggestions instead of a generated answer, and how were those three fallback routes chosen?",
+      "What does the Redis rate limit protect against, and what does a visitor see when they hit it?",
+    ],
+    zh: [
+      "这个助手如何用本站自身仓库中的内容为回答提供依据，而不是凭通用知识生成？",
+      "从你输入一个实时问题到得到带引用的回复之间，审查模型和检索步骤分别在哪个环节起作用？",
+      "为什么请求失败时会回退到静态路由建议而不是生成式回答？这三个兜底路由是怎么选出来的？",
+      "Redis 限流具体防护什么？访客触发限流时会看到什么？",
+    ],
+  },
 };
 
 export interface RecruiterSearchSuggestion {
@@ -167,8 +209,8 @@ export const recruiterSearchSuggestions: RecruiterSearchSuggestion[] = [
   { id: "langgraph-release-gate", label: { en: "LangGraph release gate", zh: "LangGraph 发布门禁" }, intent: "tool", expectedId: "release-guardian", acceptableIds: ["track-ai"] },
   { id: "prompt-injection-defense", label: { en: "prompt injection defense", zh: "提示注入防护" }, intent: "outcome", expectedId: "release-guardian", acceptableIds: ["track-ai"] },
   { id: "rag-regression-evaluation", label: { en: "RAG regression evaluation", zh: "RAG 回归评估" }, intent: "capability", expectedId: "rag-quality-lab", acceptableIds: ["track-ai"] },
-  { id: "browser-local-pdf-redaction", label: { en: "browser-local PDF redaction", zh: "浏览器本地 PDF 脱敏" }, intent: "use-case", expectedId: "privacy-preflight-mac", acceptableIds: ["track-ai"] },
-  { id: "simplified-chinese-ocr", label: { en: "Simplified Chinese OCR", zh: "简体中文 OCR" }, intent: "capability", expectedId: "privacy-preflight-mac", acceptableIds: ["track-ai"] },
+  { id: "browser-local-pdf-redaction", label: { en: "browser-local PDF redaction", zh: "浏览器本地 PDF 脱敏" }, intent: "use-case", expectedId: "privacy-preflight", acceptableIds: ["track-ai"] },
+  { id: "simplified-chinese-ocr", label: { en: "Simplified Chinese OCR", zh: "中英双语 OCR" }, intent: "capability", expectedId: "privacy-preflight", acceptableIds: ["track-ai"] },
   { id: "streaming-failure-injection", label: { en: "streaming failure injection", zh: "流式故障注入" }, intent: "capability", expectedId: "exactly-once-drills", acceptableIds: ["track-engineering"] },
   { id: "flink-cdc-iceberg", label: { en: "Flink CDC to Iceberg", zh: "Flink CDC 到 Iceberg" }, intent: "tool", expectedId: "exactly-once-drills", acceptableIds: ["track-engineering"] },
   { id: "contribution-margin-analysis", label: { en: "contribution margin analysis", zh: "贡献毛利分析" }, intent: "business-problem", expectedId: "margin-control-tower", acceptableIds: ["track-analytics"] },
@@ -178,4 +220,6 @@ export const recruiterSearchSuggestions: RecruiterSearchSuggestion[] = [
   { id: "data-engineering", label: { en: "data engineering", zh: "数据工程" }, intent: "role", expectedId: "track-engineering", acceptableIds: ["exactly-once-drills"] },
   { id: "complaint-triage-cascade", label: { en: "complaint triage cascade routing", zh: "投诉分级级联路由" }, intent: "capability", expectedId: "triage-router", acceptableIds: ["track-ai"] },
   { id: "cost-aware-routing", label: { en: "cost-aware routing", zh: "成本感知路由" }, intent: "capability", expectedId: "triage-router", acceptableIds: ["track-ai"] },
+  { id: "frontier-forge-overload", label: { en: "vLLM gateway overload", zh: "vLLM 网关过载" }, intent: "capability", expectedId: "frontier-forge", acceptableIds: ["track-ai"] },
+  { id: "llm-post-training-serving", label: { en: "LLM post-training and vLLM serving", zh: "SFT 微调与 vLLM 推理" }, intent: "capability", expectedId: "frontier-forge", acceptableIds: ["track-ai"] },
 ];

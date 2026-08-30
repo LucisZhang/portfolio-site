@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 360" role="img" aria-labelledby="title desc">
+  <title id="title">Frontier Forge measured delivery path</title>
+  <desc id="desc">Frozen CFPB splits flow through rule labels, a training ladder, the selected R1b model, model exports, vLLM, a C++20 gateway, and an OpenAI-compatible client.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#9d2b26"/>
+    </marker>
+    <style>
+      .node{fill:#fffdf8;stroke:#14202c;stroke-opacity:.38;stroke-width:1}.node.alt{fill:#eae3d5}.node.selected{stroke:#9d2b26;stroke-width:2}.flow{fill:none;stroke:#9d2b26;stroke-width:1;marker-end:url(#arrow)}.rail{fill:none;stroke:#f5f1e8;stroke-opacity:.28;stroke-width:1}.label{fill:#14202c;font:600 16px ui-monospace,SFMono-Regular,Menlo,monospace}.detail{fill:#5a6472;font:12px ui-monospace,SFMono-Regular,Menlo,monospace}.index{fill:#9d2b26;font:700 11px ui-monospace,SFMono-Regular,Menlo,monospace}.note{fill:#f5f1e8;font:12px ui-monospace,SFMono-Regular,Menlo,monospace}.ok{fill:#2f6b52}
+    </style>
+  </defs>
+  <rect width="1400" height="360" fill="#0f2236"/>
+  <path class="rail" d="M40 44H1360M40 316H1360"/>
+  <text class="note" x="40" y="29">MEASURED PATH · FROZEN INPUT TO BOUNDED SERVING</text>
+  <circle class="ok" cx="1348" cy="25" r="4"/>
+  <text class="note" x="1190" y="29">PHASE 7 RECORDED</text>
+
+  <path class="flow" d="M210 181H235"/>
+  <path class="flow" d="M405 181H430"/>
+  <path class="flow" d="M600 181H625"/>
+  <path class="flow" d="M795 181H820"/>
+  <path class="flow" d="M990 181H1015"/>
+  <path class="flow" d="M1185 181H1210"/>
+
+  <g transform="translate(40 112)">
+    <rect class="node" width="170" height="138"/>
+    <text class="index" x="16" y="24">01 · INPUT</text>
+    <text class="label" x="16" y="61">Frozen CFPB</text>
+    <text class="label" x="16" y="82">splits</text>
+    <text class="detail" x="16" y="112">hash-pinned data</text>
+  </g>
+  <g transform="translate(235 112)">
+    <rect class="node alt" width="170" height="138"/>
+    <text class="index" x="16" y="24">02 · LABELS</text>
+    <text class="label" x="16" y="61">Rules + API</text>
+    <text class="label" x="16" y="82">distillation</text>
+    <text class="detail" x="16" y="112">failed run retained</text>
+  </g>
+  <g transform="translate(430 112)">
+    <rect class="node alt" width="170" height="138"/>
+    <text class="index" x="16" y="24">03 · TRAIN</text>
+    <text class="label" x="16" y="61">R0 → R4</text>
+    <text class="detail" x="16" y="91">SFT · DPO · GRPO</text>
+    <text class="detail" x="16" y="112">paired CI gates</text>
+  </g>
+  <g transform="translate(625 112)">
+    <rect class="node selected" width="170" height="138"/>
+    <text class="index" x="16" y="24">04 · SELECT</text>
+    <text class="label" x="16" y="61">R1b · 99.05%</text>
+    <text class="detail" x="16" y="91">20,000 rule labels</text>
+    <text class="detail" x="16" y="112">n=2,000 frozen eval</text>
+  </g>
+  <g transform="translate(820 112)">
+    <rect class="node" width="170" height="138"/>
+    <text class="index" x="16" y="24">05 · EXPORT</text>
+    <text class="label" x="16" y="61">BF16 · GPTQ</text>
+    <text class="label" x="16" y="82">MTP-preserved</text>
+    <text class="detail" x="16" y="112">artifact SHA-256</text>
+  </g>
+  <g transform="translate(1015 112)">
+    <rect class="node" width="170" height="138"/>
+    <text class="index" x="16" y="24">06 · SERVE</text>
+    <text class="label" x="16" y="61">vLLM 0.17.0</text>
+    <text class="detail" x="16" y="91">native MTP</text>
+    <text class="detail" x="16" y="112">client/server timing</text>
+  </g>
+  <g transform="translate(1210 112)">
+    <rect class="node selected" width="150" height="138"/>
+    <text class="index" x="16" y="24">07 · ADMIT</text>
+    <text class="label" x="16" y="61">C++20</text>
+    <text class="label" x="16" y="82">gateway</text>
+    <text class="detail" x="16" y="112">JSON / SSE client</text>
+  </g>
+  <text class="note" x="40" y="340">SHA-GATED RECEIPTS</text>
+  <text class="note" x="548" y="340">$35.681 RECORDED THROUGH PHASE 7.2</text>
+  <text class="note" x="1184" y="340">0 UPSTREAM 5XX @ 3×</text>
+</svg>

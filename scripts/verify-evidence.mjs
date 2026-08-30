@@ -14,6 +14,14 @@ async function json(path) {
   return JSON.parse(await readFile(join(root, path), "utf8"));
 }
 
+async function jsonLines(path) {
+  return (await readFile(join(root, path), "utf8"))
+    .trim()
+    .split("\n")
+    .filter(Boolean)
+    .map((line) => JSON.parse(line));
+}
+
 async function sha256(path) {
   const data = await readFile(join(root, path));
   return createHash("sha256").update(data).digest("hex");
@@ -59,11 +67,58 @@ for (const forbidden of ["/Users/", "/home/", "hsiangkuochang", "scenario_id", "
   assert(!releaseReplayText.toLowerCase().includes(forbidden.toLowerCase()), `Release synthetic replay contains forbidden private marker: ${forbidden}`);
 }
 
+const frontier = await verifyManifest("public/case-studies/frontier-forge/manifest.json");
+assert(frontier.source.release_phase === 7, "Frontier Forge manifest must remain pinned to Phase 7");
+const frontierRelease = await json("public/case-studies/frontier-forge/release.json");
+assert(frontierRelease.phase === 7, "Frontier Forge release registry is not Phase 7");
+assert(frontierRelease.phase7_1?.gate?.status === "pass", "Frontier Forge Phase 7.1 gate is not passing");
+assert(frontierRelease.phase7_1?.gate?.sustained_overload_cells?.length === 3, "Frontier Forge sustained overload matrix is incomplete");
+assert(frontierRelease.phase7_2?.gateway_scaling?.status === "complete", "Frontier Forge gateway scaling receipt is incomplete");
+assert(frontierRelease.phase7_2?.gpu_cold_start?.iterations_completed === 10, "Frontier Forge cold-start receipt is incomplete");
+const frontierOverload = await json("public/case-studies/frontier-forge/phase7_1_sustained_gateway_bench.json");
+assert(frontierOverload.run_id === frontierRelease.phase7_1.run_id, "Frontier Forge release and overload run identities disagree");
+assert(frontierOverload.gate?.status === "pass" && frontierOverload.production_blocked === false, "Frontier Forge overload receipt remains production-blocked");
+const frontierPhase71Ledger = await jsonLines("public/case-studies/frontier-forge/phase7_1_gpu_ledger.jsonl");
+const frontierPhase72Ledger = await jsonLines("public/case-studies/frontier-forge/phase7_2_gpu_ledger.jsonl");
+const frontierRecordedSpend = [...frontierPhase71Ledger, ...frontierPhase72Ledger]
+  .reduce((total, row) => total + row.usd, frontierRelease.project_spend.total_usd);
+assert(
+  Math.abs(frontierRecordedSpend - 35.68115516313251) < 1e-9,
+  "Frontier Forge Phase 1-7.2 recorded spend no longer reproduces the $35.681 claim",
+);
+const frontierArchitecture = await readFile(join(root, "public/case-studies/frontier-forge/architecture.svg"), "utf8");
+assert(Buffer.byteLength(frontierArchitecture) <= 40 * 1024, "Frontier Forge architecture SVG exceeds 40 KiB");
+assert(["#f5f1e8", "#14202c", "#9d2b26", "#2f6b52"].every((token) => frontierArchitecture.includes(token)), "Frontier Forge architecture SVG does not use the site token palette");
+assert(!/\brx=/.test(frontierArchitecture), "Frontier Forge architecture SVG reintroduced rounded rectangles");
+
+const crossoverManifest = await verifyManifest("public/case-studies/crossover-study/manifest.json");
+const crossover = await json("public/case-studies/crossover-study/exhibits.json");
+assert(crossoverManifest.package === "crossover-study-site-exhibits", "Crossover exhibit package identity drifted");
+assert(crossoverManifest.assets.length === 1 && crossoverManifest.assets[0].path === "exhibits.json", "Crossover package must remain a minimal single-data-asset projection");
+assert(crossover.amazon_null.metric === "ndcg@10", "Crossover Amazon null metric drifted");
+assert(JSON.stringify(crossover.amazon_null.segments) === JSON.stringify(["0", "1-4", "5-9", "10-19", "20+"]), "Crossover Amazon history-depth axis drifted");
+assert(crossover.amazon_null.n_star === null && crossover.amazon_null.verdict === "null", "Crossover Amazon result must remain explicitly null");
+assert(JSON.stringify(crossover.amazon_null.series.map((series) => series.run_id)) === JSON.stringify(["20260805T172047Z-035042b", "20260806T082441Z-2f2f26d"]), "Crossover Amazon series receipts drifted");
+assert(crossover.ml32m_crossover.n_star === 20 && crossover.ml32m_crossover.segments.length === 5, "Crossover ML-32M n*=20 curve is incomplete");
+assert(JSON.stringify(crossover.ml32m_crossover.series.map((series) => series.run_id)) === JSON.stringify(["20260820T221055Z-20d8ff9", "20260820T221701Z-20d8ff9"]), "Crossover ML-32M series receipts drifted");
+assert(crossover.ml32m_crossover.confirmatory.winning_deep_buckets.find((point) => point.segment === "20-49")?.delta === 0.03331706067297835, "Crossover ML-32M hinge cell drifted");
+assert(Math.abs(crossover.catalog_churn.amazon.churn_share - 0.4111295514585914) < 1e-15, "Crossover Amazon catalog-churn mechanism drifted");
+assert(Math.abs(crossover.catalog_churn.ml32m.churn_share - 0.06403017747252186) < 1e-15, "Crossover ML-32M catalog-churn contrast drifted");
+assert(crossover.receipts.length === 6, "Crossover receipt projection must retain all six source runs");
+assert(crossover.boundaries.some((value) => value.includes("No MiniLM weights")), "Crossover package no longer declares the MiniLM exclusion boundary");
+
 const p1 = await verifyManifest("public/case-studies/exactly-once-drills/results/u6-local-mac/manifest.json");
 assert(p1.result.failure_classes.length === 5, "p1 must retain all five induced failure classes");
 assert(p1.result.passed && p1.result.all_snapshot_diffs_zero && p1.result.all_event_id_audits_consistent, "p1 U6 result contract failed");
+const p1DashboardManifest = await verifyManifest("public/case-studies/exactly-once-drills/results/manifest.json");
+assert(p1DashboardManifest.package === "exactly-once-drills-dashboard-results", "p1 dashboard result package identity drifted");
 const p1Index = await json("public/case-studies/exactly-once-drills/results/index.json");
-assert(p1Index.artifacts.length === 5, "p1 historical artifact index must retain all five exports");
+assert(p1Index.artifacts.length === 13, "p1 dashboard index must retain all Path A and Path B exports");
+assert(p1Index.artifacts.filter((artifact) => artifact.phase === "B3").length === 5, "p1 dashboard index must retain all five Kafka failure drills");
+assert(p1Index.artifacts.filter((artifact) => artifact.phase === "B4").length === 1, "p1 dashboard index must retain the Kafka SLO run");
+const p1BrokerSlo = await json("public/case-studies/exactly-once-drills/results/broker_slo.json");
+assert(p1BrokerSlo.run_id === "20260820T162859Z-0828bdbb" && p1BrokerSlo.summary.passed, "p1 B4 broker SLO receipt drifted");
+assert(p1BrokerSlo.summary.snapshot_diff_count === 0 && p1BrokerSlo.summary.sustained_throughput_events_per_second === 1791.665, "p1 B4 reconciliation or throughput claim drifted");
 const reproductionGuide = await readFile(join(root, "public/case-studies/exactly-once-drills/workstation-reproduction-guide.md"), "utf8");
 assert(reproductionGuide.includes("make eo-verify ARGS=\"--failure all\""), "p1 reproduction guide is incomplete");
 
@@ -270,4 +325,4 @@ assert(
   "RAG historical result is missing its bottom-section non-transfer boundary",
 );
 
-console.log("Evidence verification passed: Release, p1, RAG, Privacy, Analytics, and source claim boundaries.");
+console.log("Evidence verification passed: Release, Frontier Forge, p1, RAG, Privacy, Analytics, and source claim boundaries.");

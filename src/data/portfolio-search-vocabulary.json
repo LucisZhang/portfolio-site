@@ -1,11 +1,19 @@
 {
+  "frontier-forge": {
+    "aliases": "Frontier Forge LLM serving lab post-training benchmark model gateway 大模型训练与推理 微调部署 模型网关",
+    "domains": "LLM training inference serving systems model operations AI engineering distributed systems 大模型训练 推理服务 模型运维 AI 工程 分布式系统",
+    "capabilities": "Qwen SFT QLoRA GRPO distillation vLLM GPTQ native MTP C++20 token-aware gateway admission control overload HTTP 429 k3s KEDA autoscaling cold start confidence interval evidence receipt 微调 蒸馏 推理 量化 网关 准入控制 过载 快速拒绝 自动伸缩 冷启动 置信区间 证据收据",
+    "useCases": "post-train and serve a language model compare training runs protect inference under overload reproduce measured cost and latency 微调并部署大模型 比较训练实验 保护过载推理 复算实测成本与延迟",
+    "roles": "LLM application engineer inference engineer applied AI engineer backend engineer platform engineer 大模型应用工程师 推理工程师 AI 应用工程师 后端工程师 平台工程师",
+    "regionalTerms": "大型語言模型訓練 推理服務 模型閘道 準入控制 過載 快速拒絕 自動擴縮 冷啟動 證據收據"
+  },
   "release-guardian": {
     "aliases": "release gate AI release guard launch approval 发布门禁 上线门禁 发布审批 智能体守门",
     "domains": "AI application AI applications agent engineering release engineering LLM operations software quality governance risk control AI 应用 智能体工程 发布工程 大模型运维 软件质量 治理 风控",
-    "capabilities": "agent workflow multi-agent LangGraph orchestration guardrail evaluator regression evaluation deterministic validator evidence retrieval human approval bounded retry fail closed model routing prompt injection rollback citation 智能体 工作流 多智能体 编排 护栏 评估 回归测试 确定性验证 证据检索 人工审批 有限重试 失败拦截 模型路由 提示注入 回滚 引用",
+    "capabilities": "agent workflow multi-agent LangGraph orchestration guardrail evaluator regression evaluation deterministic validator evidence collection human approval bounded retry fail closed model routing prompt injection rollback citation 智能体 工作流 多智能体 编排 护栏 评估 回归测试 确定性验证 并行证据采集 人工审批 有限重试 失败拦截 模型路由 提示注入 回滚 引用",
     "useCases": "decide whether an AI system can ship inspect release evidence block unsafe launch compare live and deterministic evaluation 判断 AI 系统能否发布 检查发布证据 拦截不安全上线 比较在线与确定性评估",
     "roles": "applied AI engineer AI application engineer agent engineer evaluation engineer release engineer platform engineer AI 应用工程师 智能体工程师 评估工程师 发布工程师 平台工程师",
-    "regionalTerms": "人工智慧應用 智慧代理 發布審批 發布工程 風險控管 證據檢索 人工核准"
+    "regionalTerms": "人工智慧應用 智慧代理 發布審批 發布工程 風險控管 並行證據採集 人工核准"
   },
   "exactly-once-drills": {
     "aliases": "streaming lab reliability lab pipeline recovery 流式实验室 可靠性实验室 数据管道恢复",
@@ -23,7 +31,7 @@
     "roles": "applied AI engineer RAG engineer evaluation engineer search engineer ML engineer AI 应用工程师 RAG 工程师 评估工程师 搜索工程师 机器学习工程师",
     "regionalTerms": "檢索增強生成 搜尋工程 搜尋品質 知識庫品質 資料集 文件轉接器 評測"
   },
-  "privacy-preflight-mac": {
+  "privacy-preflight": {
     "aliases": "privacy preflight redaction workbench document sanitizer 隐私预检 脱敏工作台 文档清理",
     "domains": "AI application AI applications privacy engineering document processing browser local security data protection compliance tooling AI 应用 隐私工程 文档处理 浏览器本地 安全 数据保护 合规工具",
     "capabilities": "PII redaction OCR PDF image text local processing scan sensitive information bounding box burn in image only export metadata removal validation 个人信息 脱敏 文字识别 图片 文本 本地处理 扫描 敏感信息 检测框 像素烧录 纯图像导出 元数据清理 验证",
@@ -56,7 +64,7 @@
     "regionalTerms": "模型評估 文本分類 成本優化 模型路由 分佈漂移"
   },
   "crossover-study": {
-    "aliases": "crossover study batch recsys lab recommender lab lakehouse study 交叉点研究 推荐实验 湖仓研究",
+    "aliases": "crossover study batch recsys lab recommender lab lakehouse study 推荐实验 湖仓研究",
     "domains": "data engineering recommender systems lakehouse batch processing large scale evaluation 数据工程 推荐系统 数据湖仓 批处理 大规模评估",
     "capabilities": "Spark Iceberg bronze silver gold data contracts reconciliation waterfall deduplication five-core filtering item-kNN ALS collaborative filtering MiniLM embeddings semantic retrieval popularity baseline full-catalog ranking NDCG recall MRR temporal split user bootstrap 数据契约 对账瀑布 去重 五核过滤 协同过滤 语义检索 热门基线 全目录排序 时间切分 用户自举",
     "useCases": "evaluate recommenders on full catalog ranking build a governed lakehouse on a laptop measure when personalization beats popularity account for every dropped row 在全目录排序上评估推荐系统 在笔记本上搭建受治理湖仓 测量个性化何时赢过热门榜 对账每一条被剔除的记录",

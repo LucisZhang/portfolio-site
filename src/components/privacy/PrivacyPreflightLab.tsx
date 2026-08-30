@@ -1,49 +1,70 @@
 "use client";
 
-import { FileImage, FileText, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { useI18n } from "@/lib/i18n";
+import { ActionLineRow, workspaceLinkItems, type PrivacyWorkspace } from "./PrivacyActionLine";
 import PrivacyImageLab from "./PrivacyImageLab";
 import PrivacyPdfLab from "./PrivacyPdfLab";
 import PrivacyTextLab from "./PrivacyTextLab";
 
-type Workspace = "text" | "image" | "pdf";
-
+// Task F6 (direction B, "the document is the interface"): the old boxed
+// .privacy-lab shell (border + background), .privacy-lab-status "Local
+// processing" callout, and the .privacy-workspace-bar (boxed tab buttons +
+// a boxed "USE A SAMPLE FILE" CTA) are gone. PrivacyTextLab now renders the
+// exhibit's single mono action line itself (it owns SCAN and the strike
+// hint); this wrapper renders the shorter mode-switch line only while the
+// Image or PDF workspace is active -- the Text workspace's own line already
+// carries the TEXT/IMAGE/PDF words (see PrivacyActionLine.tsx). USE A
+// SAMPLE FILE / TEXT / IMAGE / PDF stay `role="tab"`-compatible (an accepted
+// deviation from the literal mock, which omits the active mode's own word --
+// keeping it present with `aria-selected` is what lets the existing
+// keyboard/axe audit in quality.spec.ts keep working) even though their
+// chrome is now plain mono text, not a boxed tab bar.
 export default function PrivacyPreflightLab() {
   const { locale } = useI18n();
-  const [workspace, setWorkspace] = useState<Workspace>("text");
-  const labels = locale === "en"
-    ? { title: "Privacy Preflight Web", mode: "Synthetic Sandbox + Deterministic Verifier", local: "Local processing", note: "Your content is processed in this browser. This workspace does not upload files or text.", text: "Text", image: "Image", pdf: "PDF", steps: ["Add", "Scan", "Review", "Preview", "Download"] }
-    : { title: "Privacy Preflight Web（隐私预检网页版）", mode: "本地脱敏工作区", local: "本地处理", note: "内容仅在当前浏览器中处理；此工作区不会上传文件或文本。", text: "文本", image: "图片", pdf: "PDF", steps: ["添加", "扫描", "复核", "预览", "下载"] };
+  const [workspace, setWorkspace] = useState<PrivacyWorkspace>("text");
+  const [imageSampleTrigger, setImageSampleTrigger] = useState(0);
+  const [pdfSampleTrigger, setPdfSampleTrigger] = useState(0);
 
-  const tabs: { id: Workspace; label: string; icon: typeof FileText }[] = [
-    { id: "text", label: labels.text, icon: FileText },
-    { id: "image", label: labels.image, icon: FileImage },
-    { id: "pdf", label: labels.pdf, icon: FileText },
-  ];
+  // Recruiters land on this page with no file of their own -- one action,
+  // always reachable regardless of the active workspace, loads a real
+  // sample into whichever workspace makes sense: the PDF workspace keeps
+  // its own sample, every other workspace jumps to Image (the Text
+  // workspace is already prefilled, so it has nothing to sample into).
+  function useSampleFile() {
+    if (workspace === "pdf") {
+      setPdfSampleTrigger((count) => count + 1);
+      return;
+    }
+    setWorkspace("image");
+    setImageSampleTrigger((count) => count + 1);
+  }
 
   return (
     <div className="privacy-lab" id="privacy-web-app" data-testid="privacy-preflight-lab">
-      <header className="privacy-lab-header">
-        <div>
-          <p className="eyebrow">{labels.mode}</p>
-          <h3>{labels.title}</h3>
-        </div>
-        <div className="privacy-local-badge"><ShieldCheck aria-hidden="true" /><span><strong>{labels.local}</strong>{labels.note}</span></div>
-      </header>
-      <ol className="privacy-mobile-steps" aria-label={locale === "en" ? "Privacy workflow" : "脱敏步骤"}>{labels.steps.map((step, index) => <li key={step}><span>{index + 1}</span>{step}</li>)}</ol>
-      <div className="privacy-workspace-tabs" role="tablist" aria-label={locale === "en" ? "Redaction workspace" : "脱敏工作区"}>
-        {tabs.map(({ id, label, icon: Icon }) => (
-          <button key={id} type="button" role="tab" aria-selected={workspace === id} onClick={() => setWorkspace(id)}>
-            <Icon aria-hidden="true" />{label}
-          </button>
-        ))}
-      </div>
-      <div role="tabpanel">
-        {workspace === "text" ? <PrivacyTextLab locale={locale} /> : null}
-        {workspace === "image" ? <PrivacyImageLab locale={locale} /> : null}
-        {workspace === "pdf" ? <PrivacyPdfLab locale={locale} /> : null}
-      </div>
+      {workspace === "text" ? (
+        <PrivacyTextLab locale={locale} onSwitch={setWorkspace} onSample={useSampleFile} />
+      ) : (
+        <>
+          <ActionLineRow
+            items={[
+              {
+                key: "sample",
+                node: (
+                  <button type="button" className="privacy-action-link privacy-sample-link" onClick={useSampleFile}>
+                    {locale === "en" ? "USE A SAMPLE FILE" : "使用示例文件"}
+                  </button>
+                ),
+              },
+              ...workspaceLinkItems(workspace, setWorkspace, locale === "en" ? "Redaction workspace" : "脱敏工作区"),
+            ]}
+          />
+          <div role="tabpanel">
+            {workspace === "image" ? <PrivacyImageLab locale={locale} sampleTrigger={imageSampleTrigger} /> : null}
+            {workspace === "pdf" ? <PrivacyPdfLab locale={locale} sampleTrigger={pdfSampleTrigger} /> : null}
+          </div>
+        </>
+      )}
     </div>
   );
 }

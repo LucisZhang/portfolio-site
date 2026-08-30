@@ -3,9 +3,9 @@
 import { Check, Columns2, Download, Eye, FileText, RotateCcw, ScanSearch, ShieldX, Trash2, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { PDFDocumentLoadingTask } from "pdfjs-dist";
-import type { Worker } from "tesseract.js";
 import type { Locale } from "@/lib/i18n";
 import { privacySourceLabel } from "@/lib/privacy-localization";
+import { cancelPrivacyOcrWorker, withPrivacyOcrTimeout, withPrivacyOcrWorker } from "@/lib/privacy-ocr-worker";
 import { mapSensitiveOcrLine, scanSensitiveText } from "@/lib/privacy-redaction";
 import { loadPdfJs, PDFJS_WORKER_URL } from "@/lib/load-pdfjs";
 import PrivacyPdfPage from "./PrivacyPdfPage";
@@ -124,14 +124,14 @@ function localizedPdfOcrReason(locale: Locale, type: string, confidence: number)
     : `本地 OCR 规则匹配 ${type}；OCR 置信度 ${Math.round(confidence)}%。`;
 }
 
-export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
+export default function PrivacyPdfLab({ locale, sampleTrigger }: { locale: Locale; sampleTrigger?: number }) {
   const copy = locale === "en" ? {
     choose: "Choose PDF", reset: "Reset", local: "Text recognition runs locally in your browser. Your file is not uploaded.", page: "Page", previous: "Previous page", next: "Next page",
     ocr: "Scan entire PDF", english: "English", bilingual: "English + 简体中文", review: "Per-page redaction review", note: "One document-level scan checks text layers first, runs local OCR where required, and preserves page-scoped review regions.",
     regions: "Page regions", none: "No regions on this page. Draw a rectangle or run local OCR.", accept: "Accept", reject: "Reject", delete: "Delete region", preview: "Preview redacted result", download: "Download redacted file",
     invalid: "Choose a readable PDF up to 20 MB and 20 pages.", loading: "Loading local PDF…", loaded: "Ready for local review", render: "Rendering page", renderError: "This PDF page could not be rendered locally. Try a smaller or simpler PDF.", loadError: "This PDF could not be opened locally. Choose another readable PDF.", ocrError: "Local OCR could not finish on this page. Try again or draw the regions manually.", exportError: "The safe PDF export could not be completed. No download was created.", ocrIdle: "OCR not run on this page", ocrNone: "OCR finished; no rule-matched token was found.",
     gate: "Fail-closed export gate", gateBody: "The original PDF is never modified. Accepted regions are burned into newly rendered page pixels, then a new image-only PDF is built and reopened for verification.",
-    needReview: "Scan the entire PDF and accept at least one redaction region before confirming the review.", verification: "Post-export verification", safe: "Safe image-only PDF is ready to preview and download.", unsafe: "Verification failed; no safe PDF is available.", exampleText: "Load text-layer PDF", exampleScan: "Load scanned PDF", exampleMulti: "Load multi-page PDF", method: "Page method", textLayer: "Text layer", ocrRequired: "OCR required", ocrMethod: "Local OCR", before: "Before", detected: "Detected", redacted: "Redacted", scanNext: "Clean preview loaded. Scan the entire PDF next; detection regions stay hidden until scanning finishes.", compare: "Before / after", originalView: "Original PDF", redactedView: "Redacted PDF", confirm: "Confirm review and show result",
+    needReview: "Scan the entire PDF and accept at least one redaction region before confirming the review.", verification: "Post-export verification", unsafeStatus: "UNSAFE TO EXPORT", safe: "Safe image-only PDF is ready to preview and download.", unsafe: "Verification failed; no safe PDF is available.", exampleText: "Load text-layer PDF", exampleScan: "Load scanned PDF", exampleMulti: "Load multi-page PDF", method: "Page method", textLayer: "Text layer", ocrRequired: "OCR required", ocrMethod: "Local OCR", before: "Before", detected: "Detected", redacted: "Redacted", scanNext: "Clean preview loaded. Scan the entire PDF next; detection regions stay hidden until scanning finishes.", compare: "Before / after", originalView: "Original PDF", redactedView: "Redacted PDF", confirm: "Confirm review and show result",
     checks: { pageCount: "Page count", dimensions: "Page dimensions", textLayerEmpty: "Extractable text empty", annotationsEmpty: "No annotations", knownTermsAbsent: "Known terms absent", metadataClean: "Original metadata absent", burnInVerified: "Black pixels burned in" },
   } : {
     choose: "选择 PDF", reset: "重置", local: "文字识别在本机浏览器中完成，文件不会上传。", page: "页", previous: "上一页", next: "下一页",
@@ -139,7 +139,7 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
     regions: "本页区域", none: "本页尚无区域，请框选或运行本地文字识别。", accept: "接受", reject: "拒绝", delete: "删除区域", preview: "预览脱敏结果", download: "下载脱敏文件",
     invalid: "请选择可读取、不超过 20 MB 且不超过 20 页的 PDF。", loading: "正在本地载入 PDF……", loaded: "已可在本地复核", render: "正在渲染页面", renderError: "无法在本地渲染此 PDF 页面，请尝试更小或结构更简单的 PDF。", loadError: "无法在本地打开此 PDF，请选择其他可读取的 PDF。", ocrError: "本页的本地文字识别未能完成，请重试或手动框选区域。", exportError: "无法完成安全 PDF 导出，因此没有生成下载文件。", ocrIdle: "本页尚未运行 OCR", ocrNone: "OCR 已完成，但没有匹配规则的敏感词项。",
     gate: "fail-closed（失败即拦截）导出门禁", gateBody: "原 PDF 不会被修改。已接受区域会烧录进重新渲染的页面像素，再重建纯图像 PDF 并重新打开验证。",
-    needReview: "确认复核前，请扫描整份 PDF 并至少接受一个脱敏区域。", verification: "导出后验证", safe: "安全的纯图像 PDF 已可预览和下载。", unsafe: "验证失败，暂无可用的安全 PDF。", exampleText: "加载文字层 PDF", exampleScan: "加载扫描版 PDF", exampleMulti: "加载多页 PDF", method: "本页方法", textLayer: "文字层", ocrRequired: "需要文字识别", ocrMethod: "本地文字识别", before: "原始文件", detected: "检测结果", redacted: "脱敏结果", scanNext: "已载入干净预览。下一步请扫描整份 PDF；扫描完成前不会显示检测框。", compare: "前后对照", originalView: "原始 PDF", redactedView: "脱敏 PDF", confirm: "确认复核并显示结果",
+    needReview: "确认复核前，请扫描整份 PDF 并至少接受一个脱敏区域。", verification: "导出后验证", unsafeStatus: "禁止导出", safe: "安全的纯图像 PDF 已可预览和下载。", unsafe: "验证失败，暂无可用的安全 PDF。", exampleText: "加载文字层 PDF", exampleScan: "加载扫描版 PDF", exampleMulti: "加载多页 PDF", method: "本页方法", textLayer: "文字层", ocrRequired: "需要文字识别", ocrMethod: "本地文字识别", before: "原始文件", detected: "检测结果", redacted: "脱敏结果", scanNext: "已载入干净预览。下一步请扫描整份 PDF；扫描完成前不会显示检测框。", compare: "前后对照", originalView: "原始 PDF", redactedView: "脱敏 PDF", confirm: "确认复核并显示结果",
     checks: { pageCount: "页数", dimensions: "页面尺寸", textLayerEmpty: "可提取文本为空", annotationsEmpty: "无注释", knownTermsAbsent: "已知词项不存在", metadataClean: "不含原始元数据", burnInVerified: "黑色像素已烧录" },
   };
 
@@ -192,6 +192,14 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
       return null;
     });
   }, []);
+
+  // Task 3.2 (spec §6.4 "USE A SAMPLE FILE"): mirrors PrivacyImageLab's
+  // sampleTrigger effect -- PrivacyPreflightLab's shared toolbar button
+  // increments this counter to load the text-layer PDF sample.
+  useEffect(() => {
+    if (sampleTrigger) void loadExample("/case-studies/privacy-preflight/pdf-example-text-layer.pdf", "privacy-text-layer-example.pdf");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sampleTrigger]);
 
   function clearOutput() {
     setOutput((current) => {
@@ -398,7 +406,6 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
     setOcrProgress(0);
     setOcrStatus(`0 / ${pageCount}`);
     const canvas = window.document.createElement("canvas");
-    let worker: Worker | null = null;
     try {
       for (let index = 0; index < pageCount; index += 1) {
         const page = await sourceDocument.getPage(index + 1);
@@ -406,21 +413,13 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
         page.cleanup();
         if (viewport.width * viewport.height > MAX_RENDER_PIXELS) throw new Error("Page exceeds the local OCR render limit.");
       }
-      const { createWorker, OEM } = await import("tesseract.js");
-      const languages = ocrLanguage === "eng" ? "eng" : ["eng", "chi_sim"];
+      const language = ocrLanguage === "eng" ? "eng" : "eng+chi_sim";
       let currentScanIndex = 0;
-      worker = await createWorker(languages, OEM.LSTM_ONLY, {
-        workerPath: "/generated/privacy-ocr/worker.min.js",
-        corePath: "/generated/privacy-ocr/core",
-        langPath: "/generated/privacy-ocr/lang",
-        cacheMethod: "none",
-        logger: (message) => {
+      await withPrivacyOcrWorker(language, (message) => {
           if (activeDocumentRef.current?.id !== activeDocument.id) return;
           setOcrProgress(Math.round(((currentScanIndex + message.progress) / pageCount) * 100));
-        },
-      });
-
-      for (let scanPageIndex = 0; scanPageIndex < pageCount; scanPageIndex += 1) {
+        }, async (worker) => {
+        for (let scanPageIndex = 0; scanPageIndex < pageCount; scanPageIndex += 1) {
         if (activeDocumentRef.current?.id !== activeDocument.id) return;
         setPageIndex(scanPageIndex);
         currentScanIndex = scanPageIndex;
@@ -429,7 +428,6 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
         const needsOcr = true;
         try {
           if (needsOcr) {
-            if (!worker) throw new Error("OCR worker unavailable.");
             const page = await sourceDocument.getPage(scanPageIndex + 1);
             try {
               const viewport = page.getViewport({ scale: PREVIEW_SCALE });
@@ -442,7 +440,7 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
             } finally {
               page.cleanup();
             }
-            const result = await worker.recognize(canvas, {}, { blocks: true });
+            const result = await withPrivacyOcrTimeout(worker.recognize(canvas, {}, { blocks: true }));
             const lines = result.data.blocks?.flatMap((block) => block.paragraphs.flatMap((paragraph) => paragraph.lines)) ?? [];
             for (const line of lines) {
               for (const mapped of mapSensitiveOcrLine(line)) {
@@ -479,7 +477,8 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
         setPageMethods((current) => current.map((method, index) => index === scanPageIndex ? needsOcr ? "ocr" : "text-layer" : method));
         setOcrStatus(`${scanPageIndex + 1} / ${pageCount}`);
         setOcrProgress(Math.round(((scanPageIndex + 1) / pageCount) * 100));
-      }
+        }
+      });
     } catch (cause) {
       if (activeDocumentRef.current?.id !== activeDocument.id) return;
       console.error("Privacy PDF document scan could not start.", cause);
@@ -488,7 +487,6 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
     } finally {
       canvas.width = 0;
       canvas.height = 0;
-      await worker?.terminate();
       if (activeDocumentRef.current?.id === activeDocument.id) setIsOcrRunning(false);
     }
   }
@@ -597,6 +595,7 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
   async function reset() {
     selectionSequence.current += 1;
     loadSequence.current += 1;
+    void cancelPrivacyOcrWorker();
     await loadingTaskRef.current?.destroy();
     loadingTaskRef.current = null;
     activeDocumentRef.current = null;
@@ -687,7 +686,7 @@ export default function PrivacyPdfLab({ locale }: { locale: Locale }) {
           <div className="privacy-pdf-explanation"><strong>{copy.gate}</strong><p>{copy.gateBody}</p>{!canExport ? <p>{copy.needReview}</p> : null}</div>
           <button type="button" className="privacy-export-button" onClick={() => void exportPdf()} disabled={!canExport}><Eye aria-hidden="true" />{copy.confirm}</button>
           {hasCurrentOutput && output ? <dl className="privacy-result-meta"><div><dt>{locale === "en" ? "File" : "文件"}</dt><dd>{output.name}</dd></div><div><dt>{locale === "en" ? "Type" : "类型"}</dt><dd>{output.type}</dd></div><div><dt>{locale === "en" ? "Size" : "大小"}</dt><dd>{(output.size / 1024).toFixed(1)} KB</dd></div></dl> : null}
-          {validation ? <div className={`privacy-validation ${validation.safe ? "pass" : "fail"}`}><div>{validation.safe ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}<strong>{copy.verification}</strong></div><p>{validation.safe ? copy.safe : copy.unsafe}</p><div className="privacy-pdf-checks">{validationChecks.map((key) => <span key={key}>{validation[key] ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}{copy.checks[key]}</span>)}</div><code>SHA-256 {validation.outputHash}</code></div> : null}
+          {validation ? <div className={`privacy-validation ${validation.safe ? "pass" : "fail"}`}><div>{validation.safe ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}<strong>{validation.safe ? copy.verification : copy.unsafeStatus}</strong></div><p>{validation.safe ? copy.safe : copy.unsafe}</p><div className="privacy-pdf-checks">{validationChecks.map((key) => <span key={key}>{validation[key] ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}{copy.checks[key]}</span>)}</div><code>SHA-256 {validation.outputHash}</code></div> : null}
         </aside>
       </div>
     </div>

@@ -1,12 +1,14 @@
 import { expect, test } from "@playwright/test";
+import { SEL } from "./selectors";
 import axe from "axe-core";
+import { getProject } from "../../src/lib/projects";
 
 const auditRoutes = [
   "/",
   "/engineering/exactly-once-drills",
   "/ai/release-guardian",
   "/ai/rag-quality-lab",
-  "/ai/privacy-preflight-mac",
+  "/ai/privacy-preflight",
   "/analytics/margin-control-tower",
   "/analytics/credit-policy-desk",
 ];
@@ -27,14 +29,28 @@ test("representative workflows remain keyboard-operable with reduced motion", as
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "en"));
 
+  // Task F9: exactly-once-drills' reduced-motion contract moved again, from
+  // EodInstrument's Scrubber (retired along with the rest of the old
+  // fault-chessboard instrument) to the Duty Logbook's native <details>
+  // entries — under prefers-reduced-motion, opening a closed entry via the
+  // keyboard alone reveals its complete transcript instantly and the
+  // replay state machine never arms (verified here by keyboard alone).
   await page.goto("/engineering/exactly-once-drills", { waitUntil: "networkidle" });
   expect(await page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior)).toBe("auto");
-  const nextStage = page.getByRole("button", { name: "Next stage" });
-  await nextStage.focus();
-  await page.keyboard.press("Enter");
-  await expect(page.locator(".p1-stage-count")).toContainText("02 / 08");
+  // `.first()` is a live query that re-resolves on every await — pin the
+  // specific entry by its drill id before interacting, otherwise a
+  // successful keyboard toggle just shifts "the first closed entry" to the
+  // next one and every assertion below would appear to fail.
+  const targetId = await page.locator(SEL.exhibit("01")).locator("[data-log-entry]:not([open])").first().getAttribute("data-drill-id");
+  const closedEntry = page.locator(`[data-log-entry][data-drill-id="${targetId}"]`);
+  const summary = closedEntry.locator("summary");
+  await summary.focus();
+  await summary.press("Space");
+  await expect(closedEntry).toHaveAttribute("open", "");
+  await expect(closedEntry).toHaveAttribute("data-replay-state", "idle");
+  await expect(closedEntry.locator("[data-log-line]").first()).toBeVisible();
 
-  await page.goto("/ai/privacy-preflight-mac", { waitUntil: "networkidle" });
+  await page.goto("/ai/privacy-preflight", { waitUntil: "networkidle" });
   const imageTab = page.getByRole("tab", { name: "Image" });
   await imageTab.focus();
   await page.keyboard.press("Enter");
@@ -44,113 +60,57 @@ test("representative workflows remain keyboard-operable with reduced motion", as
   const fileChooser = page.waitForEvent("filechooser");
   await page.keyboard.press("Enter");
   await (await fileChooser).setFiles("public/case-studies/privacy-preflight/image-synthetic-input.png");
-  await expect(page.locator(".privacy-canvas-wrap canvas")).toBeVisible();
+  await expect(page.locator(SEL.privacyCanvasWrapCanvas)).toBeVisible();
 
+  // Task L4: the pre-rebuild "Review capacity" slider this leg used to
+  // drive no longer exists (src/components/analytics/CreditPolicyLab.tsx
+  // is unrouted) -- exercises the rebuilt chart-led page's own native
+  // keyboard-operable disclosure instead (exhibit 04's <details>/<summary>
+  // "View verification SQL" panel, same pattern as the exactly-once-drills
+  // Duty Logbook entry above).
   await page.goto("/analytics/credit-policy-desk", { waitUntil: "networkidle" });
-  const capacity = page.getByRole("slider", { name: "Review capacity" });
-  await capacity.focus();
-  const before = Number(await capacity.inputValue());
-  await page.keyboard.press("ArrowRight");
-  expect(Number(await capacity.inputValue())).toBeGreaterThan(before);
+  const verifySqlSummary = page.locator(SEL.exhibit("04")).locator("summary");
+  await verifySqlSummary.focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator(SEL.exhibit("04")).locator(".credit-verify-sql")).toHaveAttribute("open", "");
 
   await page.goto("/", { waitUntil: "networkidle" });
-  await expect(page.getByTestId("lucis-orbit")).toHaveCSS("animation-name", "none");
-  await expect(page.getByTestId("lucis-orbit-overlay")).toBeHidden();
-  await expect(page.getByTestId("lucis-orbit").locator(".lo-planet")).toHaveCount(3);
+  // Task 1.2: the homepage's Round-1 LucisOrbit mark is removed (no
+  // decorative animated emblem fits the exhibition grammar's no-icon rule
+  // and the hero's new content script has no slot for it) — the reduced-
+  // motion check that mattered here carries forward as "the rail's
+  // language toggle stays keyboard-operable", asserted below.
+  await expect(page.locator(SEL.homeHeroTitle)).toBeVisible();
   const chinese = page.getByRole("button", { name: "中", exact: true });
   await chinese.focus();
   await page.keyboard.press("Enter");
-  await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
+  await expect(page.locator(SEL.html)).toHaveAttribute("lang", "zh-CN");
 });
 
-test("homepage contacts, WeChat QR variants, and one-time Lucis Orbit follow locale", async ({ page }, testInfo) => {
+// Task 1.2: the pre-rebuild homepage rendered contact controls as icon+text
+// buttons inside `.identity-links` under a decorative LucisOrbit mark. The
+// rebuilt hero (spec §2.1's no-icon rule) renders the same phone/WeChat/
+// GitHub/LinkedIn/email functionality as plain text links with no <svg>
+// children (home-r2.spec.ts asserts the icon-free structure directly);
+// this test keeps the deeper behavioral coverage — locale-conditional
+// LinkedIn, the phone dialog, and the WeChat QR variants — against the new
+// markup. The orbit's own position/animation assertions have no
+// replacement: the mark itself is removed, not relocated.
+test("homepage contacts and WeChat QR variants follow locale", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "Shared homepage behavior is exercised once.");
-  await page.addInitScript(() => {
-    window.localStorage.setItem("portfolio-locale", "en");
-    window.sessionStorage.removeItem("lucis-orbit-seen-v5");
-  });
+  await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "en"));
   await page.goto("/", { waitUntil: "domcontentloaded" });
-  const orbit = page.getByTestId("lucis-orbit");
-  const overlay = page.getByTestId("lucis-orbit-overlay");
-  // First session: the paper veil owns the screen before anything fades in.
-  await expect(overlay).toBeVisible();
-  await expect(overlay).toHaveCSS("pointer-events", "none");
-  const veilOf = () => page.evaluate(() => {
-    const el = document.querySelector('[data-testid="lucis-orbit-overlay"]');
-    if (!el) return { opacity: 0, background: "rgba(0, 0, 0, 0)" };
-    const cs = getComputedStyle(el, "::before");
-    return { opacity: parseFloat(cs.opacity), background: cs.backgroundColor };
-  });
-  await expect.poll(async () => (await veilOf()).opacity, { timeout: 2000 }).toBeGreaterThan(0.9);
-  const veil = await veilOf();
-  expect(veil.background).toBe("rgb(247, 248, 246)");
-  // Deterministic ordering proof: the veil is opaque from its first keyframe while
-  // the solar system (lo-fly) starts transparent and fades in on top of it.
-  const system = overlay.locator(".lucis-orbit-system");
-  const intro = await page.evaluate(() => {
-    const anims = document.getAnimations() as CSSAnimation[];
-    const firstOpacity = (name: string) => {
-      const anim = anims.find((a) => a.animationName === name);
-      const frames = anim?.effect && "getKeyframes" in anim.effect
-        ? (anim.effect as KeyframeEffect).getKeyframes()
-        : [];
-      const value = frames[0]?.opacity;
-      return value == null ? null : parseFloat(String(value));
-    };
-    return { veil: firstOpacity("lo-veil"), fly: firstOpacity("lo-fly") };
-  });
-  expect(intro.veil).toBeGreaterThan(0.9);
-  expect(intro.fly).toBe(0);
-  await expect(system).toHaveCSS("opacity", "1");
-  // Kimi structure: sun, three orbits, three revolving planets.
-  await expect(overlay.locator(".lo-sun")).toBeVisible();
-  await expect(overlay.locator(".lo-orbit")).toHaveCount(3);
-  await expect(overlay.locator(".lo-planet")).toHaveCount(3);
-  await expect(overlay.locator(".lo-planet").first()).toHaveCSS("animation-name", "lo-spin");
-  // The hero-scale scene carries readable identity and direction labels (en locale).
-  for (const label of ["Lucis", "AI Applications", "Data Engineering", "Data Analytics"]) {
-    await expect(overlay.getByText(label, { exact: true })).toBeVisible();
-  }
-  await expect(orbit).toHaveAttribute("data-entering", "true");
-  const viewport = page.viewportSize()!;
-  const overlayBox = (await system.boundingBox())!;
-  expect(overlayBox.width).toBeGreaterThan(300);
-  expect(Math.abs(overlayBox.x + overlayBox.width / 2 - viewport.width / 2)).toBeLessThan(40);
-  expect(Math.abs(overlayBox.y + overlayBox.height / 2 - viewport.height / 2)).toBeLessThan(40);
-  // The flight targets the emblem below the name, not beside it.
-  const nameBox = (await page.locator(".identity-title h1").boundingBox())!;
-  const emblemBox = (await orbit.locator(".lucis-orbit-emblem").boundingBox())!;
-  expect(emblemBox.y).toBeGreaterThanOrEqual(nameBox.y + nameBox.height - 1);
-  expect(Math.abs(emblemBox.x - nameBox.x)).toBeLessThan(24);
-  // While the system flies, the final mark below the name is still hidden and much smaller.
-  expect(emblemBox.width).toBeLessThanOrEqual(28);
-  expect(overlayBox.width).toBeGreaterThan(emblemBox.width * 5);
-  await expect(orbit).toHaveCSS("opacity", "0");
-  // During the flight the shrinking system converges on the emblem below the name.
-  await expect.poll(async () => {
-    if ((await system.count()) === 0) return 0; // Overlay already handed off to the landed mark.
-    const flyingBox = await system.boundingBox({ timeout: 500 }).catch(() => null);
-    if (!flyingBox) return Number.MAX_SAFE_INTEGER;
-    return Math.hypot(
-      flyingBox.x + flyingBox.width / 2 - (emblemBox.x + emblemBox.width / 2),
-      flyingBox.y + flyingBox.height / 2 - (emblemBox.y + emblemBox.height / 2),
-    );
-  }, { timeout: 6000 }).toBeLessThan(120);
-  // After the one-time entrance the overlay is gone; the landed mark shows emblem + LUCIS.
-  await expect(overlay).toHaveCount(0, { timeout: 5000 });
-  await expect(orbit).toHaveAttribute("data-entering", "false");
-  await expect(orbit).toHaveCSS("opacity", "1");
-  await expect(orbit.locator(".lucis-orbit-wordmark")).toHaveText("Lucis");
-  await expect(orbit.locator(".lucis-orbit-wordmark")).toBeVisible();
-  await expect.poll(() => page.evaluate(() => window.sessionStorage.getItem("lucis-orbit-seen-v5"))).toBe("1");
-  await expect(page.getByRole("link", { name: /GitHub/ })).toHaveAttribute("target", "_blank");
+  // Two GitHub links exist on the homepage now — the hero contact link
+  // (exhibit 00) and the source link in exhibit 06's receipts — so this
+  // scopes to the hero's, matching what this test otherwise exercises.
+  await expect(page.locator(SEL.homeHero).getByRole("link", { name: /GitHub/ })).toHaveAttribute("target", "_blank");
   await expect(page.getByRole("link", { name: /LinkedIn/ })).toHaveAttribute("rel", /noopener/);
-  expect(await page.locator(".identity-links > a, .identity-links > button").evaluateAll((controls) => (
+  expect(await page.locator(SEL.homeHeroContactLink).evaluateAll((controls) => (
     controls.map((control) => control.querySelectorAll(":scope > svg").length)
-  ))).toEqual([1, 1, 1, 1, 1]);
+  ))).toEqual([0, 0, 0, 0, 0]);
   const phone = page.getByRole("link", { name: "Phone", exact: true });
   await expect(phone).toHaveAttribute("href", "tel:+8615990784046");
-  await expect(page.locator(".identity-links")).not.toContainText("+86 15990784046");
+  await expect(page.locator(SEL.homeHero)).not.toContainText("+86 15990784046");
   await phone.click();
   await expect(page.getByRole("dialog", { name: "Contact by phone" })).toContainText("+86 15990784046");
   await page.getByRole("button", { name: "Close phone number" }).click();
@@ -158,82 +118,72 @@ test("homepage contacts, WeChat QR variants, and one-time Lucis Orbit follow loc
   await expect(page.getByAltText("WeChat QR code for Lucis")).toHaveAttribute("src", /wechat-en\.jpg/);
   await expect(page.getByRole("dialog")).toContainText("ZJ_Lucis");
   await page.getByRole("button", { name: "Close WeChat QR code" }).click();
-  await page.reload({ waitUntil: "networkidle" });
-  // Replay is suppressed: no overlay, no entrance, final static mark directly.
-  await expect(page.getByTestId("lucis-orbit-overlay")).toHaveCount(0);
-  await expect(orbit).not.toHaveClass(/is-entering/);
-  await expect(orbit).toHaveAttribute("data-entering", "false");
-  await expect(orbit).toHaveCSS("animation-name", "none");
-  await expect(orbit).toHaveCSS("opacity", "1");
-  const box = await orbit.locator(".lucis-orbit-emblem").boundingBox();
-  expect(box?.width).toBe(28);
-  expect(box?.height).toBe(28);
 
   await page.getByRole("button", { name: "中", exact: true }).click();
   await expect(page.getByRole("link", { name: /LinkedIn/ })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "电话", exact: true })).toBeVisible();
-  await expect(page.getByRole("link", { name: "邮箱", exact: true })).toBeVisible();
-  expect(await page.locator(".identity-links > a, .identity-links > button").evaluateAll((controls) => (
+  // Two "邮箱" links exist now (hero contact + exhibit 06 receipts).
+  await expect(page.locator(SEL.homeHero).getByRole("link", { name: "邮箱", exact: true })).toBeVisible();
+  expect(await page.locator(SEL.homeHeroContactLink).evaluateAll((controls) => (
     controls.map((control) => control.querySelectorAll(":scope > svg").length)
-  ))).toEqual([1, 1, 1, 1]);
+  ))).toEqual([0, 0, 0, 0]);
   await page.getByRole("button", { name: "微信", exact: true }).click();
   await expect(page.getByAltText("Lucis 的微信二维码")).toHaveAttribute("src", /wechat-zh\.jpg/);
 });
 
-test("Lucis Orbit veil ships in the SSR HTML so the first paint never flashes the homepage", async ({ request }, testInfo) => {
+test("the SSR homepage ships all seven exhibits without a reveal overlay", async ({ request }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "One SSR HTML audit is sufficient.");
   const html = await (await request.get("/")).text();
-  // The opaque paper veil is part of the very first HTML paint — before hydration.
-  expect(html).toContain('data-testid="lucis-orbit-overlay"');
-  expect(html).not.toContain("lucis-orbit-system");
-  // The final static mark is also rendered up front (behind the veil).
-  expect(html).toContain('data-testid="lucis-orbit"');
-  expect(html).toContain("lucis-orbit-wordmark");
-});
-
-test("Lucis Orbit hero scene labels follow the Chinese locale", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== "desktop", "The labeled hero scene is exercised once per locale.");
-  await page.addInitScript(() => {
-    window.localStorage.setItem("portfolio-locale", "zh");
-    window.sessionStorage.removeItem("lucis-orbit-seen-v5");
-  });
-  await page.goto("/", { waitUntil: "domcontentloaded" });
-  const overlay = page.getByTestId("lucis-orbit-overlay");
-  await expect(overlay).toBeVisible();
-  // Visible in the hero-scale scene, not merely present in the DOM.
-  for (const label of ["Lucis", "AI 应用", "数据工程", "数据分析"]) {
-    await expect(overlay.getByText(label, { exact: true })).toBeVisible();
+  expect(html).not.toContain('data-testid="lucis-orbit-overlay"');
+  for (const num of ["00", "01", "02", "03", "04", "05", "06"]) {
+    expect(html).toContain(`data-exhibit="${num}"`);
   }
-  // Labels retire with the entrance; the landed mark below the name shows emblem + LUCIS.
-  await expect(overlay).toHaveCount(0, { timeout: 5000 });
-  const mark = page.getByTestId("lucis-orbit");
-  await expect(mark).toHaveCSS("opacity", "1");
-  await expect(mark.locator(".lucis-orbit-wordmark")).toHaveText("Lucis");
-  await expect(mark.locator(".lucis-orbit-wordmark")).toBeVisible();
-  const nameBox = (await page.locator(".identity-title h1").boundingBox())!;
-  const emblemBox = (await mark.locator(".lucis-orbit-emblem").boundingBox())!;
-  expect(emblemBox.width).toBeLessThanOrEqual(28);
-  expect(emblemBox.y).toBeGreaterThanOrEqual(nameBox.y + nameBox.height - 1);
 });
 
-test("mobile 390px keeps the Lucis mark compact without horizontal overflow", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== "mobile", "The 390px overflow regression is specific to the mobile layout.");
-  await page.addInitScript(() => {
-    window.localStorage.setItem("portfolio-locale", "en");
-    window.sessionStorage.setItem("lucis-orbit-seen-v5", "1");
-  });
+test("the hero's independent Chinese narrative renders only in zh locale", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "The zh-only hero narrative is exercised once per locale.");
+  await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "zh"));
   await page.goto("/", { waitUntil: "networkidle" });
-  const orbit = page.getByTestId("lucis-orbit");
-  await expect(orbit).toBeVisible();
-  await expect(page.getByTestId("lucis-orbit-overlay")).toHaveCount(0);
-  await expect(orbit).not.toHaveClass(/is-entering/);
-  await expect(orbit.locator(".lucis-orbit-wordmark")).toHaveText("Lucis");
-  const nameBox = (await page.locator(".identity-title h1").boundingBox())!;
-  const box = (await orbit.boundingBox())!;
-  expect(box.y).toBeGreaterThanOrEqual(nameBox.y + nameBox.height - 1);
-  expect(box.height).toBeLessThanOrEqual(28);
+  await expect(page.locator(SEL.homeHeroZh)).toBeVisible();
+  await expect(page.locator(SEL.homeHeroZh)).toHaveText(/[㐀-鿿]/);
+  // The English assertion title stays pinned to the self-hosted Latin
+  // display serif even under the zh locale toggle (spec §2.3's explicit
+  // asymmetry) rather than switching to the CJK serif :lang(zh) rule.
+  await expect(page.locator(SEL.homeHeroTitle)).toHaveAttribute("lang", "en");
+  // Task F5 (locale purity, user's binding rule): the zh narrative is no
+  // longer always-on — it must not render in en locale. See home-r2.spec.ts
+  // for the full en/zh coverage; this is a targeted regression check next
+  // to the assertion above that used to claim the opposite.
+  await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "en"));
+  await page.goto("/", { waitUntil: "networkidle" });
+  await expect(page.locator(SEL.homeHeroZh)).toHaveCount(0);
+});
+
+test("pass indicators use ok while small hover text keeps accessible accent contrast", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "Shared semantic colors are exercised once.");
+  await page.goto("/ai/release-guardian", { waitUntil: "networkidle" });
+  await expect(page.locator(SEL.metricTableSvg).first()).toHaveCSS("color", "rgb(47, 107, 82)");
+  const evidenceLink = page.locator(SEL.evidenceLinkA).first();
+  await expect(evidenceLink).toHaveCSS("color", "rgb(157, 43, 38)");
+  await evidenceLink.hover();
+  await expect(evidenceLink).toHaveCSS("color", "rgb(157, 43, 38)");
+  // The privacy-preflight `.redline-grid` pass-indicator this test used
+  // to also check here was deleted by the privacy restraint pass (ba9a83f)
+  // and has no static equivalent: the rebuilt page's only default-rendered
+  // status states are an idle workbench (no scan/accept yet) and exhibit
+  // 04's deliberately always-failing demonstration -- a real `.pass` state
+  // now requires simulating a scan+accept+confirm flow, which is out of
+  // scope for this static color-token check.
+});
+
+test("mobile 390px keeps the hero readable without horizontal overflow", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile", "The 390px overflow regression is specific to the mobile layout.");
+  await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "en"));
+  await page.goto("/", { waitUntil: "networkidle" });
+  await expect(page.locator(SEL.homeHeroTitle)).toBeVisible();
   const viewportWidth = page.viewportSize()?.width ?? 390;
-  expect(box.x + box.width).toBeLessThanOrEqual(viewportWidth);
+  const titleBox = (await page.locator(SEL.homeHeroTitle).boundingBox())!;
+  expect(titleBox.x + titleBox.width).toBeLessThanOrEqual(viewportWidth + 1);
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   expect(overflow).toBeLessThanOrEqual(0);
 });
@@ -244,30 +194,39 @@ test("mobile phone contact keeps the native dial link without exposing the numbe
   await page.goto("/?lang=zh", { waitUntil: "networkidle" });
   const phone = page.getByRole("link", { name: "电话", exact: true });
   await expect(phone).toHaveAttribute("href", "tel:+8615990784046");
-  await expect(page.locator(".identity-links")).not.toContainText("+86 15990784046");
+  await expect(page.locator(SEL.homeHero)).not.toContainText("+86 15990784046");
   await phone.click();
   await expect(page.getByRole("dialog", { name: "电话联系" })).toHaveCount(0);
 });
 
 test("footer contact returns to the top of the localized homepage contact section", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== "desktop", "The shared footer destination only needs one route pass.");
+  test.skip(testInfo.project.name !== "desktop", "The shared rail contact link only needs one route pass.");
   await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "zh"));
   await page.goto("/?lang=zh", { waitUntil: "networkidle" });
-  let contact = page.getByRole("link", { name: "联系章向国", exact: true });
-  await contact.scrollIntoViewIfNeeded();
-  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+  // Task 0.5: the contact link used to live in the deleted global <footer>
+  // at the bottom of a long page, so reaching it required scrolling down —
+  // that premise is asserted below with a manual scroll. It now lives in
+  // the exhibition rail's always-visible tools slot (LegacyRailTools), so
+  // scrollIntoViewIfNeeded() would no longer need to move the page at all;
+  // what's still meaningful and still asserted is that clicking it jumps
+  // back to the top of the localized contact section.
+  await page.evaluate(() => window.scrollTo(0, 600));
+  const contact = page.getByRole("link", { name: "联系章向国", exact: true });
+  await expect(contact).toBeVisible();
   await contact.click();
   await expect(page).toHaveURL(/\/?\?lang=zh#contact$/);
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThanOrEqual(1);
-  await expect(page.locator("section#contact.workspace-head")).toBeVisible();
+  await expect(page.locator(SEL.sectionContactWorkspaceHead)).toBeVisible();
 
-  await page.goto("/ai/release-guardian?lang=zh", { waitUntil: "networkidle" });
-  contact = page.getByRole("link", { name: "联系章向国", exact: true });
-  await expect(contact).toHaveAttribute("href", "/?lang=zh#contact");
-  await contact.click();
-  await expect(page).toHaveURL(/\/?\?lang=zh#contact$/);
-  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThanOrEqual(1);
-  await expect(page.locator("section#contact.workspace-head")).toBeVisible();
+  // Task L1: the second leg of this test used to repeat the same check on
+  // "/ai/release-guardian?lang=zh" via the legacy-shell route's
+  // LegacyRailTools contact link. release-guardian is now a standalone
+  // route (src/app/ai/release-guardian/page.tsx, guardianRail.ts) built on
+  // the same ExhibitShell contract frontier-forge/triage-router/privacy-
+  // preflight-mac already use — none of those either render a rail-tools
+  // contact link (their RailSpec footers carry only "← ALL WORK"), so this
+  // was never a property this route class actually has; it belonged to
+  // the retired legacy shell alone.
 });
 
 test("portfolio search returns bilingual, typo-tolerant, and nearest-page results", async ({ page }, testInfo) => {
@@ -277,14 +236,14 @@ test("portfolio search returns bilingual, typo-tolerant, and nearest-page result
   await page.getByRole("button", { name: /Search/ }).click();
   const input = page.getByPlaceholder("Search projects, systems, or tools");
   await input.fill("relese gate");
-  await expect(page.locator("[cmdk-item]").first()).toContainText("Release Guardian");
-  await expect(page.locator("[cmdk-item]")).toHaveCount(1);
+  await expect(page.locator(SEL.cmdkItem).first()).toContainText("Release Guardian");
+  await expect(page.locator(SEL.cmdkItem)).toHaveCount(1);
   await input.fill("scan confidential PDF");
-  await expect(page.locator("[cmdk-item]").first()).toContainText("Privacy Preflight Web");
+  await expect(page.locator(SEL.cmdkItem).first()).toContainText("Privacy Preflight");
   await input.fill("a completely unrelated business phrase");
-  await expect(page.locator("[cmdk-item]")).toHaveCount(0);
-  await expect(page.locator(".command-empty")).toContainText("No confident project match");
-  await expect(page.locator(".command-search-note")).toContainText("support English, Simplified and Traditional Chinese, pinyin");
+  await expect(page.locator(SEL.cmdkItem)).toHaveCount(0);
+  await expect(page.locator(SEL.commandEmpty)).toContainText("No confident project match");
+  await expect(page.locator(SEL.commandSearchNote)).toContainText("support English, Simplified and Traditional Chinese, pinyin");
   await page.getByRole("button", { name: "Ask an open-ended question" }).click();
   await expect(page.getByTestId("assistant-widget")).toBeVisible();
   await page.getByRole("button", { name: "Close portfolio assistant" }).click();
@@ -292,7 +251,7 @@ test("portfolio search returns bilingual, typo-tolerant, and nearest-page result
   await page.getByRole("button", { name: "中", exact: true }).click();
   await page.getByRole("button", { name: "搜索" }).click();
   await page.getByPlaceholder("搜索项目、系统或工具").fill("利润分析");
-  await expect(page.locator("[cmdk-item]").first()).toContainText("毛利控制塔");
+  await expect(page.locator(SEL.cmdkItem).first()).toContainText("Margin Control Tower");
 });
 
 test("core operable routes have no serious automated accessibility violations", async ({ page }, testInfo) => {
@@ -321,16 +280,16 @@ test("artifact viewer renders and operates every supported project file type", a
   test.skip(testInfo.project.name !== "desktop", "One functional viewer audit is sufficient across shared markup.");
 
   await page.goto("/artifact?src=/case-studies/privacy-preflight/image-synthetic-input.png", { waitUntil: "networkidle" });
-  await expect(page.locator(".artifact-image-viewer img")).toBeVisible();
-  await expect(page.locator(".artifact-zoom-controls output")).toHaveText("100%");
+  await expect(page.locator(SEL.artifactImageViewerImg)).toBeVisible();
+  await expect(page.locator(SEL.artifactZoomControlsOutput)).toHaveText("100%");
   await page.getByTitle("Zoom in").click();
-  await expect(page.locator(".artifact-zoom-controls output")).toHaveText("125%");
+  await expect(page.locator(SEL.artifactZoomControlsOutput)).toHaveText("125%");
   const imageDownload = page.waitForEvent("download");
   await page.getByRole("link", { name: "Download original" }).click();
   expect((await imageDownload).suggestedFilename()).toBe("image-synthetic-input.png");
 
   await page.goto("/artifact?src=/case-studies/privacy-preflight/pdf-synthetic-redacted.pdf", { waitUntil: "networkidle" });
-  const pdfCanvas = page.locator(".artifact-pdf-canvas canvas");
+  const pdfCanvas = page.locator(SEL.artifactPdfCanvasCanvas);
   await expect(pdfCanvas).toBeVisible();
   await expect.poll(() => pdfCanvas.evaluate((canvas: HTMLCanvasElement) => canvas.width * canvas.height)).toBeGreaterThan(0);
   const renderedPixels = await pdfCanvas.evaluate((canvas: HTMLCanvasElement) => {
@@ -344,41 +303,41 @@ test("artifact viewer renders and operates every supported project file type", a
     return nonWhite;
   });
   expect(renderedPixels).toBeGreaterThan(100);
-  await expect(page.locator(".artifact-pdf-controls")).toContainText("Page 1 / 1");
+  await expect(page.locator(SEL.artifactPdfControls)).toContainText("Page 1 / 1");
 
   await page.goto("/artifact?src=/case-studies/rag-quality-lab/claim-registry.json", { waitUntil: "networkidle" });
-  await expect(page.locator(".json-tree")).toContainText("root");
+  await expect(page.locator(SEL.jsonTree)).toContainText("root");
   await page.getByPlaceholder("Search keys or values").fill("11309");
-  await expect(page.locator(".json-tree")).toContainText("11309");
+  await expect(page.locator(SEL.jsonTree)).toContainText("11309");
   const jsonDownload = page.waitForEvent("download");
   await page.getByRole("link", { name: "Download", exact: true }).click();
   expect((await jsonDownload).suggestedFilename()).toBe("claim-registry.json");
 
   await page.goto("/artifact?src=/case-studies/release-guardian/data/findings.csv", { waitUntil: "networkidle" });
-  await expect(page.locator(".artifact-filterbar")).toContainText("13 records");
-  const firstFinding = page.locator("tbody tr").first().locator("td").first();
+  await expect(page.locator(SEL.artifactFilterbar)).toContainText("13 records");
+  const firstFinding = page.locator(SEL.tbodyTr).first().locator(SEL.td).first();
   await expect(firstFinding).toHaveText("W3-01");
   await page.getByRole("button", { name: /^id/ }).click();
   await page.getByRole("button", { name: /^id/ }).click();
   await expect(firstFinding).toHaveText("W3-13");
   await page.getByPlaceholder("Search all fields").fill("architecture");
-  await expect(page.locator("tbody tr")).toHaveCount(1);
+  await expect(page.locator(SEL.tbodyTr)).toHaveCount(1);
 
   await page.goto("/artifact?src=/case-studies/exactly-once-drills/README.md", { waitUntil: "networkidle" });
-  await expect(page.locator(".artifact-markdown h1")).toBeVisible();
-  await expect(page.locator(".artifact-markdown-layout aside a[href^='#']").first()).toBeVisible();
+  await expect(page.locator(SEL.artifactMarkdownH1)).toBeVisible();
+  await expect(page.locator(SEL.artifactMarkdownLayoutAsideAHref).first()).toBeVisible();
   const markdownDownload = page.waitForEvent("download");
   await page.getByRole("link", { name: "Download source" }).click();
   expect((await markdownDownload).suggestedFilename()).toBe("README.md");
 
   await page.goto("/artifact?src=/case-studies/release-guardian/architecture.mmd", { waitUntil: "networkidle" });
-  const diagram = page.locator(".artifact-mermaid-svg svg");
+  const diagram = page.locator(SEL.artifactMermaidSvgSvg);
   await expect(diagram).toBeVisible();
   const diagramBox = await diagram.boundingBox();
   expect(diagramBox?.width ?? 0).toBeGreaterThan(900);
   expect(diagramBox?.height ?? 0).toBeGreaterThan(140);
   await page.getByRole("button", { name: "View source" }).click();
-  await expect(page.locator(".artifact-raw-source")).toContainText("flowchart");
+  await expect(page.locator(SEL.artifactRawSource)).toContainText("flowchart");
   await page.getByRole("button", { name: "Hide source" }).click();
   const svgDownload = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download SVG" }).click();
@@ -388,69 +347,122 @@ test("artifact viewer renders and operates every supported project file type", a
 test("artifact viewer preserves the shareable Chinese locale and project return URL", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "Locale mechanics are shared across viewports.");
   await page.goto("/artifact?src=/case-studies/exactly-once-drills/README.md&from=/engineering/exactly-once-drills&lang=zh", { waitUntil: "networkidle" });
-  await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
+  await expect(page.locator(SEL.html)).toHaveAttribute("lang", "zh-CN");
   await expect(page.getByRole("link", { name: "返回项目" })).toHaveAttribute("href", /engineering\/exactly-once-drills\?lang=zh$/);
-  await expect(page.locator(".artifact-page-header > div:first-child > p:not(.eyebrow)")).toHaveText("精确一次演练 / MARKDOWN");
-  await expect(page.locator(".artifact-page-header")).not.toContainText("P1 Reliability Lab");
+  await expect(page.locator(SEL.artifactPageHeaderDivFirstChildPNotEyebrow)).toHaveText("Exactly-Once Drills / MARKDOWN");
+  await expect(page.locator(SEL.artifactPageHeader)).not.toContainText("P1 Reliability Lab");
   await page.reload({ waitUntil: "networkidle" });
-  await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
+  await expect(page.locator(SEL.html)).toHaveAttribute("lang", "zh-CN");
 });
 
 test("Chinese artifact controls localize tree summaries while preserving source identity", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "Locale mechanics are shared across viewports.");
   await page.goto("/artifact?src=/case-studies/rag-quality-lab/claim-registry.json&lang=zh", { waitUntil: "networkidle" });
 
-  const rootSummary = page.locator(".json-tree > .json-node > summary");
-  await expect(rootSummary.locator("span")).toHaveText("根节点");
-  await expect(rootSummary.locator("small")).toHaveText("9 个键");
-  await expect(page.locator(".json-node summary small").filter({ hasText: /^4 项$/ })).toBeVisible();
-  await expect(page.locator(".json-tree")).toContainText("project");
-  await expect(page.locator(".json-tree")).toContainText('"RAG Quality Lab"');
-  await expect(page.locator(".artifact-page-header > div:first-child > p:not(.eyebrow)")).toHaveText("RAG 质量实验室 / JSON");
+  const rootSummary = page.locator(SEL.jsonTreeJsonNodeSummary);
+  await expect(rootSummary.locator(SEL.span)).toHaveText("根节点");
+  await expect(rootSummary.locator(SEL.small)).toHaveText("9 个键");
+  await expect(page.locator(SEL.jsonNodeSummarySmall).filter({ hasText: /^4 项$/ })).toBeVisible();
+  await expect(page.locator(SEL.jsonTree)).toContainText("project");
+  await expect(page.locator(SEL.jsonTree)).toContainText('"RAG Quality Lab"');
+  await expect(page.locator(SEL.artifactPageHeaderDivFirstChildPNotEyebrow)).toHaveText("RAG Quality Lab / JSON");
 });
 
 test("Chinese artifact errors expose only controlled localized messages", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "Diagnostic presentation is shared across viewports.");
 
   await page.goto("/artifact?src=/case-studies/rag-quality-lab/missing.json&lang=zh", { waitUntil: "domcontentloaded" });
-  await expect(page.locator(".artifact-error")).toHaveText("无法打开该文件。");
-  await expect(page.locator(".artifact-error")).not.toContainText("HTTP 404");
+  await expect(page.locator(SEL.artifactError)).toHaveText("无法打开该文件。");
+  await expect(page.locator(SEL.artifactError)).not.toContainText("HTTP 404");
 
   await page.route("**/case-studies/rag-quality-lab/broken.pdf", async (route) => {
     await route.fulfill({ status: 200, contentType: "application/pdf", body: "not a PDF" });
   });
   await page.goto("/artifact?src=/case-studies/rag-quality-lab/broken.pdf&lang=zh", { waitUntil: "domcontentloaded" });
-  await expect(page.locator(".artifact-error")).toHaveText("PDF 预览加载失败，请下载原文件。", { timeout: 20_000 });
-  await expect(page.locator(".artifact-error small")).toHaveCount(0);
+  await expect(page.locator(SEL.artifactError)).toHaveText("PDF 预览加载失败，请下载原文件。", { timeout: 20_000 });
+  await expect(page.locator(SEL.artifactErrorSmall)).toHaveCount(0);
 
   await page.route("**/case-studies/rag-quality-lab/broken.mmd", async (route) => {
     await route.fulfill({ status: 200, contentType: "text/plain", body: "not a Mermaid diagram" });
   });
   await page.goto("/artifact?src=/case-studies/rag-quality-lab/broken.mmd&lang=zh", { waitUntil: "domcontentloaded" });
-  await expect(page.locator(".artifact-error")).toHaveText("架构图渲染失败，仍可查看下方 Mermaid 源码。", { timeout: 20_000 });
-  await expect(page.locator(".artifact-error small")).toHaveCount(0);
+  await expect(page.locator(SEL.artifactError)).toHaveText("架构图渲染失败，仍可查看下方 Mermaid 源码。", { timeout: 20_000 });
+  await expect(page.locator(SEL.artifactErrorSmall)).toHaveCount(0);
 });
 
-test("root, track, project, and artifact metadata follow the active locale", async ({ page }, testInfo) => {
+test("root, project, and artifact metadata follow the active locale", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "Metadata synchronization is shared across viewports.");
-  const description = page.locator('meta[name="description"]');
+  const description = page.locator(SEL.metaNameDescription);
 
   await page.goto("/?lang=zh", { waitUntil: "networkidle" });
   await expect.poll(() => page.title()).toBe("章向国 | 作品集");
   await expect.poll(() => description.evaluateAll((nodes) => nodes.length > 0 && nodes.every((node) => node.getAttribute("content") === "数据工程、决策分析与 AI 应用项目——交互式演示，并明确每项所能验证的范围。"))).toBe(true);
-  await expect(page.getByRole("navigation", { name: "主要导航" })).toBeVisible();
+  // Task 0.5: the deleted site-header's aria-labelledby="Primary navigation"
+  // / "主要导航" <nav> no longer exists — its wayfinding duty moved to the
+  // exhibition rail's <nav data-exhibition-rail aria-label="Exhibition
+  // index">, which is not (yet) locale-labeled. Retargeted to assert the
+  // rail's fixed desktop sidebar renders instead of matching the deleted
+  // localized name (SEL.rail's own <nav> box collapses to zero size since
+  // its visible content is position:fixed and out of normal flow).
+  await expect(page.locator(".exhibit-rail-fixed")).toBeVisible();
 
-  await page.goto("/analytics?lang=zh", { waitUntil: "networkidle" });
-  const trackTitle = await page.locator("main > header h1").innerText();
-  const trackDescription = await page.locator("main > header .lede").innerText();
-  await expect.poll(() => page.title()).toBe(`${trackTitle} | 章向国`);
-  await expect.poll(() => description.evaluateAll((nodes, expected) => nodes.every((node) => node.getAttribute("content") === expected), trackDescription)).toBe(true);
+  // Task-suite-reconcile (2026-08-30): the "track" leg that used to live
+  // here navigated to "/analytics?lang=zh" and read its title/description
+  // back from SEL.mainHeaderH1/SEL.mainHeaderLede -- a track index page
+  // rendered via src/app/[track]/page.tsx. Task 5.2 made "/ai",
+  // "/engineering", and "/analytics" all 308-redirect straight to a
+  // homepage anchor instead (next.config.ts's `redirects()`), the same
+  // closure that retired "/analytics/analytics-tandem" -- root-caused
+  // live (this test's own failure, HEAD cb11fdc): `page.goto("/analytics
+  // ...")` lands on the homepage, where SEL.mainHeaderH1 resolves to 0
+  // elements, so `.innerText()` times out. There is no other still-live
+  // route that renders a "track" page's metadata contract -- all three
+  // track index routes are gone the same way, not just this one example
+  // -- so the leg has nothing left to retarget to and is dropped (test
+  // renamed from "root, track, project, and artifact metadata" to drop
+  // the now-untestable "track" claim, rather than leave a stale name).
+  // src/app/[track]/page.tsx itself is unrouted dead code as of this
+  // closure (every path it could serve is intercepted by a redirect
+  // first) -- worth a follow-up deletion, out of scope here.
 
-  await page.goto("/ai/rag-quality-lab?lang=zh", { waitUntil: "networkidle" });
-  const projectTitle = await page.locator("#project-title").innerText();
-  const projectDescription = await page.locator(".case-title .lede").innerText();
-  await expect.poll(() => page.title()).toBe(`${projectTitle} | 章向国`);
-  await expect.poll(() => description.evaluateAll((nodes, expected) => nodes.every((node) => node.getAttribute("content") === expected), projectDescription)).toBe(true);
+  // Task L3: this leg used to target "/ai/rag-quality-lab?lang=zh" as its
+  // example still-legacy project route. rag-quality-lab is now a
+  // standalone route (src/app/ai/rag-quality-lab/page.tsx) built on
+  // RagPage.tsx, which never renders SEL.projectTitle/SEL.caseTitleLede
+  // (the shared ProjectPageView markup this generic metadata check needs
+  // any still-legacy project for) -- retargeted to
+  // "/engineering/crossover-study". Task L6 then rebuilt crossover-study
+  // itself the same way, making "/analytics/analytics-tandem" the one
+  // remaining routable project still on the shared [track]/[project]
+  // catch-all (ProjectPageView/CaseStudyBlock) -- so this leg retargeted a
+  // third time to that route. Task 5.2 (route closure) then made
+  // analytics-tandem itself 308-redirect to "/#archive" instead of
+  // rendering at all (root-caused live: 63-failure full-suite run, HEAD
+  // cb11fdc -- SEL.projectTitle resolves to 0 elements once the redirect
+  // lands on the homepage), so it can no longer serve as this leg's
+  // example either, and there is no longer any project anywhere that
+  // still renders #project-title/.case-title .lede -- every project is
+  // now a standalone route (see tests/e2e/portfolio.spec.ts's `routes`
+  // array comment for the full list).
+  //
+  // Retargeted a fourth time, this time off DOM selectors entirely: every
+  // standalone project page's <LocaleDocumentMetadata> sets title/
+  // description directly from the same `getProject()` data, as
+  // `${project.title[locale]} | ${siteName}` / `project.summary[locale]`
+  // (confirmed identical across all nine standalone pages by reading each
+  // page's LocaleDocumentMetadata call site: ForgePage.tsx, GuardianPage.tsx,
+  // TriagePage.tsx, PrivacyPage.tsx, RagPage.tsx, EodPage.tsx,
+  // MarginPage.tsx, CreditPage.tsx, CrossoverPage.tsx, AskPage.tsx all use
+  // this exact pattern), so the expected values below are computed from
+  // that shared data source instead of read back off a page-specific DOM
+  // selector -- this is not tied to frontier-forge's markup in particular
+  // and will keep working regardless of which project's page gets rebuilt
+  // next.
+  const project = getProject("ai", "frontier-forge");
+  if (!project) throw new Error("frontier-forge project data is missing from src/lib/projects.ts");
+  await page.goto("/ai/frontier-forge?lang=zh", { waitUntil: "networkidle" });
+  await expect.poll(() => page.title()).toBe(`${project.title.zh} | 章向国`);
+  await expect.poll(() => description.evaluateAll((nodes, expected) => nodes.every((node) => node.getAttribute("content") === expected), project.summary.zh)).toBe(true);
 
   await page.goto("/artifact?src=/case-studies/rag-quality-lab/claim-registry.json&lang=zh", { waitUntil: "networkidle" });
   await expect.poll(() => page.title()).toBe("项目文件 | 章向国");

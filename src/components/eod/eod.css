@@ -1,0 +1,617 @@
+/* Exactly-Once Drills — task F9's Duty Logbook rebuild (concept A, user-
+   approved mock: output/design-align-r2/concept-a-logbook.html/.png).
+   Builds on exhibition.css's shared primitives (Exhibit/Finding/
+   InstrumentFrame). Hairline dividers only; zero border-radius, zero
+   shadow, zero gradient, zero icon/emoji. Vermilion (--accent) is reserved
+   for the one currently-active element: the open entry's dateline, the
+   currently-writing transcript line's caret, a blast-radius station name
+   inside a line of text. */
+
+.eod-page {
+  color: var(--ink);
+}
+
+/* ---------- Top strip ---------- */
+
+.eod-topstrip {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 12px;
+  margin-bottom: clamp(20px, 3vw, 32px);
+  border-bottom: 1px solid var(--hairline);
+  font-family: var(--mono);
+  font-size: .68rem;
+  letter-spacing: .12em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.eod-topstrip-crumb b {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* ---------- Hero copy ---------- */
+
+.eod-log-title {
+  max-width: 22ch;
+}
+
+@media (min-width: 720px) {
+  .eod-log-title {
+    max-width: none;
+  }
+}
+
+.eod-log-dek {
+  max-width: 62ch;
+}
+
+.eod-log-statline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(24px, 5vw, 56px);
+  align-items: baseline;
+  margin-top: clamp(20px, 3vw, 28px);
+}
+
+.eod-log-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--mono);
+}
+
+.eod-log-stat-n {
+  font-size: clamp(1.4rem, 3vw, 1.7rem);
+  font-variant-numeric: tabular-nums;
+}
+
+.eod-log-stat-l {
+  font-size: .62rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.eod-log-honesty {
+  margin-top: 10px;
+  max-width: 62ch;
+  font-size: .8rem;
+  font-style: italic;
+  color: var(--muted);
+}
+
+.eod-loghead {
+  margin-top: clamp(24px, 4vw, 32px);
+  padding-top: 14px;
+  border-top: 1px solid var(--hairline);
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---------- The log ---------- */
+
+.eod-log {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Each entry is a native <details> — the disclosure itself is the no-JS
+   interaction (open/close needs no JavaScript at all) and the JS-enabled
+   path layers a fetch + typed replay on top of the same toggle event.
+   `<details>` gives non-summary content ("the collapsible body") its own
+   internal box in every browser, so a grid spanning both the summary and
+   later content can't independently place two of the summary's own
+   siblings — the margin (recovery seconds / replay status) lives INSIDE
+   <summary> instead, laid out as its own 2-column grid; the transcript
+   below is the plain collapsible body, full width, revealed natively. */
+.eod-log-entry {
+  padding: clamp(16px, 2.4vw, 22px) 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.eod-log-entry summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.eod-log-entry summary::-webkit-details-marker {
+  display: none;
+}
+
+.eod-log-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 150px;
+  column-gap: clamp(20px, 3vw, 36px);
+  align-items: start;
+  min-height: 44px;
+}
+
+.eod-log-summary-main {
+  min-width: 0;
+}
+
+/* Ghosted (closed) entries read as a secondary tier the way the approved
+   mock's opacity-faded rows do, but via solid muted colors rather than
+   alpha blending: a blanket `opacity` on the whole entry would multiply
+   every descendant's contrast against the page background, including the
+   vermilion blast-radius <mark> and the margin numbers, well under the
+   4.5:1 AA floor (caught by the accessibility test suite). Recoloring each
+   text node to --muted (already the sitewide compliant secondary-text
+   color) keeps the same quiet/loud hierarchy without a contrast failure. */
+.eod-log-entry-closed .eod-log-sentence,
+.eod-log-entry-closed .eod-log-hit,
+.eod-log-entry-closed .eod-log-seconds {
+  color: var(--muted);
+  transition: color 160ms ease-out;
+}
+
+.eod-log-entry-closed:hover .eod-log-sentence,
+.eod-log-entry-closed:hover .eod-log-hit,
+.eod-log-entry-closed:hover .eod-log-seconds,
+.eod-log-entry-closed:focus-within .eod-log-sentence,
+.eod-log-entry-closed:focus-within .eod-log-hit,
+.eod-log-entry-closed:focus-within .eod-log-seconds {
+  color: var(--ink);
+}
+
+.exhibit[data-bg="ink"] .eod-log-entry-closed:hover .eod-log-sentence,
+.exhibit[data-bg="ink"] .eod-log-entry-closed:hover .eod-log-hit,
+.exhibit[data-bg="ink"] .eod-log-entry-closed:hover .eod-log-seconds,
+.exhibit[data-bg="ink"] .eod-log-entry-closed:focus-within .eod-log-sentence,
+.exhibit[data-bg="ink"] .eod-log-entry-closed:focus-within .eod-log-hit,
+.exhibit[data-bg="ink"] .eod-log-entry-closed:focus-within .eod-log-seconds {
+  color: var(--ink-invert-fg);
+}
+
+/* Review finding (Critical): pinning the featured entry above the fold
+   moves it out of real chronological position, so a tiny mono marker
+   names that explicitly — its own dateline below is untouched, so the
+   honesty is in the label, not a rewrite of when it happened. */
+.eod-log-pinned {
+  display: block;
+  margin-bottom: 4px;
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .1em;
+  color: var(--accent);
+}
+
+.exhibit[data-bg="ink"] .eod-log-pinned {
+  color: var(--accent-on-ink);
+}
+
+.eod-log-dateline {
+  display: block;
+  font-family: var(--mono);
+  font-size: .68rem;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+
+.eod-log-entry-open .eod-log-dateline {
+  color: var(--accent);
+}
+
+.exhibit[data-bg="ink"] .eod-log-entry-open .eod-log-dateline {
+  color: var(--accent-on-ink);
+}
+
+.eod-log-sentence {
+  margin: 6px 0 0;
+  max-width: 66ch;
+  font-family: var(--display-serif);
+  font-size: clamp(.96rem, 1.6vw, 1.08rem);
+  line-height: 1.62;
+}
+
+:lang(zh) .eod-log-sentence {
+  font-family: var(--display-serif-zh);
+}
+
+.eod-log-hit {
+  background: none;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.exhibit[data-bg="ink"] .eod-log-hit {
+  color: var(--accent-on-ink);
+}
+
+/* Margin block: a summary child, so it is always visible even while the
+   entry is closed (a ghosted entry still shows its real
+   recovered-in-N-seconds figure) — no special-casing needed, <summary>'s
+   own content is never hidden by the disclosure. */
+.eod-log-margin {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  padding-top: 2px;
+}
+
+.eod-log-seconds {
+  font-size: .8rem;
+}
+
+.eod-log-diff,
+.eod-log-total {
+  margin-top: 3px;
+  font-size: .62rem;
+  letter-spacing: .08em;
+  color: var(--muted);
+}
+
+.eod-log-replaying {
+  font-size: .64rem;
+  letter-spacing: .1em;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.exhibit[data-bg="ink"] .eod-log-replaying {
+  color: var(--accent-on-ink);
+}
+
+.eod-log-clock {
+  margin-top: 5px;
+  font-size: .8rem;
+}
+
+.eod-log-body {
+  margin-top: 4px;
+}
+
+.eod-log-transcript {
+  margin: 12px 0 0;
+  padding-left: 2px;
+  list-style: none;
+  font-family: var(--mono);
+  font-size: .72rem;
+  line-height: 2;
+  color: color-mix(in srgb, var(--ink) 85%, transparent);
+}
+
+.eod-log-line {
+  display: flex;
+  gap: 14px;
+  overflow-wrap: anywhere;
+}
+
+.eod-log-line-offset {
+  flex: 0 0 62px;
+  color: var(--muted);
+}
+
+.eod-log-line-ok {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.exhibit[data-bg="ink"] .eod-log-line-ok {
+  color: var(--ink-invert-fg);
+}
+
+.eod-log-line-pending {
+  opacity: .28;
+}
+
+.eod-log-caret {
+  display: inline-block;
+  width: 2px;
+  height: .8em;
+  margin-left: 2px;
+  vertical-align: -.1em;
+  background: var(--accent);
+}
+
+.exhibit[data-bg="ink"] .eod-log-caret {
+  background: var(--accent-on-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eod-log-entry-closed .eod-log-sentence,
+  .eod-log-entry-closed .eod-log-hit,
+  .eod-log-entry-closed .eod-log-seconds {
+    transition: none;
+  }
+}
+
+@media (max-width: 719.98px) {
+  .eod-log-summary {
+    grid-template-columns: 1fr;
+    row-gap: 8px;
+  }
+
+  .eod-log-margin {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 10px;
+    text-align: left;
+  }
+
+  .eod-log-diff,
+  .eod-log-total {
+    margin-top: 0;
+  }
+}
+
+/* ---------- Static no-JS details fallback (exhibit 02 appendix) ---------- */
+
+.eod-details-static {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.eod-details-static details {
+  border-top: 1px solid var(--hairline);
+}
+
+/* Task F1 (spec §2.5 touch targets >= 44px): padding moved from the
+   <details> wrapper onto <summary> -- the wrapper's padding didn't belong
+   to the actual disclosure-triangle hit target, same fix as
+   home.css's .home-claim-row. */
+.eod-details-static summary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 44px;
+  padding: 10px 0;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: .78rem;
+}
+
+.eod-details-static details[open] summary {
+  padding-bottom: 4px;
+}
+
+.eod-details-static table {
+  margin-bottom: 6px;
+}
+
+.eod-details-static table {
+  margin-top: 10px;
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: .7rem;
+}
+
+.eod-details-static th,
+.eod-details-static td {
+  border-bottom: 1px solid var(--hairline);
+  padding: 6px 8px;
+  text-align: left;
+}
+
+/* Task F1 (spec §2.5 touch targets >= 44px): the "Download raw JSON"
+   link inside each drill's table row, 20px tall by default. */
+.eod-details-static a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--accent);
+}
+
+/* ---------- Verification proposition (exhibit 02) ---------- */
+
+.eod-proposition {
+  font-family: var(--mono);
+  font-size: clamp(.9rem, 1.6vw, 1.1rem);
+  margin: 0 0 24px;
+}
+
+.eod-pass-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.eod-pass-row {
+  display: grid;
+  grid-template-columns: 1.4fr .6fr 1.6fr .8fr;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--hairline);
+  font-family: var(--mono);
+  font-size: .72rem;
+}
+
+.exhibit[data-bg="ink"] .eod-pass-row {
+  border-bottom-color: color-mix(in srgb, var(--ink-invert-fg) 20%, transparent);
+}
+
+.eod-pass-head {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+/* Exhibit 02 renders on data-bg="ink" — --muted (#5a6472) against
+   --ink-invert (#0f2236) is 2.7:1, well under the 4.5:1 AA floor for small
+   text (caught by the accessibility test suite). Same override formula as
+   .forge-claim-table-scroll th / .eod-receipts-dl dt. */
+.exhibit[data-bg="ink"] .eod-pass-head {
+  color: color-mix(in srgb, var(--ink-invert-fg) 68%, transparent);
+}
+
+.eod-pass-verdict[data-verdict="pass"] {
+  color: var(--ok);
+}
+
+.exhibit[data-bg="ink"] .eod-pass-verdict[data-verdict="pass"] {
+  color: var(--ok-on-ink);
+}
+
+.eod-pass-verdict[data-verdict="fail"] {
+  color: var(--danger);
+}
+
+/* ---------- Dual-path parity (exhibit 03) ---------- */
+
+.eod-parity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  background: var(--hairline);
+  gap: 1px;
+  margin-bottom: 20px;
+}
+
+.eod-parity-cell {
+  background: var(--paper);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.exhibit[data-bg="paper-alt"] .eod-parity-cell {
+  background: var(--paper-alt);
+}
+
+.eod-parity-cell code {
+  font-size: .68rem;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Checkpoint pressure (exhibit 04) ---------- */
+
+.eod-pressure-evidence {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  background: var(--hairline);
+  gap: 1px;
+  margin-bottom: 20px;
+}
+
+.eod-pressure-evidence > div {
+  background: var(--paper-bright);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.eod-pressure-evidence span {
+  font-family: var(--mono);
+  font-size: .68rem;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.eod-pressure-evidence strong {
+  font-family: var(--mono);
+  font-size: 1rem;
+}
+
+.eod-pressure-evidence small {
+  color: var(--muted);
+}
+
+/* Fix (audit3 B2): globals.css's legacy `.media-grid img { border: var(--bl); }`
+   is still needed by the not-yet-redone pages (release-guardian) that reuse
+   OptionalMedia, so it can't be deleted globally. Scope the border removal
+   to this redone exhibit only -- whitespace + the exhibit rhythm already
+   carry the separation here, matching the rest of the de-framing pass. */
+#exhibit-04 .media-grid img {
+  border: 0;
+}
+
+/* ---------- Receipts (exhibit 05) ---------- */
+
+.eod-receipts-dl {
+  display: grid;
+  grid-template-columns: minmax(140px, 260px) minmax(0, 1fr);
+  gap: 8px 20px;
+  max-width: 720px;
+  margin: 0;
+}
+
+.eod-receipts-dl dt {
+  color: color-mix(in srgb, var(--ink-invert-fg) 60%, transparent);
+  font-family: var(--mono);
+  font-size: .7rem;
+  text-transform: uppercase;
+}
+
+.eod-receipts-dl dd {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: .78rem;
+  overflow-wrap: anywhere;
+}
+
+.eod-repo-link {
+  margin-top: 20px;
+}
+
+/* Task F1 (spec §2.5 touch targets >= 44px): see forge.css's identical
+   fix on .forge-repo-link a. */
+.eod-repo-link a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--accent-on-ink);
+}
+
+/* ---------- Report layer (Architecture / Results / Limitations) ---------- */
+
+.eod-report-section {
+  border-bottom: 1px solid var(--hairline);
+  padding: clamp(40px, 5vw, 72px) clamp(34px, 7vw, 110px);
+}
+
+.eod-report-section h2 {
+  margin: 0 0 20px;
+  font-family: var(--display-serif);
+  font-size: clamp(1.6rem, 2.4vw, 2.2rem);
+  font-weight: 400;
+}
+
+:lang(zh) .eod-report-section h2 {
+  font-family: var(--display-serif-zh);
+}
+
+.eod-architecture-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: 720px;
+}
+
+.eod-architecture-flow li {
+  display: flex;
+  gap: 14px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 12px;
+}
+
+.eod-architecture-flow li > span {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: .68rem;
+}
+
+.eod-architecture-flow li p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: .88rem;
+  line-height: 1.55;
+}

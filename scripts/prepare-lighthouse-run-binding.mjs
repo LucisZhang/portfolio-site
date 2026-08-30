@@ -35,7 +35,7 @@ const binding = {
   routes: {
     home: "/",
     margin: "/analytics/margin-control-tower",
-    privacy: "/ai/privacy-preflight-mac",
+    privacy: "/ai/privacy-preflight",
     release: "/ai/release-guardian",
   },
   purpose: "Bind the first single-pass four-route Lighthouse sequence to the exact pre-run runtime and installed Chrome version.",

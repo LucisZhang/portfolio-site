@@ -1,0 +1,130 @@
+{
+  "rows": [
+    {
+      "model": "als",
+      "history_depth": "0",
+      "ndcg10_delta_vs_popularity": -0.007505095148739314,
+      "ci_lo": -0.008304117507698357,
+      "ci_hi": -0.006753922546828509,
+      "excludes_zero": true
+    },
+    {
+      "model": "als",
+      "history_depth": "1-4",
+      "ndcg10_delta_vs_popularity": -0.0025619347710512264,
+      "ci_lo": -0.002991797165379361,
+      "ci_hi": -0.0021593348404484744,
+      "excludes_zero": true
+    },
+    {
+      "model": "als",
+      "history_depth": "5-9",
+      "ndcg10_delta_vs_popularity": -0.0023003340113783434,
+      "ci_lo": -0.0026913126197160193,
+      "ci_hi": -0.0018788666795247263,
+      "excludes_zero": true
+    },
+    {
+      "model": "als",
+      "history_depth": "10-19",
+      "ndcg10_delta_vs_popularity": -0.0025659098597754426,
+      "ci_lo": -0.0031317098889318455,
+      "ci_hi": -0.0019913934443107875,
+      "excludes_zero": true
+    },
+    {
+      "model": "als",
+      "history_depth": "20+",
+      "ndcg10_delta_vs_popularity": -0.0014575006667137112,
+      "ci_lo": -0.002086638486140479,
+      "ci_hi": -0.0007872959251500251,
+      "excludes_zero": true
+    },
+    {
+      "model": "content",
+      "history_depth": "0",
+      "ndcg10_delta_vs_popularity": -0.007505095148739314,
+      "ci_lo": -0.008304117507698357,
+      "ci_hi": -0.006753922546828509,
+      "excludes_zero": true
+    },
+    {
+      "model": "content",
+      "history_depth": "1-4",
+      "ndcg10_delta_vs_popularity": -0.0043631165322598284,
+      "ci_lo": -0.004769641785374948,
+      "ci_hi": -0.003973414188533595,
+      "excludes_zero": true
+    },
+    {
+      "model": "content",
+      "history_depth": "5-9",
+      "ndcg10_delta_vs_popularity": -0.004415989870265019,
+      "ci_lo": -0.0048061403457981,
+      "ci_hi": -0.004041682029644537,
+      "excludes_zero": true
+    },
+    {
+      "model": "content",
+      "history_depth": "10-19",
+      "ndcg10_delta_vs_popularity": -0.0046158929931209396,
+      "ci_lo": -0.0051577915793641965,
+      "ci_hi": -0.0041003335150416745,
+      "excludes_zero": true
+    },
+    {
+      "model": "content",
+      "history_depth": "20+",
+      "ndcg10_delta_vs_popularity": -0.0034036787791806114,
+      "ci_lo": -0.0039955382581530925,
+      "ci_hi": -0.0029027750165530426,
+      "excludes_zero": true
+    },
+    {
+      "model": "item_knn",
+      "history_depth": "0",
+      "ndcg10_delta_vs_popularity": -0.007505095148739314,
+      "ci_lo": -0.008304117507698357,
+      "ci_hi": -0.006753922546828509,
+      "excludes_zero": true
+    },
+    {
+      "model": "item_knn",
+      "history_depth": "1-4",
+      "ndcg10_delta_vs_popularity": -0.00444138249681929,
+      "ci_lo": -0.004853919035384015,
+      "ci_hi": -0.004066660046653399,
+      "excludes_zero": true
+    },
+    {
+      "model": "item_knn",
+      "history_depth": "5-9",
+      "ndcg10_delta_vs_popularity": -0.004366792733767009,
+      "ci_lo": -0.004735462775530918,
+      "ci_hi": -0.003968127319132719,
+      "excludes_zero": true
+    },
+    {
+      "model": "item_knn",
+      "history_depth": "10-19",
+      "ndcg10_delta_vs_popularity": -0.004375938544288574,
+      "ci_lo": -0.0049003630943172,
+      "ci_hi": -0.0038704475808933915,
+      "excludes_zero": true
+    },
+    {
+      "model": "item_knn",
+      "history_depth": "20+",
+      "ndcg10_delta_vs_popularity": -0.0030669799697687766,
+      "ci_lo": -0.0036425272631941475,
+      "ci_hi": -0.0025249049552098883,
+      "excludes_zero": true
+    }
+  ],
+  "telemetry": {
+    "rowsScanned": 30,
+    "elapsedMs": 3.648,
+    "bytesScanned": 0
+  },
+  "builtAt": "2026-08-22T15:48:15.683Z"
+}

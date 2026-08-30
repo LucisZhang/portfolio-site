@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "package": "frontier-forge-phase7-evidence",
+  "created_on": "2026-08-21",
+  "source": {
+    "repository": "LucisZhang/frontier-forge",
+    "release_phase": 7,
+    "release_path": "demo/data/release.json",
+    "overload_path": "results/phase7_1/raw/phase7_1_sustained_gateway_bench.json",
+    "phase7_1_ledger_path": "results/phase7_1/gpu_ledger.jsonl",
+    "phase7_2_ledger_path": "results/phase7_2/gpu_ledger.jsonl"
+  },
+  "assets": [
+    {
+      "path": "release.json",
+      "bytes": 29330,
+      "sha256": "9e547b3418ce1f633914e8dfe7b818fa6f7e064a891cee8e4c73837e6ce45f4d",
+      "kind": "build_time_claim_registry"
+    },
+    {
+      "path": "phase7_1_sustained_gateway_bench.json",
+      "bytes": 1526788,
+      "sha256": "d132ebece698c98ab996b154067679ea1d74b52e9528834ed19a21a132137929",
+      "kind": "recorded_overload_replay"
+    },
+    {
+      "path": "architecture.svg",
+      "bytes": 4296,
+      "sha256": "beb69372b653a18f93e896cd92ea448630e479548789bfff38072dae65e525c9",
+      "kind": "readme_mermaid_presentation_derivative"
+    },
+    {
+      "path": "phase7_1_gpu_ledger.jsonl",
+      "bytes": 1483,
+      "sha256": "e156ce102690f258a2e596c08d27e25bc8e522251ed24a2fc15d158e59ae5aec",
+      "kind": "recorded_gpu_spend_ledger"
+    },
+    {
+      "path": "phase7_2_gpu_ledger.jsonl",
+      "bytes": 600,
+      "sha256": "f0c970810eda90151947a2c8e2bb4e4da30366186077e8575fc186f37d408d6b",
+      "kind": "recorded_gpu_spend_ledger"
+    }
+  ],
+  "boundaries": [
+    "All measured claims remain scoped to the hardware, workload, and run identities recorded in release.json.",
+    "The Phase 7.1 replay is a recorded receipt, not a live inference service.",
+    "The $35.681 total combines the release.json Phase 1-5 subtotal with the exact Phase 7.1 and Phase 7.2 GPU ledger dollars; RTX 4090 and A10 hours are not combined.",
+    "The architecture SVG is a hand-drawn presentation derivative of the repository README Mermaid flow."
+  ]
+}

@@ -1,0 +1,1040 @@
+/* Frontier Forge release console (task 2.2, spec §6.0/§6.1 reference
+   implementation). Builds on top of exhibition.css's shared primitives
+   (Exhibit/Finding/StatGrid/InstrumentFrame) — this file only adds the
+   forge-specific instrument internals and analysis-exhibit layouts.
+   Hairline dividers only; zero border-radius, zero shadow, zero gradient,
+   zero icon/emoji. */
+
+.forge-page {
+  color: var(--ink);
+}
+
+/* ---------- Hero (task W1: conforms to the reference demo's single-column
+   manifesto composition — the frontier-forge repository's demo/,
+   output/design-align-r4/FORGE-DIFF.md §1.1). The reference's right-column
+   instrument does not exist in its hero; ForgeConsole "full" already lives
+   at exhibit-01 below (§6.0's "same instrument, two variants" contract).
+   Reference oranges (#e16b3d/#f29b66) map to the site's vermilion tokens
+   (--accent on this paper section) per spec §2.2; reference Iowan Old
+   Style/Avenir/SF Mono map to the site's self-hosted
+   --display-serif(-zh)/--mono stacks (FORGE-DIFF C3).
+
+   Deliberately NOT the reference's `.hero{min-height:94vh}` full-viewport
+   vertical centering: tests/e2e/forge-r2.spec.ts's "instrument is
+   prefilled in the first viewport with zero clicks" test (kept per this
+   task's own brief -- exhibit-01's live instrument keeps its current
+   test contract) requires exhibit-01's ForgeConsole to still appear at
+   y < viewport height + 40 at 1440x900, and exhibit-01 begins immediately
+   after this section with its own ~315px of shared-class heading/padding
+   this file cannot touch. The reference demo has no such instrument and
+   was never bound by that contract, so its 94vh/7vw scale and this
+   contract cannot both hold; the resolution kept here is the reference's
+   full compositional grammar (kicker -> big serif 2-line assertion -> zh
+   gloss -> one headline sentence -> 4-metric hairline band -> scope note)
+   at a tightened scale/spacing that fits above the fold with the
+   instrument, rather than the reference's absolute maximum type size on
+   a full 94vh canvas. See task-W1-report.md for the measured numbers. */
+
+.forge-hero {
+  padding-block: clamp(40px, 5vw, 60px);
+}
+
+/* Reference kicker is orange (.kicker{color:var(--orange)}); the shared
+   .exhibit-eyebrow (exhibition.css) is muted-grey sitewide for numbered
+   exhibits, so this is a hero-only override, not a change to that shared
+   rule. */
+.forge-hero .exhibit-eyebrow {
+  color: var(--accent);
+}
+
+/* Reference: h1{font-size:clamp(3.1rem,7vw,7.3rem); line-height:.92},
+   single column, no max-width cap (the shared .exhibit-title caps at
+   20ch/4.4rem for numbered exhibits). Scaled down from the reference's
+   literal clamp (see the section comment above) -- still well above the
+   4.4rem ceiling every other exhibit heading on this page uses, so the
+   hero still reads as a distinct, larger typographic statement. */
+.forge-hero .exhibit-title {
+  max-width: none;
+  margin-top: 16px;
+  font-size: clamp(2.3rem, 5vw, 5.4rem);
+  line-height: 1;
+}
+
+:lang(zh) .forge-hero .exhibit-title {
+  /* CJK serif glyphs are squarer than the Latin assertion's condensed
+     line-height allows without the two lines colliding. */
+  line-height: 1.15;
+}
+
+.forge-hero .exhibit-intro {
+  margin-top: 14px;
+  max-width: 850px;
+  font-size: clamp(1rem, 1.3vw, 1.15rem);
+  line-height: 1.5;
+}
+
+/* Reference hero-metrics: a 4-cell hairline-ruled grid with serif values
+   (.hero-metrics/.hero-metric). This is a deliberate, hero-scoped
+   exception to two sitewide Round-2 rulings that do not apply here: (1)
+   task F10's de-boxed StatGrid (exhibition.css) — kept for every other
+   exhibit's stat row on this page and every other page; (2) the sitewide
+   "digits are mono" convention — the reference's serif metric values are
+   part of the exact composition the user asked this hero to reuse
+   (FORGE-DIFF C1/C4). Built as page-scoped markup/CSS rather than a
+   StatGrid prop so neither ruling's shared component changes for any
+   other page or exhibit. */
+.forge-hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(110px, 1fr));
+  gap: 1px;
+  background: var(--hairline);
+  border: 1px solid var(--hairline);
+  margin-top: 24px;
+  max-width: 880px;
+}
+
+.forge-hero-metric {
+  background: var(--paper);
+  padding: 12px 14px;
+}
+
+.forge-hero-metric strong {
+  display: block;
+  font-family: var(--display-serif);
+  font-size: clamp(1.25rem, 1.8vw, 1.9rem);
+  font-weight: 500;
+  letter-spacing: -.01em;
+  color: var(--ink);
+}
+
+:lang(zh) .forge-hero-metric strong {
+  font-family: var(--display-serif-zh);
+}
+
+.forge-hero-metric span {
+  display: block;
+  margin-top: 3px;
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  .forge-hero-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Reference .scope-note: a muted fineprint line under the metrics band,
+   replacing the former .forge-honesty-note (that class/copy stays defined
+   in ProjectPageView.module.css for CaseStudyBlock's separate legacy
+   project-page rendering — untouched here). */
+.forge-scope-note {
+  max-width: 850px;
+  margin: 22px 0 0;
+  color: var(--muted);
+  font-size: .8rem;
+  line-height: 1.6;
+}
+
+/* ---------- ForgeConsole instrument ---------- */
+
+.forge-console {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.forge-live-slot {
+  margin: 0;
+  border-top: 1px solid var(--hairline);
+  padding-top: 8px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.forge-console-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+  background: var(--hairline);
+}
+
+.forge-console-chips button {
+  flex: 1 1 auto;
+  min-height: 44px;
+  border: 0;
+  background: var(--paper-bright);
+  padding: 8px 10px;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: .62rem;
+  font-weight: 650;
+  letter-spacing: .02em;
+  text-align: left;
+}
+
+.forge-console-chips button[aria-selected="true"] {
+  background: var(--ink);
+  color: var(--paper-bright);
+}
+
+.forge-console-readout {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 10px;
+}
+
+.forge-console-readout strong {
+  font-family: var(--mono);
+  font-size: clamp(1.4rem, 2vw, 2rem);
+  font-weight: 650;
+}
+
+.forge-console-readout-detail {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: .68rem;
+}
+
+.forge-console-run-id {
+  color: var(--muted);
+  font-size: .62rem;
+  overflow-wrap: anywhere;
+}
+
+.forge-console-transcript-note {
+  margin: 0;
+  border-top: 1px solid var(--hairline);
+  padding-top: 8px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: .64rem;
+  line-height: 1.5;
+}
+
+.forge-console-input-label {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: .62rem;
+  text-transform: uppercase;
+}
+
+.forge-console textarea {
+  width: 100%;
+  resize: vertical;
+  /* De-box pass (task F2): was a full 1px hairline box nested inside the
+     InstrumentFrame's own hairline border (spec §0 "去盒子化" — the reference
+     redesign killed white-boxes-with-borders in favor of hairline
+     separators). One boundary per instrument, not a box-in-a-box: the
+     background tint alone (paper against the frame's paper-bright/ink)
+     already reads as a distinct editable surface, matching the top-hairline
+     rhythm every other stacked row in this console uses
+     (.forge-live-slot/.forge-console-readout/.forge-console-transcript-note). */
+  border: 0;
+  border-top: 1px solid var(--hairline);
+  background: var(--paper);
+  padding: 8px 10px;
+  color: var(--muted);
+  font-family: var(--font-geist-sans);
+  font-size: .78rem;
+}
+
+.forge-console textarea:disabled {
+  cursor: not-allowed;
+  opacity: .7;
+}
+
+.forge-console-tabs {
+  display: flex;
+  gap: 1px;
+  background: var(--hairline);
+}
+
+.forge-console-tabs button {
+  flex: 1 1 auto;
+  min-height: 44px;
+  border: 0;
+  background: var(--paper-bright);
+  padding: 6px 8px;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: .64rem;
+  font-weight: 650;
+}
+
+.forge-console-tabs button[aria-selected="true"] {
+  background: var(--ink);
+  color: var(--paper-bright);
+}
+
+.forge-console-request {
+  /* Flex items default to min-width: auto (their content's intrinsic
+     width) on BOTH axes, which overrides this element's own
+     overflow-x: auto and lets the un-wrapped request-body text force the
+     whole page wider. min-width: 0 + an explicit width is what makes the
+     scrollbar below actually activate instead. */
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  overflow-x: auto;
+  /* De-box pass (task F2): same box-in-a-box fix as the textarea above —
+     this <pre> already sits under the cURL/Python/JSON tab row, which is
+     boundary enough; a second full border nested inside InstrumentFrame's
+     border read as an AI-generated nested-card artifact. Top hairline +
+     the paper background tint keep it legible as its own surface. */
+  border: 0;
+  border-top: 1px solid var(--hairline);
+  background: var(--paper);
+  padding: 10px 12px;
+  font-family: var(--mono);
+  font-size: .68rem;
+  line-height: 1.55;
+}
+
+/* ---------- Evidence Explorer (exhibit 02) ---------- */
+
+.forge-explorer {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+/* Task F10 (box-grammar ruling): plain mono text-link row, not a filled
+   segmented control — F8 audit finding 4 flagged the full-width tinted
+   background (the same 1px-hairline-gap technique as the old StatGrid
+   checkerboard) stretching past the 5 buttons it should hug. Gap-only
+   spacing now sizes the row to its own content; vermilion marks the
+   pressed filter, an underline is the hover/focus-visible affordance. */
+.forge-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+}
+
+.forge-filter-bar button {
+  min-height: 44px;
+  border: 0;
+  background: none;
+  padding: 0;
+  color: color-mix(in srgb, var(--ink-invert-fg) 72%, transparent);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: .64rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.forge-filter-bar button:hover,
+.forge-filter-bar button:focus-visible {
+  color: var(--ink-invert-fg);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.forge-filter-bar button[aria-pressed="true"] {
+  color: var(--accent-on-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.forge-claim-table-scroll {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.forge-claim-table-scroll table {
+  width: 100%;
+  min-width: 880px;
+  border-collapse: collapse;
+}
+
+.forge-claim-table-scroll th {
+  border-bottom: 1px solid color-mix(in srgb, var(--ink-invert-fg) 40%, transparent);
+  padding: 10px 12px;
+  color: color-mix(in srgb, var(--ink-invert-fg) 68%, transparent);
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .06em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.forge-claim-table-scroll td {
+  border-bottom: 1px solid color-mix(in srgb, var(--ink-invert-fg) 20%, transparent);
+  padding: 12px;
+  vertical-align: top;
+  color: var(--ink-invert-fg);
+}
+
+.forge-claim-table-scroll tr.negative-finding {
+  border-top-color: color-mix(in srgb, var(--ink-invert-fg) 40%, transparent);
+}
+
+.forge-claim-table-scroll strong {
+  display: block;
+  margin-top: 4px;
+  font-size: .82rem;
+  font-weight: 600;
+}
+
+.forge-claim-table-scroll code {
+  color: color-mix(in srgb, var(--ink-invert-fg) 74%, transparent);
+  font-size: .68rem;
+  overflow-wrap: anywhere;
+}
+
+/* De-box pass (task F2): was an outlined pill (border + padding) around the
+   POSITIVE/NEGATIVE/BOUNDARY word — exactly the bordered-badge look spec §0
+   calls out as the reference redesign's "去盒子化" target for finding/callout
+   labels ("finding 从彩色底块...改为...mono 大写标签", never a boxed tag).
+   Now a plain mono label stacked above the claim text, matching
+   .exhibit-finding-label's unboxed convention; color alone (inherited via
+   the [data-result] rules below) carries the semantic weight. */
+.forge-result-tag {
+  display: block;
+  margin: 0 0 4px;
+  color: color-mix(in srgb, var(--ink-invert-fg) 68%, transparent);
+  font-family: var(--mono);
+  font-size: .58rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.forge-result-tag[data-result="positive"] {
+  color: var(--ok-on-ink);
+}
+
+.forge-result-tag[data-result="negative"] {
+  color: var(--accent-on-ink);
+}
+
+/* Task F7 (direction B mobile tables, approved mock
+   output/design-align/direction-mobile-table-b.html's dark
+   "number-first" section): mobile-only claim list. Hidden by default
+   (desktop keeps the real 5-column table above); the media query below
+   swaps which of the two is visible. */
+.forge-claim-cards {
+  display: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.forge-claim-cards li {
+  border-top: 1px solid color-mix(in srgb, var(--ink-invert-fg) 20%, transparent);
+  padding: 14px 0 16px;
+}
+
+.forge-claim-card-number {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  font-family: var(--mono);
+  font-size: 1.15rem;
+  font-weight: 650;
+  letter-spacing: -.01em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-invert-fg);
+}
+
+.forge-claim-card-number .forge-result-tag {
+  margin: 0;
+  font-size: .6rem;
+}
+
+.forge-claim-card-caption {
+  margin: 5px 0 0;
+  font-size: .84rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--ink-invert-fg) 85%, transparent);
+}
+
+.forge-claim-card-meta {
+  margin: 6px 0 0;
+  font-family: var(--mono);
+  font-size: .66rem;
+  color: color-mix(in srgb, var(--ink-invert-fg) 60%, transparent);
+}
+
+.forge-claim-card-meta code {
+  overflow-wrap: anywhere;
+}
+
+/* Below 768px the 5-column table (which needs a horizontal-scroll
+   wrapper to hold the command/SHA columns) gives way to the number-first
+   card list above -- direction B's binding rule that mobile tables never
+   keep a scrollable multi-column layout. */
+@media (max-width: 767.98px) {
+  .forge-claim-table-scroll {
+    display: none;
+  }
+
+  .forge-claim-cards {
+    display: block;
+  }
+}
+
+/* ---------- Training Ladder (exhibit 03) ---------- */
+
+.forge-ladder {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0 0 clamp(24px, 3vw, 40px);
+  padding: 0;
+  list-style: none;
+  max-width: 760px;
+}
+
+.forge-ladder-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.forge-ladder-label {
+  flex: 1 1 auto;
+  font-size: .9rem;
+  font-weight: 600;
+}
+
+.forge-ladder-status {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: .62rem;
+  text-transform: uppercase;
+}
+
+.forge-ladder-value {
+  font-family: var(--mono);
+  font-size: .9rem;
+  font-weight: 650;
+}
+
+.forge-ladder-bar-track {
+  height: 6px;
+  margin-top: 6px;
+  background: var(--hairline);
+}
+
+.forge-ladder-bar-fill {
+  height: 100%;
+  background: var(--ink);
+}
+
+.forge-ladder-bar-fill[data-release-selected="true"] {
+  background: var(--accent);
+}
+
+.forge-ladder-ci {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: .68rem;
+}
+
+/* ---------- Serving Boundary (exhibit 04) ---------- */
+
+.forge-serving-segmented {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+  background: var(--hairline);
+  margin-bottom: clamp(20px, 3vw, 32px);
+}
+
+.forge-serving-segmented button {
+  flex: 1 1 auto;
+  min-height: 44px;
+  border: 0;
+  background: var(--paper-bright);
+  padding: 10px 14px;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: .82rem;
+  font-weight: 600;
+}
+
+.forge-serving-segmented button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper-bright);
+}
+
+.forge-boundary-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: clamp(24px, 3vw, 40px);
+  max-width: 760px;
+}
+
+.forge-boundary-bar-row {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) 60px 110px;
+  align-items: center;
+  gap: 10px;
+}
+
+.forge-boundary-bar-qps {
+  font-family: var(--mono);
+  font-size: .68rem;
+  color: var(--muted);
+}
+
+.forge-boundary-bar-track {
+  height: 8px;
+  background: var(--hairline);
+}
+
+.forge-boundary-bar-fill {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+}
+
+.forge-boundary-bar-row[data-verdict="lose"] .forge-boundary-bar-fill {
+  background: var(--accent);
+}
+
+.forge-boundary-bar-row[data-verdict="win"] .forge-boundary-bar-fill {
+  background: var(--ok);
+}
+
+.forge-boundary-bar-tag {
+  font-family: var(--mono);
+  font-size: .6rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+.forge-boundary-bar-row[data-verdict="win"] .forge-boundary-bar-tag {
+  color: var(--ok);
+}
+
+.forge-boundary-bar-row[data-verdict="lose"] .forge-boundary-bar-tag {
+  color: var(--accent);
+}
+
+.forge-boundary-bar-value {
+  font-family: var(--mono);
+  font-size: .68rem;
+  text-align: right;
+}
+
+/* ---------- Overload Replay (exhibit 05) ---------- */
+
+.forge-overload-summary {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.forge-overload-summary table {
+  width: 100%;
+  min-width: 640px;
+  max-width: 900px;
+  border-collapse: collapse;
+}
+
+.forge-overload-summary th {
+  border-bottom: 1px solid var(--ink-invert-fg);
+  padding: 8px 10px;
+  color: color-mix(in srgb, var(--ink-invert-fg) 68%, transparent);
+  font-family: var(--mono);
+  font-size: .6rem;
+  letter-spacing: .04em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.forge-overload-summary td {
+  border-bottom: 1px solid color-mix(in srgb, var(--ink-invert-fg) 22%, transparent);
+  padding: 9px 10px;
+  color: var(--ink-invert-fg);
+}
+
+.forge-overload-summary code {
+  font-size: .74rem;
+}
+
+.forge-overload-summary td code[data-gate-pass="true"] {
+  color: var(--ok-on-ink);
+}
+
+.forge-overload-highest {
+  max-width: 760px;
+  margin: 14px 0 0;
+  color: color-mix(in srgb, var(--ink-invert-fg) 80%, transparent);
+  font-size: .88rem;
+  line-height: 1.6;
+}
+
+/* Fix (audit3 B4): was a vermilion-bordered box button; same underlined
+   command-line-style trigger grammar as triage.css's [data-run-model]
+   (audit3 B3), adapted for the ink background -- idle text reads as muted
+   ink-invert, vermilion (--accent-on-ink) only on hover/focus. */
+.forge-overload-load-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: clamp(24px, 3vw, 36px);
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: color-mix(in srgb, var(--ink-invert-fg) 80%, transparent);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+}
+
+.forge-overload-load-button:hover,
+.forge-overload-load-button:focus-visible {
+  color: var(--accent-on-ink);
+}
+
+.forge-replay-loading,
+.forge-replay-error {
+  margin-top: clamp(24px, 3vw, 36px);
+  color: color-mix(in srgb, var(--ink-invert-fg) 72%, transparent);
+  font-size: .82rem;
+}
+
+.forge-replay {
+  margin-top: clamp(28px, 4vw, 44px);
+  border-top: 1px solid color-mix(in srgb, var(--ink-invert-fg) 28%, transparent);
+  padding-top: clamp(20px, 3vw, 32px);
+}
+
+.forge-replay .eyebrow {
+  margin: 0;
+  color: color-mix(in srgb, var(--ink-invert-fg) 60%, transparent);
+  font-family: var(--mono);
+  font-size: .64rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.forge-replay h3,
+.forge-replay h4 {
+  margin: 6px 0 0;
+  font-weight: 500;
+}
+
+.forge-replay-tabs {
+  display: flex;
+  gap: 1px;
+  margin-top: 18px;
+  background: color-mix(in srgb, var(--ink-invert-fg) 24%, transparent);
+}
+
+.forge-replay-tabs button {
+  flex: 1 1 auto;
+  border: 0;
+  background: var(--ink-invert);
+  padding: 10px;
+  color: color-mix(in srgb, var(--ink-invert-fg) 68%, transparent);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: .78rem;
+  font-weight: 700;
+}
+
+.forge-replay-tabs button[aria-selected="true"] {
+  color: var(--accent-on-ink);
+}
+
+.forge-replay-tabs small {
+  display: block;
+  margin-top: 2px;
+  font-size: .58rem;
+  font-weight: 500;
+}
+
+.forge-replay-timeline {
+  margin-top: 18px;
+}
+
+.forge-timeline-labels {
+  display: flex;
+  justify-content: space-between;
+  color: color-mix(in srgb, var(--ink-invert-fg) 60%, transparent);
+  font-family: var(--mono);
+  font-size: .6rem;
+}
+
+.forge-timeline-labels strong {
+  color: var(--accent-on-ink);
+}
+
+.forge-replay-timeline input {
+  width: 100%;
+  margin: 10px 0;
+  accent-color: var(--accent-on-ink);
+}
+
+.forge-replay-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.forge-replay-controls button {
+  border: 1px solid color-mix(in srgb, var(--ink-invert-fg) 36%, transparent);
+  background: transparent;
+  padding: 6px 12px;
+  color: var(--ink-invert-fg);
+  cursor: pointer;
+  font-size: .68rem;
+}
+
+.forge-replay-receipt-boundary {
+  margin: 18px 0 0;
+  border-top: 1px solid color-mix(in srgb, var(--ink-invert-fg) 24%, transparent);
+  padding-top: 10px;
+  color: color-mix(in srgb, var(--ink-invert-fg) 68%, transparent);
+  font-family: var(--mono);
+  font-size: .68rem;
+  line-height: 1.6;
+}
+
+.forge-replay-comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(20px, 3vw, 40px);
+  margin-top: clamp(20px, 3vw, 32px);
+}
+
+.forge-replay-comparison article[data-finding="negative"] h4 {
+  color: var(--accent-on-ink);
+}
+
+.forge-replay-comparison dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 10px 0 0;
+  background: color-mix(in srgb, var(--ink-invert-fg) 22%, transparent);
+}
+
+.forge-replay-comparison dl > div {
+  background: var(--ink-invert);
+  padding: 10px;
+}
+
+.forge-replay-comparison dt {
+  color: color-mix(in srgb, var(--ink-invert-fg) 60%, transparent);
+  font-family: var(--mono);
+  font-size: .58rem;
+  text-transform: uppercase;
+}
+
+.forge-replay-comparison dd {
+  margin: 4px 0 0;
+  font-family: var(--mono);
+  font-size: 1.3rem;
+  font-weight: 650;
+}
+
+.forge-replay-comparison article > p:last-child {
+  margin: 12px 0 0;
+  color: color-mix(in srgb, var(--ink-invert-fg) 74%, transparent);
+  font-size: .78rem;
+  line-height: 1.6;
+}
+
+.forge-replay footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 20px;
+  margin-top: clamp(20px, 3vw, 32px);
+  border-top: 1px solid color-mix(in srgb, var(--ink-invert-fg) 24%, transparent);
+  padding-top: 12px;
+  color: color-mix(in srgb, var(--ink-invert-fg) 60%, transparent);
+  font-size: .68rem;
+}
+
+@media (max-width: 760px) {
+  .forge-replay-comparison {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Boundary Matrix (exhibit 06) ---------- */
+
+.forge-matrix {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 0 clamp(24px, 3vw, 40px);
+  padding: 0;
+  list-style: none;
+  max-width: 760px;
+}
+
+.forge-matrix li {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 10px;
+}
+
+.forge-matrix-mark {
+  flex: none;
+  min-width: 2.6ch;
+  font-family: var(--mono);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+.forge-matrix li[data-capability="yes"] .forge-matrix-mark {
+  color: var(--ok);
+}
+
+.forge-matrix li[data-capability="no"] .forge-matrix-mark {
+  color: var(--accent);
+}
+
+.forge-known-failures {
+  max-width: 760px;
+  margin-top: clamp(24px, 3vw, 36px);
+}
+
+.forge-not-recorded {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: .76rem;
+  line-height: 1.6;
+}
+
+.forge-known-failures-list {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: .82rem;
+  line-height: 1.6;
+}
+
+.forge-known-failures-list code {
+  color: var(--ink);
+  font-size: .74rem;
+}
+
+.forge-snapshot-line {
+  margin-top: clamp(20px, 3vw, 32px);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: .68rem;
+}
+
+/* ---------- Source & Receipts (exhibit 07) ---------- */
+
+.forge-receipts-dl {
+  display: grid;
+  grid-template-columns: minmax(140px, 260px) minmax(0, 1fr);
+  gap: 8px 20px;
+  max-width: 720px;
+  margin: 0;
+}
+
+.forge-receipts-dl dt {
+  color: color-mix(in srgb, var(--ink-invert-fg) 60%, transparent);
+  font-family: var(--mono);
+  font-size: .7rem;
+  text-transform: uppercase;
+}
+
+.forge-receipts-dl dd {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: .78rem;
+  overflow-wrap: anywhere;
+}
+
+.forge-repo-link {
+  margin-top: 20px;
+}
+
+/* Task F1 (spec §2.5 touch targets >= 44px): plain underlined text link,
+   20px tall. inline-flex + min-height gives it a real hit box. */
+.forge-repo-link a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--accent-on-ink);
+}
+
+/* ---------- Report layer (Architecture / Results / Limitations) ---------- */
+
+.forge-report-section {
+  border-bottom: 1px solid var(--hairline);
+  padding: clamp(40px, 5vw, 72px) clamp(34px, 7vw, 110px);
+}
+
+.forge-report-section h2 {
+  margin: 0 0 20px;
+  font-family: var(--display-serif);
+  font-size: clamp(1.6rem, 2.4vw, 2.2rem);
+  font-weight: 400;
+}
+
+:lang(zh) .forge-report-section h2 {
+  font-family: var(--display-serif-zh);
+}
+
+.forge-architecture-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: 720px;
+}
+
+.forge-architecture-flow li {
+  display: flex;
+  gap: 14px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 12px;
+}
+
+.forge-architecture-flow li > span {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: .68rem;
+}
+
+.forge-architecture-flow li p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: .88rem;
+  line-height: 1.55;
+}

@@ -1,274 +1,246 @@
 "use client";
 
-import { Check, Clipboard, Columns2, Download, Plus, Redo2, RotateCcw, ScanSearch, Trash2, Undo2, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   applyRedactions,
   normalizeEntity,
   scanSensitiveText,
   validateRedaction,
-  type RedactionAction,
-  type ScanMode,
   type SensitiveEntity,
 } from "@/lib/privacy-redaction";
-import { privacySourceLabel, privacyTextReasonLabel } from "@/lib/privacy-localization";
+import { privacySourceLabel } from "@/lib/privacy-localization";
 import type { Locale } from "@/lib/i18n";
+import { ActionLineRow, workspaceLinkItems, type PrivacyWorkspace } from "./PrivacyActionLine";
 
-interface Snapshot {
-  input: string;
-  entities: SensitiveEntity[];
-  mode: ScanMode;
-}
-
+// Task F12 (user-ordered sample enrichment, verbatim: "右侧的示例可以多一点... 建议
+// 多加几个这种示例"): the original sample only produced 3-4 real detections
+// (EMAIL/PHONE/LOCAL_PATH, plus SCHOOL on zh), leaving "Editor's notes" and
+// "What leaves the browser" looking sparse. Both strings below are extended
+// -- independently written, not translations of each other -- to exercise 7
+// of the 7 entity types src/lib/privacy-redaction.ts actually detects
+// (EMAIL, PHONE, LOCAL_PATH, IP_ADDRESS, URL, the SCHOOL dictionary, and the
+// long-mixed-alphanumeric ID rule), while staying obviously synthetic
+// (fictional "Ada Example", RFC 5737/documentation-style values). PERSON and
+// ADDRESS entity types have no detector in privacy-redaction.ts (no NER) and
+// a bank-card-style all-digit number does not satisfy the ID rule's
+// letter+digit lookahead; adding either is a new detector class, not a
+// trivial regex extension, so those stay out of scope here (see
+// task-F12-report.md).
+// Numeric literals (phone digits, IP, tracking id) are kept byte-identical
+// across both locale strings on purpose -- scripts/check-localization.mjs's
+// numeric-parity gate diffs every visible numeric token between the en and
+// zh render of this route, so a fictional phone/IP/id must read the same in
+// both rather than being independently localized like the surrounding prose.
 const examples: Record<Locale, string> = {
-  en: "Synthetic record for Ada Example. Email ada@example.com, phone 415-555-0188, draft /Users/demo/Private/brief.txt, and service URL https://internal.example.test/review.",
-  zh: "这是虚构记录。邮箱 ada@example.com，电话 415-555-0188，草稿位于 /Users/demo/Private/brief.txt。\n教育经历：北京理工大学。",
+  en: "Synthetic demo record for Ada Example. Contact ada@example.com or 415-555-0188. Draft saved to /Users/demo/Private/brief.txt, mirrored at 10.0.2.15 and posted at https://example.com/ada-example/brief. Ada studied at Beijing Institute of Technology; tracking id 3f9a7c1e2b6d4859a0c7e3f1b2d4a6c8.",
+  zh: "这是虚构记录，仅用于演示。邮箱 ada@example.com，电话 415-555-0188。草稿位于 /Users/demo/Private/brief.txt，备份地址 10.0.2.15，详情见 https://example.com/ada-example/brief 页面。教育经历：北京理工大学；追踪编号 3f9a7c1e2b6d4859a0c7e3f1b2d4a6c8。",
 };
 
-function cloneEntities(entities: SensitiveEntity[]) {
-  return entities.map((entity) => ({ ...entity }));
-}
-
-export default function PrivacyTextLab({ locale }: { locale: Locale }) {
+// Task F6 (direction B, "the document is the interface"): the reviewer's
+// only two moves are SCAN (re-run detection, restoring every toggle to its
+// default "flagged for destruction" state) and clicking a strike (toggle
+// that one detection between destroy and keep). There is no separate raw
+// textarea, undo/redo, per-entity boundary editing, mask/remove action, or
+// confirm-review gate -- the working copy IS the review surface, and "what
+// leaves the browser" reflects every toggle live. This trades the Round-1
+// panel's fine-grained editing controls for the approved direction's zero-
+// button grammar; src/lib/privacy-redaction.ts (scanSensitiveText /
+// applyRedactions / validateRedaction) is unchanged and still drives every
+// number and string shown here -- see task-F6-report.md for the full
+// before/after parity inventory. Entity type names (EMAIL/PHONE/SCHOOL/...)
+// stay English in both locales -- the same precedent the pre-existing zh
+// fixture test already relies on (a rejected "SCHOOL" detection is asserted
+// by that literal English word even on the zh route).
+export default function PrivacyTextLab({
+  locale,
+  onSwitch,
+  onSample,
+}: {
+  locale: Locale;
+  onSwitch: (next: PrivacyWorkspace) => void;
+  onSample: () => void;
+}) {
   const copy = locale === "en" ? {
-    load: "Load synthetic example", scan: "Scan for sensitive information", undo: "Undo", redo: "Redo", reset: "Reset", balanced: "Balanced", strict: "Strict",
-    input: "Input", inputHint: "Paste text here. It remains in this browser tab.", highlighted: "Highlighted source", detections: "Review detections",
-    output: "Safe preview", copy: "Copy", download: "Download .txt", add: "Add selected text", empty: "No detections yet.",
-    accept: "Accept", reject: "Reject", removeHit: "Delete detection", start: "Start", end: "End", replacement: "Replacement", action: "Action",
-    mask: "Mask", replace: "Replace", remove: "Remove", all: "Set all", reason: "Reason", validation: "Local verification",
-    pass: "Pass: accepted source values and detectable patterns are absent.", fail: "Not safe to export yet.", none: "Run a scan and accept at least one detection.",
-    original: "Residual original values", types: "Remaining detectable types", manualHelp: "Select text in the input, then add a manual detection.",
-    copied: "Copied", downloaded: "Downloaded", noSelection: "Select a non-empty range in the input first.", confirm: "Confirm review and show result", compare: "Before / after", pending: "Confirm the reviewed detections to reveal the final redacted text.", originalView: "Showing original text", redactedView: "Showing redacted text",
+    scan: "Scan for sensitive information",
+    hint: "CLICK A STRIKE TO KEEP IT",
+    workingCopy: "Working copy — marked like a proof",
+    editorsNotes: "Editor's notes",
+    whatLeaves: "What leaves the browser",
+    destroy: "destroy",
+    keep: "keep",
+    verdictPrefix: "re-scan of the clean copy:",
+    match: (count: number) => `${count} ${count === 1 ? "match" : "matches"}.`,
+    exportAllowed: "export allowed.",
+    exportBlocked: "export blocked.",
+    strikeAria: (type: string, index: number, kept: boolean) =>
+      `${type} detection ${index}, ${kept ? "kept — click to flag for destruction" : "flagged for destruction — click to keep it"}`,
+    scanAria: "Re-scan the working copy and reset every detection to its default fate",
   } : {
-    load: "载入合成示例", scan: "扫描并查找敏感信息", undo: "撤销", redo: "重做", reset: "重置", balanced: "平衡", strict: "严格",
-    input: "输入", inputHint: "在此粘贴文本，内容仅保留在当前浏览器标签页。", highlighted: "高亮原文", detections: "逐项复核",
-    output: "安全预览", copy: "复制", download: "下载 .txt", add: "新增所选文本", empty: "尚无检测结果。",
-    accept: "接受", reject: "拒绝", removeHit: "删除命中", start: "起点", end: "终点", replacement: "替换值", action: "动作",
-    mask: "遮罩", replace: "替换", remove: "移除", all: "全部设置", reason: "原因", validation: "本地验证",
-    pass: "通过：已接受的原始值和可检测模式均未残留。", fail: "尚不适合安全导出。", none: "请先扫描并至少接受一个命中。",
-    original: "残留原始值", types: "仍可检测类型", manualHelp: "先在输入框选择文本，再新增手动命中。",
-    copied: "已复制", downloaded: "已下载", noSelection: "请先在输入框选择非空文本。", confirm: "确认复核并显示结果", compare: "前后对照", pending: "确认已复核的命中后，才会显示最终脱敏文本。", originalView: "正在显示原文", redactedView: "正在显示脱敏文本",
+    scan: "扫描并查找敏感信息",
+    hint: "点击删除线即可保留",
+    workingCopy: "工作副本——按校样标记",
+    editorsNotes: "编者按语",
+    whatLeaves: "离开浏览器的内容",
+    destroy: "销毁",
+    keep: "保留",
+    verdictPrefix: "对洁净副本重新扫描：",
+    match: (count: number) => `${count} 处匹配。`,
+    exportAllowed: "允许导出。",
+    exportBlocked: "导出被拦截。",
+    strikeAria: (type: string, index: number, kept: boolean) =>
+      `第 ${index} 处 ${type} 检测，${kept ? "已保留——点击改为销毁" : "已标记销毁——点击改为保留"}`,
+    scanAria: "重新扫描工作副本，将每处检测重置为默认结果",
   };
 
-  const [input, setInput] = useState("");
-  const [entities, setEntities] = useState<SensitiveEntity[]>([]);
-  const [mode, setMode] = useState<ScanMode>("balanced");
-  const [history, setHistory] = useState<Snapshot[]>([]);
-  const [future, setFuture] = useState<Snapshot[]>([]);
-  const [notice, setNotice] = useState("");
-  const [reviewConfirmed, setReviewConfirmed] = useState(false);
-  const [showOriginal, setShowOriginal] = useState(false);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const input = useMemo(() => examples[locale], [locale]);
+  const [entities, setEntities] = useState<SensitiveEntity[]>(() => scanSensitiveText(examples[locale], "balanced"));
+
+  // Fix: useI18n() resolves the persisted locale from localStorage after
+  // hydration -- the very first client render (and every no-JS/SSR render)
+  // sees whatever default locale the page opened with. The useState
+  // initializer above only ever runs once, against THAT first-render
+  // locale, so a locale flip shortly after mount (e.g. a saved "zh"
+  // preference) left `entities` scanned against the wrong-language string
+  // while `input` (recomputed every render via the memo above) had already
+  // moved on -- a real reviewer visiting with a saved zh preference would
+  // see a working copy whose strikes did not line up with the text. Only
+  // re-scan when the locale genuinely changes after mount, not on every
+  // render, so in-progress keep/destroy toggles survive normal re-renders.
+  const previousLocale = useRef(locale);
+  useEffect(() => {
+    if (previousLocale.current === locale) return;
+    previousLocale.current = locale;
+    setEntities(scanSensitiveText(examples[locale], "balanced"));
+  }, [locale]);
+
+  const sortedEntities = useMemo(
+    () => entities.map((entity) => normalizeEntity(entity, input)).sort((a, b) => a.start - b.start || a.end - b.end),
+    [entities, input],
+  );
   const output = useMemo(() => applyRedactions(input, entities), [input, entities]);
   const validation = useMemo(() => validateRedaction(input, output, entities), [input, output, entities]);
-
-  function remember() {
-    setHistory((current) => [...current.slice(-19), { input, entities: cloneEntities(entities), mode }]);
-    setFuture([]);
-  }
-
-  function invalidateReview() {
-    setReviewConfirmed(false);
-    setShowOriginal(false);
-  }
-
-  function replaceEntities(next: SensitiveEntity[] | ((current: SensitiveEntity[]) => SensitiveEntity[])) {
-    remember();
-    setEntities((current) => typeof next === "function" ? next(current) : next);
-    setNotice("");
-    invalidateReview();
-  }
-
-  function loadExample() {
-    remember();
-    const next = examples[locale];
-    setInput(next);
-    setEntities(scanSensitiveText(next, mode));
-    setNotice("");
-    invalidateReview();
-  }
+  const rescanMatches = useMemo(() => scanSensitiveText(output, "strict").length, [output]);
 
   function rescan() {
-    remember();
-    setEntities(scanSensitiveText(input, mode));
-    setNotice("");
-    invalidateReview();
+    setEntities(scanSensitiveText(input, "balanced"));
   }
 
-  function undo() {
-    const previous = history.at(-1);
-    if (!previous) return;
-    setFuture((current) => [...current.slice(-19), { input, entities: cloneEntities(entities), mode }]);
-    setInput(previous.input);
-    setEntities(cloneEntities(previous.entities));
-    setMode(previous.mode);
-    setHistory((current) => current.slice(0, -1));
-    setNotice("");
-    invalidateReview();
+  function toggleEntity(id: string) {
+    setEntities((current) => current.map((entity) => (entity.id === id ? { ...entity, accepted: !entity.accepted } : entity)));
   }
 
-  function redo() {
-    const next = future.at(-1);
-    if (!next) return;
-    setHistory((current) => [...current.slice(-19), { input, entities: cloneEntities(entities), mode }]);
-    setInput(next.input);
-    setEntities(cloneEntities(next.entities));
-    setMode(next.mode);
-    setFuture((current) => current.slice(0, -1));
-    setNotice("");
-    invalidateReview();
-  }
-
-  useEffect(() => {
-    function handleHistoryShortcut(event: KeyboardEvent) {
-      if (!(event.metaKey || event.ctrlKey) || event.altKey) return;
-      const key = event.key.toLocaleLowerCase();
-      if (key === "z" && event.shiftKey) {
-        if (future.length) event.preventDefault();
-        redo();
-      } else if (key === "z") {
-        if (history.length) event.preventDefault();
-        undo();
-      } else if (key === "y" && event.ctrlKey) {
-        if (future.length) event.preventDefault();
-        redo();
-      }
-    }
-    window.addEventListener("keydown", handleHistoryShortcut);
-    return () => window.removeEventListener("keydown", handleHistoryShortcut);
-  });
-
-  function reset() {
-    remember();
-    setInput("");
-    setEntities([]);
-    setMode("balanced");
-    setNotice("");
-    invalidateReview();
-  }
-
-  function addManual() {
-    const textarea = inputRef.current;
-    if (!textarea || textarea.selectionEnd <= textarea.selectionStart) {
-      setNotice(copy.noSelection);
-      textarea?.focus();
-      return;
-    }
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const manual: SensitiveEntity = {
-      id: `manual-${history.length}-${start}-${end}`,
-      type: "CUSTOM",
-      start,
-      end,
-      text: input.slice(start, end),
-      reason: locale === "en" ? "Added manually by the reviewer." : "由复核者手动新增。",
-      replacement: "[CUSTOM]",
-      action: "replace",
-      accepted: true,
-      source: "manual",
-    };
-    replaceEntities((current) => [...current, manual]);
-  }
-
-  function updateEntity(id: string, patch: Partial<SensitiveEntity>) {
-    replaceEntities((current) => current.map((entity) => entity.id === id ? normalizeEntity({ ...entity, ...patch }, input) : entity));
-  }
-
-  function setAllActions(action: RedactionAction) {
-    replaceEntities((current) => current.map((entity) => ({ ...entity, action })));
-  }
-
-  async function copyOutput() {
-    if (!reviewConfirmed || !validation.safe) return;
-    await navigator.clipboard.writeText(output);
-    setNotice(copy.copied);
-  }
-
-  function downloadOutput() {
-    if (!reviewConfirmed || !validation.safe) return;
-    const url = URL.createObjectURL(new Blob([output], { type: "text/plain;charset=utf-8" }));
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = "privacy-preflight-safe.txt";
-    anchor.click();
-    window.setTimeout(() => URL.revokeObjectURL(url), 500);
-    setNotice(copy.downloaded);
-  }
-
-  function highlightedSource() {
-    const sorted = cloneEntities(entities).map((entity) => normalizeEntity(entity, input)).sort((a, b) => a.start - b.start || a.end - b.end);
+  function renderGalley() {
     const parts: React.ReactNode[] = [];
     let cursor = 0;
-    for (const entity of sorted) {
-      if (entity.start < cursor || entity.end <= entity.start) continue;
-      parts.push(input.slice(cursor, entity.start));
-      parts.push(<mark key={entity.id} className={entity.accepted ? "accepted" : "rejected"} title={`${entity.type}: ${localizedReason(entity.reason)}`}>{input.slice(entity.start, entity.end)}</mark>);
+    sortedEntities.forEach((entity, index) => {
+      if (entity.start < cursor || entity.end <= entity.start) return;
+      parts.push(<span key={`text-${entity.id}`}>{input.slice(cursor, entity.start)}</span>);
+      const number = index + 1;
+      const kept = !entity.accepted;
+      parts.push(
+        <button
+          key={entity.id}
+          type="button"
+          className={`doc-strike${kept ? " kept" : ""}`}
+          aria-pressed={kept}
+          aria-label={copy.strikeAria(entity.type, number, kept)}
+          onClick={() => toggleEntity(entity.id)}
+        >
+          {kept ? (
+            <>
+              {entity.text}
+              <sup>{number}</sup>
+            </>
+          ) : (
+            <>
+              <s>{entity.text}</s>
+              <sup>{number}</sup> <span className="tok">{entity.replacement || `[${entity.type}]`}</span>
+            </>
+          )}
+        </button>,
+      );
       cursor = entity.end;
-    }
-    parts.push(input.slice(cursor));
+    });
+    parts.push(<span key="tail">{input.slice(cursor)}</span>);
     return parts;
   }
 
-  function localizedReason(reason: string) {
-    return privacyTextReasonLabel(locale, reason);
+  function renderCleanOutput() {
+    const applicable = sortedEntities.filter((entity) => entity.accepted && entity.end > entity.start);
+    const nonOverlapping: SensitiveEntity[] = [];
+    for (const entity of applicable) {
+      if (!nonOverlapping.some((item) => item.start < entity.end && entity.start < item.end)) nonOverlapping.push(entity);
+    }
+    const parts: React.ReactNode[] = [];
+    let cursor = 0;
+    nonOverlapping.forEach((entity) => {
+      parts.push(<span key={`out-text-${entity.id}`}>{input.slice(cursor, entity.start)}</span>);
+      parts.push(
+        <span className="tok" key={`out-tok-${entity.id}`}>
+          {entity.replacement || `[${entity.type}]`}
+        </span>,
+      );
+      cursor = entity.end;
+    });
+    parts.push(<span key="out-tail">{input.slice(cursor)}</span>);
+    return parts;
   }
 
   return (
-    <div className="privacy-text-workspace">
-      <div className="privacy-actionbar">
-        <button type="button" onClick={loadExample}><Redo2 aria-hidden="true" />{copy.load}</button>
-        <div className="privacy-segmented" aria-label={locale === "en" ? "Scan mode" : "扫描模式"}>
-          {(["balanced", "strict"] as ScanMode[]).map((value) => <button key={value} type="button" className={mode === value ? "active" : ""} onClick={() => { remember(); setMode(value); invalidateReview(); }}>{value === "balanced" ? copy.balanced : copy.strict}</button>)}
-        </div>
-        <button type="button" className="privacy-scan-primary" onClick={rescan} disabled={!input.trim()}><ScanSearch aria-hidden="true" />{copy.scan}</button>
-        <button type="button" onClick={undo} disabled={!history.length} title={copy.undo}><Undo2 aria-hidden="true" /><span>{copy.undo}</span></button>
-        <button type="button" onClick={redo} disabled={!future.length} title={copy.redo}><Redo2 aria-hidden="true" /><span>{copy.redo}</span></button>
-        <button type="button" onClick={reset} disabled={!input && !entities.length} title={copy.reset}><RotateCcw aria-hidden="true" /><span>{copy.reset}</span></button>
+    <div className="privacy-text-workspace privacy-galley">
+      <ActionLineRow
+        ariaLabel={locale === "en" ? "Workbench actions" : "工作台操作"}
+        items={[
+          {
+            key: "scan",
+            node: (
+              <button type="button" className="privacy-action-link privacy-scan-link current" aria-label={copy.scanAria} onClick={rescan}>
+                SCAN
+              </button>
+            ),
+          },
+          {
+            key: "sample",
+            node: (
+              <button type="button" className="privacy-action-link privacy-sample-link" onClick={onSample}>
+                {locale === "en" ? "USE A SAMPLE FILE" : "使用示例文件"}
+              </button>
+            ),
+          },
+          ...workspaceLinkItems("text", onSwitch, locale === "en" ? "Redaction workspace" : "脱敏工作区"),
+          { key: "hint", node: <span className="privacy-action-hint">{copy.hint}</span> },
+        ]}
+      />
+
+      <div className="privacy-galley-grid">
+        <section>
+          <p className="galley-label">{copy.workingCopy}</p>
+          <p className="doc" data-testid="privacy-galley-doc">
+            {renderGalley()}
+          </p>
+        </section>
+        <aside className="privacy-notes" aria-label={copy.editorsNotes}>
+          <p className="galley-label">{copy.editorsNotes}</p>
+          {sortedEntities.map((entity, index) => (
+            <div className="privacy-note" data-testid="privacy-note" key={entity.id}>
+              <b>{index + 1}</b>
+              <i>{entity.type}</i> · {privacySourceLabel(locale, entity.source)} —{" "}
+              {entity.accepted ? copy.destroy : copy.keep}
+            </div>
+          ))}
+          <div
+            className={`privacy-verdict ${validation.safe ? "pass" : "fail"}`}
+            aria-live="polite"
+            data-testid="privacy-verdict"
+          >
+            {copy.verdictPrefix} {copy.match(rescanMatches)} <u>{validation.safe ? copy.exportAllowed : copy.exportBlocked}</u>
+          </div>
+        </aside>
       </div>
 
-      <div className="privacy-text-grid">
-        <section className="privacy-pane">
-          <div className="privacy-pane-heading"><h4>{copy.input}</h4><button type="button" onClick={addManual} title={copy.manualHelp}><Plus aria-hidden="true" />{copy.add}</button></div>
-          <textarea ref={inputRef} value={input} onChange={(event) => { remember(); setInput(event.target.value); setEntities([]); invalidateReview(); }} placeholder={copy.inputHint} aria-label={copy.input} spellCheck="false" />
-          <div className="privacy-highlight" aria-label={copy.highlighted}>{input ? highlightedSource() : <span className="muted">{copy.inputHint}</span>}</div>
-        </section>
-
-        <section className="privacy-pane privacy-review-pane">
-          <div className="privacy-pane-heading"><h4>{copy.detections} <span>{entities.length}</span></h4><div className="privacy-all-actions"><span>{copy.all}</span>{(["mask", "replace", "remove"] as RedactionAction[]).map((action) => <button key={action} type="button" onClick={() => setAllActions(action)}>{copy[action]}</button>)}</div></div>
-          <div className="privacy-entity-list">
-            {!entities.length ? <p className="privacy-empty">{copy.empty}</p> : entities.map((entity) => (
-              <article className={`privacy-entity ${entity.accepted ? "accepted" : "rejected"}`} key={entity.id}>
-                <div className="privacy-entity-top">
-                  <div><strong>{entity.type}</strong><code>{privacySourceLabel(locale, entity.source)}</code></div>
-                  <button type="button" className="privacy-accept" aria-pressed={entity.accepted} onClick={() => updateEntity(entity.id, { accepted: !entity.accepted })}>{entity.accepted ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}{entity.accepted ? copy.accept : copy.reject}</button>
-                  <button type="button" className="icon-only" onClick={() => replaceEntities((current) => current.filter((item) => item.id !== entity.id))} title={copy.removeHit}><Trash2 aria-hidden="true" /></button>
-                </div>
-                <p><span>{copy.reason}</span>{localizedReason(entity.reason)}</p>
-                <div className="privacy-entity-fields">
-                  <label>{copy.start}<input type="number" min="0" max={input.length} value={entity.start} onChange={(event) => updateEntity(entity.id, { start: Number(event.target.value) })} /></label>
-                  <label>{copy.end}<input type="number" min="0" max={input.length} value={entity.end} onChange={(event) => updateEntity(entity.id, { end: Number(event.target.value) })} /></label>
-                  <label className="wide">{copy.replacement}<input value={entity.replacement} disabled={entity.action !== "replace"} onChange={(event) => updateEntity(entity.id, { replacement: event.target.value })} /></label>
-                </div>
-                <div className="privacy-entity-actions" aria-label={copy.action}>{(["mask", "replace", "remove"] as RedactionAction[]).map((action) => <button key={action} type="button" className={entity.action === action ? "active" : ""} onClick={() => updateEntity(entity.id, { action })}>{copy[action]}</button>)}</div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="privacy-pane privacy-output-pane">
-          <div className="privacy-pane-heading"><h4>{copy.output}</h4><div>{reviewConfirmed ? <button type="button" className="privacy-before-after-toggle" aria-pressed={showOriginal} onClick={() => setShowOriginal((current) => !current)}><Columns2 aria-hidden="true" />{copy.compare}</button> : null}<button type="button" onClick={copyOutput} disabled={!reviewConfirmed || !validation.safe}><Clipboard aria-hidden="true" />{copy.copy}</button><button type="button" onClick={downloadOutput} disabled={!reviewConfirmed || !validation.safe}><Download aria-hidden="true" />{copy.download}</button></div></div>
-          <pre data-testid="privacy-safe-output" data-review-confirmed={reviewConfirmed ? "true" : "false"} data-view={showOriginal ? "original" : "redacted"}>{reviewConfirmed ? (showOriginal ? input : output) : copy.pending}</pre>
-          <button type="button" className="privacy-confirm-review" onClick={() => { setReviewConfirmed(true); setShowOriginal(false); }} disabled={validation.appliedCount === 0}><Check aria-hidden="true" />{copy.confirm}</button>
-          {reviewConfirmed ? <p className="privacy-result-view-status" role="status">{showOriginal ? copy.originalView : copy.redactedView}</p> : null}
-          <div className={`privacy-validation ${validation.safe ? "pass" : "fail"}`} aria-live="polite">
-            <div>{validation.safe ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}<strong>{copy.validation}</strong></div>
-            <p>{validation.appliedCount === 0 ? copy.none : validation.safe ? copy.pass : copy.fail}</p>
-            {validation.residualOriginalValues.length ? <p><span>{copy.original}:</span> {validation.residualOriginalValues.join(", ")}</p> : null}
-            {validation.remainingTypes.length ? <p><span>{copy.types}:</span> {validation.remainingTypes.join(", ")}</p> : null}
-          </div>
-          {notice ? <p className="privacy-notice" role="status">{notice}</p> : null}
-        </section>
+      <div className="privacy-after">
+        <p className="galley-label">{copy.whatLeaves}</p>
+        <p data-testid="privacy-safe-output">{renderCleanOutput()}</p>
       </div>
     </div>
   );

@@ -35,12 +35,12 @@ const KIND_BY_EXTENSION: Record<string, ArtifactKind> = {
 
 const PROJECT_LABEL_BY_DIRECTORY: Record<string, LocalizedString> = {
   "analytics-tandem": { en: "Analytics Tandem", zh: "分析双项目" },
-  "credit-policy-desk": { en: "Credit Policy Desk", zh: "信贷策略工作台" },
-  "margin-control-tower": { en: "Margin Control Tower", zh: "毛利控制塔" },
-  "exactly-once-drills": { en: "Exactly-Once Drills", zh: "精确一次演练" },
-  "privacy-preflight": { en: "Privacy Preflight Web", zh: "隐私预检网页版" },
-  "rag-quality-lab": { en: "RAG Quality Lab", zh: "RAG 质量实验室" },
-  "release-guardian": { en: "Release Guardian", zh: "发布守门人" },
+  "credit-policy-desk": { en: "Credit Policy Desk", zh: "Credit Policy Desk" },
+  "margin-control-tower": { en: "Margin Control Tower", zh: "Margin Control Tower" },
+  "exactly-once-drills": { en: "Exactly-Once Drills", zh: "Exactly-Once Drills" },
+  "privacy-preflight": { en: "Privacy Preflight", zh: "Privacy Preflight" },
+  "rag-quality-lab": { en: "RAG Quality Lab", zh: "RAG Quality Lab" },
+  "release-guardian": { en: "Release Guardian", zh: "Release Guardian" },
 };
 
 const artifactMetadata = {
@@ -352,7 +352,7 @@ export default function ArtifactViewer({ source, from }: { source: string | null
   }, [kind, source]);
 
   return (
-    <main className="artifact-page page-shell">
+    <div className="artifact-page">
       <LocaleDocumentMetadata title={artifactMetadata.title} description={artifactMetadata.description} />
       <LocaleLink href={from} className="back-link"><ArrowLeft aria-hidden="true" />{locale === "en" ? "Back to project" : "返回项目"}</LocaleLink>
       <header className="artifact-page-header">
@@ -371,6 +371,6 @@ export default function ArtifactViewer({ source, from }: { source: string | null
         {!loading && !error && source && kind === "mermaid" ? <MermaidViewer text={text} source={source} /> : null}
       </section>
       <p className="artifact-context"><Expand aria-hidden="true" />{locale === "en" ? "This viewer adds context and controls; the original file remains available unchanged." : "查看器仅增加说明与操作控件，原文件内容保持不变并可直接下载。"}</p>
-    </main>
+    </div>
   );
 }

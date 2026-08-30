@@ -1,39 +1,27 @@
-"use client";
-
 import { Check, CircleAlert } from "lucide-react";
-import { useEffect, useState } from "react";
 import type { Locale } from "@/lib/i18n";
+import ocrBenchmark from "../../../public/case-studies/privacy-preflight/ocr-fixture-benchmark.json";
 
-interface Benchmark {
-  scope: string;
+// Task 3.2 (spec §6.4 exhibit 03, restraint-first reflow): this used to be a
+// client component that fetched the fixture benchmark after mount, which
+// left the exhibit an empty "Loading..." shell with JavaScript disabled —
+// violating spec §6.0's "01-04 have server-rendered static content" rule.
+// The benchmark JSON is a small, trusted, build-time file (like
+// src/components/forge/ForgePage.tsx importing release.json directly), so
+// reading it as a plain static import removes the client boundary,
+// removes the now-pointless loading/failed states, and makes the 19/19 ·
+// 2 FP figures server-rendered from day one. The internal eyebrow/h3/intro
+// paragraph this component used to own are cut too (spec §5 commandment
+// "cut internal titles") — PrivacyPage.tsx's own exhibit-03 heading is now
+// the page's single title for this content.
+const report = ocrBenchmark as {
   summary: { fixtures: number; expectedCount: number; hitCount: number; falsePositiveCount: number; recall: number; precision: number };
   fixtures: { id: string; recall: number; precision: number; misses: string[]; falsePositives: string[] }[];
-}
+};
 
 export default function PrivacyOcrBenchmark({ locale }: { locale: Locale }) {
-  const [report, setReport] = useState<Benchmark | null>(null);
-  const [failed, setFailed] = useState(false);
-
-  useEffect(() => {
-    void fetch("/case-studies/privacy-preflight/ocr-fixture-benchmark.json")
-      .then((response) => {
-        if (!response.ok) throw new Error("benchmark unavailable");
-        return response.json() as Promise<Benchmark>;
-      })
-      .then(setReport)
-      .catch(() => setFailed(true));
-  }, []);
-
-  if (failed) return <p className="privacy-error" role="status">{locale === "en" ? "The fixture benchmark could not be loaded." : "固定夹具基准暂时无法载入。"}</p>;
-  if (!report) return <p className="muted" role="status">{locale === "en" ? "Loading the fixture benchmark..." : "正在载入固定夹具基准……"}</p>;
-
   return (
-    <section className="privacy-benchmark" aria-labelledby="privacy-benchmark-title">
-      <div>
-        <p className="eyebrow">{locale === "en" ? "Fixed synthetic fixture benchmark" : "固定合成夹具基准"}</p>
-        <h3 id="privacy-benchmark-title">{locale === "en" ? "OCR misses stay visible" : "文字识别漏检会被明确保留"}</h3>
-        <p>{locale === "en" ? "This report runs the same seven generated fixtures with local English and Simplified Chinese language assets, making every result directly repeatable." : "本报告对同一组 7 个合成夹具使用本地英文与简体中文语言包，让每项结果都可直接复现。"}</p>
-      </div>
+    <div className="privacy-benchmark">
       <div className="privacy-benchmark-summary">
         <div><span>{locale === "en" ? "Fixture recall" : "夹具召回率"}</span><strong>{(report.summary.recall * 100).toFixed(1)}%</strong><small>{report.summary.hitCount} / {report.summary.expectedCount}</small></div>
         <div><span>{locale === "en" ? "Fixture precision" : "夹具精确率"}</span><strong>{(report.summary.precision * 100).toFixed(1)}%</strong><small>{report.summary.falsePositiveCount} {locale === "en" ? "false positives" : "个误报"}</small></div>
@@ -42,6 +30,6 @@ export default function PrivacyOcrBenchmark({ locale }: { locale: Locale }) {
       <div className="privacy-benchmark-grid">
         {report.fixtures.map((fixture) => <article key={fixture.id}><div>{fixture.misses.length ? <CircleAlert aria-hidden="true" /> : <Check aria-hidden="true" />}<strong>{fixture.id}</strong></div><span>{Math.round(fixture.recall * 100)}% {locale === "en" ? "recall" : "召回率"} / {Math.round(fixture.precision * 100)}% {locale === "en" ? "precision" : "精确率"}</span><small>{fixture.misses.length ? `${locale === "en" ? "Missed" : "漏检"}: ${fixture.misses.join(", ")}` : (locale === "en" ? "No expected value missed" : "未漏检预期值")}</small></article>)}
       </div>
-    </section>
+    </div>
   );
 }

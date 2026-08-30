@@ -1,0 +1,211 @@
+{
+  "/": {
+    "questions": [
+      {
+        "q_en": "Who is Xiangguo Zhang, and what kind of work does he do?",
+        "q_zh": "章向国主要在做什么，求职方向是什么？",
+        "id": "home-background"
+      },
+      {
+        "q_en": "What can I explore on this portfolio site?",
+        "q_zh": "这个作品集里最值得先看哪些内容？",
+        "id": "home-site-overview"
+      },
+      {
+        "q_en": "What technologies power this site and its projects?",
+        "q_zh": "整个网站和这些项目主要用了哪些技术？",
+        "id": "home-tech-stack"
+      }
+    ]
+  },
+  "/ai/frontier-forge": {
+    "questions": [
+      {
+        "q_en": "How does Frontier Forge connect training, serving, and the gateway?",
+        "q_zh": "Frontier Forge 怎样把训练、推理服务和网关串成完整链路？",
+        "id": "forge-overview"
+      },
+      {
+        "q_en": "What was Frontier Forge's biggest training result?",
+        "q_zh": "Frontier Forge 最醒目的训练结果是什么？",
+        "id": "forge-training-result"
+      },
+      {
+        "q_en": "How does the Frontier Forge gateway handle overload?",
+        "q_zh": "Frontier Forge 的网关遇到过载时会怎样？",
+        "id": "forge-overload"
+      }
+    ]
+  },
+  "/ai/release-guardian": {
+    "questions": [
+      {
+        "q_en": "What does Release Guardian do before a release?",
+        "q_zh": "Release Guardian 为什么要在发布前停下来？",
+        "id": "release-overview"
+      },
+      {
+        "q_en": "Where does human approval fit into Release Guardian?",
+        "q_zh": "人工审批具体放在 Release Guardian 的哪一步？",
+        "id": "release-human-approval"
+      },
+      {
+        "q_en": "What do Release Guardian's 8/8 and 30/44 results mean?",
+        "q_zh": "Release Guardian 的 8/8 和 30/44 两个数字是什么意思？",
+        "id": "release-gate-results"
+      }
+    ]
+  },
+  "/ai/rag-quality-lab": {
+    "questions": [
+      {
+        "q_en": "What kind of problem does RAG Quality Lab catch?",
+        "q_zh": "RAG Quality Lab 主要防哪类检索回归？",
+        "id": "rag-overview"
+      },
+      {
+        "q_en": "What did RAG Quality Lab actually learn from C2?",
+        "q_zh": "RAG Quality Lab 的 C2 测试最后确认了什么？",
+        "id": "rag-c2"
+      },
+      {
+        "q_en": "Did RAG Quality Lab get a new result from C3?",
+        "q_zh": "RAG Quality Lab 的 C3 最后跑出新指标了吗？",
+        "id": "rag-c3"
+      }
+    ]
+  },
+  "/ai/triage-router": {
+    "questions": [
+      {
+        "q_en": "What does Triage Router route?",
+        "q_zh": "Triage Router 会把投诉分到哪里？",
+        "id": "triage-overview"
+      },
+      {
+        "q_en": "How does Triage Router balance cost and accuracy?",
+        "q_zh": "Triage Router 怎么在成本和准确率之间做选择？",
+        "id": "triage-tradeoff"
+      },
+      {
+        "q_en": "What are the main limits of the Triage Router evidence?",
+        "q_zh": "看 Triage Router 的结果时，最重要的四条限制是什么？",
+        "id": "triage-boundaries"
+      }
+    ]
+  },
+  "/ai/privacy-preflight": {
+    "questions": [
+      {
+        "q_en": "What can Privacy Preflight redact?",
+        "q_zh": "Privacy Preflight 能处理文本、图片和 PDF 吗？",
+        "id": "privacy-overview"
+      },
+      {
+        "q_en": "Does Privacy Preflight process files locally, or upload them elsewhere?",
+        "q_zh": "用 Privacy Preflight 时，数据会不会离开浏览器？",
+        "id": "privacy-local-processing"
+      },
+      {
+        "q_en": "How should I read Privacy Preflight's OCR results?",
+        "q_zh": "Privacy Preflight 的 OCR 19/19 和 2 个误报该怎么理解？",
+        "id": "privacy-ocr"
+      }
+    ]
+  },
+  "/engineering/exactly-once-drills": {
+    "questions": [
+      {
+        "q_en": "Why does Exactly-Once Drills inject failures and reconcile the pipeline afterward?",
+        "q_zh": "Exactly-Once Drills 为什么要注入故障，再对管道做对账？",
+        "id": "eod-overview"
+      },
+      {
+        "q_en": "Which failures does Exactly-Once Drills test?",
+        "q_zh": "Exactly-Once Drills 演练了哪十类故障？",
+        "id": "eod-failures"
+      },
+      {
+        "q_en": "How can I tell Exactly-Once Drills recovered without losing or duplicating data?",
+        "q_zh": "Exactly-Once Drills 恢复后，怎么确认数据没丢、也没重复？",
+        "id": "eod-recovery-proof"
+      }
+    ]
+  },
+  "/engineering/crossover-study": {
+    "questions": [
+      {
+        "q_en": "What question does Crossover Study investigate?",
+        "q_zh": "Crossover Study 到底在比较什么？",
+        "id": "crossover-overview"
+      },
+      {
+        "q_en": "What did Crossover Study find in ML-32M?",
+        "q_zh": "Crossover Study 的 ML-32M 交叉点说明什么？",
+        "id": "crossover-ml32m"
+      },
+      {
+        "q_en": "Why was Crossover Study's Amazon null result still useful?",
+        "q_zh": "Crossover Study 的 Amazon 线没有显著结果，为什么仍值得保留？",
+        "id": "crossover-amazon-null"
+      }
+    ]
+  },
+  "/analytics/margin-control-tower": {
+    "questions": [
+      {
+        "q_en": "What decision does Margin Control Tower help someone make?",
+        "q_zh": "Margin Control Tower 能帮品类经理做什么决定？",
+        "id": "margin-overview"
+      },
+      {
+        "q_en": "Does Margin Control Tower use Olist data or synthetic data?",
+        "q_zh": "Margin Control Tower 用的是 Olist 数据还是合成数据？",
+        "id": "margin-data"
+      },
+      {
+        "q_en": "Is Margin Control Tower's promotion elasticity a forecast or an assumption?",
+        "q_zh": "Margin Control Tower 的促销弹性是预测结果，还是公开假设？",
+        "id": "margin-boundaries"
+      }
+    ]
+  },
+  "/analytics/credit-policy-desk": {
+    "questions": [
+      {
+        "q_en": "How does Credit Policy Desk turn a score into a policy decision?",
+        "q_zh": "Credit Policy Desk 为什么说一个分数还不是策略？",
+        "id": "credit-overview"
+      },
+      {
+        "q_en": "How does Credit Policy Desk choose approval and review thresholds?",
+        "q_zh": "Credit Policy Desk 的批准、复核、拒绝三段阈值怎么定？",
+        "id": "credit-thresholds"
+      },
+      {
+        "q_en": "What does granted-loan-only data limit in Credit Policy Desk?",
+        "q_zh": "Credit Policy Desk 只有已授信样本，会带来什么限制？",
+        "id": "credit-boundaries"
+      }
+    ]
+  },
+  "/analytics/analytics-tandem": {
+    "questions": [
+      {
+        "q_en": "What is the Analytics Tandem page?",
+        "q_zh": "Analytics Tandem 这个旧入口现在保留来做什么？",
+        "id": "tandem-overview"
+      },
+      {
+        "q_en": "What kinds of analysis did Analytics Tandem combine?",
+        "q_zh": "Analytics Tandem 原来把哪两类分析放在一起？",
+        "id": "tandem-combination"
+      },
+      {
+        "q_en": "What results should I not infer from Analytics Tandem?",
+        "q_zh": "Analytics Tandem 这个旧案例明确不主张哪些效果？",
+        "id": "tandem-boundaries"
+      }
+    ]
+  }
+}

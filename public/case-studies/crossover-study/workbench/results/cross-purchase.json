@@ -1,0 +1,110 @@
+{
+  "rows": [
+    {
+      "category_a": "All Electronics",
+      "category_b": "Computers",
+      "shared_buyers": 2344099
+    },
+    {
+      "category_a": "All Electronics",
+      "category_b": "Cell Phones & Accessories",
+      "shared_buyers": 1258656
+    },
+    {
+      "category_a": "Cell Phones & Accessories",
+      "category_b": "Computers",
+      "shared_buyers": 1176777
+    },
+    {
+      "category_a": "All Electronics",
+      "category_b": "Home Audio & Theater",
+      "shared_buyers": 1076325
+    },
+    {
+      "category_a": "All Electronics",
+      "category_b": "Camera & Photo",
+      "shared_buyers": 942728
+    },
+    {
+      "category_a": "Computers",
+      "category_b": "Home Audio & Theater",
+      "shared_buyers": 942565
+    },
+    {
+      "category_a": "Camera & Photo",
+      "category_b": "Computers",
+      "shared_buyers": 882016
+    },
+    {
+      "category_a": "Cell Phones & Accessories",
+      "category_b": "Home Audio & Theater",
+      "shared_buyers": 530205
+    },
+    {
+      "category_a": "Camera & Photo",
+      "category_b": "Cell Phones & Accessories",
+      "shared_buyers": 485417
+    },
+    {
+      "category_a": "Camera & Photo",
+      "category_b": "Home Audio & Theater",
+      "shared_buyers": 412492
+    },
+    {
+      "category_a": "All Electronics",
+      "category_b": "Industrial & Scientific",
+      "shared_buyers": 345630
+    },
+    {
+      "category_a": "Computers",
+      "category_b": "Industrial & Scientific",
+      "shared_buyers": 316315
+    },
+    {
+      "category_a": "All Electronics",
+      "category_b": "Unknown",
+      "shared_buyers": 277581
+    },
+    {
+      "category_a": "Computers",
+      "category_b": "Unknown",
+      "shared_buyers": 271465
+    },
+    {
+      "category_a": "All Electronics",
+      "category_b": "Tools & Home Improvement",
+      "shared_buyers": 206509
+    },
+    {
+      "category_a": "All Electronics",
+      "category_b": "Office Products",
+      "shared_buyers": 205747
+    },
+    {
+      "category_a": "Computers",
+      "category_b": "Office Products",
+      "shared_buyers": 197806
+    },
+    {
+      "category_a": "Computers",
+      "category_b": "Tools & Home Improvement",
+      "shared_buyers": 185911
+    },
+    {
+      "category_a": "Cell Phones & Accessories",
+      "category_b": "Industrial & Scientific",
+      "shared_buyers": 176428
+    },
+    {
+      "category_a": "All Electronics",
+      "category_b": "Car Electronics",
+      "shared_buyers": 171060
+    }
+  ],
+  "telemetry": {
+    "rowsScanned": 186341792,
+    "elapsedMs": 4862.461,
+    "bytesScanned": 180736
+  },
+  "builtAt": "2026-08-22T15:48:15.683Z"
+}

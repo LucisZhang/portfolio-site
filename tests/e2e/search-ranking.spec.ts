@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { SEL } from "./selectors";
 import { recruiterQuestionsByRoute, recruiterSearchSuggestions } from "../../src/data/recruiter-content";
 import { searchPortfolio } from "../../src/lib/portfolio-search";
 import { rankPortfolioSearchSuggestions } from "../../src/lib/portfolio-search-suggestions";
@@ -6,6 +7,8 @@ import { featuredProjects, tracks } from "../../src/lib/projects";
 import type { Locale } from "../../src/lib/i18n";
 
 const cases: Array<{ query: string; locale: Locale; first: string; includes?: string[] }> = [
+  { query: "vLLM token-aware gateway", locale: "en", first: "frontier-forge" },
+  { query: "大模型微调推理网关", locale: "zh", first: "frontier-forge" },
   { query: "agent", locale: "en", first: "release-guardian", includes: ["rag-quality-lab"] },
   { query: "金融", locale: "zh", first: "credit-policy-desk", includes: ["margin-control-tower"] },
   { query: "release approval", locale: "en", first: "release-guardian" },
@@ -17,23 +20,25 @@ const cases: Array<{ query: string; locale: Locale; first: string; includes?: st
   { query: "complaint classification cost", locale: "en", first: "triage-router" },
   { query: "投诉分流", locale: "zh", first: "triage-router" },
   { query: "model routing cascade", locale: "en", first: "triage-router" },
-  { query: "OCR PDF", locale: "en", first: "privacy-preflight-mac" },
-  { query: "隐私脱敏", locale: "zh", first: "privacy-preflight-mac" },
+  { query: "OCR PDF", locale: "en", first: "privacy-preflight" },
+  { query: "隐私脱敏", locale: "zh", first: "privacy-preflight" },
   { query: "ecommerce profit", locale: "en", first: "margin-control-tower" },
   { query: "电商毛利", locale: "zh", first: "margin-control-tower" },
   { query: "credit default risk", locale: "en", first: "credit-policy-desk" },
   { query: "信贷回测", locale: "zh", first: "credit-policy-desk" },
-  { query: "local document sanitizer", locale: "en", first: "privacy-preflight-mac" },
+  { query: "local document sanitizer", locale: "en", first: "privacy-preflight" },
   { query: "promotion elasticity", locale: "en", first: "margin-control-tower" },
   { query: "expected loss", locale: "en", first: "credit-policy-desk" },
   { query: "schema evolution", locale: "en", first: "exactly-once-drills" },
+  { query: "personalization catalog churn", locale: "en", first: "crossover-study" },
+  { query: "推荐系统目录换血", locale: "zh", first: "crossover-study" },
   { query: "prompt injection", locale: "en", first: "release-guardian" },
   { query: "retrval", locale: "en", first: "rag-quality-lab" },
   { query: "relese gate", locale: "en", first: "release-guardian" },
   { query: "dian", locale: "en", first: "margin-control-tower" },
   { query: "dianshang", locale: "zh", first: "margin-control-tower" },
   { query: "maoli", locale: "zh", first: "margin-control-tower" },
-  { query: "shu ju gong", locale: "zh", first: "exactly-once-drills" },
+  { query: "shujuguandaohuifu", locale: "zh", first: "exactly-once-drills" },
   { query: "sjgc", locale: "zh", first: "track-engineering", includes: ["exactly-once-drills"] },
   { query: "電商", locale: "zh", first: "margin-control-tower" },
   { query: "信貸", locale: "zh", first: "credit-policy-desk" },
@@ -56,14 +61,13 @@ test("hybrid bilingual search ranks project meaning instead of hard-coded exampl
   expect(covered).toEqual(new Set(featuredProjects.map((project) => project.slug)));
 });
 
-test("withdrawn Crossover Study is absent from search and recruiter suggestions", async ({}, testInfo) => {
-  test.skip(testInfo.project.name !== "desktop", "The withdrawal contract only needs one runtime pass.");
-  expect(featuredProjects.some((project) => project.slug === "crossover-study")).toBe(false);
-  expect(recruiterSearchSuggestions.some((suggestion) => suggestion.expectedId === "crossover-study")).toBe(false);
+test("published Crossover Study is searchable in both languages", async ({}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "The catalog publication contract only needs one runtime pass.");
+  expect(featuredProjects.some((project) => project.slug === "crossover-study")).toBe(true);
 
   for (const query of ["Crossover Study", "Spark Iceberg lakehouse", "推荐系统评估"]) {
-    expect(searchPortfolio(query, tracks, featuredProjects, "en").some((result) => result.id === "crossover-study")).toBe(false);
-    expect(searchPortfolio(query, tracks, featuredProjects, "zh").some((result) => result.id === "crossover-study")).toBe(false);
+    expect(searchPortfolio(query, tracks, featuredProjects, "en").some((result) => result.id === "crossover-study")).toBe(true);
+    expect(searchPortfolio(query, tracks, featuredProjects, "zh").some((result) => result.id === "crossover-study")).toBe(true);
   }
 });
 
@@ -138,14 +142,21 @@ test("search history stays local, bounded, persistent, and isolated by browser c
   await page.goto("/", { waitUntil: "networkidle" });
   await page.getByRole("button", { name: /Search/ }).click();
   await page.getByPlaceholder("Search projects, systems, or tools").fill("credit default risk");
-  await page.locator("[cmdk-item]").filter({ hasText: "Credit Policy Desk" }).first().click();
+  await page.locator(SEL.cmdkItem).filter({ hasText: "Credit Policy Desk" }).first().click();
   await expect(page).toHaveURL(/\/analytics\/credit-policy-desk/);
   const stored = await page.evaluate(() => JSON.parse(window.localStorage.getItem("portfolio-search-history-v2") ?? "[]") as unknown[]);
   expect(stored).toHaveLength(20);
   expect(JSON.stringify(outboundBodies)).not.toContain("credit default risk");
+  // Task-suite-reconcile (2026-08-30) had briefly retargeted this reload to
+  // "/" instead of the destination project page: none of the ten standalone
+  // project routes passed `railTools` into their <ExhibitShell>, so there
+  // was no Search button anywhere on credit-policy-desk to click after a
+  // reload there. Task F14 fixed that gap sitewide (ProjectRailTools.tsx),
+  // so this reopens search from the actual destination page again, as it
+  // did before that regression.
   await page.reload({ waitUntil: "networkidle" });
   await page.getByRole("button", { name: /Search/ }).click();
-  await expect(page.locator(".command-suggestions button").first()).toHaveText("credit approval policy thresholds");
+  await expect(page.locator(SEL.commandSuggestionsButton).first()).toHaveText("credit approval policy thresholds");
   await context.close();
 
   const freshContext = await browser.newContext({ baseURL });
@@ -156,7 +167,7 @@ test("search history stays local, bounded, persistent, and isolated by browser c
   const freshPage = await freshContext.newPage();
   await freshPage.goto("/", { waitUntil: "networkidle" });
   await freshPage.getByRole("button", { name: /Search/ }).click();
-  await expect(freshPage.locator(".command-suggestions button").first()).toHaveText("RAG regression evaluation");
+  await expect(freshPage.locator(SEL.commandSuggestionsButton).first()).toHaveText("RAG regression evaluation");
   await freshContext.close();
 });
 

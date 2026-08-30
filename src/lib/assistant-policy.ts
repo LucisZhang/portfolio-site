@@ -637,7 +637,7 @@ function containsLongGroundingCopy(answer: string, chunks: readonly AssistantKno
 
 function containsKnownClaimContradiction(answer: string) {
   const normalized = answer.toLocaleLowerCase("en-US");
-  const mentionsMargin = normalized.includes("margin control tower") || answer.includes("毛利控制塔");
+  const mentionsMargin = normalized.includes("margin control tower");
   if (!mentionsMargin) return false;
   return /\b(?:dataset|default(?: data)?|measured results?)\s+(?:is|are|uses?|comes? from)\s+(?:a\s+)?(?:governed\s+)?synthetic\b/iu.test(normalized)
     || /(?:数据集|默认(?:数据|路径)?|实测结果)[^。；\n]{0,18}(?:是|为|使用|来自)[^。；\n]{0,10}合成/u.test(answer);

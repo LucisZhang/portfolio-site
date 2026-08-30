@@ -1,0 +1,20 @@
+{
+  "rows": [
+    {
+      "dataset": "silver.interactions",
+      "row_count": 43365424,
+      "entity_count": 18286190
+    },
+    {
+      "dataset": "silver.items",
+      "row_count": 1610012,
+      "entity_count": 1610012
+    }
+  ],
+  "telemetry": {
+    "rowsScanned": 179901744,
+    "elapsedMs": 1922.04,
+    "bytesScanned": 93952
+  },
+  "builtAt": "2026-08-22T15:48:15.683Z"
+}

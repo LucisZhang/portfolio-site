@@ -15,5 +15,6 @@ function PendingDetectionReport({ locale, state }: { locale: Locale; state: Excl
 }
 
 export default function DetectionPanel({ locale, state, report = null }: { locale: Locale; state: ReportState; report?: DetectionReport | null }) {
+  // copy-lint: allow robust -- statistical method name
   return <section className="analytics-offline-panel"><div className="analytics-pane-heading"><span><Radar aria-hidden="true" />{locale === "en" ? "Anomaly detection" : "异常检测"}</span><code>{locale === "en" ? "STL + robust z-score" : "STL + 稳健 z 分数"}</code></div>{state === "ready" && report ? <DetectionReportBody locale={locale} report={report} /> : <PendingDetectionReport locale={locale} state={state === "ready" ? "invalid" : state} />}</section>;
 }

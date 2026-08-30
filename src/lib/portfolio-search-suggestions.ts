@@ -10,6 +10,8 @@ export interface PortfolioSearchHistoryEntry {
 
 const coldStartOrder = [
   "rag-regression-evaluation",
+  "frontier-forge-overload",
+  "llm-post-training-serving",
   "streaming-failure-injection",
   "contribution-margin-analysis",
   "browser-local-pdf-redaction",
