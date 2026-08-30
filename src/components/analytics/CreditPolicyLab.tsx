@@ -4,7 +4,9 @@ import { Check, CircleAlert, ClipboardCheck, Database, Download, RotateCcw, Scal
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ArtifactLink from "@/components/ArtifactLink";
 import SwapSetPanel from "@/components/analytics/SwapSetPanel";
-import { materializeAnalyticsDataset, peekAnalyticsDataset, scheduleAnalyticsDatasetWarm } from "@/lib/analytics-data-cache";
+import { getAnalyticsDatasetCacheState, materializeAnalyticsDataset, peekAnalyticsDataset } from "@/lib/analytics-data-cache";
+import { buildCreditBacktestCompactPreview } from "@/lib/credit-backtest-compact";
+import { CREDIT_BACKTEST_ARTIFACT_SHA256 } from "@/lib/credit-backtest-identity";
 import { useI18n } from "@/lib/i18n";
 import { localizeStructuralValue } from "@/lib/structural-copy";
 import { userFacingError } from "@/lib/user-facing-error";
@@ -18,13 +20,15 @@ const CONTRACT_URL = "/case-studies/credit-policy-desk/policy-contract.json";
 const REAL_PARQUET_URL = "/case-studies/credit-policy-desk/scored-backtest.parquet";
 const REAL_REPORT_URL = "/case-studies/credit-policy-desk/backtest-report.json";
 const REAL_METHODS_URL = "/case-studies/credit-policy-desk/methods-evidence.json";
-const REAL_PARQUET_SHA256 = "2bbc97350d28123a1b056e4d475cdc90000954df1e6226d54d4fa35f2e7e0b95";
+const REAL_PARQUET_SHA256 = CREDIT_BACKTEST_ARTIFACT_SHA256;
 const PUBLIC_FIXTURE_GENERATOR_URL = "https://github.com/LucisZhang/credit-policy-desk/blob/main/scripts/generate-analytics-fixtures.mjs";
 const SYNTHETIC_CACHE_KEY = "credit:synthetic:v2";
-const REAL_CACHE_KEY = "credit:real:scored-backtest-parquet-v1";
+const REAL_PREVIEW_CACHE_KEY = "credit:real-preview:scored-backtest-parquet-v1";
+const REAL_CACHE_KEY = "credit:real-full:scored-backtest-parquet-v1";
 
 type DatasetSource = "synthetic" | "real";
 type RealArtifactStatus = "idle" | "loading" | "loaded" | "pending" | "invalid";
+type RealMaterializationStatus = "idle" | "preview" | "loading" | "full" | "unavailable";
 
 type CreditRow = {
   application_id: string;
@@ -62,6 +66,8 @@ type CreditDataset = {
   splits: { train: number; calibration: number; backtest: number };
   assumptions: string[];
   rows_sha256: string | null;
+  full_row_count?: number;
+  recorded_contract_checks?: Array<{ name: string; pass: boolean }>;
   rows: CreditRow[];
 };
 
@@ -297,6 +303,25 @@ function qualityChecks(rows: CreditRow[], approve: number, review: number, sourc
 
 type RealCreditMaterialization = { dataset: CreditDataset; sha256: string };
 
+function loadRealCreditPreview() {
+  return materializeAnalyticsDataset<RealCreditMaterialization>(REAL_PREVIEW_CACHE_KEY, async () => {
+    const compact = await buildCreditBacktestCompactPreview();
+    const dataset = {
+      ...compact.dataset,
+      source: "real" as const,
+      seed: null,
+      rows_sha256: null,
+      full_row_count: compact.fullRowCount,
+      recorded_contract_checks: compact.fullContractChecks,
+      rows: compact.rows,
+    } satisfies CreditDataset;
+    creditIndex(dataset.rows);
+    const failedChecks = qualityChecks(dataset.rows, 0.12, 0.28, "real").filter(({ pass }) => !pass);
+    if (failedChecks.length) throw new Error(`Credit compact preview contract failed: ${failedChecks.map(({ key }) => key).join(", ")}.`);
+    return { dataset, sha256: compact.sourceSha256 };
+  });
+}
+
 function loadSyntheticCreditDataset() {
   return materializeAnalyticsDataset(SYNTHETIC_CACHE_KEY, async () => {
     const response = await fetch(DATA_URL);
@@ -328,6 +353,7 @@ export default function CreditPolicyLab() {
   const [requestedSource, setRequestedSource] = useState<DatasetSource>("real");
   const [activeSource, setActiveSource] = useState<DatasetSource>("synthetic");
   const [realArtifactStatus, setRealArtifactStatus] = useState<RealArtifactStatus>("loading");
+  const [realMaterializationStatus, setRealMaterializationStatus] = useState<RealMaterializationStatus>("idle");
   const [realArtifactSha256, setRealArtifactSha256] = useState<string | null>(null);
   const sourceRequest = useRef(0);
   const [vintage, setVintage] = useState("2030-06");
@@ -352,11 +378,12 @@ export default function CreditPolicyLab() {
     setAudit("");
   }, []);
 
-  const selectDatasetSource = useCallback((source: DatasetSource) => {
+  const selectDatasetSource = useCallback((source: DatasetSource, realMode: "preview" | "full" = "preview") => {
     const requestId = sourceRequest.current += 1;
     setRequestedSource(source);
     if (source === "synthetic") {
       setRealArtifactStatus("idle");
+      setRealMaterializationStatus("idle");
       const cached = peekAnalyticsDataset<CreditDataset>(SYNTHETIC_CACHE_KEY);
       if (cached) {
         setSyntheticWarmReady(true);
@@ -374,23 +401,42 @@ export default function CreditPolicyLab() {
     }
 
     setRealArtifactStatus("loading");
-    const cached = peekAnalyticsDataset<RealCreditMaterialization>(REAL_CACHE_KEY);
+    setRealMaterializationStatus(realMode === "full" ? "loading" : "idle");
+    const cacheKey = realMode === "full" ? REAL_CACHE_KEY : REAL_PREVIEW_CACHE_KEY;
+    const cached = peekAnalyticsDataset<RealCreditMaterialization>(cacheKey);
+    const materialize = realMode === "full" ? loadRealCreditDataset : loadRealCreditPreview;
     if (cached) {
       setRealArtifactSha256(cached.sha256);
       setRealArtifactStatus("loaded");
+      setRealMaterializationStatus(realMode);
       activateDataset(cached.dataset);
       return;
     }
-    void loadRealCreditDataset().then((next) => {
+    void materialize().then((next) => {
       if (sourceRequest.current !== requestId) return;
       setRealArtifactSha256(next.sha256);
       setRealArtifactStatus("loaded");
+      setRealMaterializationStatus(realMode);
       activateDataset(next.dataset);
     }).catch((reason: unknown) => {
       if (sourceRequest.current !== requestId) return;
+      if (realMode === "full") {
+        const preview = peekAnalyticsDataset<RealCreditMaterialization>(REAL_PREVIEW_CACHE_KEY);
+        if (preview) {
+          if (!(reason instanceof Error) || reason.name !== "ParquetArtifactUnavailableError") {
+            console.error("Credit full-artifact materialization could not finish.", reason);
+          }
+          setRealArtifactSha256(preview.sha256);
+          setRealArtifactStatus("loaded");
+          setRealMaterializationStatus("unavailable");
+          activateDataset(preview.dataset);
+          return;
+        }
+      }
       const errorName = reason instanceof Error ? reason.name : "UnknownError";
       if (errorName !== "ParquetArtifactUnavailableError") console.error("Credit real-data artifact could not be verified.", reason);
       setRealArtifactStatus(errorName === "ParquetArtifactUnavailableError" ? "pending" : "invalid");
+      setRealMaterializationStatus("unavailable");
       setRealArtifactSha256(null);
       void loadSyntheticCreditDataset().then((fallback) => {
         setSyntheticWarmReady(true);
@@ -403,17 +449,10 @@ export default function CreditPolicyLab() {
   }, [activateDataset]);
 
   useEffect(() => {
-    let mounted = true;
-    const cancelWarm = scheduleAnalyticsDatasetWarm(SYNTHETIC_CACHE_KEY, async () => {
-      const warmed = await loadSyntheticCreditDataset();
-      if (mounted) setSyntheticWarmReady(true);
-      return warmed;
-    });
-    const initialRequest = window.setTimeout(() => selectDatasetSource("real"), 0);
+    const initialMode = getAnalyticsDatasetCacheState(REAL_CACHE_KEY) === "missing" ? "preview" : "full";
+    const initialRequest = window.setTimeout(() => selectDatasetSource("real", initialMode), 0);
     return () => {
-      mounted = false;
       window.clearTimeout(initialRequest);
-      cancelWarm();
       sourceRequest.current += 1;
     };
   }, [selectDatasetSource]);
@@ -496,6 +535,13 @@ export default function CreditPolicyLab() {
   const reviewQueue = decisions.filter((item) => item.decision === "manual_review").sort((left, right) => right.expectedLoss - left.expectedLoss).slice(0, 8);
   const sampleRows = vintageRows.slice(0, 6);
   const schemaFields = datasetIndex.schemaFields;
+  const compactRealVisible = activeSource === "real" && realMaterializationStatus !== "full";
+  const realRowCount = dataset.full_row_count ?? dataset.rows.length;
+  const selectRealSource = () => {
+    const explicitFullRequest = requestedSource === "real" && activeSource === "real";
+    const cachedFullMaterialization = peekAnalyticsDataset<RealCreditMaterialization>(REAL_CACHE_KEY);
+    selectDatasetSource("real", explicitFullRequest || cachedFullMaterialization ? "full" : "preview");
+  };
   const reset = () => { setApproveThreshold(12); setReviewThreshold(28); setCapacity(180); setVintage(dataset.date_range.end); setModelMode("baseline"); setAudit(""); setApplicationQuery(""); setSelectedId(dataset.rows.find((row) => row.vintage === dataset.date_range.end)?.application_id ?? ""); };
   const showPublishablePolicy = () => {
     const nextApprove = 10;
@@ -515,24 +561,49 @@ export default function CreditPolicyLab() {
   };
 
   return (
-    <section className={`${styles.upgrade} analytics-lab credit-lab`} data-testid="credit-policy-desk" data-requested-source={requestedSource} data-active-source={activeSource} data-real-artifact-status={realArtifactStatus} data-synthetic-cache-ready={syntheticWarmReady} aria-labelledby="credit-lab-title">
-      <header className="analytics-lab-header"><div><p className="eyebrow">{activeSource === "synthetic" ? (locale === "en" ? "Synthetic portfolio / deterministic policy engine" : "合成投资组合 / 确定性策略引擎") : (locale === "en" ? "Scored real-data backtest / deterministic policy engine" : "真实数据评分回测 / 确定性策略引擎")}</p><h3 id="credit-lab-title">{locale === "en" ? "Credit Policy Lab" : "信贷策略实验室"}</h3><p>{activeSource === "synthetic" ? (locale === "en" ? "Move from a synthetic score to calibrated probability, expected loss, policy thresholds, a capacity-limited review queue, and an audit record." : "由合成分数出发，依次完成概率校准、预期损失估算、策略阈值设定、进入有人工复核且容量受限的审核队列，最终形成审计记录。") : (locale === "en" ? "Apply the existing score-to-policy, frontier, Brier, PSI, and vintage computations to a committed offline scored backtest." : "将既有评分到策略映射、前沿分析、Brier 评分、PSI 监测及放款批次分析等计算体系，全部应用于已提交的离线评分回测。")}</p></div><div className="analytics-boundary"><ShieldCheck aria-hidden="true" /><strong>{activeSource === "synthetic" ? (locale === "en" ? "Fixed-seed scenario ready" : "固定种子情景已就绪") : (locale === "en" ? "Offline backtest loaded" : "离线回测已载入")}</strong><span>{activeSource === "synthetic" ? (locale === "en" ? "Deterministic inputs make every policy adjustment repeatable." : "确定性输入让每次策略调整都可重复。") : (locale === "en" ? "Pre-scored rows drive the same policy, economics, and audit workflow." : "预评分记录驱动同一套策略、经济性与审计工作流。")}</span></div></header>
+    <section className={`${styles.upgrade} analytics-lab credit-lab`} data-testid="credit-policy-desk" data-requested-source={requestedSource} data-active-source={activeSource} data-real-artifact-status={realArtifactStatus} data-real-materialization-status={realMaterializationStatus} data-synthetic-cache-ready={syntheticWarmReady} aria-labelledby="credit-lab-title">
+      <header className="analytics-lab-header">
+        <div>
+          <p className="eyebrow">{activeSource === "synthetic" ? (locale === "en" ? "Synthetic portfolio / deterministic policy engine" : "合成投资组合 / 确定性策略引擎") : (locale === "en" ? "Scored real-data backtest / deterministic policy engine" : "真实数据评分回测 / 确定性策略引擎")}</p>
+          <h3 id="credit-lab-title">{locale === "en" ? "Credit Policy Lab" : "信贷策略实验室"}</h3>
+          <p>{activeSource === "synthetic"
+            ? (locale === "en" ? "Move from a synthetic score to calibrated probability, expected loss, policy thresholds, a capacity-limited review queue, and an audit record." : "由合成分数出发，依次完成概率校准、预期损失估算、策略阈值设定、进入有人工复核且容量受限的审核队列，最终形成审计记录。")
+            : compactRealVisible
+              ? (locale === "en" ? "Explore a hash-bound compact sample spanning every vintage; the complete browser DuckDB query stays deferred until you request it." : "先探索覆盖全部批次、与哈希绑定的轻量样本；只有明确请求后，浏览器才会执行完整 DuckDB 查询。")
+              : (locale === "en" ? "Apply the policy, frontier, Brier, PSI, and vintage computations to the complete committed offline scored backtest." : "将策略、前沿、Brier、PSI 与批次分析应用于完整的已提交离线评分回测。")}</p>
+        </div>
+        <div className="analytics-boundary">
+          <ShieldCheck aria-hidden="true" />
+          <strong>{activeSource === "synthetic"
+            ? (locale === "en" ? "Fixed-seed scenario ready" : "固定种子情景已就绪")
+            : realMaterializationStatus === "full"
+              ? (locale === "en" ? "Complete backtest loaded" : "完整回测已载入")
+              : (locale === "en" ? "Verified compact real preview" : "已验证的轻量真实预览")}</strong>
+          <span>{activeSource === "synthetic"
+            ? (locale === "en" ? "Deterministic inputs make every policy adjustment repeatable." : "确定性输入让每次策略调整都可重复。")
+            : compactRealVisible
+              ? (locale === "en" ? "The exact artifact passed ten build-time checks; 3,107 representative rows are interactive now." : "精确产物已通过十项构建时检查；当前可交互浏览 3,107 条代表性记录。")
+              : (locale === "en" ? "All 120,000 pre-scored rows drive the policy, economics, and audit workflow." : "全部 120,000 条预评分记录驱动策略、经济性与审计工作流。")}</span>
+        </div>
+      </header>
 
-      <div className="dataset-source-row"><div className="dataset-source-toggle" role="group" aria-label={locale === "en" ? "Credit dataset source" : "信贷数据源"}><button type="button" aria-pressed={requestedSource === "real"} onClick={() => selectDatasetSource("real")}>{locale === "en" ? "Real backtest" : "真实回测"}</button><button type="button" aria-pressed={requestedSource === "synthetic"} onClick={() => selectDatasetSource("synthetic")}>{locale === "en" ? "Synthetic fixture" : "合成夹具"}</button></div><span>{locale === "en" ? "Synthetic fixture / Real backtest" : "合成夹具 / 真实回测"}</span></div>
+      <div className="dataset-source-row"><div className="dataset-source-toggle" role="group" aria-label={locale === "en" ? "Credit dataset source" : "信贷数据源"}><button type="button" aria-pressed={requestedSource === "real"} onClick={selectRealSource}>{locale === "en" ? "Real backtest" : "真实回测"}</button><button type="button" aria-pressed={requestedSource === "synthetic"} onClick={() => selectDatasetSource("synthetic")}>{locale === "en" ? "Synthetic fixture" : "合成夹具"}</button></div><span>{locale === "en" ? "Synthetic fixture / Real backtest" : "合成夹具 / 真实回测"}</span></div>
       {requestedSource === "real" && realArtifactStatus !== "loaded" ? <div className={`real-artifact-state ${realArtifactStatus === "invalid" ? "invalid" : ""}`} role="status"><CircleAlert aria-hidden="true" /><div><strong>{realArtifactStatus === "loading" ? (locale === "en" ? "Checking real backtest artifact…" : "正在检查真实回测产物……") : realArtifactStatus === "invalid" ? (locale === "en" ? "real backtest artifact blocked" : "真实回测产物已拦截") : (locale === "en" ? "real-data artifact pending" : "真实数据产物待处理")}</strong><p>{realArtifactStatus === "invalid" ? userFacingError("dataset", locale) : (locale === "en" ? "scored-backtest.parquet is missing or unavailable; the governed synthetic fixture remains active." : "scored-backtest.parquet 缺失或不可用；当前仍使用受控的合成数据作为替代。")}</p></div></div> : null}
 
       <section className="analytics-dataset-context" aria-label={locale === "en" ? "Dataset context" : "数据集说明"}>
         <div className="analytics-context-title"><Database aria-hidden="true" /><div><span>{locale === "en" ? "Dataset and decision context" : "数据集与决策背景"}</span><strong>{activeSource === "synthetic" ? (locale === "en" ? "Credit Synthetic v2" : "信贷合成数据 v2") : (locale === "en" ? "Scored backtest artifact" : "评分回测产物")}</strong><code>{dataset.dataset_version}</code></div></div>
         <dl>
-          <div><dt>{locale === "en" ? "Portfolio" : "组合规模"}</dt><dd>{number.format(dataset.dimensions.applications)} {locale === "en" ? "applications" : "条申请"} · {number.format(dataset.dimensions.loans)} {locale === "en" ? "loans" : "笔贷款"}</dd></div>
+          <div><dt>{locale === "en" ? "Portfolio" : "组合规模"}</dt><dd>{number.format(activeSource === "real" ? realRowCount : dataset.dimensions.applications)} {locale === "en" ? "applications" : "条申请"} · {number.format(dataset.dimensions.loans)} {locale === "en" ? "loans" : "笔贷款"}{compactRealVisible ? <> · {number.format(dataset.rows.length)} {locale === "en" ? "preview rows loaded" : "条预览记录已载入"}</> : null}</dd></div>
           <div><dt>{locale === "en" ? "Vintages" : "批次"}</dt><dd>{dataset.dimensions.vintages} · {dataset.date_range.start} → {dataset.date_range.end}</dd></div>
           <div><dt>{locale === "en" ? "Splits" : "数据划分"}</dt><dd>{number.format(dataset.splits.train)} {locale === "en" ? "train" : "训练"} · {number.format(dataset.splits.calibration)} {locale === "en" ? "calibration" : "校准"} · {number.format(dataset.splits.backtest)} {locale === "en" ? "backtest" : "回测"}</dd></div>
           <div><dt>{locale === "en" ? "Dimensions" : "维度"}</dt><dd>{dataset.dimensions.channels} {locale === "en" ? "channels" : "个渠道"} · {dataset.dimensions.income_bands} {locale === "en" ? "income bands" : "个收入区间"} · {dataset.dimensions.audit_groups} {locale === "en" ? "audit groups" : "个审计组"}</dd></div>
           <div><dt>{locale === "en" ? "Features" : "特征"}</dt><dd>{dataset.dimensions.feature_count} {activeSource === "synthetic" ? (locale === "en" ? "generated decision features" : "个生成的决策特征") : (locale === "en" ? "normalized backtest features" : "个规范化回测特征")}</dd></div>
           <div><dt>{locale === "en" ? "Observed outcome" : "观察结果"}</dt><dd>{(datasetIndex.observedDefaults / dataset.rows.length * 100).toFixed(1)}% {activeSource === "synthetic" ? (locale === "en" ? "synthetic default rate" : "合成违约率") : (locale === "en" ? "artifact default rate" : "产物中的违约率")}</dd></div>
         </dl>
-        <p>{locale === "en" ? "Applicant, application, booked loan, observed outcome, model score, and policy decision are separate fields and stages." : "申请人概念、申请记录、已入账贷款、观察结果、模型分数与策略决策均为独立字段和阶段。"}</p>
-        {activeSource === "real" ? <div className="analytics-download-row"><a href={REAL_PARQUET_URL} download><Download aria-hidden="true" />{locale === "en" ? "Download scored backtest" : "下载评分回测产物"}</a><ArtifactLink href={REAL_REPORT_URL}>{locale === "en" ? "Open backtest report" : "查看回测报告"}</ArtifactLink><ArtifactLink href={REAL_METHODS_URL}>{locale === "en" ? "Open methods evidence" : "查看方法证据"}</ArtifactLink></div> : <div className="analytics-download-row"><ArtifactLink href={DATA_URL}>{locale === "en" ? "Explore full JSON" : "浏览完整 JSON"}</ArtifactLink><a href={CSV_URL} download><Download aria-hidden="true" />{locale === "en" ? "Download full CSV" : "下载完整 CSV"}</a><a href={PARQUET_URL} download><Download aria-hidden="true" />{locale === "en" ? "Download Parquet" : "下载 Parquet"}</a><ArtifactLink href={SAMPLE_URL}>{locale === "en" ? "Browse CSV sample" : "浏览 CSV 样本"}</ArtifactLink><a href={PUBLIC_FIXTURE_GENERATOR_URL} target="_blank" rel="noreferrer">{locale === "en" ? "Open fixture generator" : "查看夹具生成器"}</a></div>}
+        <p>{compactRealVisible
+          ? (locale === "en" ? "The compact rows span every vintage and are bound to the full artifact SHA-256. Displayed interactive rates are preview estimates; the committed report remains authoritative." : "轻量记录覆盖全部批次，并与完整产物 SHA-256 绑定。当前交互比率属于预览估计；已提交的报告仍是权威结果。")
+          : (locale === "en" ? "Applicant, application, booked loan, observed outcome, model score, and policy decision are separate fields and stages." : "申请人概念、申请记录、已入账贷款、观察结果、模型分数与策略决策均为独立字段和阶段。")}</p>
+        {activeSource === "real" ? <div className="analytics-download-row">{compactRealVisible ? <button type="button" onClick={() => selectDatasetSource("real", "full")} disabled={realMaterializationStatus === "loading"}>{realMaterializationStatus === "loading" ? (locale === "en" ? "Loading complete dataset…" : "正在载入完整数据集……") : (locale === "en" ? "Load complete verified dataset" : "载入完整已验证数据集")}</button> : null}<a href={REAL_PARQUET_URL} download><Download aria-hidden="true" />{locale === "en" ? "Download scored backtest" : "下载评分回测产物"}</a><ArtifactLink href={REAL_REPORT_URL}>{locale === "en" ? "Open backtest report" : "查看回测报告"}</ArtifactLink><ArtifactLink href={REAL_METHODS_URL}>{locale === "en" ? "Open methods evidence" : "查看方法证据"}</ArtifactLink></div> : <div className="analytics-download-row"><ArtifactLink href={DATA_URL}>{locale === "en" ? "Explore full JSON" : "浏览完整 JSON"}</ArtifactLink><a href={CSV_URL} download><Download aria-hidden="true" />{locale === "en" ? "Download full CSV" : "下载完整 CSV"}</a><a href={PARQUET_URL} download><Download aria-hidden="true" />{locale === "en" ? "Download Parquet" : "下载 Parquet"}</a><ArtifactLink href={SAMPLE_URL}>{locale === "en" ? "Browse CSV sample" : "浏览 CSV 样本"}</ArtifactLink><a href={PUBLIC_FIXTURE_GENERATOR_URL} target="_blank" rel="noreferrer">{locale === "en" ? "Open fixture generator" : "查看夹具生成器"}</a></div>}
       </section>
 
       <section className="analytics-explorer" aria-label={locale === "en" ? "Dataset explorer" : "数据集浏览器"}>
@@ -561,11 +632,11 @@ export default function CreditPolicyLab() {
 
       <div className="credit-chart-grid"><section className="credit-risk-bands"><div className="analytics-pane-heading"><span>{locale === "en" ? "Risk-band distribution" : "风险带分布"}</span><code>{vintage}</code></div>{riskBands.map((band) => <div key={band.label}><span>{band.label}</span><i><b style={{ width: `${band.count / maxRiskBand * 100}%` }} /></i><strong>{band.count}</strong></div>)}</section><section className="credit-vintages"><div className="analytics-pane-heading"><span>{locale === "en" ? "Vintage performance and drift" : "批次表现与漂移"}</span><code>{locale === "en" ? "mean PD / observed" : "平均 PD / 观测违约率"}</code></div><div>{vintageStats.map((item) => <button type="button" className={item.vintage === vintage ? "active" : ""} title={localizeStructuralValue(`${item.vintage}: PD ${(item.meanPd * 100).toFixed(1)}%; observed ${(item.defaultRate * 100).toFixed(1)}%`, locale)} key={item.vintage} onClick={() => selectVintage(item.vintage)}><i style={{ height: `${Math.max(5, item.meanPd * 180)}%` }} /><b style={{ height: `${Math.max(5, item.defaultRate * 180)}%` }} /><span>{item.vintage.slice(2)}</span><small>{locale === "en" ? item.split.slice(0, 1).toUpperCase() : localizeStructuralValue(item.split, locale)}</small></button>)}</div></section></div>
 
-      <div className="credit-monitor-grid"><div><span>{locale === "en" ? "Backtest score comparison" : "回测分数比较"}</span><p><strong>{brierScores.raw.toFixed(4)}</strong>{locale === "en" ? " raw Brier" : " 原始 Brier"}</p><p><strong>{brierScores.calibrated.toFixed(4)}</strong> {locale === "en" ? "baseline" : "基准模型"}</p><p><strong>{brierScores.challenger.toFixed(4)}</strong> {locale === "en" ? "challenger" : "挑战模型"}</p><small>{activeSource === "synthetic" ? (locale === "en" ? "Repeatable fixed-seed score comparison." : "可重复的固定种子分数比较。") : (locale === "en" ? "Computed from the loaded offline backtest." : "由已载入的离线回测计算。")}</small></div><div className={psiValue >= 0.1 ? "alert" : ""}><span>{locale === "en" ? "Vintage score drift" : "批次评分漂移"}</span><p><strong>{psiValue.toFixed(3)}</strong> PSI</p><small>{dataset.date_range.start} {locale === "en" ? "vs" : "对比"} {dataset.date_range.end}; {activeSource === "synthetic" ? (locale === "en" ? "synthetic alert threshold 0.10" : "合成告警阈值 0.10") : (locale === "en" ? "display alert threshold 0.10" : "展示告警阈值 0.10")}.</small></div><div><span>{locale === "en" ? "Descriptive audit slices" : "描述性审计切片"}</span>{groupStats.map((item) => <p key={item.group}><strong>{(item.approvalRate * 100).toFixed(1)}%</strong> {localizeStructuralValue(item.group, locale)} ({item.count})</p>)}<small>{locale === "en" ? "Compare approval-rate patterns across the displayed groups." : "比较所展示群组之间的批准率模式。"}</small></div></div>
+      <div className="credit-monitor-grid"><div><span>{locale === "en" ? "Backtest score comparison" : "回测分数比较"}</span><p><strong>{brierScores.raw.toFixed(4)}</strong>{locale === "en" ? " raw Brier" : " 原始 Brier"}</p><p><strong>{brierScores.calibrated.toFixed(4)}</strong> {locale === "en" ? "baseline" : "基准模型"}</p><p><strong>{brierScores.challenger.toFixed(4)}</strong> {locale === "en" ? "challenger" : "挑战模型"}</p><small>{activeSource === "synthetic" ? (locale === "en" ? "Repeatable fixed-seed score comparison." : "可重复的固定种子分数比较。") : compactRealVisible ? (locale === "en" ? "Preview estimate from the hash-bound compact rows." : "基于哈希绑定轻量记录的预览估计。") : (locale === "en" ? "Computed from the complete loaded offline backtest." : "由已完整载入的离线回测计算。")}</small></div><div className={psiValue >= 0.1 ? "alert" : ""}><span>{locale === "en" ? "Vintage score drift" : "批次评分漂移"}</span><p><strong>{psiValue.toFixed(3)}</strong> PSI</p><small>{dataset.date_range.start} {locale === "en" ? "vs" : "对比"} {dataset.date_range.end}; {activeSource === "synthetic" ? (locale === "en" ? "synthetic alert threshold 0.10" : "合成告警阈值 0.10") : (locale === "en" ? "display alert threshold 0.10" : "展示告警阈值 0.10")}.</small></div><div><span>{locale === "en" ? "Descriptive audit slices" : "描述性审计切片"}</span>{groupStats.map((item) => <p key={item.group}><strong>{(item.approvalRate * 100).toFixed(1)}%</strong> {localizeStructuralValue(item.group, locale)} ({item.count})</p>)}<small>{locale === "en" ? "Compare approval-rate patterns across the displayed groups." : "比较所展示群组之间的批准率模式。"}</small></div></div>
 
       <div className="credit-queue-grid"><section><div className="analytics-pane-heading"><span>{locale === "en" ? "Manual review queue" : "人工复核队列"}</span><code>{counts.review} / {capacity}</code></div>{reviewQueue.map((item, index) => <button type="button" key={item.row.application_id} onClick={() => setSelectedId(item.row.application_id)}><span>{String(index + 1).padStart(2, "0")}</span><code>{item.row.application_id}</code><strong>{(item.pd * 100).toFixed(1)}%</strong><small>EL {number.format(item.expectedLoss)}</small></button>)}</section><section><div className="analytics-pane-heading"><span>{locale === "en" ? "Reason-code mix" : "原因码分布"}</span><code>{vintage}</code></div>{reasonCounts.map(([reason, count]) => <div key={reason}><code>{reason}</code><i><b style={{ width: `${count / Math.max(1, reasonCounts[0]?.[1] ?? 1) * 100}%` }} /></i><strong>{count}</strong></div>)}</section></div>
 
-      <div className="analytics-contract-grid"><div><span>{locale === "en" ? "Policy contract" : "策略契约"}</span><p className={allPass ? "pass" : "fail"}>{allPass ? <Check aria-hidden="true" /> : <CircleAlert aria-hidden="true" />}{allPass ? (locale === "en" ? "All ten checks pass" : "十项检查全部通过") : (locale === "en" ? "Policy output blocked" : "策略输出已拦截")}</p><p>{locale === "en" ? "Application grain, thresholds, probabilities, outcomes, reason codes, and entity boundaries are checked." : "已检查申请粒度、阈值、概率、结果、原因码和实体边界。"}</p></div><div><span>{locale === "en" ? "Decision workflow" : "决策工作流"}</span><p><Scale aria-hidden="true" />{locale === "en" ? "Prediction, calibration, economics, policy, human review, and audit remain separate stages." : "预测、校准、经济、策略、人工复核和审计保持为独立阶段。"}</p></div></div>
+      <div className="analytics-contract-grid"><div><span>{locale === "en" ? "Policy contract" : "策略契约"}</span><p className={allPass ? "pass" : "fail"}>{allPass ? <Check aria-hidden="true" /> : <CircleAlert aria-hidden="true" />}{allPass ? compactRealVisible ? (locale === "en" ? "Full-artifact checks recorded: 10 / 10" : "已记录完整产物检查：10 / 10") : (locale === "en" ? "All ten checks pass" : "十项检查全部通过") : (locale === "en" ? "Policy output blocked" : "策略输出已拦截")}</p><p>{compactRealVisible ? (locale === "en" ? "The exact-hash full artifact passed its ten build-time contract checks; the compact rows are validated again in-browser." : "精确哈希绑定的完整产物已通过十项构建时契约检查；轻量记录还会在浏览器内再次校验。") : (locale === "en" ? "Application grain, thresholds, probabilities, outcomes, reason codes, and entity boundaries are checked." : "已检查申请粒度、阈值、概率、结果、原因码和实体边界。")}</p></div><div><span>{locale === "en" ? "Decision workflow" : "决策工作流"}</span><p><Scale aria-hidden="true" />{locale === "en" ? "Prediction, calibration, economics, policy, human review, and audit remain separate stages." : "预测、校准、经济、策略、人工复核和审计保持为独立阶段。"}</p></div></div>
       <footer className="analytics-lab-footer"><div><span>{activeSource === "synthetic" ? (locale === "en" ? "Seed / version" : "种子 / 版本") : (locale === "en" ? "Artifact / version" : "产物 / 版本")}</span><code>{activeSource === "synthetic" ? `${dataset.seed} / ${dataset.dataset_version}` : `scored-backtest.parquet / ${dataset.dataset_version}`}</code></div><div><span>{activeSource === "synthetic" ? (locale === "en" ? "Rows SHA-256" : "行数据 SHA-256") : (locale === "en" ? "Runtime source" : "运行时来源")}</span><code>{activeSource === "synthetic" ? dataset.rows_sha256 : realArtifactSha256 ?? REAL_PARQUET_URL}</code></div><div><ArtifactLink href={CONTRACT_URL}>{locale === "en" ? "Open policy contract" : "查看策略契约"}</ArtifactLink></div></footer>
     </section>
   );

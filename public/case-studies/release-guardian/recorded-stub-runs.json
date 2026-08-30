@@ -1,0 +1,232 @@
+{
+  "scenario_id": "scn-020",
+  "total": {
+    "ms": 365,
+    "tokens": 12234,
+    "verdict": "BLOCK-RECOMMENDED"
+  },
+  "nodes": [
+    {
+      "id": "n01",
+      "type": "NODE",
+      "label": "Intake change",
+      "tStartMs": 0,
+      "tEndMs": 0,
+      "status": "ok",
+      "io": {
+        "in": "ALTER TABLE payments DROP COLUMN legacy_processor_ref;",
+        "out": "Drop payments legacy processor reference"
+      }
+    },
+    {
+      "id": "n02",
+      "type": "NODE",
+      "label": "Classify change",
+      "tStartMs": 1,
+      "tEndMs": 1,
+      "status": "ok",
+      "io": {
+        "in": "schema_migration",
+        "out": "schema_migration: Drop payments legacy processor reference"
+      }
+    },
+    {
+      "id": "n03",
+      "type": "NODE",
+      "label": "Parse migration",
+      "tStartMs": 1,
+      "tEndMs": 5,
+      "status": "ok",
+      "io": {
+        "in": "ALTER TABLE payments DROP COLUMN legacy_processor_ref;",
+        "out": "{\"band\":\"critical\",\"factors\":[{\"contribution\":25,\"detail\":\"Base score for schema_migration.\",\"name\":\"base change type\",\"source\":\"rule\"},{\"contribution\":35,\"detail\":\"drop_column detected for payments.legacy_processor_ref\",\"name\":\"drop_colum…"
+      }
+    },
+    {
+      "id": "n04",
+      "type": "TOOL",
+      "label": "Find API consumers",
+      "tStartMs": 5,
+      "tEndMs": 8,
+      "status": "ok",
+      "io": {
+        "in": "schema_migration: Drop payments legacy processor reference",
+        "out": "[{\"confidence\":0.9,\"kind\":\"endpoint\",\"name\":\"payments-service GET /v1/payments/{payment_id}\",\"note\":\"Endpoint touch evidence.\",\"provenance\":[\"ev-0ffe1680fc7f\"],\"verification\":\"verified\"},{\"confidence\":0.95,\"kind\":\"service\",\"name\":\"analytic…"
+      }
+    },
+    {
+      "id": "n05",
+      "type": "TOOL",
+      "label": "Find code dependencies",
+      "tStartMs": 6,
+      "tEndMs": 6,
+      "status": "ok",
+      "io": {
+        "in": "schema_migration: Drop payments legacy processor reference",
+        "out": "[{\"confidence\":0.9,\"kind\":\"endpoint\",\"name\":\"payments-service GET /v1/payments/{payment_id}\",\"note\":\"Endpoint touch evidence.\",\"provenance\":[\"ev-0ffe1680fc7f\"],\"verification\":\"verified\"},{\"confidence\":0.95,\"kind\":\"service\",\"name\":\"analytic…"
+      }
+    },
+    {
+      "id": "n06",
+      "type": "TOOL",
+      "label": "Retrieve runbooks and incidents",
+      "tStartMs": 6,
+      "tEndMs": 128,
+      "status": "ok",
+      "io": {
+        "in": "schema_migration: Drop payments legacy processor reference",
+        "out": "[{\"abort_condition\":\"Abort if error_rate>=1% or p95 latency regresses.\",\"actions\":[{\"command_hint\":\"\",\"description\":\"Confirm backup and migration lock budget.\",\"idempotency_key\":\"idk-8b1bd635f18f44b4\"}],\"description\":\"Confirm backup and mi…"
+      }
+    },
+    {
+      "id": "n07",
+      "type": "TOOL",
+      "label": "Find schema usage",
+      "tStartMs": 6,
+      "tEndMs": 11,
+      "status": "ok",
+      "io": {
+        "in": "ALTER TABLE payments DROP COLUMN legacy_processor_ref;",
+        "out": "[{\"confidence\":0.9,\"kind\":\"endpoint\",\"name\":\"payments-service GET /v1/payments/{payment_id}\",\"note\":\"Endpoint touch evidence.\",\"provenance\":[\"ev-0ffe1680fc7f\"],\"verification\":\"verified\"},{\"confidence\":0.95,\"kind\":\"service\",\"name\":\"analytic…"
+      }
+    },
+    {
+      "id": "n08",
+      "type": "LLM",
+      "label": "Assemble and validate ImpactReport",
+      "tStartMs": 129,
+      "tEndMs": 131,
+      "status": "ok",
+      "io": {
+        "in": "[{\"confidence\":0.9,\"kind\":\"endpoint\",\"name\":\"payments-service GET /v1/payments/{payment_id}\",\"note\":\"Endpoint touch evidence.\",\"provenance\":[\"ev-0ffe1680fc7f\"],\"verification\":\"verified\"},{\"confidence\":0.95,\"kind\":\"service\",\"name\":\"analytic…",
+        "out": "{\"affectedCount\":4,\"changeSummary\":\"schema_migration: Drop payments legacy processor reference\",\"risk\":{\"band\":\"critical\",\"score\":75},\"rolloutStages\":5}"
+      }
+    },
+    {
+      "id": "n09",
+      "type": "GATE",
+      "label": "Human approval gate",
+      "tStartMs": 132,
+      "tEndMs": 140,
+      "status": "blocked",
+      "io": {
+        "in": "{\"affectedCount\":4,\"changeSummary\":\"schema_migration: Drop payments legacy processor reference\",\"risk\":{\"band\":\"critical\",\"score\":75},\"rolloutStages\":5}",
+        "out": "Awaiting APPROVE or BLOCK"
+      }
+    },
+    {
+      "id": "n10",
+      "type": "GATE",
+      "label": "Approval recorded",
+      "tStartMs": 142,
+      "tEndMs": 152,
+      "status": "ok",
+      "io": {
+        "in": "APPROVE",
+        "out": "published"
+      }
+    },
+    {
+      "id": "n11",
+      "type": "TOOL",
+      "label": "Publish report",
+      "tStartMs": 152,
+      "tEndMs": 207,
+      "status": "ok",
+      "io": {
+        "in": "{\"affectedCount\":4,\"changeSummary\":\"schema_migration: Drop payments legacy processor reference\",\"risk\":{\"band\":\"critical\",\"score\":75},\"rolloutStages\":5}",
+        "out": "published"
+      }
+    },
+    {
+      "id": "n12",
+      "type": "GATE",
+      "label": "Block recorded",
+      "tStartMs": 353,
+      "tEndMs": 365,
+      "status": "blocked",
+      "io": {
+        "in": "BLOCK",
+        "out": "rejected"
+      }
+    },
+    {
+      "id": "n13",
+      "type": "NODE",
+      "label": "Publication blocked",
+      "tStartMs": 361,
+      "tEndMs": 365,
+      "status": "blocked",
+      "io": {
+        "in": "{\"affectedCount\":4,\"changeSummary\":\"schema_migration: Drop payments legacy processor reference\",\"risk\":{\"band\":\"critical\",\"score\":75},\"rolloutStages\":5}",
+        "out": "rejected"
+      }
+    }
+  ],
+  "gate": {
+    "nodeId": "n09",
+    "payload": {
+      "changeSummary": "schema_migration: Drop payments legacy processor reference",
+      "risk": {
+        "band": "critical",
+        "score": 75
+      },
+      "affectedCount": 4,
+      "rolloutStages": 5
+    },
+    "branches": {
+      "approve": [
+        {
+          "id": "n10",
+          "type": "GATE",
+          "label": "Approval recorded",
+          "tStartMs": 142,
+          "tEndMs": 152,
+          "status": "ok",
+          "io": {
+            "in": "APPROVE",
+            "out": "published"
+          }
+        },
+        {
+          "id": "n11",
+          "type": "TOOL",
+          "label": "Publish report",
+          "tStartMs": 152,
+          "tEndMs": 207,
+          "status": "ok",
+          "io": {
+            "in": "{\"affectedCount\":4,\"changeSummary\":\"schema_migration: Drop payments legacy processor reference\",\"risk\":{\"band\":\"critical\",\"score\":75},\"rolloutStages\":5}",
+            "out": "published"
+          }
+        }
+      ],
+      "block": [
+        {
+          "id": "n12",
+          "type": "GATE",
+          "label": "Block recorded",
+          "tStartMs": 353,
+          "tEndMs": 365,
+          "status": "blocked",
+          "io": {
+            "in": "BLOCK",
+            "out": "rejected"
+          }
+        },
+        {
+          "id": "n13",
+          "type": "NODE",
+          "label": "Publication blocked",
+          "tStartMs": 361,
+          "tEndMs": 365,
+          "status": "blocked",
+          "io": {
+            "in": "{\"affectedCount\":4,\"changeSummary\":\"schema_migration: Drop payments legacy processor reference\",\"risk\":{\"band\":\"critical\",\"score\":75},\"rolloutStages\":5}",
+            "out": "rejected"
+          }
+        }
+      ]
+    }
+  }
+}

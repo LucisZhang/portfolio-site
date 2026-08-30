@@ -1,0 +1,122 @@
+.projectPage :global(.case-title) {
+  max-width: 980px;
+}
+
+.projectPage :global(.case-title .cn-gloss) {
+  margin-top: 12px;
+}
+
+.projectPage :global(.forge-honesty-note) {
+  width: fit-content;
+  margin: 18px 0 0;
+  border-left: 3px solid var(--accent);
+  padding: 8px 12px;
+  background: var(--paper-alt);
+  color: var(--ink);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.projectPage :global(.project-stat-grid) {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 34px;
+  background: var(--hairline);
+}
+
+.projectPage :global(.project-stat-grid > div) {
+  min-height: 112px;
+  display: grid;
+  align-content: center;
+  background: var(--paper-bright);
+  padding: 18px;
+}
+
+.projectPage :global(.project-stat-grid span) {
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: clamp(15px, 2vw, 22px);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.projectPage :global(.project-context) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(24px, 5vw, 68px);
+  margin-top: 34px;
+  border-top: var(--hairline);
+  padding-top: 24px;
+}
+
+.projectPage :global(.project-context p),
+.projectPage :global(.project-role),
+.projectPage :global(.project-outcome) {
+  max-width: 72ch;
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.projectPage :global(.project-role) {
+  margin-bottom: 24px;
+}
+
+.projectPage :global(.project-outcome) {
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.projectPage :global(.result-findings) {
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: field-note;
+}
+
+.projectPage :global(.result-findings li) {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 12px;
+  border-bottom: var(--bl);
+  padding: 18px 0 18px 14px;
+}
+
+.projectPage :global(.result-findings li:first-child) {
+  border-top: var(--bd);
+}
+
+.projectPage :global(.result-findings li::before) {
+  counter-increment: field-note;
+  content: counter(field-note, decimal-leading-zero);
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.9;
+}
+
+.projectPage :global(.result-findings p) {
+  max-width: 74ch;
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--mu);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.projectPage :global(.project-links-section) {
+  background: var(--paper-bright);
+}
+
+@media (max-width: 640px) {
+  .projectPage :global(.project-stat-grid),
+  .projectPage :global(.project-context) {
+    grid-template-columns: 1fr;
+  }
+
+  .projectPage :global(.project-stat-grid > div) {
+    min-height: 82px;
+  }
+}

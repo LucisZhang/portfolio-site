@@ -65,7 +65,7 @@ test("project resolver recognizes reviewed English and Chinese aliases only", ()
   assert.equal(resolveAssistantPublicProject("比较流式可靠性实验室和隐私预检。"), "ambiguous");
   assert.equal(resolveAssistantPublicProject("What does p1 do?"), null);
   assert.equal(resolveAssistantPublicProject("Assess role fit from the whole portfolio."), null);
-  assert.equal(resolveAssistantPublicProject("请介绍发布守门人。"), null);
+  assert.equal(resolveAssistantPublicProject("请介绍 Release Guardian。"), null);
   assert.equal(resolveAssistantPublicProject("p1".repeat(600)), null);
 });
 

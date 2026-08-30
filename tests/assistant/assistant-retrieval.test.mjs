@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { execFileSync, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import test from "node:test";
 import { gunzipSync, gzipSync } from "node:zlib";
@@ -16,19 +17,138 @@ const finalRepositoryCommits = new Map([
   ["LucisZhang/streaming-reliability-lab", "eda2a7c156059678ecae8c57f4452ef98bd9ae89"],
   ["LucisZhang/margin-control-tower", "bd68e65b676593dff46c5fec41a8f4879ce5066c"],
   ["LucisZhang/credit-policy-lab", "53dfd853c9b2d70476ed3b9250a7acdf01777887"],
+  ["LucisZhang/Voice-in-Security", "24b7e3c97ec2158c33a21d3bd37ba233e6d1219d"],
 ]);
+const siteCommit = "e8821702bfe69ee5846a617aa178486f216b5346";
 
-test("generated public knowledge is pinned to all six final repository releases", () => {
+test("generated public knowledge is pinned to final releases and the R2 site revision", () => {
   const snapshot = JSON.parse(readFileSync("src/data/assistant-knowledge.generated.json", "utf8"));
+  const manifest = JSON.parse(readFileSync("assistant-knowledge/manifest.json", "utf8"));
   for (const [repository, commit] of finalRepositoryCommits) {
     const files = snapshot.files.filter((file) => file.repository === repository);
-    assert.ok(files.length >= 2, repository);
+    const manifestRepository = manifest.repositories.find((candidate) => (
+      `${candidate.owner}/${candidate.repo}` === repository
+    ));
+    assert.ok(manifestRepository, repository);
+    assert.deepEqual(files.map((file) => file.path).sort(), [...manifestRepository.files].sort(), repository);
     assert.ok(files.every((file) => file.commit === commit), repository);
-    assert.ok(files.some((file) => file.path === "README.md"), repository);
-    assert.ok(files.some((file) => file.path === "README.zh-CN.md"), repository);
   }
   assert.equal(snapshot.files.some((file) => file.repository === "LucisZhang/p1-reliability-lab"), false);
-  assert.equal(snapshot.files.some((file) => file.repository === "LucisZhang/portfolio-site"), false);
+  const siteFiles = snapshot.files.filter((file) => file.repository === "LucisZhang/portfolio-site");
+  assert.ok(siteFiles.length >= 100);
+  assert.ok(siteFiles.every((file) => file.commit === siteCommit));
+  for (const route of [
+    "/",
+    "/ai/frontier-forge",
+    "/ai/privacy-preflight",
+    "/ai/rag-quality-lab",
+    "/ai/release-guardian",
+    "/ai/triage-router",
+    "/analytics/analytics-tandem",
+    "/analytics/credit-policy-desk",
+    "/analytics/margin-control-tower",
+    "/engineering/crossover-study",
+    "/engineering/exactly-once-drills",
+  ]) {
+    assert.ok(snapshot.chunks.some((chunk) => chunk.repository === "LucisZhang/portfolio-site" && chunk.aliases.includes(route)), route);
+  }
+  for (const [route, sourcePath] of [
+    ["/", "src/lib/home-stats.ts"],
+    ["/", "src/lib/i18n.ts"],
+    ["/ai/frontier-forge", "src/lib/frontier-project-detail.ts"],
+    ["/ai/release-guardian", "src/lib/structural-copy.ts"],
+    ["/ai/release-guardian", "public/case-studies/release-guardian/replay/synthetic-scenarios.json"],
+    ["/ai/rag-quality-lab", "src/lib/structural-copy.ts"],
+    ["/ai/privacy-preflight", "src/lib/privacy-localization.ts"],
+    ["/analytics/margin-control-tower", "src/lib/structural-copy.ts"],
+    ["/analytics/credit-policy-desk", "src/components/analytics/AnalyticsMethods.tsx"],
+    ["/analytics/credit-policy-desk", "src/lib/structural-copy.ts"],
+    ["/analytics/analytics-tandem", "src/components/CaseStudyBlock.tsx"],
+  ]) {
+    assert.ok(snapshot.chunks.some((chunk) => (
+      chunk.repository === "LucisZhang/portfolio-site"
+      && chunk.path === sourcePath
+      && chunk.aliases.includes(route)
+    )), `${route}:${sourcePath}`);
+  }
+  const tandemMigrationChunks = snapshot.chunks.filter((chunk) => (
+    chunk.repository === "LucisZhang/portfolio-site"
+    && chunk.content.includes("Analytics Tandem has been split")
+  ));
+  assert.ok(tandemMigrationChunks.length > 0);
+  assert.ok(tandemMigrationChunks.every((chunk) => chunk.aliases.includes("/analytics/analytics-tandem")));
+  assert.ok(tandemMigrationChunks.every((chunk) => !chunk.aliases.some((alias) => (
+    alias.startsWith("/") && alias !== "/analytics/analytics-tandem"
+  ))));
+  assert.deepEqual(
+    [...new Set(siteFiles.map((file) => file.path).filter((file) => /^docs\/evidence\/digits-[a-z-]+\.md$/u.test(file)))].sort(),
+    [
+      "docs/evidence/digits-eod.md",
+      "docs/evidence/digits-forge.md",
+      "docs/evidence/digits-home.md",
+      "docs/evidence/digits-privacy.md",
+      "docs/evidence/digits-triage.md",
+    ],
+  );
+});
+
+test("selected project entries preserve full-file integrity metadata", () => {
+  const snapshot = JSON.parse(readFileSync("src/data/assistant-knowledge.generated.json", "utf8"));
+  const fullProjectsFile = execFileSync("git", ["show", `${siteCommit}:src/lib/projects.ts`], { encoding: "utf8" });
+  const fullFileSha256 = createHash("sha256").update(fullProjectsFile).digest("hex");
+  const selections = snapshot.files.filter((file) => (
+    file.repository === "LucisZhang/portfolio-site" && file.path === "src/lib/projects.ts"
+  ));
+  assert.equal(selections.length, 11);
+  assert.equal(selections.filter((file) => file.selectionSha256 === undefined).length, 1);
+  for (const selection of selections) {
+    assert.equal(selection.bytes, Buffer.byteLength(fullProjectsFile, "utf8"));
+    assert.equal(selection.sha256, fullFileSha256);
+    if (selection.selectionSha256 !== undefined) {
+      assert.match(selection.selectionSha256, /^[a-f0-9]{64}$/u);
+      assert.ok(selection.selectionBytes > 0 && selection.selectionBytes < selection.bytes);
+    }
+  }
+  const chunks = snapshot.chunks.filter((chunk) => (
+    chunk.repository === "LucisZhang/portfolio-site" && chunk.path === "src/lib/projects.ts"
+  ));
+  assert.ok(chunks.every((chunk) => chunk.fileSha256 === fullFileSha256));
+  const commitTimestamp = execFileSync("git", ["show", "-s", "--format=%cI", siteCommit, "--"], { encoding: "utf8" }).trim();
+  assert.equal(snapshot.generatedAt, new Date(commitTimestamp).toISOString());
+});
+
+test("site identity grounding excludes private contact values", () => {
+  const snapshot = JSON.parse(readFileSync("src/data/assistant-knowledge.generated.json", "utf8"));
+  const siteConfig = execFileSync("git", ["show", `${siteCommit}:src/lib/site-config.ts`], { encoding: "utf8" });
+  const profileBlock = siteConfig.match(/profiles:\s*\{([\s\S]*?)\n\s*\},\n\s*resume:/u)?.[1];
+  assert.ok(profileBlock);
+  const contactValues = [...profileBlock.matchAll(/^\s*(?:linkedin|email|phone|phoneHref|wechat):\s*"([^"]+)"/gmu)]
+    .map((match) => match[1]);
+  assert.equal(contactValues.length, 5);
+  const siteContent = snapshot.chunks
+    .filter((chunk) => chunk.repository === "LucisZhang/portfolio-site")
+    .map((chunk) => chunk.content)
+    .join("\n");
+  const result = retrieveAssistantKnowledge("Who is Xiangguo Zhang, and what kind of work does he do?");
+  assert.ok(result);
+  for (const value of contactValues) {
+    assert.equal(siteContent.includes(value), false);
+    assert.equal(result.grounding.includes(value), false);
+  }
+});
+
+test("offline assistant cache fails closed on identity and manifest tampering", () => {
+  const result = spawnSync(process.execPath, ["scripts/build-assistant-knowledge.mjs", "--self-test-cache"], {
+    cwd: process.cwd(),
+    encoding: "utf8",
+  });
+  assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
+  assert.match(result.stdout, /assistant knowledge cache self-test passed: 58 files, 449 chunks/u);
+});
+
+test("generated public knowledge has globally unique chunk IDs", () => {
+  const snapshot = JSON.parse(readFileSync("src/data/assistant-knowledge.generated.json", "utf8"));
+  assert.equal(new Set(snapshot.chunks.map((chunk) => chunk.id)).size, snapshot.chunks.length);
 });
 
 function privatePacket() {
@@ -97,8 +217,8 @@ test("private candidate packet is bounded, hash-checked, and never exposes a pat
 test("retrieval handles English and Chinese project questions with pinned GitHub citations", () => {
   for (const question of [
     "How did the streaming reliability lab verify Flink recovery?",
-    "RAG 质量实验室如何做确定性评估？",
-    "毛利控制塔如何使用 Olist 数据？",
+    "RAG Quality Lab 如何做确定性评估？",
+    "Margin Control Tower 如何使用 Olist 数据？",
   ]) {
     const result = retrieveAssistantKnowledge(question);
     assert.ok(result, question);

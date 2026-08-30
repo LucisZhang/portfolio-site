@@ -126,21 +126,44 @@ function assistantResponse(
 }
 
 export async function POST(request: Request) {
+  const requestId = crypto.randomUUID();
+  const startedAt = performance.now();
+  const observed = (
+    response: NextResponse,
+    diagnostics?: { failureReason?: string; attemptCount?: number; upstreamStatus?: number },
+  ) => {
+    const durationMs = Math.max(0, Math.round(performance.now() - startedAt));
+    response.headers.set("X-Assistant-Request-ID", requestId);
+    response.headers.set("X-Assistant-Duration-Ms", String(durationMs));
+    response.headers.set("Server-Timing", `assistant;dur=${durationMs}`);
+    if (response.status >= 400 || diagnostics?.failureReason) {
+      // Content, IP addresses, knowledge payloads, and credentials are deliberately excluded.
+      console.warn("Portfolio assistant request did not complete normally.", {
+        requestId,
+        status: response.status,
+        durationMs,
+        failureReason: diagnostics?.failureReason ?? "http_rejection",
+        attemptCount: diagnostics?.attemptCount,
+        upstreamStatus: diagnostics?.upstreamStatus,
+      });
+    }
+    return response;
+  };
   const gate = gateAssistantHttpRequest(request);
-  if (!gate.ok) return assistantResponse(gate.message, gate.status);
+  if (!gate.ok) return observed(assistantResponse(gate.message, gate.status));
 
   let body: string;
   try {
     body = await readAssistantRequestBody(request);
   } catch (error) {
-    return assistantResponse(
+    return observed(assistantResponse(
       error instanceof AssistantBodyLimitError
         ? "The assistant request is too large."
         : error instanceof AssistantBodyTimeoutError
           ? "The assistant request body timed out."
         : "The assistant request body could not be read.",
       error instanceof AssistantBodyLimitError ? 413 : error instanceof AssistantBodyTimeoutError ? 408 : 400,
-    );
+    ));
   }
 
   const clientIp = assistantClientIp(request.headers);
@@ -162,7 +185,7 @@ export async function POST(request: Request) {
     fallbackModelsZh: process.env.ASSISTANT_FALLBACK_MODELS_ZH,
     privateKnowledgeEncoded: process.env.ASSISTANT_PRIVATE_KNOWLEDGE_B64_GZIP,
   });
-  return assistantResponse(
+  return observed(assistantResponse(
     result.reply,
     result.status,
     result.blocks,
@@ -182,5 +205,9 @@ export async function POST(request: Request) {
     result.guardDecision,
     result.guardReturnedModel,
     result.guardPayloadSha256,
-  );
+  ), {
+    failureReason: result.failureReason,
+    attemptCount: result.attemptCount,
+    upstreamStatus: result.upstreamStatus,
+  });
 }

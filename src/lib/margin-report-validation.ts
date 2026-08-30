@@ -109,6 +109,43 @@ export function isElasticityReport(value: unknown, artifactSha256: string): valu
     && [report.analysis_rows, report.holdout_rows].every((count) => typeof count === "number" && Number.isInteger(count) && count > 0);
 }
 
+// Build-time (not runtime-fetch) fail-closed contract, added for task L2's
+// margin-control-tower rebuild (src/components/margin/marginData.ts): the
+// three committed JSON files there are statically imported, so an invalid
+// or hash-mismatched report must fail `npm run build` outright rather than
+// surface as one of the client-side pending/invalid states above. These
+// two throwing wrappers live here (a zero-import file) rather than inline
+// in marginData.ts specifically so they -- and therefore the fail-closed
+// guarantee itself -- can be unit-tested without needing to resolve
+// marginData.ts's own `@/lib/...` path aliases under plain `node --test`
+// (see tests/margin-report-validation.test.mjs, wired into `npm run
+// verify:evidence`). The thrown messages match marginData.ts's original
+// inline checks exactly -- this is a refactor for testability, not a
+// behavior change.
+export class MarginDetectionReportContractError extends Error {
+  constructor() {
+    super("public/case-studies/margin-control-tower/detection-report.json failed its build-time contract check.");
+    this.name = "MarginDetectionReportContractError";
+  }
+}
+
+export class MarginElasticityReportContractError extends Error {
+  constructor() {
+    super("public/case-studies/margin-control-tower/elasticity-report.json failed its build-time contract check.");
+    this.name = "MarginElasticityReportContractError";
+  }
+}
+
+export function assertDetectionReport(value: unknown, artifactSha256: string): DetectionReport {
+  if (!isDetectionReport(value, artifactSha256)) throw new MarginDetectionReportContractError();
+  return value;
+}
+
+export function assertElasticityReport(value: unknown, artifactSha256: string): ElasticityReport {
+  if (!isElasticityReport(value, artifactSha256)) throw new MarginElasticityReportContractError();
+  return value;
+}
+
 async function fetchReport<T>(
   report: MarginReportKind,
   url: string,

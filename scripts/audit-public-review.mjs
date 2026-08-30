@@ -237,7 +237,7 @@ async function runInteraction(page, route, locale, viewport, pdfFixture, report)
       const record = lab.locator(".credit-publish-policy");
       if (await record.isEnabled()) await record.click();
       await screenshot("policy-decision");
-    } else if (route === "/ai/privacy-preflight-mac") {
+    } else if (route === "/ai/privacy-preflight") {
       const lab = page.getByTestId("privacy-preflight-lab");
       await lab.waitFor({ state: "visible" });
       await lab.getByRole("button", { name: locale === "en" ? "Load synthetic example" : "载入合成示例" }).click();

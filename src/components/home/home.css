@@ -1,0 +1,834 @@
+/* Round-2 homepage (task 1.2, spec §4): styles for the seven home/*.tsx
+   exhibits. Generic exhibition-grammar primitives (Exhibit/Finding/StatGrid/
+   the rail itself) live in src/components/exhibition/exhibition.css; this
+   file only carries markup specific to the homepage content script. Same
+   zero-border-radius / zero-shadow / zero-gradient / zero-icon discipline. */
+
+/* ---------- 00 Hero ---------- */
+
+.home-hero {
+  min-height: 94vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.home-hero-title {
+  max-width: 16ch;
+  /* Sized off vh, not vw (task 1.2 bugfix): a width-driven clamp has no
+     relationship to the min-height:94vh box it has to fit inside on a
+     wide-but-short viewport (e.g. 1440x900), which measured out to ~484px
+     for the title alone — tall enough that the hero's total content
+     (title + zh narrative + stat grid + scope note + contact links)
+     overflowed the section by ~50px and painted the contact row's text
+     over exhibit 01's ink background behind it (axe color-contrast
+     "insufficient contrast... background #0f2236"). Scaling by vh keeps
+     the title proportional to the same axis the container is sized on.
+
+     Task F1 (user's binding feedback: mobile hero font too large): pure
+     9vh blows up on portrait phones, where height dwarfs width (390x844
+     -> 9vh = 75.96px, ~4.75rem, on a 16ch-max column). min(9vh, 11vw)
+     keeps the vh term dominant on wide-but-short desktop shapes (width
+     coefficient 11 stays far below the height coefficient's contribution
+     there, e.g. 1440x900 -> min(81px, 158px) = 81px, unchanged from
+     before) while the vw term takes over on narrow-but-tall phone
+     viewports (390x844 -> min(75.96px, 42.9px) = 42.9px; 360x780 clamps
+     to the 2.6rem floor). */
+  font-size: clamp(2.6rem, min(9vh, 11vw), 5.6rem);
+}
+
+.home-hero-zh {
+  margin: 20px 0 0;
+  max-width: 30ch;
+  /* Task F4 (user's binding feedback: "中文字体和英文字体不搭"): this line sits
+     directly under the self-hosted Source Serif 4 Display h1 -- pairing it
+     with the sans stack was exactly the giant-zh-next-to-serif-en clash
+     the user called out. Now on the self-hosted zh serif (--display-serif-zh,
+     globals.css), matching the user's reference pairing. */
+  font-family: var(--display-serif-zh);
+  font-size: clamp(1.7rem, 3.4vh, 3rem);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.home-hero-body {
+  margin-top: clamp(34px, 5vw, 64px);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 850px;
+}
+
+.home-hero-scope.target-roles {
+  white-space: normal;
+  font-size: .82rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.home-hero-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.home-hero-contact a,
+.home-hero-contact button {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--ink) 30%, transparent);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.home-hero-contact a:hover,
+.home-hero-contact a:focus-visible,
+.home-hero-contact button:hover,
+.home-hero-contact button:focus-visible {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
+/* ---------- 01 Flagship ---------- */
+
+.home-flagship-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 48px);
+}
+
+@media (min-width: 900px) {
+  .home-flagship-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.home-flagship-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 620px;
+}
+
+.home-flagship-copy > p {
+  margin: 0;
+  line-height: 1.65;
+}
+
+.home-cta {
+  align-self: flex-start;
+  border-top: 1px solid color-mix(in srgb, var(--ink-invert-fg) 40%, transparent);
+  padding-top: 10px;
+  font-family: var(--mono);
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--accent-on-ink);
+}
+
+.home-cta:hover,
+.home-cta:focus-visible {
+  color: var(--ink-invert-fg);
+}
+
+.home-claim-chain {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-claim-row {
+  border-top: 1px solid color-mix(in srgb, var(--ink-invert-fg) 26%, transparent);
+}
+
+.home-claim-row:last-child {
+  border-bottom: 1px solid color-mix(in srgb, var(--ink-invert-fg) 26%, transparent);
+}
+
+/* Task F1 (spec §2.5 touch targets >= 44px): the row's own 14px top/bottom
+   padding used to sit on .home-claim-row, outside the <summary> that is
+   the actual native disclosure-triangle hit target -- so a tap in that
+   padding did nothing. Moving the padding onto summary itself keeps the
+   row the same total height while making the whole row tappable. */
+.home-claim-row summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 44px;
+  padding: 14px 0;
+  cursor: pointer;
+  list-style: none;
+}
+
+.home-claim-row summary::-webkit-details-marker {
+  display: none;
+}
+
+.home-claim-assert {
+  font-size: .95rem;
+}
+
+.home-claim-value {
+  flex: none;
+  font-family: var(--mono);
+  font-size: .95rem;
+  font-weight: 650;
+  color: var(--accent-on-ink);
+}
+
+.home-claim-detail {
+  margin: 14px 0 0;
+  padding-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.home-claim-detail div {
+  display: flex;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: .78rem;
+}
+
+.home-claim-detail dt {
+  flex: none;
+  width: 8ch;
+  color: color-mix(in srgb, var(--ink-invert-fg) 62%, transparent);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.home-claim-detail dd {
+  margin: 0;
+  word-break: break-all;
+}
+
+/* ---------- 02 Agent systems ---------- */
+
+.home-agent-rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: agent-row;
+}
+
+.home-agent-row {
+  counter-increment: agent-row;
+  display: grid;
+  grid-template-columns: 3ch minmax(0, 1fr);
+  align-items: center;
+  gap: 20px;
+  border-top: 1px solid var(--hairline);
+  padding: 20px 0;
+}
+
+.home-agent-row::before {
+  content: counter(agent-row, decimal-leading-zero);
+  font-family: var(--mono);
+  font-size: .8rem;
+  font-weight: 650;
+  color: var(--accent);
+}
+
+.home-agent-row-link {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.home-agent-row-link:hover strong,
+.home-agent-row-link:focus-visible strong {
+  color: var(--accent);
+}
+
+.home-agent-row-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.home-agent-row .project-summary {
+  font-family: var(--mono);
+  font-size: .78rem;
+  color: var(--muted);
+}
+
+/* ---------- Ask Portfolio inline ---------- */
+
+.home-ask {
+  margin-top: clamp(28px, 4vw, 44px);
+  max-width: 620px;
+}
+
+.home-ask-label {
+  display: block;
+  margin: 0 0 8px;
+  font-family: var(--mono);
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.exhibit[data-bg="ink"] .home-ask-label {
+  color: color-mix(in srgb, var(--ink-invert-fg) 68%, transparent);
+}
+
+.home-ask-row {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  border-bottom: 1px solid var(--hairline);
+  padding-bottom: 8px;
+}
+
+.exhibit[data-bg="ink"] .home-ask-row {
+  border-bottom-color: color-mix(in srgb, var(--ink-invert-fg) 30%, transparent);
+}
+
+.home-ask-row input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 44px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: .95rem;
+}
+
+.home-ask-row input::placeholder {
+  color: var(--muted);
+}
+
+/* Task F1 (spec §2.5 touch targets >= 44px): "Ask" was a padding:0 text
+   button, 24x23. align-items:stretch on the row + min-height/min-width
+   here (a taller box, same painted text) covers both axes. */
+.home-ask-row button {
+  flex: none;
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.exhibit[data-bg="ink"] .home-ask-row button {
+  color: var(--accent-on-ink);
+}
+
+.home-ask-presets {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Task F1 (spec §2.5 touch targets >= 44px): these preset-question chips
+   were padding:0 underlined text, ~20px tall. min-height + centered
+   content keeps the same underlined-text look with a real hit box. */
+.home-ask-presets button {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--muted);
+  font-size: .82rem;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  cursor: pointer;
+}
+
+.exhibit[data-bg="ink"] .home-ask-presets button {
+  color: color-mix(in srgb, var(--ink-invert-fg) 78%, transparent);
+}
+
+.home-ask-presets button:hover,
+.home-ask-presets button:focus-visible {
+  color: var(--accent);
+  text-decoration-color: currentColor;
+}
+
+.exhibit[data-bg="ink"] .home-ask-presets button:hover,
+.exhibit[data-bg="ink"] .home-ask-presets button:focus-visible {
+  color: var(--accent-on-ink);
+}
+
+/* ---------- 03 Systems stack ---------- */
+
+.home-stack-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.home-stack-layer {
+  border-top: 1px solid var(--hairline);
+  padding: 16px 16px 16px 0;
+}
+
+.home-stack-layer-name {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.home-stack-layer-projects {
+  margin: 8px 0 0;
+  font-size: .85rem;
+  color: var(--muted);
+}
+
+.home-stack-layer-metric {
+  margin: 6px 0 0;
+  font-family: var(--mono);
+  font-size: .82rem;
+}
+
+.home-eod-grid {
+  margin-top: clamp(28px, 4vw, 44px);
+  display: grid;
+  grid-template-columns: repeat(5, minmax(44px, 1fr));
+  gap: 1px;
+  background: var(--hairline);
+  max-width: 420px;
+}
+
+.home-eod-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  background: var(--paper-bright);
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--ok);
+}
+
+/* ---------- 04 Negative results ---------- */
+
+.home-negative-table {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-negative-head,
+.home-negative-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2.4fr) 5ch minmax(0, 2fr) 9ch;
+  gap: 16px;
+  align-items: start;
+  border-top: 1px solid color-mix(in srgb, var(--ink-invert-fg) 26%, transparent);
+  padding: 14px 0;
+}
+
+.home-negative-head {
+  font-family: var(--mono);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--ink-invert-fg) 62%, transparent);
+}
+
+.home-negative-row:last-child {
+  border-bottom: 1px solid color-mix(in srgb, var(--ink-invert-fg) 26%, transparent);
+}
+
+.home-negative-n {
+  font-family: var(--mono);
+}
+
+.home-negative-disposition {
+  color: color-mix(in srgb, var(--ink-invert-fg) 80%, transparent);
+  font-size: .85rem;
+}
+
+/* Task F1 (spec §2.5 touch targets >= 44px): 15px tall by default
+   (align-items:start on the grid row means the row's own padding doesn't
+   belong to this cell's link). */
+.home-negative-row a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--accent-on-ink);
+  font-family: var(--mono);
+  font-size: .72rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.home-negative-row a:hover,
+.home-negative-row a:focus-visible {
+  color: var(--ink-invert-fg);
+}
+
+/* Task F7 (direction B mobile tables, approved mock
+   output/design-align/direction-mobile-table-b.html's dark
+   "number-first" section): below 768px the 4-column grid (conclusion at
+   only ~118px wide, its "disposition" sentence-length text crushed even
+   narrower) reflows via grid-template-areas into a number-first card --
+   conclusion as the dominant headline, n demoted to a quiet meta value
+   beside it, disposition promoted to a full-width caption line, and the
+   receipt link on its own row. Same four DOM cells as desktop (role=table
+   semantics untouched), CSS grid alone re-templates where each lands. */
+@media (max-width: 767.98px) {
+  .home-negative-head {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .home-negative-row {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "conclusion n"
+      "disposition disposition"
+      "receipt receipt";
+    row-gap: 6px;
+  }
+
+  .home-negative-conclusion {
+    grid-area: conclusion;
+    font-size: 1rem;
+    font-weight: 650;
+    line-height: 1.3;
+  }
+
+  .home-negative-n {
+    grid-area: n;
+    justify-self: end;
+    font-size: .7rem;
+    color: color-mix(in srgb, var(--ink-invert-fg) 60%, transparent);
+  }
+
+  .home-negative-disposition {
+    grid-area: disposition;
+    font-size: .82rem;
+    line-height: 1.5;
+  }
+
+  .home-negative-receipt {
+    grid-area: receipt;
+  }
+}
+
+/* ---------- 05 Secondary / archive shelf ---------- */
+
+.home-shelf-table {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-shelf-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 16px;
+  border-top: 1px solid var(--hairline);
+  padding: 16px 0;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.home-shelf-table > :last-child {
+  border-bottom: 1px solid var(--hairline);
+}
+
+.home-shelf-row:hover strong,
+.home-shelf-row:focus-visible strong {
+  color: var(--accent);
+}
+
+.home-shelf-title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.home-shelf-metric {
+  font-family: var(--mono);
+  font-size: .78rem;
+  text-align: right;
+  color: var(--muted);
+}
+
+.home-shelf-row[data-tier="archive"] {
+  color: var(--muted);
+}
+
+/* Task F7 (direction B mobile tables): the metric column's bare `auto`
+   track took its full-line max-content width (a long comma-separated
+   stats string), which at mobile widths left the title's minmax(0, 1fr)
+   track squeezed to 0 and visibly overlapping the metric text. Bounding
+   the metric column lets it wrap within its own share of the row instead
+   -- the same aligned-two-column grammar as desktop, just both tracks
+   flexible instead of one being real-content-width. */
+@media (max-width: 767.98px) {
+  .home-shelf-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 42%);
+  }
+}
+
+/* Archive rows read as muted via the row-level --muted color already;
+   diluting .home-shelf-metric further on top of that (task 1.2's first
+   pass) dropped it below AA contrast against --paper (axe color-contrast).
+   --muted alone is the same tone already used for .exhibit-intro and other
+   de-emphasized body text sitewide, so no additional mix is needed here. */
+
+/* ---------- 06 Receipts ---------- */
+
+.home-receipts-dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: minmax(0, max-content) minmax(0, 1fr);
+  gap: 10px 24px;
+  font-family: var(--mono);
+  font-size: .82rem;
+  max-width: 720px;
+}
+
+.home-receipts-dl dt {
+  color: color-mix(in srgb, var(--ink-invert-fg) 62%, transparent);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-size: .7rem;
+}
+
+.home-receipts-dl dd {
+  margin: 0;
+  word-break: break-all;
+}
+
+.home-receipts-contact {
+  margin-top: clamp(28px, 4vw, 44px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+/* Task F1 (spec §2.5 touch targets >= 44px): same padding-transfer
+   technique as .home-hero-contact a below. */
+.home-receipts-contact a {
+  display: inline-flex;
+  align-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  color: var(--ink-invert-fg);
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--ink-invert-fg) 40%, transparent);
+}
+
+.home-receipts-contact a:hover,
+.home-receipts-contact a:focus-visible {
+  color: var(--accent-on-ink);
+  text-decoration-color: var(--accent-on-ink);
+}
+
+.home-receipts-updated {
+  margin: 20px 0 0;
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: color-mix(in srgb, var(--ink-invert-fg) 62%, transparent);
+}
+
+/* ---------- Rail footer tools (spec §2.1 homepage footer row) ----------
+   ExhibitShell wraps `railTools` in its own `.exhibit-rail-tools` div (see
+   that rule's comment in exhibition.css — every other page still uses its
+   legacy floating top-right placement until its own rebuild lands), so
+   HomeRailTools' root is a *child* of `.exhibit-rail-tools`, not the same
+   element — the outer wrapper's position/size is overridden via :has(),
+   the inner element carries its own background/color/padding. */
+.exhibit-rail-tools:has(.home-rail-tools) {
+  position: fixed;
+  top: auto;
+  right: auto;
+  bottom: 0;
+  left: 0;
+  z-index: 30;
+  width: var(--exhibit-rail-width, 260px);
+}
+
+.home-rail-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 16px;
+  width: 100%;
+  border-top: 1px solid color-mix(in srgb, var(--ink-invert-fg) 24%, transparent);
+  background: var(--ink-invert);
+  color: color-mix(in srgb, var(--ink-invert-fg) 78%, transparent);
+  padding: 14px 26px;
+  text-transform: uppercase;
+}
+
+.home-rail-tools .search-button,
+.home-rail-ask,
+.home-rail-tools a {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.home-rail-tools .search-button kbd {
+  margin-left: 4px;
+  border-left: 0;
+  padding-left: 0;
+  /* Opaque blend toward --ink-invert (not toward transparent): keeps the
+     rendered contrast against the ink-invert background predictable
+     instead of depending on alpha compositing. */
+  color: color-mix(in srgb, var(--ink-invert-fg) 70%, var(--ink-invert));
+  font-family: var(--mono);
+}
+
+.home-rail-tools a:hover,
+.home-rail-tools a:focus-visible,
+.home-rail-ask:hover,
+.home-rail-ask:focus-visible,
+.home-rail-tools .search-button:hover,
+.home-rail-tools .search-button:focus-visible {
+  color: var(--accent-on-ink);
+}
+
+.home-rail-tools .language-switcher {
+  display: flex;
+  gap: 8px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.home-rail-tools .language-switcher button {
+  min-width: 0;
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  color: color-mix(in srgb, var(--ink-invert-fg) 55%, transparent);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.home-rail-tools .language-switcher button.active {
+  background: transparent;
+  color: var(--accent-on-ink);
+}
+
+@media (max-width: 979.98px) {
+  /* Below 980px the desktop fixed sidebar is gone (exhibition.css), so a
+     fixed bottom bar here would float over page content instead of
+     belonging to a rail — worse, wrapping onto 2-3 rows on a narrow
+     viewport made it tall enough to intercept clicks on content scrolled
+     to the bottom of the viewport. Flowing it in place (right after the
+     56px sticky index bar, before <main>) keeps every control reachable
+     without covering anything.  */
+  .exhibit-rail-tools:has(.home-rail-tools) {
+    position: static;
+    width: 100%;
+  }
+
+  .home-rail-tools {
+    justify-content: space-between;
+  }
+
+  /* Task F1 (spec §2.5: touch targets >= 44px): these were plain
+     center-aligned inline text (16.5-34px tall, as narrow as 11px for the
+     "中" toggle) inside a row whose own 14px top/bottom padding absorbed
+     the rest of the visual height without belonging to any single
+     control's hit box. Move that padding onto each control instead of
+     the row -- same total row height, but every tap target now owns
+     enough of it to clear 44px. */
+  .home-rail-tools { padding-block: 0; }
+  .home-rail-tools .search-button,
+  .home-rail-ask,
+  .home-rail-tools .language-switcher button,
+  .home-rail-tools a {
+    min-height: 44px;
+    padding-block: 14px;
+  }
+  .home-rail-ask,
+  .home-rail-tools a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+  }
+  /* .search-button also gets an icon-only width:32px at <=640px
+     (globals.css); this wins over it (two classes beats one). */
+  .home-rail-tools .search-button {
+    width: 44px;
+    min-width: 44px;
+  }
+  .home-rail-tools .language-switcher { gap: 4px; }
+  .home-rail-tools .language-switcher button {
+    min-width: 44px;
+    padding-inline: 8px;
+  }
+
+  /* Same padding-transfer technique for the hero contact links (email/
+     WeChat, underlined inline text at 30px tall in a flex-wrap row with
+     its own 8px/20px gap already providing horizontal separation) and the
+     flagship CTA (30px tall, a border-top rule + text with no box). */
+  .home-hero-contact a,
+  .home-hero-contact button {
+    display: inline-flex;
+    align-items: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .home-cta {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "releaseJson": {
+    "sha256": "9e547b3418ce1f633914e8dfe7b818fa6f7e064a891cee8e4c73837e6ce45f4d",
+    "source": "public/case-studies/frontier-forge/release.json"
+  },
+  "eodManifest": {
+    "sha256": "7867fb1ec1f91787ada2bb9141426b29273324f8d84b3eac6968572085120d32",
+    "source": "public/case-studies/exactly-once-drills/results/manifest.json"
+  },
+  "privacyManifest": {
+    "sha256": "cfa56cd3ba453227863bb997c937bfcb41cd6e01e339cf806ac00689eac3aebe",
+    "source": "public/case-studies/privacy-preflight/manifest.json"
+  },
+  "buildDate": "2026-08-28",
+  "gateStatus": "R2 source verification passed: 38 verified, 16 skipped, 54 total."
+}

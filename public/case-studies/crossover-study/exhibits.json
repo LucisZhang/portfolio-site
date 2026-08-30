@@ -1,0 +1,457 @@
+{
+  "schema_version": 1,
+  "generated_by": "scripts/extract-crossover-case-study.mjs",
+  "amazon_null": {
+    "metric": "ndcg@10",
+    "segments": [
+      "0",
+      "1-4",
+      "5-9",
+      "10-19",
+      "20+"
+    ],
+    "verdict": "null",
+    "n_star": null,
+    "series": [
+      {
+        "key": "pop_t12m",
+        "label": "pop-t12m",
+        "run_id": "20260805T172047Z-035042b",
+        "model_name": "popularity",
+        "points": [
+          {
+            "segment": "0",
+            "n_users": 12866,
+            "value": 0.007505095148739314,
+            "ci_lo": 0.0067152511881550985,
+            "ci_hi": 0.008247003357951855
+          },
+          {
+            "segment": "1-4",
+            "n_users": 76989,
+            "value": 0.00582092908536531,
+            "ci_lo": 0.005488317609969539,
+            "ci_hi": 0.006217983730384991
+          },
+          {
+            "segment": "5-9",
+            "n_users": 80202,
+            "value": 0.005225052589673832,
+            "ci_lo": 0.004894911363004975,
+            "ci_hi": 0.005574924538457674
+          },
+          {
+            "segment": "10-19",
+            "n_users": 38368,
+            "value": 0.005107407921891457,
+            "ci_lo": 0.004568811318416246,
+            "ci_hi": 0.005651139901753686
+          },
+          {
+            "segment": "20+",
+            "n_users": 19728,
+            "value": 0.0037110400543910143,
+            "ci_lo": 0.0031808121050494274,
+            "ci_hi": 0.004244920280467894
+          }
+        ]
+      },
+      {
+        "key": "als",
+        "label": "ALS (rank 128, seed 20260805)",
+        "run_id": "20260806T082441Z-2f2f26d",
+        "model_name": "als",
+        "points": [
+          {
+            "segment": "0",
+            "n_users": 12866,
+            "value": 0,
+            "ci_lo": 0,
+            "ci_hi": 0
+          },
+          {
+            "segment": "1-4",
+            "n_users": 76989,
+            "value": 0.0032589943143140837,
+            "ci_lo": 0.0029812171085192153,
+            "ci_hi": 0.0035258827483958697
+          },
+          {
+            "segment": "5-9",
+            "n_users": 80202,
+            "value": 0.002924718578295489,
+            "ci_lo": 0.0026442172516468005,
+            "ci_hi": 0.003208917560147187
+          },
+          {
+            "segment": "10-19",
+            "n_users": 38368,
+            "value": 0.0025414980621160143,
+            "ci_lo": 0.00216222369251948,
+            "ci_hi": 0.0029041894873189597
+          },
+          {
+            "segment": "20+",
+            "n_users": 19728,
+            "value": 0.002253539387677303,
+            "ci_lo": 0.0018487381363264971,
+            "ci_hi": 0.0026938374182650902
+          }
+        ]
+      }
+    ]
+  },
+  "ml32m_crossover": {
+    "metric": "ndcg@10",
+    "segments": [
+      "0",
+      "1-4",
+      "5-9",
+      "10-19",
+      "20+"
+    ],
+    "verdict": "D1_CROSSOVER",
+    "n_star": 20,
+    "crossover_bucket": "20-49",
+    "series": [
+      {
+        "key": "pop_t12m",
+        "label": "pop-t12m",
+        "run_id": "20260820T221055Z-20d8ff9",
+        "model_name": "popularity",
+        "points": [
+          {
+            "segment": "0",
+            "n_users": 3882,
+            "value": 0.44124083822424365,
+            "ci_lo": 0.43187893746745387,
+            "ci_hi": 0.45028504477883935
+          },
+          {
+            "segment": "1-4",
+            "n_users": 25,
+            "value": 0.361047267979922,
+            "ci_lo": 0.23941086960538954,
+            "ci_hi": 0.4870947951619513
+          },
+          {
+            "segment": "5-9",
+            "n_users": 19,
+            "value": 0.28732962279336915,
+            "ci_lo": 0.2137509492671962,
+            "ci_hi": 0.3669224328793085
+          },
+          {
+            "segment": "10-19",
+            "n_users": 53,
+            "value": 0.24567791424062388,
+            "ci_lo": 0.16778261743882888,
+            "ci_hi": 0.3288040198501097
+          },
+          {
+            "segment": "20+",
+            "n_users": 4864,
+            "value": 0.09217290080218536,
+            "ci_lo": 0.08760741219525753,
+            "ci_hi": 0.09647046026195549
+          }
+        ]
+      },
+      {
+        "key": "itemknn_t12m",
+        "label": "item-kNN t12m",
+        "run_id": "20260820T221701Z-20d8ff9",
+        "model_name": "item_knn",
+        "points": [
+          {
+            "segment": "0",
+            "n_users": 3882,
+            "value": 0.056821644008303925,
+            "ci_lo": 0.053774118010940515,
+            "ci_hi": 0.05999895168878956
+          },
+          {
+            "segment": "1-4",
+            "n_users": 25,
+            "value": 0.34705828925513466,
+            "ci_lo": 0.2252141344294553,
+            "ci_hi": 0.47253189032765197
+          },
+          {
+            "segment": "5-9",
+            "n_users": 19,
+            "value": 0.28355640381436364,
+            "ci_lo": 0.1928141446068762,
+            "ci_hi": 0.3757017743580745
+          },
+          {
+            "segment": "10-19",
+            "n_users": 53,
+            "value": 0.2017394174606558,
+            "ci_lo": 0.13393440030642467,
+            "ci_hi": 0.2823782913111068
+          },
+          {
+            "segment": "20+",
+            "n_users": 4864,
+            "value": 0.10521938952147751,
+            "ci_lo": 0.10015858460842243,
+            "ci_hi": 0.11035756068987639
+          }
+        ]
+      }
+    ],
+    "confirmatory": {
+      "fdr_alpha": 0.05,
+      "recall_guard_metric_robust": false,
+      "d4_depth0": {
+        "segment": "0",
+        "n_users": 3882,
+        "delta": -0.38441919421593973,
+        "ci_lo": -0.3925536913043543,
+        "ci_hi": -0.37504946428358243,
+        "q_value": 0.005328005328005328
+      },
+      "winning_deep_buckets": [
+        {
+          "segment": "20-49",
+          "n_users": 242,
+          "delta": 0.03331706067297835,
+          "ci_lo": 0.010695782804417651,
+          "ci_hi": 0.05517465473104838,
+          "q_value": 0.011988011988011988
+        },
+        {
+          "segment": "50-99",
+          "n_users": 431,
+          "delta": 0.01980916723878097,
+          "ci_lo": 0.003372089979447112,
+          "ci_hi": 0.038052283198016935,
+          "q_value": 0.025574425574425574
+        },
+        {
+          "segment": "100+",
+          "n_users": 4191,
+          "delta": 0.011180539577156215,
+          "ci_lo": 0.007070239237351424,
+          "ci_hi": 0.014887620046157757,
+          "q_value": 0.005328005328005328
+        }
+      ]
+    }
+  },
+  "catalog_churn": {
+    "metric": "share of eval-split GT interactions on items with n_train_support <= 4",
+    "amazon": {
+      "run_id": "20260817T095926Z-633d454",
+      "churn_share": 0.4111295514585914,
+      "zero_support_share": 0.3453596469074335,
+      "low_support_share": 0.06576990455115793,
+      "high_support_share": 0.5888704485414086,
+      "attainable_recall_ceiling_support_ge_1": 0.6546403530925665
+    },
+    "ml32m": {
+      "run_id": "20260820T134403Z-e2263d2",
+      "churn_share": 0.06403017747252186
+    }
+  },
+  "receipts": [
+    {
+      "run_id": "20260805T172047Z-035042b",
+      "kind": "eval",
+      "run_ts": "2026-08-05T17:30:18.009394+00:00",
+      "git_sha": "035042bbc4ce5284a4b7afd46f5dca574b5ddee4",
+      "config_path": "configs/eval_pop_t12m_test.yaml",
+      "config_hash": "sha256:1e60f2621f29dda053119282bfd8dbc3c824df0af7d95b8d9aeca2f86a1500ed",
+      "dataset_manifest_hash": "sha256:4a553c348bfccb05918362192692ed5fe6965e3e2662fe751cf08d3b9f9da849",
+      "splits": {
+        "version": 1,
+        "frozen_at": "2026-08-05",
+        "file_hash": "sha256:784678440d06dc03d8202bbe575e95f803a375b980518674e949618e9a83ff97"
+      },
+      "iceberg_snapshots": {
+        "local.gold.interactions_5core": 8184397443787801000,
+        "local.gold.user_stats": 7656304543449164000,
+        "local.gold.item_features": 5841387267286614000,
+        "local.gold.popularity": 1565243784354530300
+      },
+      "seeds": {
+        "bootstrap": 20260805,
+        "model": null
+      },
+      "model": {
+        "name": "popularity",
+        "params": {
+          "as_of": "train_end",
+          "window_days": 365
+        }
+      },
+      "wall_clock_s": 570.663,
+      "hardware": "arm64 · Darwin"
+    },
+    {
+      "run_id": "20260806T082441Z-2f2f26d",
+      "kind": "eval",
+      "run_ts": "2026-08-06T08:46:12.872525+00:00",
+      "git_sha": "2f2f26d55129eabadfd84012146c8a202d61e1c2",
+      "config_path": "configs/eval_als_test_seed1.yaml",
+      "config_hash": "sha256:c50679bf1b89ed1bb82d7914b089a887a6ff91332c228b5ff67724966606d31e",
+      "dataset_manifest_hash": "sha256:4a553c348bfccb05918362192692ed5fe6965e3e2662fe751cf08d3b9f9da849",
+      "splits": {
+        "version": 1,
+        "frozen_at": "2026-08-05",
+        "file_hash": "sha256:784678440d06dc03d8202bbe575e95f803a375b980518674e949618e9a83ff97"
+      },
+      "iceberg_snapshots": {
+        "local.gold.interactions_5core": 8184397443787801000,
+        "local.gold.user_stats": 7656304543449164000,
+        "local.gold.item_features": 5841387267286614000,
+        "local.gold.popularity": 1565243784354530300
+      },
+      "seeds": {
+        "bootstrap": 20260805,
+        "model": 20260805
+      },
+      "model": {
+        "name": "als",
+        "params": {
+          "rank": 128,
+          "reg_param": 0.01,
+          "alpha": 10,
+          "max_iter": 25,
+          "weighting": "binary",
+          "seed": 20260805,
+          "param_hash": "36cb7b0cd328",
+          "user_factors_sha256": "a85c2d9fd88c5b51b7c71234dd02ca94d5bc5b9a3e3edb44a71cc9537f6154fb",
+          "item_factors_sha256": "6fc9e5468dc701a903467887c25efb300a47264539d006765988d6dd4af0026d"
+        }
+      },
+      "wall_clock_s": 1292.102,
+      "hardware": "arm64 · Darwin"
+    },
+    {
+      "run_id": "20260817T095926Z-633d454",
+      "kind": "regime_map",
+      "run_ts": "2026-08-17T09:59:26.571790+00:00",
+      "git_sha": "633d4543605b68e03a6e770ade46764f598dd5e9",
+      "config_path": "configs/regime_map_test.yaml",
+      "config_hash": "sha256:32c1c06a860eeb62ae42fe0c1c8e5c7d2b528aeb65d1a0fcf59adffbf0366806",
+      "dataset_manifest_hash": "sha256:4a553c348bfccb05918362192692ed5fe6965e3e2662fe751cf08d3b9f9da849",
+      "splits": {
+        "version": 1,
+        "frozen_at": "2026-08-05",
+        "file_hash": "sha256:784678440d06dc03d8202bbe575e95f803a375b980518674e949618e9a83ff97"
+      },
+      "iceberg_snapshots": {
+        "local.gold.interactions_5core": 8184397443787801000,
+        "local.gold.user_stats": 7656304543449164000,
+        "local.gold.item_features": 5841387267286614000,
+        "local.gold.popularity": 1565243784354530300
+      },
+      "seeds": {
+        "bootstrap": 20260805
+      },
+      "model": null,
+      "wall_clock_s": 41.002,
+      "hardware": "arm64 · Darwin"
+    },
+    {
+      "run_id": "20260820T134403Z-e2263d2",
+      "kind": "churn_contrast",
+      "run_ts": "2026-08-20T13:44:03.648361+00:00",
+      "git_sha": "e2263d24e03a0a61d2743314f60cdd21c289dadb",
+      "config_path": "configs/churn_contrast_ml32m.yaml",
+      "config_hash": "sha256:682d2e89e2c86cd71d46c43b844b70fd54f5f6b3a92ec7cd1285a6599cf3505f",
+      "dataset_manifest_hash": "sha256:1f830512534c39f3768e2f8b03a05d950c77fbb927e51b072a9eb541432e98a2",
+      "splits": {
+        "version": 1,
+        "frozen_at": "2026-08-19",
+        "file_hash": "sha256:7c94db0023154e278c85bc6d12338feaccb1b82b1fec6bab5fa9f8b771b35894"
+      },
+      "iceberg_snapshots": {
+        "local.gold_ml32m.interactions_5core": 3433604384732745700,
+        "local.gold_ml32m.item_features": 8148139012671155000
+      },
+      "seeds": {
+        "note": "no stochastic step: exact counts over the frozen TEST window, no bootstrap"
+      },
+      "model": null,
+      "wall_clock_s": 26.124,
+      "hardware": "x86_64 · Linux"
+    },
+    {
+      "run_id": "20260820T221055Z-20d8ff9",
+      "kind": "eval",
+      "run_ts": "2026-08-20T22:11:55.106578+00:00",
+      "git_sha": "20d8ff995f4baceda31a9eedfc78effd632099ce",
+      "config_path": "configs/eval_pop_t12m_ml32m_test.yaml",
+      "config_hash": "sha256:0e8c7581986745417dfc534edfc0132a547303c80dbe8d90c9989002d31ee9b0",
+      "dataset_manifest_hash": "sha256:1f830512534c39f3768e2f8b03a05d950c77fbb927e51b072a9eb541432e98a2",
+      "splits": {
+        "version": 1,
+        "frozen_at": "2026-08-19",
+        "file_hash": "sha256:7c94db0023154e278c85bc6d12338feaccb1b82b1fec6bab5fa9f8b771b35894"
+      },
+      "iceberg_snapshots": {
+        "local.gold_ml32m.interactions_5core": 3433604384732745700,
+        "local.gold_ml32m.user_stats": 3610231462088564000,
+        "local.gold_ml32m.item_features": 8148139012671155000,
+        "local.gold_ml32m.popularity": 4931082420935642000
+      },
+      "seeds": {
+        "bootstrap": 20260805,
+        "model": null
+      },
+      "model": {
+        "name": "popularity",
+        "params": {
+          "as_of": "train_end",
+          "window_days": 365
+        }
+      },
+      "wall_clock_s": 58.601,
+      "hardware": "x86_64 · Linux"
+    },
+    {
+      "run_id": "20260820T221701Z-20d8ff9",
+      "kind": "eval",
+      "run_ts": "2026-08-20T22:18:30.876460+00:00",
+      "git_sha": "20d8ff995f4baceda31a9eedfc78effd632099ce",
+      "config_path": "configs/eval_itemknn_t12m_ml32m_test.yaml",
+      "config_hash": "sha256:21212ee94a62fb72e684abc3a6d83355c96be6f257603996ca0e40c118d15d9a",
+      "dataset_manifest_hash": "sha256:1f830512534c39f3768e2f8b03a05d950c77fbb927e51b072a9eb541432e98a2",
+      "splits": {
+        "version": 1,
+        "frozen_at": "2026-08-19",
+        "file_hash": "sha256:7c94db0023154e278c85bc6d12338feaccb1b82b1fec6bab5fa9f8b771b35894"
+      },
+      "iceberg_snapshots": {
+        "local.gold_ml32m.interactions_5core": 3433604384732745700,
+        "local.gold_ml32m.user_stats": 3610231462088564000,
+        "local.gold_ml32m.item_features": 8148139012671155000,
+        "local.gold_ml32m.popularity": 4931082420935642000
+      },
+      "seeds": {
+        "bootstrap": 20260805,
+        "model": null
+      },
+      "model": {
+        "name": "item_knn",
+        "params": {
+          "top_n": 50,
+          "shrinkage": 0,
+          "block_size": 8192,
+          "train_window_days": 365
+        }
+      },
+      "wall_clock_s": 88.445,
+      "hardware": "x86_64 · Linux"
+    }
+  ],
+  "boundaries": [
+    "The Amazon null is scoped to this catalog, temporal split, five-core population, and observed history depths.",
+    "The ML-32M n*=20 result is a regime contrast, not causal proof that catalog churn alone creates the crossover.",
+    "Recall@20 did not confirm the three ML-32M deep-bucket wins; the page labels that robustness failure.",
+    "No MiniLM weights, semantic-search index, raw reviews, user identifiers, or per-user arrays are included."
+  ]
+}

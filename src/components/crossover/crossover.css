@@ -1,0 +1,571 @@
+/* Crossover Study -- cached-state notebook/workbench (task L6 [CLAUDE],
+   spec §6.6). Builds on exhibition.css's shared primitives (Exhibit/
+   Finding) -- this file only adds the page-specific instrument internals.
+   De-box grammar: hairlines only, no card boxes, no icons (matches
+   margin.css/credit.css precedent). */
+
+.crossover-page {
+  color: var(--ink);
+}
+
+.crossover-table-scroll,
+.crossover-sql-scroll,
+.crossover-curve-scroll {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+/* ---------- Exhibit 01: SQL workbench ---------- */
+
+.crossover-layering-note {
+  max-width: 68ch;
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+.crossover-bench {
+  display: grid;
+  grid-template-columns: minmax(0, 15fr) minmax(260px, 9fr);
+  gap: clamp(28px, 5vw, 56px);
+  margin-top: 22px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 16px;
+}
+
+.crossover-bench-main,
+.crossover-bench-index {
+  min-width: 0;
+}
+
+.crossover-col-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.crossover-eyebrow-small {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.crossover-sql {
+  margin: 12px 0 0;
+  min-width: 520px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.62;
+  white-space: pre;
+}
+
+.crossover-sql b {
+  font-weight: 650;
+}
+
+.crossover-sql-comment {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.crossover-runline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 18px;
+  margin: 14px 0 0;
+}
+
+.crossover-run-button {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--accent);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  min-height: 44px;
+}
+
+.crossover-run-button:hover,
+.crossover-run-button:focus-visible {
+  color: var(--accent-hover);
+}
+
+.crossover-telemetry {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.03em;
+}
+
+.crossover-engine-note {
+  margin: 6px 0 0;
+  color: var(--accent);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.crossover-results-table {
+  width: 100%;
+  min-width: 480px;
+  margin-top: 14px;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+}
+
+.crossover-results-table th,
+.crossover-results-table td {
+  padding: 7px 0;
+  border-bottom: 1px solid var(--hairline);
+  text-align: left;
+}
+
+.crossover-results-table th {
+  font-size: 0.62rem;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.crossover-results-table th:not(:first-child),
+.crossover-results-table td:not(:first-child) {
+  padding-left: 28px;
+}
+
+.crossover-results-table th.r,
+.crossover-results-table td.r {
+  text-align: right;
+}
+
+.crossover-table-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin-top: 10px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+}
+
+.crossover-table-foot a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.crossover-iceberg-plate {
+  margin-top: 18px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 10px;
+  color: var(--muted);
+}
+
+.crossover-iceberg-plate summary {
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.crossover-iceberg-plate dl {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px 20px;
+  margin: 10px 0 0;
+}
+
+.crossover-iceberg-plate dt {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.crossover-iceberg-plate dd {
+  margin: 2px 0 0;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  overflow-wrap: anywhere;
+}
+
+.crossover-query-index {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+
+.crossover-query-index li {
+  border-bottom: 1px solid var(--hairline);
+}
+
+.crossover-query-index button {
+  display: block;
+  width: 100%;
+  border: none;
+  background: none;
+  padding: 12px 0;
+  text-align: left;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.crossover-query-title {
+  display: block;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.02em;
+}
+
+.crossover-query-index li.active .crossover-query-title {
+  color: var(--accent);
+  font-weight: 650;
+}
+
+.crossover-query-blurb {
+  display: block;
+  margin-top: 5px;
+  max-width: 54ch;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.crossover-query-index li.active .crossover-query-blurb {
+  color: var(--ink);
+}
+
+/* ---------- Exhibit 02: the two main curves ---------- */
+
+.crossover-curve-panel {
+  margin-top: clamp(28px, 4vw, 44px);
+  border-top: 1px solid var(--hairline);
+  padding-top: 16px;
+}
+
+.crossover-curve-panel-head {
+  margin-bottom: 2px;
+}
+
+.crossover-curve-panel h2 {
+  margin: 4px 0 0;
+  font-family: var(--display-serif);
+  font-size: clamp(20px, 2.4vw, 28px);
+}
+
+:lang(zh) .crossover-curve-panel h2 {
+  font-family: var(--display-serif-zh);
+}
+
+.crossover-curve-caption {
+  max-width: 68ch;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+
+.crossover-curve-chart {
+  display: block;
+  width: 100%;
+  min-width: 560px;
+  height: auto;
+  margin-top: 14px;
+}
+
+.crossover-curve-gridline line {
+  stroke: var(--hairline);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.crossover-curve-gridline text,
+.crossover-curve-axis-label,
+.crossover-curve-marker text {
+  fill: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.crossover-curve-gridline text {
+  text-anchor: end;
+}
+
+.crossover-curve-marker line {
+  stroke: var(--accent);
+  stroke-dasharray: 4 3;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.crossover-curve-marker text {
+  fill: var(--accent);
+  font-weight: 700;
+}
+
+.crossover-curve-series > path {
+  fill: none;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.crossover-curve-series circle {
+  stroke: var(--paper);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.crossover-curve-ci line {
+  stroke-width: 1;
+  opacity: 0.55;
+  vector-effect: non-scaling-stroke;
+}
+
+.crossover-curve-series.series-1 > path,
+.crossover-curve-series.series-1 .crossover-curve-ci line,
+.crossover-curve-series.series-1 circle {
+  stroke: var(--fig-2);
+}
+
+.crossover-curve-series.series-1 circle {
+  fill: var(--fig-2);
+}
+
+.crossover-curve-legend .series-1 i {
+  background: var(--fig-2);
+}
+
+.crossover-curve-series.series-2 > path,
+.crossover-curve-series.series-2 .crossover-curve-ci line,
+.crossover-curve-series.series-2 circle {
+  stroke: var(--fig-1);
+}
+
+.crossover-curve-series.series-2 circle {
+  fill: var(--fig-1);
+}
+
+.crossover-curve-legend .series-2 i {
+  background: var(--fig-1);
+}
+
+.crossover-curve-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin-top: 8px;
+}
+
+.crossover-curve-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink);
+  font-size: 0.72rem;
+}
+
+.crossover-curve-legend i {
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+}
+
+.crossover-curve-legend code {
+  color: var(--muted);
+  font-size: 0.62rem;
+}
+
+.crossover-curve-table {
+  width: 100%;
+  min-width: 480px;
+  margin-top: 12px;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+}
+
+.crossover-curve-table th,
+.crossover-curve-table td {
+  padding: 6px 8px;
+  border-top: 1px solid var(--hairline);
+  text-align: left;
+}
+
+.crossover-curve-table th.r,
+.crossover-curve-table td.r {
+  text-align: right;
+}
+
+/* ---------- Exhibit 03: source & receipts ---------- */
+
+.crossover-provenance p {
+  max-width: 70ch;
+  margin: 10px 0 0;
+  color: color-mix(in srgb, var(--ink-invert-fg) 86%, transparent);
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+
+.crossover-receipts-list {
+  display: grid;
+  gap: 0;
+  margin-top: 20px;
+}
+
+.crossover-receipt {
+  border-top: 1px solid color-mix(in srgb, var(--ink-invert-fg) 18%, transparent);
+  color: color-mix(in srgb, var(--ink-invert-fg) 82%, transparent);
+}
+
+.crossover-receipt summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 0;
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  min-height: 44px;
+  align-items: center;
+}
+
+.crossover-receipt summary span {
+  color: color-mix(in srgb, var(--ink-invert-fg) 64%, transparent);
+}
+
+.crossover-receipt dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 20px;
+  margin: 0 0 16px;
+}
+
+.crossover-receipt dt {
+  color: color-mix(in srgb, var(--ink-invert-fg) 58%, transparent);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.crossover-receipt dd {
+  margin: 3px 0 0;
+  overflow-wrap: anywhere;
+  font-size: 0.72rem;
+}
+
+.crossover-digits-note {
+  max-width: 70ch;
+  margin: 18px 0 0;
+  color: color-mix(in srgb, var(--ink-invert-fg) 70%, transparent);
+  font-size: 0.74rem;
+  line-height: 1.6;
+}
+
+.crossover-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 14px;
+}
+
+.crossover-links a {
+  color: var(--accent-on-ink);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ---------- Report layer ---------- */
+
+.crossover-report-section {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: clamp(48px, 8vw, 96px) clamp(20px, 5vw, 48px);
+}
+
+/* ---------- Mobile: two-column label:value fold for text-heavy result
+   rows (spec: "mobile table grammar, two-column fold for text-heavy
+   cells"). Horizontal scroll alone stays readable for narrow numeric
+   tables (data-scale, amazon-null-test); category-distribution and
+   cross-purchase carry long category-name cells that fold better as
+   stacked label:value rows on narrow viewports. Applied uniformly to
+   .crossover-results-table since it is one generic component across all
+   six query shapes -- harmless on numeric-only queries, load-bearing on
+   text-heavy ones. */
+@media (max-width: 700px) {
+  .crossover-bench {
+    grid-template-columns: 1fr;
+  }
+
+  .crossover-results-table thead {
+    display: none;
+  }
+
+  .crossover-results-table,
+  .crossover-results-table tbody,
+  .crossover-results-table tr {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .crossover-results-table tr {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .crossover-results-table td {
+    display: grid;
+    grid-template-columns: minmax(0, 40%) 1fr;
+    gap: 10px;
+    padding: 3px 0;
+    border-bottom: 0;
+    text-align: left;
+  }
+
+  .crossover-results-table td.r {
+    text-align: left;
+  }
+
+  .crossover-results-table td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .crossover-iceberg-plate dl {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .crossover-receipt dl {
+    grid-template-columns: 1fr;
+  }
+}

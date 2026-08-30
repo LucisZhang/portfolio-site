@@ -1,8 +1,32 @@
 import { expect, test } from "@playwright/test";
+import { SEL } from "./selectors";
+
+// Task 1.2: the homepage's Round-1 LucisOrbit entrance mark is removed
+// (no decorative animated emblem fits the exhibition grammar). The
+// equivalent-or-stronger iPhone WebKit check is that the rebuilt hero
+// renders normally, without a permanent reveal overlay, on first paint.
+test("iPhone WebKit renders the homepage hero without an entrance overlay", async ({ page }) => {
+  await page.goto("/", { waitUntil: "networkidle" });
+  await expect(page.getByTestId("lucis-orbit-overlay")).toHaveCount(0);
+  await expect(page.locator(SEL.homeHeroTitle)).toBeVisible();
+  await expect(page.locator(".exhibit-stat-grid").first()).toBeVisible();
+});
+
+test("iPhone WebKit shows immediate feedback while a route is opening", async ({ page }) => {
+  await page.goto("/", { waitUntil: "networkidle" });
+  await page.route("**/ai/release-guardian?*", async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 700));
+    await route.continue();
+  });
+  const navigation = page.locator(SEL.aHrefAiReleaseGuardian).first().click();
+  await expect(page.getByTestId("navigation-pending")).toBeVisible();
+  await navigation;
+  await expect(page).toHaveURL(/\/ai\/release-guardian/);
+});
 
 test("iPhone WebKit loads every bundled PDF with immediate local feedback", async ({ page }) => {
   await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "zh"));
-  await page.goto("/ai/privacy-preflight-mac?lang=zh", { waitUntil: "networkidle" });
+  await page.goto("/ai/privacy-preflight?lang=zh", { waitUntil: "networkidle" });
   await page.getByRole("tab", { name: "PDF" }).click();
 
   for (const fixture of [
@@ -11,10 +35,10 @@ test("iPhone WebKit loads every bundled PDF with immediate local feedback", asyn
     { button: "加载多页 PDF", file: "privacy-multipage-example.pdf", pages: 3 },
   ]) {
     await page.getByRole("button", { name: fixture.button }).click();
-    await expect(page.locator(".privacy-file-name")).toContainText(fixture.file, { timeout: 30_000 });
-    await expect(page.locator(".privacy-example-status")).toContainText(`已可在本地复核: ${fixture.file}`);
-    await expect(page.getByTestId("privacy-pdf-source-pages").locator("[data-pdf-page]")).toHaveCount(fixture.pages);
-    await expect(page.locator(".privacy-pdf-canvas-wrap")).toHaveAttribute("aria-busy", "false");
+    await expect(page.locator(SEL.privacyFileName)).toContainText(fixture.file, { timeout: 30_000 });
+    await expect(page.locator(SEL.privacyExampleStatus)).toContainText(`已可在本地复核: ${fixture.file}`);
+    await expect(page.getByTestId("privacy-pdf-source-pages").locator(SEL.dataPdfPage)).toHaveCount(fixture.pages);
+    await expect(page.locator(SEL.privacyPdfCanvasWrap)).toHaveAttribute("aria-busy", "false");
   }
 });
 
@@ -31,7 +55,7 @@ test("iPhone WebKit loads every bundled PDF when newer PDF.js platform APIs are 
     Object.defineProperty(ReadableStream.prototype, Symbol.asyncIterator, { configurable: true, value: undefined });
   });
   await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "zh"));
-  await page.goto("/ai/privacy-preflight-mac?lang=zh", { waitUntil: "networkidle" });
+  await page.goto("/ai/privacy-preflight?lang=zh", { waitUntil: "networkidle" });
 
   const workerCompatibility = await page.evaluate(() => new Promise<string[]>((resolve, reject) => {
     const compatibilityUrl = new URL("/generated/privacy-pdf/pdf.worker.compat.mjs", window.location.origin).href;
@@ -79,10 +103,10 @@ test("iPhone WebKit loads every bundled PDF when newer PDF.js platform APIs are 
     { button: "加载多页 PDF", file: "privacy-multipage-example.pdf", pages: 3 },
   ]) {
     await page.getByRole("button", { name: fixture.button }).click();
-    await expect(page.locator(".privacy-file-name")).toContainText(fixture.file, { timeout: 30_000 });
-    await expect(page.getByTestId("privacy-pdf-source-pages").locator("[data-pdf-page]")).toHaveCount(fixture.pages);
-    await expect(page.locator(".privacy-pdf-canvas-wrap")).toHaveAttribute("aria-busy", "false");
-    await expect(page.locator(".privacy-error")).toHaveCount(0);
+    await expect(page.locator(SEL.privacyFileName)).toContainText(fixture.file, { timeout: 30_000 });
+    await expect(page.getByTestId("privacy-pdf-source-pages").locator(SEL.dataPdfPage)).toHaveCount(fixture.pages);
+    await expect(page.locator(SEL.privacyPdfCanvasWrap)).toHaveAttribute("aria-busy", "false");
+    await expect(page.locator(SEL.privacyError)).toHaveCount(0);
   }
 });
 
@@ -91,7 +115,7 @@ test("iPhone WebKit opens the portfolio assistant without zoom-triggering focus"
   await page.goto("/", { waitUntil: "networkidle" });
   const initialWidth = await page.evaluate(() => window.visualViewport?.width ?? window.innerWidth);
   await page.getByRole("button", { name: "Ask Portfolio" }).click();
-  const textarea = page.getByTestId("assistant-widget").locator("textarea");
+  const textarea = page.getByTestId("assistant-widget").locator(SEL.textarea);
   await expect(textarea).toBeVisible();
   const state = await textarea.evaluate((node) => ({
     active: document.activeElement === node,
@@ -109,11 +133,11 @@ test("iPhone WebKit keeps the search dialog open when the first close action cle
   await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "en"));
   await page.goto("/", { waitUntil: "networkidle" });
   await page.getByRole("button", { name: /Search/ }).click();
-  const dialog = page.locator(".command-dialog");
+  const dialog = page.locator(SEL.commandDialog);
   const input = page.getByPlaceholder("Search projects, systems, or tools");
   await input.fill("dian");
-  await expect(page.locator("[cmdk-item]").first()).toContainText("Margin Control Tower");
-  await expect(page.locator(".command-completions")).toBeVisible();
+  await expect(page.locator(SEL.cmdkItem).first()).toContainText("Margin Control Tower");
+  await expect(page.locator(SEL.commandCompletions)).toBeVisible();
   await page.getByRole("button", { name: "Clear search" }).click();
   await expect(input).toHaveValue("");
   await expect(dialog).toBeVisible();

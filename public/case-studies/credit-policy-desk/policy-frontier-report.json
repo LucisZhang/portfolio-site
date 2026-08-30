@@ -1,0 +1,232 @@
+{
+  "report_version": "credit-policy-frontier-report-v1",
+  "generated_by": "scripts/generate-credit-policy-frontier.mjs",
+  "source_artifact_sha256": "2bbc97350d28123a1b056e4d475cdc90000954df1e6226d54d4fa35f2e7e0b95",
+  "source_compact_sha256": "1ee47e3e636f8bf04d92707123bc11190848740d6c506171efff32cee210dc0d",
+  "model": "calibrated_pd",
+  "backtest_preview_row_count": 624,
+  "approve_everyone_default_rate_preview": 0.19230769230769232,
+  "active_policy_reference": "pd_20",
+  "reference_points": {
+    "pd_15": {
+      "threshold": 0.15,
+      "approval_rate": 0.3108974358974359,
+      "default_rate": 0.07216494845360824,
+      "approved_count": 194
+    },
+    "pd_20": {
+      "threshold": 0.2,
+      "approval_rate": 0.5064102564102564,
+      "default_rate": 0.10759493670886076,
+      "approved_count": 316
+    },
+    "pd_30": {
+      "threshold": 0.3,
+      "approval_rate": 0.8173076923076923,
+      "default_rate": 0.1392156862745098,
+      "approved_count": 510
+    }
+  },
+  "points": [
+    {
+      "threshold": 0.000001,
+      "approval_rate": 0.01282051282051282,
+      "default_rate": 0
+    },
+    {
+      "threshold": 0.037383177570093455,
+      "approval_rate": 0.041666666666666664,
+      "default_rate": 0
+    },
+    {
+      "threshold": 0.060240963855421686,
+      "approval_rate": 0.0641025641025641,
+      "default_rate": 0.025
+    },
+    {
+      "threshold": 0.06363636363636363,
+      "approval_rate": 0.06891025641025642,
+      "default_rate": 0.046511627906976744
+    },
+    {
+      "threshold": 0.07091777120759724,
+      "approval_rate": 0.07051282051282051,
+      "default_rate": 0.045454545454545456
+    },
+    {
+      "threshold": 0.07142857142857142,
+      "approval_rate": 0.07532051282051282,
+      "default_rate": 0.0425531914893617
+    },
+    {
+      "threshold": 0.08345323741007195,
+      "approval_rate": 0.1266025641025641,
+      "default_rate": 0.0759493670886076
+    },
+    {
+      "threshold": 0.08710801393728224,
+      "approval_rate": 0.14423076923076922,
+      "default_rate": 0.07777777777777778
+    },
+    {
+      "threshold": 0.0946372239747634,
+      "approval_rate": 0.16987179487179488,
+      "default_rate": 0.08490566037735849
+    },
+    {
+      "threshold": 0.10227272727272728,
+      "approval_rate": 0.17147435897435898,
+      "default_rate": 0.08411214953271028
+    },
+    {
+      "threshold": 0.10975609756097561,
+      "approval_rate": 0.1891025641025641,
+      "default_rate": 0.0847457627118644
+    },
+    {
+      "threshold": 0.11224489795918367,
+      "approval_rate": 0.23717948717948717,
+      "default_rate": 0.08108108108108109
+    },
+    {
+      "threshold": 0.11702127659574468,
+      "approval_rate": 0.2516025641025641,
+      "default_rate": 0.07643312101910828
+    },
+    {
+      "threshold": 0.1352112676056338,
+      "approval_rate": 0.28685897435897434,
+      "default_rate": 0.07262569832402235
+    },
+    {
+      "threshold": 0.14545454545454545,
+      "approval_rate": 0.28846153846153844,
+      "default_rate": 0.07222222222222222
+    },
+    {
+      "threshold": 0.149519890260631,
+      "approval_rate": 0.3108974358974359,
+      "default_rate": 0.07216494845360824
+    },
+    {
+      "threshold": 0.16,
+      "approval_rate": 0.3141025641025641,
+      "default_rate": 0.07142857142857142
+    },
+    {
+      "threshold": 0.16836734693877548,
+      "approval_rate": 0.3189102564102564,
+      "default_rate": 0.07035175879396985
+    },
+    {
+      "threshold": 0.169740308618743,
+      "approval_rate": 0.42948717948717946,
+      "default_rate": 0.09701492537313433
+    },
+    {
+      "threshold": 0.18958333333333333,
+      "approval_rate": 0.4855769230769231,
+      "default_rate": 0.11221122112211221
+    },
+    {
+      "threshold": 0.19095477386934673,
+      "approval_rate": 0.5064102564102564,
+      "default_rate": 0.10759493670886076
+    },
+    {
+      "threshold": 0.21455311183902664,
+      "approval_rate": 0.6714743589743589,
+      "default_rate": 0.13126491646778043
+    },
+    {
+      "threshold": 0.26057906458797325,
+      "approval_rate": 0.6955128205128205,
+      "default_rate": 0.1313364055299539
+    },
+    {
+      "threshold": 0.26145552560646906,
+      "approval_rate": 0.717948717948718,
+      "default_rate": 0.13392857142857142
+    },
+    {
+      "threshold": 0.2672750977835724,
+      "approval_rate": 0.7644230769230769,
+      "default_rate": 0.14255765199161424
+    },
+    {
+      "threshold": 0.2716262975778546,
+      "approval_rate": 0.8044871794871795,
+      "default_rate": 0.14143426294820718
+    },
+    {
+      "threshold": 0.29946524064171126,
+      "approval_rate": 0.8173076923076923,
+      "default_rate": 0.1392156862745098
+    },
+    {
+      "threshold": 0.30565371024734983,
+      "approval_rate": 0.8317307692307693,
+      "default_rate": 0.14065510597302505
+    },
+    {
+      "threshold": 0.3300653594771242,
+      "approval_rate": 0.842948717948718,
+      "default_rate": 0.14258555133079848
+    },
+    {
+      "threshold": 0.3356554781507283,
+      "approval_rate": 0.9006410256410257,
+      "default_rate": 0.1619217081850534
+    },
+    {
+      "threshold": 0.3396825396825397,
+      "approval_rate": 0.9118589743589743,
+      "default_rate": 0.16520210896309315
+    },
+    {
+      "threshold": 0.36018957345971564,
+      "approval_rate": 0.9166666666666666,
+      "default_rate": 0.16958041958041958
+    },
+    {
+      "threshold": 0.3626373626373626,
+      "approval_rate": 0.9262820512820513,
+      "default_rate": 0.1695501730103806
+    },
+    {
+      "threshold": 0.36857142857142855,
+      "approval_rate": 0.9358974358974359,
+      "default_rate": 0.17123287671232876
+    },
+    {
+      "threshold": 0.39181286549707595,
+      "approval_rate": 0.9423076923076923,
+      "default_rate": 0.17346938775510204
+    },
+    {
+      "threshold": 0.42011834319526625,
+      "approval_rate": 0.9455128205128205,
+      "default_rate": 0.17627118644067796
+    },
+    {
+      "threshold": 0.4451345755693582,
+      "approval_rate": 0.9807692307692307,
+      "default_rate": 0.18627450980392157
+    },
+    {
+      "threshold": 0.5000000000000001,
+      "approval_rate": 0.9871794871794872,
+      "default_rate": 0.18831168831168832
+    },
+    {
+      "threshold": 0.5378787878787877,
+      "approval_rate": 0.9951923076923077,
+      "default_rate": 0.19001610305958133
+    },
+    {
+      "threshold": 0.640625,
+      "approval_rate": 1,
+      "default_rate": 0.19230769230769232
+    }
+  ]
+}

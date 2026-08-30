@@ -429,7 +429,7 @@ export const ASSISTANT_PUBLIC_SOURCE_PACK_SHA256 = sha256Utf8(
   canonicalJson(ASSISTANT_PUBLIC_SOURCE_PACK),
 );
 
-const OTHER_PROJECT_PATTERN = /(?:release[\s_-]+guardian|rag[\s_-]+quality[\s_-]+lab|privacy[\s_-]+preflight|margin[\s_-]+control[\s_-]+tower|credit[\s_-]+policy[\s_-]+lab|发布守门人|rag[\s_-]*质量实验室|隐私预检|毛利控制塔|信贷策略实验室)/iu;
+const OTHER_PROJECT_PATTERN = /(?:release[\s_-]+guardian|rag[\s_-]+quality[\s_-]+lab|privacy[\s_-]+preflight|margin[\s_-]+control[\s_-]+tower|credit[\s_-]+policy[\s_-]+lab|隐私预检|信贷策略实验室)/iu;
 
 function aliasPattern(alias: string) {
   const escaped = alias

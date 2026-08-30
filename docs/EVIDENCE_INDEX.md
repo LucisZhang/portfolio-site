@@ -1,20 +1,58 @@
 # Claim-to-evidence index
 
-Updated: 2026-07-19
+Updated: 2026-08-30
 
-This index maps the portfolio's principal visible claims to inspectable evidence. “Source” means
-the implementation or reproduction path; it does not turn a synthetic fixture into measured
-production evidence. Remote links describe the last anonymously verified public state. Local
-pipeline links become anonymously public only after the owner-gated publication checklist is
-completed.
+## Round-2 evidence set (current)
+
+The Round-2 rebuild moved the primary number-to-artifact discipline into three
+machine-checked registers; start there for any number the current site renders:
+
+- [`evidence/r2-source-map.md`](evidence/r2-source-map.md) — the frozen source
+  contract: every upstream artifact as
+  `source path → site target → SHA-256 → generating command`, re-hashed by
+  `npm run verify:r2-sources`.
+- [`evidence/digits-*.md`](evidence/) — ten per-page digits audits
+  (`digits-home.md`, `digits-forge.md`, `digits-guardian.md`, `digits-rag.md`,
+  `digits-triage.md`, `digits-privacy.md`, `digits-eod.md`,
+  `digits-crossover.md`, `digits-margin.md`, `digits-credit.md`), each listing
+  every rendered number's file, JSON path, and hash.
+- [`../heavy-assets.json`](../heavy-assets.json) — the measured byte ledger for
+  every large download, asserted against disk and UI-advertised sizes by
+  `npm run verify:heavy-assets`.
+
+The full gate list and commands are summarized in the repository
+[`README.md`](../README.md).
+
+## Phase-2 claim register (preserved)
+
+The tables below are the Phase-2 claim-to-artifact register. Their claim rows
+are preserved unchanged because `src/lib/projects.ts`'s audited catalog and the
+digits audits above cite them; only artifact paths were repaired to the
+post-rename locations, and components deleted by the rebuild are marked
+retired. Project naming reflects Phase 2, before the 2026-08 route renames
+(Streaming Reliability Lab → Exactly-Once Drills at
+`/engineering/exactly-once-drills`; Credit Policy Lab → Credit Policy Desk at
+`/analytics/credit-policy-desk`). “Source” means the implementation or
+reproduction path; it does not turn a synthetic fixture into measured
+production evidence. Remote links describe the last anonymously verified public
+state. Local pipeline links become anonymously public only after the
+owner-gated publication checklist is completed.
+
+## Public resumes
+
+This repository publishes no resume artifact. The owner-approved English and Chinese PDFs are
+private material, are served only from the deployment host, and are excluded from the assistant's
+knowledge package, retrieval index, prompts, and model payloads. `siteIdentity.resume` here is an
+unrendered placeholder; `tests/e2e/portfolio.spec.ts` asserts that the public build links no
+resume and serves no resume path.
 
 ## Release Guardian
 
 | Visible claim | Artifact | Source / reproduction path | Boundary |
 | --- | --- | --- | --- |
-| 8/8 aggregate gates passed across 132 funded live graph runs | [`evaluation-live.csv`](../public/case-studies/release-guardian/data/evaluation-live.csv) | [`ReleaseGuardianProof.tsx`](../src/components/ReleaseGuardianProof.tsx), [`manifest.json`](../public/case-studies/release-guardian/manifest.json) | Aggregate thresholds; not a statement that every scenario passed every trial |
+| 8/8 aggregate gates passed across 132 funded live graph runs | [`evaluation-live.csv`](../public/case-studies/release-guardian/data/evaluation-live.csv) | `ReleaseGuardianProof.tsx` (retired in the Round-2 rebuild), [`manifest.json`](../public/case-studies/release-guardian/manifest.json) | Aggregate thresholds; not a statement that every scenario passed every trial |
 | 30/44 strict residual | [`evaluation-live.csv`](../public/case-studies/release-guardian/data/evaluation-live.csv) | Strict definition is rendered immediately above the metric | A scenario is flagged when any criterion fails in any of its three trials |
-| 13 sanitized findings | [`findings.csv`](../public/case-studies/release-guardian/data/findings.csv) | [`ReleaseChangeReplay.tsx`](../src/components/release/ReleaseChangeReplay.tsx) | Sanitized derivative only; private source and raw report are excluded |
+| 13 sanitized findings | [`findings.csv`](../public/case-studies/release-guardian/data/findings.csv) | `ReleaseChangeReplay.tsx` (retired in the Round-2 rebuild) | Sanitized derivative only; private source and raw report are excluded |
 | Synthetic review workflow | [`synthetic-scenarios.json`](../public/case-studies/release-guardian/replay/synthetic-scenarios.json) | [Public replay components](https://github.com/LucisZhang/portfolio-site/tree/codex/portfolio-phase2/src/components/release) | Presentation derivative; it inherits no funded-live or stub metric |
 
 ## RAG Quality Lab
@@ -43,9 +81,9 @@ completed.
 
 | Visible claim | Artifact | Source / reproduction path | Boundary |
 | --- | --- | --- | --- |
-| Five induced failure classes, zero snapshot differences after recovery | [`index.json`](../public/case-studies/p1-reliability-lab/results/index.json), [`eo_reconciliation.json`](../public/case-studies/p1-reliability-lab/results/eo_reconciliation.json) | [Public lab repository](https://github.com/LucisZhang/streaming-reliability-lab), [`workstation-reproduction-guide.md`](../public/case-studies/p1-reliability-lab/workstation-reproduction-guide.md) | July U6 result applies only to its recorded local-Mac environment; the site route retains its historical slug |
-| Checkpoint duration 55 ms → 19,022 ms; commit lag 320 → 0; one checkpoint failure | [`checkpoint_metrics.json`](../public/case-studies/p1-reliability-lab/results/checkpoint_metrics.json) | [`P1Proof.tsx`](../src/components/P1Proof.tsx) | Recorded historical experiment, not a universal performance benchmark |
-| Small-file rewrite evidence | [`iceberg_small_file_rewrite.json`](../public/case-studies/p1-reliability-lab/results/iceberg_small_file_rewrite.json), [`phase-2.2-small-file-rewrite.svg`](../public/case-studies/p1-reliability-lab/media/phase-2.2-small-file-rewrite.svg) | [`runbook-incidents.md`](../public/case-studies/p1-reliability-lab/runbook-incidents.md) | Historical May artifact set; separate from the July reproduction |
+| Five induced failure classes, zero snapshot differences after recovery | [`index.json`](../public/case-studies/exactly-once-drills/results/index.json), [`eo_reconciliation.json`](../public/case-studies/exactly-once-drills/results/eo_reconciliation.json) | [Public lab repository](https://github.com/LucisZhang/streaming-reliability-lab), [`workstation-reproduction-guide.md`](../public/case-studies/exactly-once-drills/workstation-reproduction-guide.md) | July U6 result applies only to its recorded local-Mac environment; the site route retains its historical slug |
+| Checkpoint duration 55 ms → 19,022 ms; commit lag 320 → 0; one checkpoint failure | [`checkpoint_metrics.json`](../public/case-studies/exactly-once-drills/results/checkpoint_metrics.json) | `P1Proof.tsx` (retired in the Round-2 rebuild) | Recorded historical experiment, not a universal performance benchmark |
+| Small-file rewrite evidence | [`iceberg_small_file_rewrite.json`](../public/case-studies/exactly-once-drills/results/iceberg_small_file_rewrite.json), [`phase-2.2-small-file-rewrite.svg`](../public/case-studies/exactly-once-drills/media/phase-2.2-small-file-rewrite.svg) | [`runbook-incidents.md`](../public/case-studies/exactly-once-drills/runbook-incidents.md) | Historical May artifact set; separate from the July reproduction |
 | Current v15 compatibility pack is grounded in three verified public-GitHub blobs at the final Streaming repository commit | [`assistant-public-sources.ts`](../src/lib/assistant-public-sources.ts) | Repository `LucisZhang/streaming-reliability-lab`, commit `eda2a7c156059678ecae8c57f4452ef98bd9ae89`; source-pack SHA-256 `81973c062f133225ad817cf97b1673aca4ee61e84450515c6d2dbf0774fa0452`; fact-catalog SHA-256 `804ffa4dd7e06850351af20421799903d589f259181e0618e42d40a651f59b90` | Offline compatibility source only; the old P1 repository name is retained solely as a historical alias. One recorded single-node Mac/Docker lab run does not prove production readiness, cloud scale, multi-node behavior, general hardware compatibility, continuous operation, or one-command reproduction |
 
 ## Margin Control Tower
@@ -61,9 +99,9 @@ completed.
 
 | Visible claim | Artifact | Source / reproduction path | Boundary |
 | --- | --- | --- | --- |
-| Synthetic fixture: 12,000 applications and capacity-gated policy audit | [`synthetic-credit-data.json`](../public/case-studies/credit-policy-lab/synthetic-credit-data.json) | [`CreditPolicyLab.tsx`](../src/components/analytics/CreditPolicyLab.tsx), [`policy-contract.json`](../public/case-studies/credit-policy-lab/policy-contract.json) | Fictional fixture; not deployed accuracy, fairness, compliance, or a real applicant decision |
+| Synthetic fixture: 12,000 applications and capacity-gated policy audit | [`synthetic-credit-data.json`](../public/case-studies/credit-policy-desk/synthetic-credit-data.json) | [`CreditPolicyLab.tsx`](../src/components/analytics/CreditPolicyLab.tsx), [`policy-contract.json`](../public/case-studies/credit-policy-desk/policy-contract.json) | Fictional fixture; not deployed accuracy, fairness, compliance, or a real applicant decision |
 | Baseline↔challenger swap set and expected-loss delta | Synthetic data above; pipeline-derived backtest when present | [`SwapSetPanel.tsx`](../src/components/analytics/SwapSetPanel.tsx) | Policy comparison unless a validated observed-outcome artifact is loaded; not model superiority |
-| Time-ordered calibrated credit backtest | [`scored-backtest.parquet`](../public/case-studies/credit-policy-lab/scored-backtest.parquet), [`backtest-report.json`](../public/case-studies/credit-policy-lab/backtest-report.json), [`methods-evidence.json`](../public/case-studies/credit-policy-lab/methods-evidence.json) | [`README.md`](../pipelines/credit-backtest/README.md), [`PROVENANCE.md`](../pipelines/credit-backtest/PROVENANCE.md) | Metrics exactly recompute from final float64-score Parquet; granted-loan-only artifact with no rejected-applicant representation, causal policy effect, production decisioning, regulatory validation, or fairness claim |
+| Time-ordered calibrated credit backtest | [`scored-backtest.parquet`](../public/case-studies/credit-policy-desk/scored-backtest.parquet), [`backtest-report.json`](../public/case-studies/credit-policy-desk/backtest-report.json), [`methods-evidence.json`](../public/case-studies/credit-policy-desk/methods-evidence.json) | [`README.md`](../pipelines/credit-backtest/README.md), [`PROVENANCE.md`](../pipelines/credit-backtest/PROVENANCE.md) | Metrics exactly recompute from final float64-score Parquet; granted-loan-only artifact with no rejected-applicant representation, causal policy effect, production decisioning, regulatory validation, or fairness claim |
 
 ## Publication state
 
@@ -72,7 +110,8 @@ completed.
 | Claim | Artifact | Boundary |
 | --- | --- | --- |
 | Historical v12 p1 public-GitHub assistant bridge passed its complete local checks | [`assistant-public-github-v12-local-verification.json`](phase2-public-review-artifacts/goal2-final/assistant-public-github-v12-local-verification.json) | Policy 37/37; focused installed Chrome 18/18; full installed-Chrome E2E 209 passed, 52 intentionally skipped, 0 failed; build/typecheck/lint/evidence/performance-budget/audit/static-client public-source-hash scan/diff check passed. Record SHA-256 `869d8f20764574e0afe914295898a77d5545679bcaad2fb35c1d367904753669`; superseded by the v14 final-repository corpus |
-| Current fixes4 candidate corpus is pinned to the six final project repositories plus three reviewed GitHub-only repositories | [`manifest.json`](../assistant-knowledge/manifest.json), [`assistant-knowledge.generated.json`](../src/data/assistant-knowledge.generated.json) | 9 repositories, 66 reviewed files, 532 bounded chunks; snapshot SHA-256 `a47c5bbe603da3b3efb5497d50886960cf0323d1f885a9034052697bcfd9b6ad`. The candidate remains local until Preview live acceptance and deployment gates pass |
+| Current server-only candidate corpus covers the pinned final repositories plus the commit-pinned Round-2 portfolio-site layer | [`manifest.json`](../assistant-knowledge/manifest.json), [`assistant-knowledge.generated.json`](../src/data/assistant-knowledge.generated.json), [`legacy-risk-control-public-boundary.md`](legacy-risk-control-public-boundary.md) | 8 repositories, 206 reviewed source selections, 1,403 bounded chunks; snapshot SHA-256 `7c3676ebbb0811b0bfb9c4367d01bec9ca52e788823cf0c42c3b7dc185f8560b`. The R2 layer contributes 148 source selections / 954 chunks across home and ten project routes at local commit `e882170`; its public GitHub citation URLs remain publication-gated until that revision is present in the public repository. Risk Control and `ex-solver` remain private and excluded. |
+| Round-2 Ask Portfolio presets have no retrieval dead ends | [`question-bank.json`](../assistant-knowledge/question-bank.json), [`ask-question-bank.json`](../src/data/generated/ask-question-bank.json), [`ask-question-bank.test.mjs`](../tests/assistant/ask-question-bank.test.mjs) | 11 routes × 3 bilingual question pairs; all 66 English/Chinese prompts must retrieve a route-matched, semantically relevant R2 chunk and a commit-pinned structured citation. Generated artifact SHA-256 `dfcf55df60a0b2f3bd16d1e8104ec97450e2e21013989e858d22fe790dae30c9`. |
 | Current v12 four-route Lighthouse passed the Goal2 category gates | [`lighthouse-summary-v12-local.json`](phase2-public-review-artifacts/goal2-final/lighthouse-summary-v12-local.json) | Exact 225-file runtime tree `a49d5abb…`; home, Margin, Privacy, and Release each scored Performance / Accessibility / Best Practices / SEO `100 / 100 / 100 / 100`. Summary SHA-256 `7a4b65a40acbad35360a1061c8968c65bc440a96c290c70c27f7a06d45f6a114`; local production runtime only, not deployed-Preview evidence |
 | 447 copy targets fully accounted; 446 eligible outputs passed; one target was source-superseded; the later nine-string Chinese factual repair passed 9/9 key, old-value, new-value, English-source, and response-SHA checks | [`copy-writeback-audit.json`](phase2-public-review-artifacts/goal2-final/copy-writeback-audit.json), [`copy-writeback-post-runtime-alignment.json`](phase2-public-review-artifacts/goal2-final/copy-writeback-post-runtime-alignment.json) | The first record remains the immutable writeback-time audit. The second records the separately authorized one-call/no-retry Kimi repair and exact current source bindings without relabeling the original audit scope. |
 | Historical d8bc installed-Chrome regression passed 203 tests with 52 intentional viewport skips, 0 failures, and 0 flaky tests | [`playwright-summary.json`](phase2-public-review-artifacts/goal2-final/playwright-summary.json) | Summary SHA-256 `796bbbfa2d0b1a4bd8382da805a47851e06388611346c3f741deb4e76d820d35`; bound to historical local runtime digest `d8bc8492…` and superseded by the v12 assistant runtime change |

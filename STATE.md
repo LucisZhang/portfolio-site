@@ -1,13 +1,32 @@
 # Public Portfolio state
 
-Updated: 2026-07-25 10:57 (Asia/Shanghai) / 2026-07-25 02:57 UTC
+Updated: 2026-08-30 (Asia/Shanghai) / 2026-08-30 UTC
 
 This file records the recruiter-safe state of the current release candidate. It contains no
 credentials, raw private candidate material, local source paths, or browser-session data.
 
-## 2026-08-17 Crossover Study withdrawal authorization
+## 2026-08-30 Round-2 revamp release candidate (supersedes the Crossover withdrawal)
 
-Status: `OWNER_AUTHORIZED_FOR_PREVIEW_AND_PRODUCTION`.
+Status: `OWNER_ACCEPTED_CANDIDATE_PENDING_RELEASE`.
+
+The Round-2 site revamp (branch `codex/site-revamp-r2-20260822`) rebuilds every page as an
+exhibition skeleton with one recorded instrument per page. During the Round-2 review cycle the
+owner reviewed and accepted a rebuilt Crossover Study page (deterministic SQL workbench replaying
+recorded DuckDB results); that acceptance supersedes the 2026-08-17 withdrawal below, which
+remains recorded for history. Owner authorization for this cycle, given 2026-08-30: publish the
+public repository, merge the candidate branch, and release to the production host through the
+established release process. Host topology, provisioning, and release tooling are operational
+material and are intentionally not part of this public repository.
+
+Verification at the accepted tip: full browser suite 641 passed / 199 skipped / 0 failed;
+performance budgets passed for all 12 measured routes (homepage route-own 16,456 gzip bytes
+against the 50,000 hard ceiling); homepage Lighthouse 93 Performance; localization, copy-lint,
+evidence source-map (sha256), heavy-asset ledger, and zh glyph-coverage gates all passed. Every
+displayed number resolves to a committed data file via `docs/evidence/r2-source-map.md`.
+
+## 2026-08-17 Crossover Study withdrawal authorization (superseded 2026-08-30)
+
+Status: `CROSSOVER_WITHDRAWAL_PRODUCTION_VERIFIED`.
 
 On 2026-08-17 Asia/Shanghai, the owner explicitly directed that Crossover Study be withdrawn from
 the online portfolio. The authorized release scope is limited to removing the project from the
@@ -15,8 +34,31 @@ homepage, engineering track, static project routes, local portfolio search, recr
 the canonical ECS-hosted site, and the Vercel fallback. The authorization does not include DNS,
 firewall, proxy, unrelated-service, project-repository, billing, or paid-model changes.
 
-The immutable candidate, Preview, Production, Vercel fallback, and public-route verification
-receipts remain pending until those actions complete.
+Immutable candidate `90d97b0649826291a0601d123f63c06f3745581f` passed the full local
+browser matrix (244 passed, 84 intentional device/project skips, 0 failed), typecheck, lint,
+evidence verification, 37 assistant tests, dependency audit, bilingual route verification, and
+candidate-diff secret scans. Lighthouse 13.4.0
+scored 96 Performance and 100 for Accessibility, Best Practices, and SEO. The raw CSS budget
+reported 146,939 bytes against 145,000, exactly matching a clean build of the unchanged public
+`main` baseline; this withdrawal changes no CSS.
+
+Website PR #19 merged normally at `653b76ef4193fd902ff75766876ee517a01f41a7` from exact candidate
+`6960093e5c871a5f92b8efa2812b5986043106d8`. GitHub Preview deployment `5942914064` and
+Production deployment `5943024610` both reached success for their exact SHAs. The Vercel
+Production alias returns HTTP 404 for `/engineering/crossover-study`, while its homepage returns
+HTTP 200 with seven case studies and no withdrawn project text or link. The protected Preview
+also passed English/Chinese Not Found, navigation, search, and clean-console acceptance.
+
+The old `/engineering/crossover-study` route now returns HTTP 404 on the apex, ECS Preview, and
+Vercel Production aliases. All three homepages return HTTP 200; the canonical bilingual browser
+surface shows seven case studies, no Crossover Study text or link, and the engineering track has
+only its remaining project. `/ai/release-guardian?lang=zh` returns HTTP 200 and passed English and
+Chinese browser checks. `www` returns a 308 redirect to the apex. CSP, HSTS, Referrer-Policy,
+`X-Content-Type-Options: nosniff`, and `X-Frame-Options: DENY` remain present, while
+`/api/assistant` returns `Cache-Control: no-store`. Production Lighthouse 13.4.0 scored 91
+Performance and 100 for Accessibility, Best Practices, and SEO. No paid-model request was made.
+
+Receipt time: 2026-08-17 19:51:41 Asia/Shanghai / 2026-08-17 11:51:41 UTC.
 
 ## Privacy Safari stream compatibility hotfix
 

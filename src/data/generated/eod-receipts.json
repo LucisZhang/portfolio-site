@@ -1,0 +1,61 @@
+{
+  "summary": {
+    "sha256": "c008972eaf6da3e53c1b5419177b608e46b6dd4f31dd1629ca1a0af2308008ee",
+    "bytes": 2446
+  },
+  "brokerSlo": {
+    "sha256": "5176dd0ac38d977813693de85fa2a6fc3fcfb9307048cc149b0408237488e200",
+    "bytes": 105652
+  },
+  "manifest": {
+    "sha256": "7867fb1ec1f91787ada2bb9141426b29273324f8d84b3eac6968572085120d32",
+    "bytes": 3252
+  },
+  "drillFileHashes": {
+    "duplicate-redelivery": {
+      "sha256": "d62685a0bdf3168d3159b04e7c98926be402e6f3c63fa2070884a5df86be8e61",
+      "bytes": 28683
+    },
+    "ordering-miskey": {
+      "sha256": "38ca7d6d0ded8fbe098bc02ca39379606a917b06a79951256257f4e3baeb7840",
+      "bytes": 18348
+    },
+    "poison-dlq": {
+      "sha256": "8920a86ab10a09f603c97a31c304a9cee3ce2288fdb5192c395e5193bbbdcf14",
+      "bytes": 25519
+    },
+    "broker-restart": {
+      "sha256": "78896060dfa5b32a1717d8add8e2fe01447c2fd84c3f0d05fcd207eb0ac821f1",
+      "bytes": 79102
+    },
+    "offset-replay": {
+      "sha256": "444d5a19ed576f153416b86cda905c9bd2220539568cebf5411d5c0af1024bc1",
+      "bytes": 62845
+    },
+    "schema-contract": {
+      "sha256": "3c655119608857619b0b00e8e74d2ad9f848f1680c5b7067b1174929418aa91d",
+      "bytes": 22235
+    },
+    "small-file-rewrite": {
+      "sha256": "3ed9659a57bdd1169d00adc08cb7f306589ef745b7e83751f8339afa54438709",
+      "bytes": 4052
+    },
+    "eo-reconciliation": {
+      "sha256": "e6c613bc1dc0be55f88c1a10cdd199cbc2d9ca6ec74cc30e5e1a361dc93bb91a",
+      "bytes": 22821
+    },
+    "broker-parity": {
+      "sha256": "48be70bbe064112add6478c5beecf896149bf48d3bef867cfc2ece09a15b88d2",
+      "bytes": 4699
+    },
+    "broker-slo": {
+      "sha256": "5176dd0ac38d977813693de85fa2a6fc3fcfb9307048cc149b0408237488e200",
+      "bytes": 105652
+    }
+  },
+  "sustainedThroughputEventsPerSecond": 1791.665,
+  "endToEndSeconds": 55.814,
+  "allDiffsZero": true,
+  "drillCount": 10,
+  "generatedAt": "2026-08-27"
+}

@@ -1,0 +1,384 @@
+/* Task L5 [CLAUDE]: styling for the dialogue-genre "Ask Portfolio" page
+   (output/design-genres/genre-ask-dialogue.html is the user-approved design
+   authority). Reuses this codebase's real design tokens (var(--ink),
+   var(--muted), var(--accent), var(--hairline), var(--mono),
+   var(--display-serif)) rather than the mock's own standalone base.css,
+   which defines a similar-but-not-identical token set for its isolated
+   preview page. */
+
+.ask-accent {
+  color: var(--accent);
+}
+
+.ask-convo {
+  display: grid;
+  grid-template-columns: 15fr 7fr;
+  gap: 56px;
+  margin-top: 8px;
+}
+
+.ask-turn {
+  display: grid;
+  grid-template-columns: 108px 1fr;
+  gap: 20px;
+  padding: 16px 0 14px;
+  border-top: 1px solid var(--hairline);
+}
+
+.ask-script > .ask-turn:first-child {
+  border-top: 0;
+}
+
+.ask-who {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding-top: 6px;
+}
+
+.ask-who small {
+  display: block;
+  margin-top: 4px;
+  font-weight: 400;
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  color: var(--muted);
+}
+
+.ask-turn-you > .ask-who {
+  color: var(--accent);
+}
+
+.ask-say-question {
+  font-family: var(--display-serif);
+  font-size: 22px;
+  line-height: 1.35;
+  margin: 0;
+}
+
+:lang(zh) .ask-say-question {
+  font-family: var(--display-serif-zh);
+}
+
+.ask-turn-folio .ask-say p {
+  font-size: 15px;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.ask-turn-folio .ask-say sup {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent);
+  font-weight: 600;
+  margin-left: 2px;
+}
+
+.ask-chain {
+  margin-top: 10px;
+}
+
+.ask-chain-row {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 8px;
+  padding: 3px 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+.ask-chain-row b {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.ask-chain-row a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.ask-recorded-note {
+  margin: 10px 0 0;
+  padding: 10px 0 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 58ch;
+}
+
+.ask-fallback {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--hairline);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 52ch;
+}
+
+.ask-fallback-title {
+  margin: 0 0 4px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.ask-fallback ul {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.ask-fallback a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.ask-retry {
+  margin-top: 8px;
+  border: 1px solid var(--hairline);
+  background: none;
+  padding: 6px 12px;
+  min-height: 32px;
+  font-family: var(--mono);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.ask-turn-next .ask-say {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 8px;
+}
+
+.ask-turn-next input {
+  flex: 1;
+  border: 0;
+  background: none;
+  font-family: var(--display-serif);
+  font-size: 20px;
+  font-style: italic;
+  color: var(--ink);
+  padding: 0;
+  min-width: 0;
+}
+
+:lang(zh) .ask-turn-next input {
+  font-family: var(--display-serif-zh);
+}
+
+.ask-turn-next input::placeholder {
+  color: var(--muted);
+}
+
+.ask-turn-next input:focus-visible {
+  outline: none;
+}
+
+.ask-turn-next button {
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--pa, #f5f1e8);
+  padding: 8px 16px;
+  min-height: 40px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.ask-turn-next button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ask-ratelimit {
+  margin: 10px 0 0;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+
+.ask-sectlabel {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ask-openers {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.ask-opener {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: 12px;
+  align-items: baseline;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--hairline);
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.ask-opener:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.ask-opener-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.ask-opener-q {
+  font-family: var(--display-serif);
+  font-size: 16.5px;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+:lang(zh) .ask-opener-q {
+  font-family: var(--display-serif-zh);
+}
+
+.ask-opener-active .ask-opener-q {
+  color: var(--accent);
+  font-style: italic;
+}
+
+.ask-opener-active .ask-opener-num {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.ask-how {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.ask-how-block h3 {
+  margin: 0 0 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ask-how-block p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ink);
+}
+
+.ask-guard-example {
+  margin: 10px 0 0;
+  padding: 8px 0 8px 14px;
+  border-left: 2px solid var(--accent);
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.ask-source dl.ask-receipts {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 16px;
+}
+
+.ask-receipts > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.ask-receipts dt code {
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.ask-receipts dd {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+
+.ask-report h3 {
+  margin: 20px 0 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ask-architecture {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.ask-architecture li {
+  padding-left: 4px;
+}
+
+@media (max-width: 900px) {
+  .ask-convo {
+    grid-template-columns: 1fr;
+  }
+
+  .ask-how {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .ask-turn {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .ask-turn-next .ask-say {
+    flex-wrap: wrap;
+  }
+}

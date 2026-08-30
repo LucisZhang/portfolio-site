@@ -1,0 +1,124 @@
+{
+  "heroTiles": [
+    {
+      "value": "99.05%",
+      "label": "task success",
+      "source": "public/case-studies/frontier-forge/release.json",
+      "jsonPath": "$.training.headline.task_success"
+    },
+    {
+      "value": "$35.68",
+      "label": "measured spend",
+      "source": "public/case-studies/frontier-forge/release.json + public/case-studies/frontier-forge/phase7_1_gpu_ledger.jsonl + public/case-studies/frontier-forge/phase7_2_gpu_ledger.jsonl",
+      "jsonPath": "$.project_spend.total_usd + $[*].usd + $[*].usd"
+    },
+    {
+      "value": "0",
+      "label": "upstream 5xx @ 3×",
+      "source": "public/case-studies/frontier-forge/release.json",
+      "jsonPath": "$.phase7_1.gate.sustained_overload_cells[1].gateway_upstream_5xx_rate"
+    },
+    {
+      "value": "10",
+      "label": "failure classes drilled",
+      "source": "public/case-studies/exactly-once-drills/results/manifest.json",
+      "jsonPath": "$.coverage.path_a_failure_classes + $.coverage.path_b_failure_classes"
+    }
+  ],
+  "flagshipClaims": [
+    {
+      "assert": "99.05% task success",
+      "value": "99.05%",
+      "n": 2000,
+      "ci": "[98.60%, 99.45%]",
+      "command": "make reproduce-headline",
+      "sha256": "9e547b3418ce1f633914e8dfe7b818fa6f7e064a891cee8e4c73837e6ce45f4d"
+    },
+    {
+      "assert": "0 upstream 5xx @ 3×",
+      "value": "0",
+      "n": 492,
+      "ci": "MISSING",
+      "command": "make reproduce-headline",
+      "sha256": "9e547b3418ce1f633914e8dfe7b818fa6f7e064a891cee8e4c73837e6ce45f4d"
+    },
+    {
+      "assert": "distilled SFT −14.2 pp vs rule SFT",
+      "value": "−14.2 pp",
+      "n": "MISSING",
+      "ci": "MISSING",
+      "command": "make reproduce-headline",
+      "sha256": "9e547b3418ce1f633914e8dfe7b818fa6f7e064a891cee8e4c73837e6ce45f4d"
+    }
+  ],
+  "negativeRuns": [
+    {
+      "conclusion": "Distilled SFT −14.2 pp vs rule SFT",
+      "n": "MISSING",
+      "disposition": "complete-negative",
+      "receiptHref": "/artifact?src=%2Fcase-studies%2Ffrontier-forge%2Frelease.json&from=%2F"
+    },
+    {
+      "conclusion": "GRPO +0.25 pp in both completed seeds; both CIs contain zero",
+      "n": "2 × 2000; aborted seed n=0",
+      "disposition": "The unchanged ten-step reward-variance guard stopped R4 v2; no three-seed aggregate or missing paired delta is fabricated.",
+      "receiptHref": "/artifact?src=%2Fcase-studies%2Ffrontier-forge%2Frelease.json&from=%2F"
+    },
+    {
+      "conclusion": "30 of 44 strict all-trials residuals",
+      "n": 44,
+      "disposition": "Aggregate gates pass; 30/44 scenarios fail the strict all-trials outcome view. This is not a claim that all scenarios pass.",
+      "receiptHref": "/artifact?src=%2Fcase-studies%2Frelease-guardian%2Fdata%2Fevaluation-live.csv&from=%2F"
+    },
+    {
+      "conclusion": "Amazon arm: null",
+      "n": 228153,
+      "disposition": "The Amazon null is scoped to this catalog, temporal split, five-core population, and observed history depths.",
+      "receiptHref": "/artifact?src=%2Fcase-studies%2Fcrossover-study%2Fexhibits.json&from=%2F"
+    },
+    {
+      "conclusion": "One-pass structured output: 0% task success",
+      "n": 48,
+      "disposition": "all original requests; uncovered two-pass rows count as failure; two-pass task success 100%",
+      "receiptHref": "/artifact?src=%2Fcase-studies%2Ffrontier-forge%2Frelease.json&from=%2F"
+    }
+  ],
+  "stackDepth": [
+    {
+      "layer": "Gateway",
+      "projects": [
+        "Frontier Forge"
+      ],
+      "metric": "0 upstream 5xx @ 3× · n=492"
+    },
+    {
+      "layer": "Serving",
+      "projects": [
+        "Frontier Forge"
+      ],
+      "metric": "GPTQ-int4 p95 0.963 s @ 4 QPS"
+    },
+    {
+      "layer": "Stream",
+      "projects": [
+        "Exactly-Once Drills"
+      ],
+      "metric": "10 failure classes drilled"
+    },
+    {
+      "layer": "Storage",
+      "projects": [
+        "Exactly-Once Drills",
+        "Crossover Study"
+      ],
+      "metric": "0 snapshot diffs across 5 recovery drills"
+    },
+    {
+      "layer": "Orchestration",
+      "projects": [
+        "Release Guardian"
+      ],
+      "metric": "132 funded live graph runs"
+    }
+  ]
+}

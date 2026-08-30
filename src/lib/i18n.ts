@@ -27,9 +27,6 @@ export interface Dictionary {
   paletteEmpty: string;
   paletteTracks: string;
   paletteProjects: string;
-  problem: string;
-  audience: string;
-  role: string;
   verifiedOutcome: string;
   stack: string;
   links: string;
@@ -46,6 +43,22 @@ export interface Dictionary {
   mediaUnavailable: string;
   footer: string;
   inspectProject: string;
+  homeCore: string;
+  homeSecondary: string;
+  homeMethodology: string;
+  homeArchive: string;
+  homeArchiveSummary: string;
+  homeEvidenceExplorer: string;
+  homeTechnicalReport: string;
+  homeCode: string;
+  homeArchitecturePlaceholder: string;
+  homeTryAssistant: string;
+  homeDemoThumbnail: string;
+  homeDomainTraining: string;
+  homeDomainAgent: string;
+  homeDomainBackend: string;
+  homeDomainData: string;
+  skipToContent: string;
 }
 
 const en: Dictionary = {
@@ -54,16 +67,13 @@ const en: Dictionary = {
   navEngineering: "Engineering",
   navAnalytics: "Analytics",
   navAi: "AI applications",
-  targetRoles: "Open to Data Analytics, Data Engineering, and AI Application Engineering roles.",
+  targetRoles: "Open to: AI agent & LLM application engineering · backend & distributed systems · data engineering & analytics",
   paletteOpen: "Search",
   paletteClose: "Close search",
   palettePlaceholder: "Search projects, systems, or tools",
   paletteEmpty: "No matches found.",
   paletteTracks: "Disciplines",
   paletteProjects: "Projects",
-  problem: "Problem",
-  audience: "Audience",
-  role: "What I built",
   verifiedOutcome: "Result",
   stack: "System",
   links: "Links",
@@ -78,8 +88,24 @@ const en: Dictionary = {
   noPublicLink: "Source code isn't public yet.",
   mediaEvidence: "Recorded views",
   mediaUnavailable: "No approved image is included in this build. Run details are still available below.",
-  footer: "A bilingual portfolio of applied AI, data systems, and decision tools built by Xiangguo Zhang.",
+  footer: "Applied LLM systems, measured end to end.",
   inspectProject: "Open case study",
+  homeCore: "Core systems",
+  homeSecondary: "Supporting evidence",
+  homeMethodology: "Working method",
+  homeArchive: "Archive",
+  homeArchiveSummary: "Two earlier product studies",
+  homeEvidenceExplorer: "Evidence Explorer",
+  homeTechnicalReport: "Technical report",
+  homeCode: "Code",
+  homeArchitecturePlaceholder: "Frontier Forge measured delivery architecture",
+  homeTryAssistant: "Try it",
+  homeDemoThumbnail: "demo thumbnail",
+  homeDomainTraining: "LLM training & inference",
+  homeDomainAgent: "Agents & RAG",
+  homeDomainBackend: "Queues & backend",
+  homeDomainData: "Data systems",
+  skipToContent: "Skip to content",
 };
 
 const zh: Dictionary = {
@@ -88,16 +114,13 @@ const zh: Dictionary = {
   navEngineering: "数据工程",
   navAnalytics: "数据分析",
   navAi: "AI 应用",
-  targetRoles: "求职方向：数据分析、数据工程与 AI 应用工程。",
+  targetRoles: "校招方向：AI Agent 与大模型应用工程 / 后端与分布式系统 / 数据工程与分析",
   paletteOpen: "搜索",
   paletteClose: "关闭搜索",
   palettePlaceholder: "搜索项目、系统或工具",
   paletteEmpty: "未找到匹配项。",
   paletteTracks: "方向",
   paletteProjects: "项目",
-  problem: "问题",
-  audience: "受众群体",
-  role: "我做了什么",
   verifiedOutcome: "结果",
   stack: "系统组成",
   links: "链接",
@@ -112,8 +135,24 @@ const zh: Dictionary = {
   noPublicLink: "源代码尚未公开。",
   mediaEvidence: "已记录影像",
   mediaUnavailable: "本次构建暂无可用图片，下方仍可查看运行详情。",
-  footer: "章向国的双语作品集：聚焦应用 AI、数据系统与决策工具。",
+  footer: "大模型应用系统，从训练到上线，每一步都对得上账。",
   inspectProject: "查看案例",
+  homeCore: "核心项目",
+  homeSecondary: "次级项目",
+  homeMethodology: "方法论",
+  homeArchive: "归档",
+  homeArchiveSummary: "两项较早的产品研究",
+  homeEvidenceExplorer: "Evidence Explorer",
+  homeTechnicalReport: "技术报告",
+  homeCode: "Code",
+  homeArchitecturePlaceholder: "Frontier Forge 实测交付架构",
+  homeTryAssistant: "试一试",
+  homeDemoThumbnail: "演示缩略图",
+  homeDomainTraining: "大模型训练与推理",
+  homeDomainAgent: "Agent 与 RAG",
+  homeDomainBackend: "消息队列与后端",
+  homeDomainData: "数据系统",
+  skipToContent: "跳到主要内容",
 };
 
 const dictionaries: Record<Locale, Dictionary> = { en, zh };

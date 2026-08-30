@@ -1,11 +1,43 @@
 # Portfolio publication checklist
 
-Updated: 2026-07-25 (Asia/Shanghai)
+Updated: 2026-08-17 (Asia/Shanghai)
 
 This is the release procedure for the complete portfolio and the bilingual hybrid-RAG
 assistant. It is also the stop-condition list: any unexplained diff, failed check, moved remote,
 missing secret, incorrect deployment SHA, private-data leak, or unsupported evidence claim blocks
 publication.
+
+## 0. 2026-08-17 Crossover Study withdrawal receipt — verified
+
+- [x] Owner authorized removing Crossover Study from all portfolio discovery surfaces, the
+  canonical site, and the Vercel fallback. DNS, proxy, server configuration, billing, and
+  unrelated changes remained outside scope.
+- [x] Public candidate `6960093e5c871a5f92b8efa2812b5986043106d8` descended from recorded
+  `public/main` `47cd8181fa1dcc26f9bcee4bb8b0b76107c3d2f6` and contained only the
+  withdrawal, authorization record, and regression coverage.
+- [x] Typecheck, lint, evidence, 37 assistant tests, dependency audit, Gitleaks, and TruffleHog
+  passed. The complete exact-candidate browser matrix recorded 244 passed, 84 intentional skips,
+  and 0 failed.
+- [x] Localization completed with no finding. Link traversal verified all 51 internal targets;
+  its only error was the unchanged public-main `Risk-Control-Portfolio` GitHub 404, plus the
+  expected LinkedIn HTTP 999 automation warning.
+- [x] Lighthouse 13.4.0 scored 96 Performance and 100 for Accessibility, Best Practices, and SEO.
+  The raw CSS budget remained 146,939 bytes, exactly equal to a clean unchanged-`main` build and
+  unrelated to this no-CSS diff.
+- [x] PR #19 merged normally at `653b76ef4193fd902ff75766876ee517a01f41a7`. Vercel Preview
+  deployment `5942914064` and Production deployment `5943024610` reached success for their
+  exact SHAs. Production returns 404 for the old route and 200 for a seven-project homepage.
+- [x] The canonical-host release of candidate `90d97b0649826291a0601d123f63c06f3745581f`
+  completed and was independently audited. Host provisioning, transport, and release-helper
+  detail are operational material and are not recorded in this public repository.
+- [x] `/engineering/crossover-study` returns HTTP 404 on apex, canonical Preview, and Vercel Production.
+  All three homepages return HTTP 200. Canonical English/Chinese browser checks show seven case
+  studies and no withdrawn-project entry; the engineering page is clean and the representative
+  `/ai/release-guardian?lang=zh` route returns HTTP 200.
+- [x] `www` returns a 308 redirect to the apex. CSP, HSTS, Referrer-Policy, nosniff, frame denial,
+  and assistant `Cache-Control: no-store` remain present. Production Lighthouse 13.4.0 scored
+  91/100/100/100. No paid-model request was made.
+- [x] Final receipt: 2026-08-17 19:51:41 Asia/Shanghai / 2026-08-17 11:51:41 UTC.
 
 ## 1. Freeze a clean public candidate
 

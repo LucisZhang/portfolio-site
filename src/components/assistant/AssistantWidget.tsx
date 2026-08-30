@@ -2,11 +2,10 @@
 
 import { type FormEvent, type KeyboardEvent as ReactKeyboardEvent, useCallback, useEffect, useId, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { recruiterQuestionsByRoute } from "@/data/recruiter-content";
+import { getRouteQuestions } from "@/lib/ask-question-bank";
 import { useI18n } from "@/lib/i18n";
-import type { AssistantCitation, AssistantMessage } from "@/lib/assistant-policy";
-import { validateAssistantAnswerBlocks, type AssistantAnswerBlock } from "@/lib/assistant-project-references";
 import { getTrack, projects } from "@/lib/projects";
+import { useAssistantConversation } from "@/lib/use-assistant-conversation";
 import AssistantRichAnswer from "./AssistantRichAnswer";
 import styles from "./AssistantWidget.module.css";
 
@@ -25,7 +24,6 @@ const copy = {
     failed: "The portfolio assistant is unavailable right now. The project pages and public sources remain available.",
     retry: "Retry",
     disclosure: "Your question is sent only to a zero-data-retention external AI service. Do not enter credentials or private contact details.",
-    prompts: ["Why should a team hire Xiangguo for an Applied AI role?", "How do his RAG and data-engineering projects reinforce each other?", "What is his working style?"],
     user: "You",
     assistant: "Portfolio guide",
     sources: "Related sources",
@@ -42,7 +40,6 @@ const copy = {
     failed: "作品集助手暂时不可用，项目页面和公开来源仍可查看。",
     retry: "重试",
     disclosure: "你的问题仅会发送到采用零数据保留策略的外部 AI 服务。请勿输入凭据或私人联系方式。",
-    prompts: ["为什么团队应该在 AI 应用岗位上选择章向国？", "他的 RAG 与数据工程项目如何相互印证？", "他的工作方式有什么特点？"],
     user: "你",
     assistant: "作品集向导",
     sources: "相关来源",
@@ -51,7 +48,7 @@ const copy = {
 
 function contextualCopy(pathname: string, locale: "en" | "zh", defaults: typeof copy.en | typeof copy.zh) {
   const segments = pathname.split("/").filter(Boolean);
-  const prompts = recruiterQuestionsByRoute[pathname]?.[locale] ?? [...defaults.prompts];
+  const prompts = getRouteQuestions(pathname, locale);
   const project = segments.length >= 2 ? projects.find((item) => item.track === segments[0] && item.slug === segments[1]) : undefined;
   if (project) {
     const title = project.title[locale];
@@ -64,41 +61,13 @@ function contextualCopy(pathname: string, locale: "en" | "zh", defaults: typeof 
   return { placeholder: defaults.placeholder, prompts };
 }
 
-interface DisplayMessage extends AssistantMessage {
-  id: string;
-  sources?: AssistantCitation[];
-  blocks?: AssistantAnswerBlock[];
-  retryable?: boolean;
-  retryQuestion?: string;
-}
-
-function replyFromUnknown(value: unknown, locale: "en" | "zh") {
-  if (typeof value !== "object" || value === null || !("reply" in value) || typeof value.reply !== "string") return null;
-  const blocks = "blocks" in value ? validateAssistantAnswerBlocks(value.blocks, locale) : null;
-  const sources = "sources" in value && Array.isArray(value.sources)
-    ? value.sources.filter((source): source is AssistantCitation => (
-      typeof source === "object"
-      && source !== null
-      && "sourceId" in source
-      && typeof source.sourceId === "string"
-      && "kind" in source
-      && (source.kind === "public-github" || source.kind === "private-profile")
-      && "label" in source
-      && typeof source.label === "object"
-      && source.label !== null
-      && "en" in source.label
-      && typeof source.label.en === "string"
-      && "zh" in source.label
-      && typeof source.label.zh === "string"
-      && (!("url" in source) || source.url === undefined
-        || (typeof source.url === "string" && /^https:\/\/github\.com\/LucisZhang\/[A-Za-z0-9._-]+\/blob\/[a-f0-9]{40}\//.test(source.url)))
-    ))
-    : [];
-  const retryable = "retryable" in value && value.retryable === true;
-  return { reply: value.reply, sources, ...(blocks ? { blocks } : {}), retryable };
-}
-
-export default function AssistantWidget({ onClose }: { onClose: () => void }) {
+// `initialPrompt` prefills (never auto-sends) the input: the homepage's
+// inline "Ask Portfolio" surface (task 1.2, spec §4 rows 02/06) hands a
+// question to this widget through AssistantLauncher rather than duplicating
+// the guardrailed send path. AssistantLauncher only mounts this component
+// while `open` is true, so a fresh mount per open is exactly the point —
+// no effect is needed to react to a changed prop.
+export default function AssistantWidget({ onClose, initialPrompt }: { onClose: () => void; initialPrompt?: string }) {
   const { locale } = useI18n();
   const pathname = usePathname();
   const labels = copy[locale];
@@ -106,9 +75,13 @@ export default function AssistantWidget({ onClose }: { onClose: () => void }) {
   const headingId = useId();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const logRef = useRef<HTMLDivElement>(null);
-  const [messages, setMessages] = useState<DisplayMessage[]>([]);
-  const [draft, setDraft] = useState("");
-  const [busy, setBusy] = useState(false);
+  const { messages, busy, send: sendMessage, retry } = useAssistantConversation({
+    locale,
+    pathname,
+    promptSet: context.prompts,
+    failedMessage: labels.failed,
+  });
+  const [draft, setDraft] = useState(initialPrompt ?? "");
   const [notice, setNotice] = useState("");
   const focusInput = useCallback(() => {
     if (window.matchMedia("(max-width: 640px)").matches) return;
@@ -130,46 +103,6 @@ export default function AssistantWidget({ onClose }: { onClose: () => void }) {
     logRef.current?.scrollTo({ top: logRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, busy]);
 
-  async function requestConversation(conversation: DisplayMessage[], question: string) {
-    setBusy(true);
-
-    try {
-      const submittedMessages = conversation.map(({ role, content: messageContent }) => ({
-        role,
-        content: role === "user" && context.prompts.includes(messageContent)
-          ? locale === "en"
-            ? `Portfolio question about Xiangguo Zhang on ${pathname}: ${messageContent}`
-            : `关于章向国在作品集页面 ${pathname} 的问题：${messageContent}`
-          : messageContent,
-      }));
-      const response = await fetch("/api/assistant", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          locale,
-          pageContext: pathname,
-          messages: submittedMessages,
-        }),
-      });
-      const payload: unknown = await response.json();
-      const parsedReply = replyFromUnknown(payload, locale);
-      setMessages((current) => [...current, {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content: parsedReply?.reply ?? labels.failed,
-        sources: parsedReply?.sources,
-        blocks: parsedReply?.blocks,
-        retryable: parsedReply?.retryable,
-        retryQuestion: parsedReply?.retryable ? question : undefined,
-      }]);
-    } catch {
-      setMessages((current) => [...current, { id: crypto.randomUUID(), role: "assistant", content: labels.failed }]);
-    } finally {
-      setBusy(false);
-      requestAnimationFrame(focusInput);
-    }
-  }
-
   async function send(content: string) {
     const question = content.trim();
     if (!question) {
@@ -178,20 +111,10 @@ export default function AssistantWidget({ onClose }: { onClose: () => void }) {
       return;
     }
 
-    const userMessage: DisplayMessage = { id: crypto.randomUUID(), role: "user", content: question };
-    const conversation = [...messages, userMessage].slice(-6);
-    setMessages(conversation);
     setDraft("");
     setNotice("");
-    await requestConversation(conversation, question);
-  }
-
-  function retry(message: DisplayMessage) {
-    const question = message.retryQuestion;
-    if (!question || busy) return;
-    const conversation = messages.filter((candidate) => candidate.id !== message.id).slice(-6);
-    setMessages(conversation);
-    void requestConversation(conversation, question);
+    await sendMessage(content);
+    requestAnimationFrame(focusInput);
   }
 
   function submit(event: FormEvent<HTMLFormElement>) {

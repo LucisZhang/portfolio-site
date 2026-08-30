@@ -1,0 +1,102 @@
+[
+  {
+    "id": "duplicate-redelivery",
+    "abbr": "DUP",
+    "injectMs": null,
+    "detectMs": null,
+    "recoverMs": 50696,
+    "verifyMs": null,
+    "diff": 0,
+    "file": "/case-studies/exactly-once-drills/results/duplicate_redelivery_drill.json"
+  },
+  {
+    "id": "ordering-miskey",
+    "abbr": "ORD",
+    "injectMs": null,
+    "detectMs": null,
+    "recoverMs": 24456,
+    "verifyMs": null,
+    "diff": 0,
+    "file": "/case-studies/exactly-once-drills/results/ordering_miskey_drill.json"
+  },
+  {
+    "id": "poison-dlq",
+    "abbr": "POISON",
+    "injectMs": null,
+    "detectMs": null,
+    "recoverMs": 52414,
+    "verifyMs": null,
+    "diff": 0,
+    "file": "/case-studies/exactly-once-drills/results/poison_dlq_drill.json"
+  },
+  {
+    "id": "broker-restart",
+    "abbr": "RESTART",
+    "injectMs": null,
+    "detectMs": null,
+    "recoverMs": 47688,
+    "verifyMs": null,
+    "diff": 0,
+    "file": "/case-studies/exactly-once-drills/results/broker_restart_drill.json"
+  },
+  {
+    "id": "offset-replay",
+    "abbr": "OFFSET",
+    "injectMs": null,
+    "detectMs": null,
+    "recoverMs": 38008,
+    "verifyMs": null,
+    "diff": 0,
+    "file": "/case-studies/exactly-once-drills/results/offset_replay_drill.json"
+  },
+  {
+    "id": "schema-contract",
+    "abbr": "SCHEMA",
+    "injectMs": null,
+    "detectMs": null,
+    "recoverMs": null,
+    "verifyMs": null,
+    "diff": 0,
+    "file": "/case-studies/exactly-once-drills/results/schema_contract_drill.json"
+  },
+  {
+    "id": "small-file-rewrite",
+    "abbr": "SMALLFILE",
+    "injectMs": null,
+    "detectMs": null,
+    "recoverMs": null,
+    "verifyMs": null,
+    "diff": 0,
+    "file": "/case-studies/exactly-once-drills/results/iceberg_small_file_rewrite.json"
+  },
+  {
+    "id": "eo-reconciliation",
+    "abbr": "RECON",
+    "injectMs": null,
+    "detectMs": null,
+    "recoverMs": null,
+    "verifyMs": null,
+    "diff": 0,
+    "file": "/case-studies/exactly-once-drills/results/eo_reconciliation.json"
+  },
+  {
+    "id": "broker-parity",
+    "abbr": "PARITY",
+    "injectMs": null,
+    "detectMs": null,
+    "recoverMs": null,
+    "verifyMs": null,
+    "diff": 0,
+    "file": "/case-studies/exactly-once-drills/results/broker_parity.json"
+  },
+  {
+    "id": "broker-slo",
+    "abbr": "SLO",
+    "injectMs": null,
+    "detectMs": null,
+    "recoverMs": null,
+    "verifyMs": null,
+    "diff": 0,
+    "file": "/case-studies/exactly-once-drills/results/broker_slo.json"
+  }
+]

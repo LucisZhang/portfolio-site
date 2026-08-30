@@ -1,0 +1,411 @@
+/* Margin Control Tower -- chart-led Evidence page (task L2, spec §6.7).
+   Builds on exhibition.css's shared primitives (Exhibit/Finding/StatGrid) --
+   this file only adds the margin-specific instrument internals. De-box
+   grammar: hairlines only, no card boxes, no icons. */
+
+.margin-page {
+  color: var(--ink);
+}
+
+.margin-table-scroll {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+/* ---------- Exhibit 01: detection figure ---------- */
+
+.margin-detection-figure {
+  margin-top: 18px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 14px;
+}
+
+.margin-detection-figure-head {
+  margin-bottom: 4px;
+}
+
+.margin-detection-chart {
+  width: 100%;
+  height: auto;
+}
+
+.margin-detection-axis {
+  stroke: var(--hairline);
+  stroke-width: 1;
+}
+
+.margin-detection-threshold {
+  stroke: var(--ink);
+  stroke-width: 1;
+  stroke-dasharray: 1 4;
+}
+
+.margin-detection-lbl {
+  fill: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .04em;
+}
+
+.margin-detection-lbl-ink {
+  fill: var(--ink);
+}
+
+.margin-detection-missing-ticks line {
+  stroke: color-mix(in srgb, var(--ink) 28%, transparent);
+  stroke-width: 1;
+}
+
+.margin-detection-line {
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+.margin-detection-dot {
+  fill: var(--accent);
+}
+
+.margin-detection-zlabel {
+  fill: var(--accent);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 650;
+}
+
+.margin-detection-wklabel {
+  fill: var(--muted);
+  font-family: var(--mono);
+  font-size: 9.5px;
+}
+
+.margin-detection-table {
+  width: 100%;
+  min-width: 480px;
+  margin-top: 14px;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: .76rem;
+}
+
+.margin-detection-table th,
+.margin-detection-table td {
+  border-top: 1px solid var(--hairline);
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.margin-detection-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: clamp(16px, 4vw, 48px);
+  margin-top: 22px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 14px;
+}
+
+.margin-detection-elasticity {
+  max-width: 62ch;
+  margin: 0;
+  font-family: var(--display-serif);
+  font-size: 1.02rem;
+  line-height: 1.55;
+}
+
+:lang(zh) .margin-detection-elasticity {
+  font-family: var(--display-serif-zh);
+}
+
+.margin-detection-boundary {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: .68rem;
+  letter-spacing: .02em;
+  line-height: 1.7;
+  text-align: right;
+}
+
+/* ---------- Exhibit 02: decision boundary + metric registry ---------- */
+
+.margin-ruler {
+  margin-top: 24px;
+}
+
+.margin-ruler-chart {
+  width: 100%;
+  max-width: 640px;
+  height: auto;
+}
+
+.margin-ruler-axis {
+  stroke: var(--hairline);
+  stroke-width: 1;
+}
+
+.margin-ruler-threshold {
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+
+.margin-ruler-lbl {
+  fill: var(--muted);
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.margin-ruler-lbl-ink {
+  fill: var(--ink);
+  font-weight: 650;
+}
+
+.margin-ruler-mark {
+  fill: var(--accent);
+}
+
+.margin-ruler-caption {
+  max-width: 62ch;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: .82rem;
+  line-height: 1.6;
+}
+
+.margin-registry {
+  margin-top: clamp(28px, 4vw, 44px);
+}
+
+.margin-registry-title {
+  margin: 0 0 12px;
+  font-family: var(--mono);
+  font-size: .78rem;
+  font-weight: 650;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.margin-registry-table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: .76rem;
+}
+
+.margin-registry-table th,
+.margin-registry-table td {
+  border-top: 1px solid var(--hairline);
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.margin-registry-note {
+  max-width: 68ch;
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: .74rem;
+  line-height: 1.6;
+}
+
+/* ---------- Exhibit 03: false-alarm composition bar ---------- */
+
+.margin-alarm-bar {
+  display: flex;
+  width: 100%;
+  max-width: 640px;
+  height: 28px;
+  margin-top: 22px;
+  overflow: hidden;
+}
+
+.margin-alarm-bar-tp {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.margin-alarm-bar-fp {
+  display: block;
+  height: 100%;
+  background: color-mix(in srgb, var(--ink) 22%, transparent);
+}
+
+.margin-alarm-bar-caption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin: 8px 0 0;
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--muted);
+}
+
+.margin-alarm-bar-caption span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.margin-swatch {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  font-style: normal;
+}
+
+.margin-swatch-tp {
+  background: var(--accent);
+}
+
+.margin-swatch-fp {
+  background: color-mix(in srgb, var(--ink) 22%, transparent);
+}
+
+.margin-negative .exhibit-finding {
+  margin-top: 24px;
+}
+
+/* ---------- Exhibit 04: receipts ---------- */
+
+.margin-receipts-dl {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 20px;
+}
+
+.margin-receipts-dl > div {
+  border-top: 1px solid color-mix(in srgb, var(--ink-invert-fg) 22%, transparent);
+  padding-top: 8px;
+}
+
+.margin-receipts-dl dt code,
+.margin-receipts-dl dd code {
+  font-size: .72rem;
+  word-break: break-all;
+}
+
+.margin-verify {
+  margin: 4px 0 20px;
+}
+
+.margin-verify-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  border: 1px solid color-mix(in srgb, var(--ink-invert-fg) 40%, transparent);
+  background: transparent;
+  padding: 10px 16px;
+  color: var(--ink-invert-fg);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: .74rem;
+  font-weight: 650;
+  letter-spacing: .02em;
+}
+
+.margin-verify-button:hover:not(:disabled),
+.margin-verify-button:focus-visible:not(:disabled) {
+  border-color: var(--accent-on-ink);
+  color: var(--accent-on-ink);
+}
+
+.margin-verify-button:disabled {
+  cursor: default;
+}
+
+.margin-verify-result {
+  margin: 10px 0 0;
+  color: color-mix(in srgb, var(--ink-invert-fg) 82%, transparent);
+  font-family: var(--mono);
+  font-size: .72rem;
+  line-height: 1.7;
+}
+
+.margin-verify-result code {
+  word-break: break-all;
+}
+
+.margin-verify-error {
+  color: var(--accent-on-ink);
+}
+
+.margin-verify-sql {
+  margin: 0 0 20px;
+  color: color-mix(in srgb, var(--ink-invert-fg) 82%, transparent);
+}
+
+.margin-verify-sql summary {
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: .74rem;
+  font-weight: 650;
+}
+
+.margin-verify-sql pre {
+  overflow-x: auto;
+  margin: 10px 0;
+  padding: 10px 12px;
+  background: color-mix(in srgb, var(--ink-invert-fg) 10%, transparent);
+}
+
+.margin-verify-sql pre code {
+  font-size: .74rem;
+  white-space: pre;
+}
+
+.margin-verify-sql p {
+  max-width: 68ch;
+  font-size: .78rem;
+  line-height: 1.6;
+}
+
+.margin-reproduce-command {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-x: auto;
+}
+
+.margin-reproduce-command code {
+  font-size: .74rem;
+  white-space: pre;
+}
+
+.margin-repo-link a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--accent-on-ink);
+}
+
+/* ---------- Report layer ---------- */
+
+.margin-report-section {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: clamp(48px, 8vw, 96px) clamp(20px, 5vw, 48px);
+}
+
+.margin-architecture-flow {
+  list-style: none;
+  margin: 24px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.margin-architecture-flow li {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 12px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 14px;
+}
+
+.margin-architecture-flow li span {
+  font-family: var(--mono);
+  color: var(--muted);
+}

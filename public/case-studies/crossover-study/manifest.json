@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "package": "crossover-study-site-exhibits",
+  "source": {
+    "repository": "LucisZhang/crossover-study",
+    "revision": "6ebd5d5ea2924abe621d14605aaf8c680abb1116",
+    "inputs": [
+      {
+        "path": "demo/data/crossover.json",
+        "bytes": 31402,
+        "sha256": "66bbeb6b74f2ade9e7441ec4767a5e96394e09f97a99c358e05796c29cc0538e"
+      },
+      {
+        "path": "demo/data/contrast.json",
+        "bytes": 5864,
+        "sha256": "01f72f1a3abe2fd2b92c4507a94151ba0c94daa5ea493fabf81248761770e685"
+      },
+      {
+        "path": "demo/data/phase8.json",
+        "bytes": 195254,
+        "sha256": "541b9516fc3e0c9d56adcccc6dd9f3e329b6a7d0ded86e999e0057917cab4a14"
+      },
+      {
+        "path": "results/runs.jsonl",
+        "bytes": 882929,
+        "sha256": "533668f0de242a9dde4f3b9fe71765d64b0354f09355d72cc7e8a4c265e151e6"
+      }
+    ]
+  },
+  "assets": [
+    {
+      "path": "exhibits.json",
+      "bytes": 14822,
+      "sha256": "f99a5827046edfee5b6bc7a4f2dc7fb5550eefdcfc6757361148c28b781f78aa",
+      "kind": "minimal_recorded_exhibit_projection"
+    }
+  ],
+  "boundaries": [
+    "The Amazon null is scoped to this catalog, temporal split, five-core population, and observed history depths.",
+    "The ML-32M n*=20 result is a regime contrast, not causal proof that catalog churn alone creates the crossover.",
+    "Recall@20 did not confirm the three ML-32M deep-bucket wins; the page labels that robustness failure.",
+    "No MiniLM weights, semantic-search index, raw reviews, user identifiers, or per-user arrays are included."
+  ]
+}

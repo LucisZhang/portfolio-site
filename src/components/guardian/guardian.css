@@ -1,0 +1,661 @@
+/* Task L1: Release Guardian dossier grammar, adapted from the user-approved
+   mock output/design-genres/genre-rg-dossier.html to this codebase's real
+   tokens (--display-serif/-zh, --accent, --ink, --muted, --hairline,
+   --mono) and the shared .exhibit/.exhibit-title/.exhibit-body grammar
+   (src/components/exhibition/exhibition.css) used by every other rebuilt
+   project page. Mobile fold follows the site's 767.98px convention
+   (triage.css / exhibition.css). */
+
+.guardian-page {
+  background: var(--paper);
+}
+
+/* ---------- Exhibit 01: filing stub + memo doc grid ---------- */
+
+.guardian-doc {
+  margin-top: clamp(30px, 4vw, 56px);
+  display: grid;
+  /* minmax(0, 1fr), not a bare 1fr: a bare 1fr's implicit min-width:auto
+     lets this track's min-content (the memo column's own nested grids,
+     e.g. .guardian-clause below) force the whole grid wider than its
+     container at narrower-than-desktop widths -- confirmed live at the
+     tablet (1024px) viewport, where the memo column measured 692px wide
+     regardless of its actual ~587px of available space, overflowing the
+     page by ~228px (task-suite-reconcile, 2026-08-30). minmax(0, 1fr)
+     lets the track shrink below that min-content floor instead. */
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 64px);
+  align-items: start;
+}
+
+.guardian-stub {
+  border-right: 1px solid var(--hairline);
+  padding-right: clamp(16px, 2vw, 32px);
+}
+
+.guardian-flab {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.guardian-fval {
+  margin-top: 3px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .02em;
+  color: var(--ink);
+}
+
+.guardian-frow {
+  margin-top: 14px;
+}
+
+.guardian-frow:first-child {
+  margin-top: 0;
+}
+
+.guardian-trace {
+  margin-top: 20px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 12px;
+}
+
+.guardian-trace-lines {
+  margin-top: 8px;
+}
+
+.guardian-tl {
+  display: grid;
+  /* minmax(0, 1fr) -- see .guardian-doc's comment above for why a bare
+     1fr risks a grid-blowout overflow in a fixed+flexible two-column
+     grid. */
+  grid-template-columns: 62px minmax(0, 1fr);
+  gap: 10px;
+  padding: 3px 0;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.guardian-tl b {
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.guardian-tl.guardian-gatept {
+  color: var(--accent);
+}
+
+.guardian-tl.guardian-gatept b {
+  color: var(--accent);
+}
+
+.guardian-totals {
+  margin-top: 16px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 10px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.guardian-totals b {
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.guardian-memo {
+  max-width: 920px;
+}
+
+.guardian-kicker {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 650;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.guardian-h1 {
+  margin-top: 10px;
+  max-width: 30ch;
+  font-family: var(--display-serif);
+  font-weight: 400;
+  font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+  line-height: 1.16;
+  letter-spacing: -.01em;
+  text-wrap: balance;
+}
+
+:lang(zh) .guardian-h1 {
+  font-family: var(--display-serif-zh);
+}
+
+.guardian-vermilion {
+  color: var(--accent);
+  font-style: italic;
+}
+
+:lang(zh) .guardian-vermilion {
+  font-style: normal;
+}
+
+.guardian-ref {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 30px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .04em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 12px;
+}
+
+.guardian-ref b {
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.guardian-clause {
+  display: grid;
+  /* minmax(0, 1fr) -- see .guardian-doc's comment above; this is the
+     specific column confirmed live to blow out .guardian-doc's own grid
+     at the tablet viewport. */
+  grid-template-columns: 148px minmax(0, 1fr);
+  gap: 26px;
+  padding: 13px 0 12px;
+  border-bottom: 1px solid var(--hairline);
+  align-items: baseline;
+}
+
+.guardian-cl {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 650;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.guardian-cb {
+  font-family: var(--display-serif);
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+:lang(zh) .guardian-cb {
+  font-family: var(--display-serif-zh);
+}
+
+.guardian-cb code {
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+.guardian-cb .guardian-figure {
+  font-family: var(--mono);
+  font-weight: 650;
+  letter-spacing: -.02em;
+}
+
+.guardian-cb small {
+  display: block;
+  margin-top: 5px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .02em;
+  color: var(--muted);
+}
+
+.guardian-cb .guardian-band {
+  color: var(--accent);
+  font-style: italic;
+}
+
+:lang(zh) .guardian-cb .guardian-band {
+  font-style: normal;
+}
+
+/* ---------- Disposition / signature ---------- */
+
+.guardian-sign {
+  scroll-margin-top: 96px;
+  margin-top: 20px;
+}
+
+.guardian-slabel {
+  display: block;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.guardian-lines {
+  margin-top: 12px;
+  display: grid;
+  /* minmax(0, 1fr) -- see .guardian-doc's comment above. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 40px 56px;
+}
+
+.guardian-line button {
+  font-family: var(--mono);
+  font-weight: 650;
+  font-size: 15px;
+  letter-spacing: .1em;
+  color: var(--accent);
+  background: none;
+  border: 0;
+  padding: 8px 0;
+  min-height: 44px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.guardian-line button:hover,
+.guardian-line button:focus-visible {
+  text-decoration: underline;
+}
+
+.guardian-line button[aria-pressed="true"] {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+
+.guardian-rulearea {
+  margin-top: 8px;
+  border-bottom: 1px solid var(--ink);
+  height: 12px;
+}
+
+.guardian-line small {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.guardian-fnotes {
+  margin-top: 18px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 12px;
+  display: grid;
+  /* minmax(0, 1fr) -- see .guardian-doc's comment above; this is the
+     other column confirmed live to independently blow out the page at
+     the tablet viewport (.guardian-fnote-block was the widest unclipped
+     element on the page after fixing .guardian-doc/.guardian-clause
+     alone). */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px 56px;
+}
+
+.guardian-fnote-block p {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.guardian-fnote-block p b {
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.guardian-fn {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent);
+  font-weight: 650;
+  margin-right: 6px;
+}
+
+/* Branch trace reveal: expanded by default (no-JS / pre-hydration
+   fallback -- both branches fully rendered). Once enhanced=true, the
+   disposition is compact until a decision is chosen, then only the
+   chosen branch expands and the other is ghosted. */
+.guardian-branch-trace {
+  margin-top: 8px;
+  overflow: hidden;
+  max-height: 600px;
+  transition: max-height 220ms ease;
+}
+
+.guardian-branch-trace p {
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.guardian-branch-trace code {
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.guardian-sign[data-enhanced="true"] .guardian-branch-trace {
+  max-height: 0;
+}
+
+.guardian-sign[data-enhanced="true"] .guardian-fnote-block[data-chosen="true"] .guardian-branch-trace {
+  max-height: 600px;
+}
+
+.guardian-sign[data-enhanced="true"] .guardian-fnote-block[data-ghost="true"] {
+  opacity: .4;
+}
+
+.guardian-sign[data-enhanced="true"] .guardian-fnote-block[data-ghost="true"] .guardian-fn,
+.guardian-sign[data-enhanced="true"] .guardian-fnote-block[data-ghost="true"] p b {
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guardian-branch-trace {
+    transition: none;
+  }
+}
+
+/* ---------- Exhibit 02: recorded node table ---------- */
+
+.guardian-node-table {
+  border-top: 1px solid var(--hairline);
+}
+
+.guardian-node-table > div {
+  display: grid;
+  grid-template-columns: 56px 72px minmax(0, 1fr) 130px 90px;
+  gap: 14px;
+  align-items: center;
+  border-bottom: 1px solid var(--hairline);
+  padding: 9px 4px;
+  font-size: 12px;
+}
+
+.exhibit[data-bg="paper-alt"] .guardian-node-table > div {
+  border-bottom-color: var(--hairline);
+}
+
+.guardian-node-head {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.guardian-node-table code {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink);
+}
+
+.guardian-node-type {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+
+.guardian-node-table > div[data-node-type="GATE"] .guardian-node-type {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.guardian-node-status {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
+/* ---------- Exhibit 03: approval/audit clauses ---------- */
+
+.guardian-gate-narrative {
+  display: grid;
+  gap: 0;
+  max-width: 760px;
+}
+
+.guardian-arch-clause {
+  display: grid;
+  /* minmax(0, 1fr) -- see .guardian-doc's comment above. */
+  grid-template-columns: 148px minmax(0, 1fr);
+  gap: 26px;
+  padding: 13px 0 12px;
+  border-bottom: 1px solid color-mix(in srgb, var(--ink-invert-fg, var(--ink)) 22%, transparent);
+  align-items: baseline;
+}
+
+.exhibit[data-bg="white"] .guardian-arch-clause {
+  border-bottom-color: var(--hairline);
+}
+
+.guardian-arch-clause .guardian-cl {
+  color: var(--muted);
+}
+
+.guardian-arch-clause .guardian-cb {
+  font-size: 15px;
+  color: var(--ink);
+}
+
+/* ---------- Exhibit 04: eval disclosure (reuses .metric-table /
+   .evidence-link tokens from globals.css so the shared "pass indicator"
+   color-token test stays valid across the rebuild) ---------- */
+
+.guardian-metric-head {
+  display: grid;
+  grid-template-columns: minmax(140px, 1fr) 90px 90px 110px 20px;
+  gap: 10px;
+  padding: 0 14px 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.metric-table > div {
+  grid-template-columns: minmax(140px, 1fr) 90px 90px 110px 20px;
+}
+
+.guardian-strict-note {
+  margin-top: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 720px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.guardian-strict-note svg {
+  flex: none;
+  width: 16px;
+  margin-top: 2px;
+  color: var(--ok);
+}
+
+/* ---------- Exhibit 05: install + receipts ---------- */
+
+.guardian-install {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 40px);
+}
+
+.guardian-install-block {
+  border-top: 2px solid var(--ink);
+  padding-top: 14px;
+}
+
+.guardian-install-block[data-pending="true"] {
+  border-top-color: var(--muted);
+}
+
+.guardian-command {
+  margin: 10px 0 0;
+  overflow-x: auto;
+}
+
+.guardian-command code {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 650;
+  white-space: pre;
+  color: var(--ink);
+}
+
+.guardian-command-pending code {
+  color: var(--muted);
+}
+
+.guardian-install-note {
+  margin-top: 10px;
+  max-width: 46ch;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.guardian-receipts {
+  margin-top: clamp(30px, 4vw, 48px);
+  border-top: 1px solid var(--hairline);
+  padding-top: clamp(20px, 3vw, 32px);
+}
+
+.guardian-receipts-dl {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 16px;
+}
+
+.guardian-receipts-dl > div {
+  border-top: 1px solid var(--hairline);
+  padding-top: 8px;
+}
+
+.guardian-receipts-dl dt code,
+.guardian-receipts-dl dd code {
+  font-size: .72rem;
+  word-break: break-all;
+}
+
+.guardian-receipts > p {
+  max-width: 720px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.guardian-repo-link a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--accent);
+}
+
+/* ---------- Report layer (Architecture / Results / Limitations) ---------- */
+
+.guardian-report-section {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: clamp(48px, 8vw, 96px) clamp(20px, 5vw, 48px);
+}
+
+.guardian-architecture-flow {
+  list-style: none;
+  margin: 24px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.guardian-architecture-flow li {
+  display: grid;
+  /* minmax(0, 1fr) -- see .guardian-doc's comment above. */
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 12px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 14px;
+}
+
+.guardian-architecture-flow li span {
+  font-family: var(--mono);
+  color: var(--muted);
+}
+
+/* ---------- Mobile fold (767.98px, matching triage.css/exhibition.css) ---------- */
+
+@media (max-width: 767.98px) {
+  .guardian-doc {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .guardian-stub {
+    border-right: 0;
+    padding-right: 0;
+    border-bottom: 1px solid var(--hairline);
+    padding-bottom: 20px;
+  }
+
+  .guardian-clause,
+  .guardian-arch-clause {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+
+  .guardian-lines,
+  .guardian-fnotes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .guardian-node-table > div {
+    grid-template-columns: 44px 60px minmax(0, 1fr);
+  }
+
+  .guardian-node-table code:nth-child(4),
+  .guardian-node-table .guardian-node-status,
+  .guardian-node-head span:nth-child(4),
+  .guardian-node-head span:nth-child(5) {
+    display: none;
+  }
+
+  .guardian-metric-head {
+    display: none;
+  }
+
+  .metric-table > div {
+    grid-template-columns: minmax(0, 1fr) 56px 20px !important;
+  }
+
+  .metric-table code,
+  .metric-table > div > strong:nth-child(3) {
+    display: none;
+  }
+
+  .guardian-install {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
