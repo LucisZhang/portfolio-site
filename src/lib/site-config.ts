@@ -59,7 +59,7 @@ export const siteMetadata = {
     zh: "章向国 | 作品集",
   },
   description: {
-    en: "Data engineering, decision analytics, and applied-AI projects — interactive demos with clear boundaries on what each proves.",
-    zh: "数据工程、决策分析与 AI 应用项目——交互式演示，并明确每项所能验证的范围。",
+    en: "LLM agents and applied-AI systems, backend and data engineering — interactive recorded instruments with clear boundaries on what each proves.",
+    zh: "主打 LLM Agent 与 AI 应用系统，后端和数据工程作支撑。项目可以上手、回放实录，也说清能证明到哪一步。",
   },
 } as const;

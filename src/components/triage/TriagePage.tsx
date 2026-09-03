@@ -6,6 +6,7 @@ import LocaleDocumentMetadata from "@/components/LocaleDocumentMetadata";
 import { useI18n } from "@/lib/i18n";
 import type { Project } from "@/lib/projects";
 import { siteIdentity } from "@/lib/site-config";
+import { zhWrapNode, zhWrapText } from "@/lib/zh-wrap";
 import "./triage.css";
 import { DriftChart } from "./DriftChart";
 import { FrontierPareto } from "./FrontierPareto";
@@ -54,10 +55,10 @@ export default function TriagePage({ project }: { project: Project }) {
               {locale === "en" ? (
                 <>The expensive model<br /><em>was the wrong default.</em></>
               ) : (
-                <>贵的模型，<em>本就不该是默认选项。</em></>
+                zhWrapNode(<>贵的模型，<em>本就不该是默认选项。</em></>)
               )}
             </h1>
-            {locale === "zh" ? <p className="cn-gloss" lang="zh">{project.glossZh}</p> : null}
+            {locale === "zh" ? <p className="cn-gloss" lang="zh">{zhWrapText(project.glossZh)}</p> : null}
             <p className="exhibit-intro">{locale === "en" ? project.summary.en : project.summary.zh}</p>
             <StatGrid items={metricCells} />
           </div>
@@ -123,7 +124,7 @@ function TriageFullInstrument() {
         {locale === "en" ? (
           <>Move the sliders.<br /><em>The strategy rewrites itself.</em></>
         ) : (
-          <>拖动滑块，<em>策略当场重写。</em></>
+          zhWrapNode(<>拖动滑块，<em>策略当场重写。</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -145,7 +146,7 @@ function SourceReceipts() {
         {locale === "en" ? (
           <>Every number opens<br /><em>the same file.</em></>
         ) : (
-          <>每个数字，<em>都能点开同一份文件。</em></>
+          zhWrapNode(<>每个数字，<em>都能点开同一份文件。</em></>)
         )}
       </h2>
       <div className="exhibit-body">

@@ -2,9 +2,9 @@ export const ASSISTANT_PROJECT_IDS = [
   "release-guardian",
   "streaming-reliability-lab",
   "rag-quality-lab",
-  "privacy-preflight-web",
+  "privacy-preflight",
   "margin-control-tower",
-  "credit-policy-lab",
+  "credit-policy-desk",
   "Voice-in-Security",
 ] as const;
 
@@ -32,9 +32,9 @@ const catalog: Record<AssistantProjectId, {
   "release-guardian": { label: { en: "Release Guardian", zh: "Release Guardian" }, href: "/ai/release-guardian", kind: "portfolio" },
   "streaming-reliability-lab": { label: { en: "Exactly-Once Drills", zh: "Exactly-Once Drills" }, href: "/engineering/exactly-once-drills", kind: "portfolio" },
   "rag-quality-lab": { label: { en: "RAG Quality Lab", zh: "RAG Quality Lab" }, href: "/ai/rag-quality-lab", kind: "portfolio" },
-  "privacy-preflight-web": { label: { en: "Privacy Preflight", zh: "Privacy Preflight" }, href: "/ai/privacy-preflight", kind: "portfolio" },
+  "privacy-preflight": { label: { en: "Privacy Preflight", zh: "Privacy Preflight" }, href: "/ai/privacy-preflight", kind: "portfolio" },
   "margin-control-tower": { label: { en: "Margin Control Tower", zh: "Margin Control Tower" }, href: "/analytics/margin-control-tower", kind: "portfolio" },
-  "credit-policy-lab": { label: { en: "Credit Policy Desk", zh: "Credit Policy Desk" }, href: "/analytics/credit-policy-desk", kind: "portfolio" },
+  "credit-policy-desk": { label: { en: "Credit Policy Desk", zh: "Credit Policy Desk" }, href: "/analytics/credit-policy-desk", kind: "portfolio" },
   "Voice-in-Security": { label: { en: "Voice-in-Security", zh: "Voice-in-Security" }, href: "https://github.com/LucisZhang/Voice-in-Security", kind: "github" },
 };
 

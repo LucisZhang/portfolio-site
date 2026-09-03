@@ -221,6 +221,16 @@ export const ZH_ADJACENT_ALLOWLIST = new Set([
   // rendered in mono, never --display-serif-zh" situation as the EOD
   // verification-proposition symbols above.
   0xb1,
+  // U+25CE BULLSEYE (◎), the confirm-action prefix on the PrivacyLab export
+  // buttons ("◎ CONFIRM REVIEW AND SHOW RESULT" in PrivacyPdfLab.tsx /
+  // PrivacyImageLab.tsx, per the approved r3 mock b4-privacy-galley.html).
+  // The zh button label ("确认复核并显示结果") makes the scanner see it as
+  // zh-adjacent, but .privacy-export-button is uppercase mono/system action
+  // fabric -- globals.css wires --display-serif-zh only to :lang(zh) h1 and
+  // the specific body-copy :is(...) list, never to this button -- so the
+  // glyph renders from the system stack (which carries U+25CE) and does not
+  // belong in the display serif subset.
+  0x25ce,
 ]);
 
 export function codepointsToText(codepoints) {

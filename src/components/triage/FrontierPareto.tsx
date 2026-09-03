@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useI18n } from "@/lib/i18n";
+import { zhWrapNode } from "@/lib/zh-wrap";
 import frontierJson from "../../../public/case-studies/triage-router/frontier.compact.json";
 import { macroF1 as fmtMacroF1, shortHash } from "./triageFormat";
 
@@ -63,7 +64,7 @@ export function FrontierPareto() {
         {locale === "en" ? (
           <>Accuracy and cost<br /><em>share the same axis.</em></>
         ) : (
-          <>准确率和成本，<em>共用同一根轴。</em></>
+          zhWrapNode(<>准确率和成本，<em>共用同一根轴。</em></>)
         )}
       </h2>
       <div className="exhibit-body">

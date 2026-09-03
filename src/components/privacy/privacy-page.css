@@ -173,3 +173,180 @@
    fix on .forge-repo-link a. */
 .privacy-repo-link a { display: inline-flex; align-items: center; min-height: 44px; color: inherit; }
 
+/* ==========================================================================
+   Task B4 (r3 galley alignment, approved mock b4-privacy-galley.html):
+   the IMAGE and PDF workbench modes re-set in the same specimen-figure
+   grammar the TEXT mode already uses -- processed artifact as a plate,
+   proofreader-style notes column, typographic command lines, and no app
+   chrome (no panels, no segmented pills, no native blue range slider).
+   The offending styles live in globals.css (shared file, owned elsewhere
+   this round), so every correction here OVERRIDES from component-owned
+   CSS with the .privacy-lab scope raising specificity. Functionality is
+   untouched: same elements, same classes, restyled only. */
+
+/* -- command lines: hairline-topped mono rows, dot-separated words ------- */
+.privacy-lab .privacy-actionbar {
+  min-height: 0;
+  gap: 2px 10px;
+  margin-bottom: 0;
+  border-bottom: 0;
+  border-top: 1px solid var(--hairline);
+  padding: 4px 0;
+  overflow-x: visible;
+  color: var(--muted);
+  font-size: 10.5px;
+  letter-spacing: .08em;
+}
+.privacy-lab .privacy-actionbar button { color: var(--ink); font-size: 10.5px; letter-spacing: .08em; }
+.privacy-lab .privacy-actionbar button:hover:not(:disabled) { color: var(--accent); }
+.privacy-lab .privacy-actionbar button.privacy-scan-primary { font-size: 10.5px; }
+.privacy-lab .privacy-actionbar-dot { color: var(--muted); }
+/* touch floor (spec §2.5): the words are the controls, so the box -- not
+   the paint -- carries the 44px minimum (same convention as
+   .privacy-action-link in globals.css) */
+.privacy-lab .privacy-segmented button { min-width: 44px; }
+.privacy-lab .privacy-file-name { min-width: 0; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; }
+.privacy-lab .privacy-lang { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; }
+.privacy-lab .privacy-lang > span { color: var(--muted); font-size: 9.5px; text-transform: uppercase; letter-spacing: .08em; }
+.privacy-lab .privacy-actionbar select { min-height: 44px; -webkit-appearance: none; appearance: none; border-bottom: 0; padding: 0 2px 0 0; color: var(--ink); font-family: var(--mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+.privacy-lab .privacy-lang::after { content: "▾"; color: var(--muted); font-size: 9px; }
+.privacy-lab .privacy-example-status { font-size: 9px; letter-spacing: .04em; }
+
+/* the zoom slider, re-cut to the ink/hairline idiom: 1px hairline track,
+   ink bar thumb, no blue, no pill (the native control was the single worst
+   offender in the r3 design finding) */
+.privacy-lab .privacy-zoom { gap: 8px; color: var(--muted); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; min-height: 44px; }
+.privacy-lab .privacy-zoom-value { min-width: 34px; color: var(--ink); }
+.privacy-lab .privacy-zoom input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 104px;
+  height: 17px;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.privacy-lab .privacy-zoom input[type="range"]::-webkit-slider-runnable-track { height: 1px; border: 0; border-radius: 0; background: var(--hairline); }
+.privacy-lab .privacy-zoom input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 3px; height: 13px; margin-top: -6px; border: 0; border-radius: 0; background: var(--ink); }
+.privacy-lab .privacy-zoom input[type="range"]::-moz-range-track { height: 1px; border: 0; border-radius: 0; background: var(--hairline); }
+.privacy-lab .privacy-zoom input[type="range"]::-moz-range-thumb { width: 3px; height: 13px; border: 0; border-radius: 0; background: var(--ink); }
+.privacy-lab .privacy-zoom input[type="range"]:focus-visible { outline: 3px solid rgba(30, 79, 122, .28); outline-offset: 2px; }
+
+/* -- the specimen figure: plate + notes column over a hairline ----------- */
+.privacy-lab .privacy-figure { margin: 12px 0 0; border-top: 1px solid var(--hairline); padding: 14px 0 8px; }
+.privacy-lab .privacy-image-grid, .privacy-lab .privacy-pdf-grid {
+  grid-template-columns: minmax(0, 1.55fr) minmax(240px, 1fr);
+  column-gap: clamp(24px, 3vw, 56px);
+  min-height: 0;
+}
+.privacy-lab .privacy-fig-caption { grid-column: 1 / -1; margin: 0 0 14px; color: var(--muted); font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; }
+.privacy-lab .privacy-fig-caption b { color: var(--ink); font-weight: 650; }
+.privacy-lab .privacy-fig-caption .privacy-fig-file { text-transform: none; overflow-wrap: anywhere; }
+.privacy-lab .privacy-canvas-wrap, .privacy-lab .privacy-pdf-canvas-wrap { border-right: 0; background: var(--paper-bright); align-self: start; }
+.privacy-lab .privacy-canvas-wrap { padding: 22px; }
+.privacy-lab .privacy-main-result-area { min-height: 380px; }
+
+/* empty state: a typographic invitation on the plate, not a dashed box */
+.privacy-lab .privacy-drop-target { min-height: 200px; border: 0; background: transparent; gap: 10px; font-family: var(--mono); }
+.privacy-lab .privacy-drop-target strong { color: var(--accent); font-size: 11px; font-weight: 650; letter-spacing: .1em; text-transform: uppercase; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+.privacy-lab .privacy-drop-target span { color: var(--muted); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; line-height: 1.7; }
+
+/* scan hint: a mono aside on the plate, not a blue callout box */
+.privacy-lab .privacy-scan-hint { top: 16px; left: 22px; border: 0; border-radius: 0; background: color-mix(in srgb, var(--paper-bright) 94%, transparent); padding: 4px 0; color: var(--accent); font-family: var(--mono); font-size: 9px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; line-height: 1.6; }
+
+/* result toolbar: typographic actions on a hairline strip, no pill/blue */
+.privacy-lab .privacy-inplace-result-toolbar { right: 0; bottom: 0; left: 0; max-width: none; justify-content: flex-start; gap: 18px; border: 0; border-top: 1px solid var(--hairline); border-radius: 0; background: color-mix(in srgb, var(--paper-bright) 97%, transparent); padding: 2px 20px; backdrop-filter: none; font-family: var(--mono); }
+.privacy-lab .privacy-inplace-result-toolbar button, .privacy-lab .privacy-inplace-result-toolbar .button-link { min-height: 44px; border: 0; border-radius: 0; background: transparent; padding: 0; color: var(--ink); font-size: 9.5px; font-weight: 650; letter-spacing: .1em; text-transform: uppercase; }
+.privacy-lab .privacy-inplace-result-toolbar button:hover { color: var(--accent); }
+.privacy-lab .privacy-inplace-result-toolbar .button-link.primary { margin-left: auto; border: 0; background: transparent; color: var(--accent); text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+.privacy-lab .privacy-inplace-result-toolbar span { min-width: 0; color: var(--muted); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; text-align: left; }
+.privacy-lab .privacy-before-after-toggle[aria-pressed="true"] { border-color: transparent !important; color: var(--accent) !important; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+
+/* pdf pages inside the plate: no frame, active page marked by its label */
+.privacy-lab .privacy-pdf-page { border: 0; background: transparent; }
+.privacy-lab .privacy-pdf-page-label { color: var(--muted); font-size: 9px; font-weight: 650; letter-spacing: .14em; text-transform: uppercase; }
+.privacy-lab .privacy-pdf-page.active .privacy-pdf-page-label { color: var(--accent); }
+.privacy-lab .privacy-result-page-counter { border: 0; border-radius: 0; background: color-mix(in srgb, var(--paper-bright) 92%, transparent); padding: 4px 0; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
+
+/* -- the notes column: editor's-notes grammar ---------------------------- */
+.privacy-lab .privacy-image-review, .privacy-lab .privacy-pdf-gate { padding: 0; }
+.privacy-lab .privacy-image-review h4, .privacy-lab .privacy-pdf-gate h4 { margin: 0 0 10px; color: var(--muted); font-family: var(--mono); font-size: 10px; font-weight: 650; letter-spacing: .12em; text-transform: uppercase; }
+.privacy-lab .privacy-image-review .privacy-local-line, .privacy-lab .privacy-pdf-gate .privacy-local-line { margin: 0; color: var(--accent); font-family: var(--mono); font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; line-height: 1.7; }
+
+/* numbered annotation list, hairline-separated, keyed to the redactions */
+.privacy-lab .privacy-box-list { margin-top: 18px; border-top: 0; }
+.privacy-lab .privacy-box-list h5 { padding: 0 0 6px; color: var(--muted); font-family: var(--mono); font-size: 9.5px; font-weight: 650; letter-spacing: .12em; text-transform: uppercase; }
+.privacy-lab .privacy-box-list > p { font-family: var(--mono); font-size: 9.5px; line-height: 1.65; }
+.privacy-lab .privacy-box-list article { border-top: 1px solid var(--hairline); padding: 8px 0; }
+.privacy-lab .privacy-box-list article strong { color: var(--ink); font-family: var(--mono); font-size: 10px; }
+.privacy-lab .privacy-note-num { margin-right: 7px; color: var(--accent); font-family: var(--mono); font-size: 10px; font-weight: 650; }
+.privacy-lab .privacy-box-list article code { font-family: var(--mono); font-size: 9px; }
+.privacy-lab .privacy-box-list button.privacy-box-accept { min-height: 32px; font-family: var(--mono); font-size: 9px; letter-spacing: .06em; text-transform: uppercase; }
+.privacy-lab .privacy-box-list button.icon-only { min-width: 32px; min-height: 32px; display: inline-flex; align-items: center; justify-content: center; border: 0; background: transparent; padding: 0; color: var(--muted); cursor: pointer; font-family: var(--mono); font-size: 12px; }
+.privacy-lab .privacy-box-list button.icon-only:hover { color: var(--danger); }
+.privacy-lab .privacy-box-fields label { color: var(--muted); font-family: var(--mono); font-size: 8px; letter-spacing: .08em; text-transform: uppercase; }
+.privacy-lab .privacy-box-fields input { width: 100%; min-width: 0; border: 0; border-bottom: 1px solid var(--hairline); border-radius: 0; background: transparent; padding: 2px 0; color: var(--ink); font-family: var(--mono); font-size: 10px; }
+
+/* state line: STATE: BEFORE · DETECTED · REDACTED, not boxed step chips */
+.privacy-lab .privacy-output-steps { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; margin-top: 14px; border-top: 1px solid var(--hairline); padding-top: 8px; font-family: var(--mono); }
+.privacy-lab .privacy-output-steps span { min-height: 0; display: inline; border: 0; background: transparent; padding: 0; color: var(--muted); font-size: 9.5px; font-weight: 650; letter-spacing: .1em; text-transform: uppercase; }
+.privacy-lab .privacy-output-steps span.done { border: 0; color: var(--accent); text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+.privacy-lab .privacy-output-steps span + span + span::before { content: "·"; display: inline-block; margin-right: 8px; color: var(--muted); }
+
+/* ocr status: hairline row with an ink progress thread, no blue */
+.privacy-lab .privacy-ocr-status { grid-template-columns: 1fr 72px; margin-top: 10px; border-top: 1px solid var(--hairline); border-bottom: 0; padding: 8px 0 0; color: var(--muted); font-family: var(--mono); font-size: 9px; letter-spacing: .02em; }
+.privacy-lab .privacy-ocr-status progress { width: 72px; height: 2px; -webkit-appearance: none; appearance: none; border: 0; background: var(--hairline); accent-color: var(--ink); }
+.privacy-lab .privacy-ocr-status progress::-webkit-progress-bar { background: var(--hairline); }
+.privacy-lab .privacy-ocr-status progress::-webkit-progress-value { background: var(--ink); }
+.privacy-lab .privacy-ocr-status progress::-moz-progress-bar { background: var(--ink); }
+.privacy-lab .privacy-ocr-note { display: block; margin: 10px 0 0; color: var(--muted); font-family: var(--mono); font-size: 9.5px; line-height: 1.65; }
+
+/* asides, gate, method: hairline + type, no colored left rules */
+.privacy-lab .privacy-metadata-note { margin: 12px 0 0; border-left: 0; padding-left: 0; color: var(--muted); font-size: 10px; font-style: italic; line-height: 1.6; }
+.privacy-lab .privacy-page-method { margin: 12px 0 0 !important; border-left: 0; padding: 0; color: var(--muted) !important; font-family: var(--mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; }
+.privacy-lab .privacy-page-method strong { color: var(--ink); font-weight: 650; }
+.privacy-lab .privacy-pdf-explanation { margin: 14px 0 0; border-left: 0; border-top: 1px solid var(--hairline); padding: 8px 0 0; }
+.privacy-lab .privacy-pdf-explanation strong { color: var(--ink); font-family: var(--mono); font-size: 9.5px; font-weight: 650; letter-spacing: .12em; text-transform: uppercase; }
+.privacy-lab .privacy-pdf-explanation p { margin: 6px 0 0; color: var(--muted); font-family: var(--mono); font-size: 9.5px; line-height: 1.65; }
+
+/* confirm: a typographic act, not a full-width button */
+.privacy-lab .privacy-export-button { width: auto; min-height: 44px; justify-content: flex-start; gap: 8px; margin-top: 14px; padding: 0; font-size: 10.5px; letter-spacing: .1em; }
+
+/* verification + checks: mono, hairline rows */
+/* status words, not glyphs: mono PASS/FAIL/BLOCKED per the site convention
+   (BoundaryMatrix, task F2) — color carries state, no boxes or pills */
+.privacy-lab .privacy-status-word { font-family: var(--mono); font-style: normal; font-weight: 650; letter-spacing: .08em; }
+.privacy-lab .privacy-status-word.is-pass { color: var(--ok); }
+.privacy-lab .privacy-status-word.is-fail, .privacy-lab .privacy-status-word.is-blocked { color: var(--danger); }
+.privacy-lab .privacy-validation > div .privacy-status-word { font-size: 9.5px; }
+.privacy-lab .privacy-pdf-checks { grid-template-columns: 1fr; gap: 0; margin-top: 8px; }
+.privacy-lab .privacy-pdf-checks span { border-top: 1px solid var(--hairline); padding: 4px 0; font-family: var(--mono); font-size: 8.5px; }
+.privacy-lab .privacy-pdf-checks .privacy-status-word { margin-right: 6px; font-size: 8px; }
+.privacy-lab .privacy-error { padding: 10px 0 0; font-family: var(--mono); }
+
+/* -- responsive: mirror globals.css's 900/640 breakpoints ---------------- */
+@media (max-width: 900px) {
+  .privacy-lab .privacy-canvas-wrap, .privacy-lab .privacy-pdf-canvas-wrap { min-height: 320px; border-bottom: 0; }
+  /* globals.css's own 900px stack rule (.privacy-image-grid {
+     grid-template-columns: 1fr }) loses to this file's higher-specificity
+     two-column base rule -- media queries add no specificity -- so the
+     stack is restated here at the same breakpoint */
+  .privacy-lab .privacy-image-grid, .privacy-lab .privacy-pdf-grid { grid-template-columns: 1fr; row-gap: 22px; }
+}
+
+@media (max-width: 640px) {
+  /* the 640px globals rules turn the actionbar into stretched full-width
+     buttons (the old toolbar look); the galley command line keeps its
+     wrapped inline words instead */
+  .privacy-lab .privacy-actionbar { align-items: baseline; }
+  .privacy-lab .privacy-actionbar > button { flex: 0 1 auto; }
+  .privacy-lab .privacy-actionbar .privacy-segmented { order: 0; width: auto; }
+  .privacy-lab .privacy-actionbar .privacy-segmented button { flex: 0 1 auto; }
+  .privacy-lab .privacy-lang { margin-left: 0; }
+  .privacy-lab .privacy-canvas-wrap { padding: 14px; }
+  .privacy-lab .privacy-canvas-wrap, .privacy-lab .privacy-pdf-canvas-wrap { border-bottom: 0; }
+  .privacy-lab .privacy-inplace-result-toolbar { padding: 2px 14px; }
+}
+

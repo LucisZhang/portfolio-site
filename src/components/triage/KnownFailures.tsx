@@ -1,6 +1,7 @@
 "use client";
 
 import { useI18n, type Locale } from "@/lib/i18n";
+import { zhWrapNode } from "@/lib/zh-wrap";
 import knownFailuresJson from "../../../public/case-studies/triage-router/known-failures.json";
 
 type KnownFailure = {
@@ -51,7 +52,7 @@ export function KnownFailures() {
         {locale === "en" ? (
           <>Eight real complaints,<br /><em>the cascade sent the wrong way.</em></>
         ) : (
-          <>八条真实工单，<em>级联把它们送错了地方。</em></>
+          zhWrapNode(<>八条真实工单，<em>级联把它们送错了地方。</em></>)
         )}
       </h2>
       <div className="exhibit-body">

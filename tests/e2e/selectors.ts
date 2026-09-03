@@ -19,6 +19,22 @@ export const SEL = {
   // Bare attribute form (no key), used where a test only checks presence.
   projectSectionAttr: '[data-project-section]',
 
+  // --- Task R9a (checklist A3 b+c): circuit chain + colophon index ---
+  // CircuitNav.tsx, mounted by ExhibitShell on the 10 standalone project
+  // routes only. data-circuit-prev/next appear once in the top strip and
+  // once in the bottom block, so specs scope them under circuitTop /
+  // circuitBottom. data-circuit-home is the crumb's XGZ home link (top)
+  // and the colophon foot's "← HOME" (bottom).
+  circuitTop: '[data-circuit-top]',
+  circuitBottom: '[data-circuit-bottom]',
+  circuitPrev: '[data-circuit-prev]',
+  circuitNext: '[data-circuit-next]',
+  circuitHome: '[data-circuit-home]',
+  colophon: '[data-colophon]',
+  colophonItem: (slug: string) => `[data-colophon-item="${slug}"]`,
+  colophonItemAttr: '[data-colophon-item]',
+  colophonCurrent: '[data-colophon-current="true"]',
+
   // --- Dynamic (parameterized) structural selectors ---
   optionWithValue: (value: string) => `option[value="${value}"]`,
   creditVintageButton: (vintage: string) => `.credit-vintages button[title^="${vintage}:"]`,

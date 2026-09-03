@@ -148,8 +148,8 @@ export default function CommandPalette({
                 </Command.Item>
               ))}
             </Command.Group>
-            {query && !results.length ? <Command.Empty className="command-empty">{locale === "en" ? "No confident project match. Try a project, business problem, capability, or tool." : "没有置信度足够的项目匹配。可尝试输入项目、业务问题、能力或工具。"}</Command.Empty> : null}
-            {query ? <p className="command-search-note"><span>{locale === "en" ? "Results update while you type and support English, Simplified and Traditional Chinese, pinyin, initials, synonyms, and typos." : "输入时即时更新，并支持英文、简繁中文、全拼、拼音首字母、同义词与拼写容错。"}</span><button type="button" onClick={askPortfolio}>{locale === "en" ? "Ask an open-ended question" : "询问开放式问题"}<ArrowRight aria-hidden="true" /></button></p> : null}
+            {query && !results.length ? <Command.Empty className="command-empty">{locale === "en" ? "No confident project match. Try a project, business problem, capability, or tool." : "目前没有足够可靠的匹配。换个说法试试，项目名、业务问题、能力或工具都可以。"}</Command.Empty> : null}
+            {query ? <p className="command-search-note"><span>{locale === "en" ? "Results update while you type and support English, Simplified and Traditional Chinese, pinyin, initials, synonyms, and typos." : "输入时即时更新，并支持英文、简繁中文、全拼、拼音首字母、同义词与拼写容错。"}</span><button type="button" onClick={askPortfolio}>{locale === "en" ? "Ask an open-ended question" : "直接提问"}<ArrowRight aria-hidden="true" /></button></p> : null}
           </Command.List>
         </div>
       </Command.Dialog>

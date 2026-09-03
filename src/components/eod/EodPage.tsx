@@ -4,6 +4,7 @@ import { Finding } from "@/components/exhibition/Finding";
 import LocaleDocumentMetadata from "@/components/LocaleDocumentMetadata";
 import OptionalMedia from "@/components/OptionalMedia";
 import { useI18n } from "@/lib/i18n";
+import { zhWrapNode, zhWrapText } from "@/lib/zh-wrap";
 import type { Project } from "@/lib/projects";
 import { siteIdentity } from "@/lib/site-config";
 import brokerParityJson from "../../../public/case-studies/exactly-once-drills/results/broker_parity.json";
@@ -100,13 +101,13 @@ function VerificationProposition() {
     <section id="exhibit-02" className="exhibit" data-exhibit="02" data-bg="ink" aria-labelledby="exhibit-02-title">
       <p className="exhibit-opening-row">
         <span className="exhibit-number" aria-hidden="true">02</span>
-        <span className="exhibit-eyebrow">{locale === "en" ? "RECONCILIATION · SNAPSHOT DIGEST EQUALITY" : "RECONCILIATION · 快照摘要一致性"}</span>
+        <span className="exhibit-eyebrow">{locale === "en" ? "RECONCILIATION · SNAPSHOT DIGEST EQUALITY" : zhWrapText("RECONCILIATION · 快照摘要一致性")}</span>
       </p>
       <h2 id="exhibit-02-title" className="exhibit-title">
         {locale === "en" ? (
           <>Exactly-once ends<br /><em>at reconciliation.</em></>
         ) : (
-          <>Exactly-once 的终点，<em>是对账。</em></>
+          zhWrapNode(<>Exactly-once 的终点，<em>是对账。</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -154,7 +155,7 @@ function DualPathParity() {
         {locale === "en" ? (
           <>Two delivery paths<br /><em>must land on the same state.</em></>
         ) : (
-          <>两条投递路径，<em>必须落到同一个状态。</em></>
+          zhWrapNode(<>两条投递路径，<em>必须落到同一个状态。</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -189,13 +190,13 @@ function CheckpointPressure() {
     <section id="exhibit-04" className="exhibit" data-exhibit="04" data-bg="white" aria-labelledby="exhibit-04-title">
       <p className="exhibit-opening-row">
         <span className="exhibit-number" aria-hidden="true">04</span>
-        <span className="exhibit-eyebrow">{locale === "en" ? "CHECKPOINT DURATION · ICEBERG COMMIT LAG" : "CHECKPOINT DURATION · ICEBERG 提交延迟"}</span>
+        <span className="exhibit-eyebrow">{locale === "en" ? "CHECKPOINT DURATION · ICEBERG COMMIT LAG" : zhWrapText("CHECKPOINT DURATION · ICEBERG 提交延迟")}</span>
       </p>
       <h2 id="exhibit-04-title" className="exhibit-title">
         {locale === "en" ? (
           <>Recovery has<br /><em>ten different failure shapes.</em></>
         ) : (
-          <>十种故障，<em>十种不同的恢复形状。</em></>
+          zhWrapNode(<>十种故障，<em>十种不同的恢复形状。</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -236,13 +237,13 @@ function SourceReceipts() {
     <section id="exhibit-05" className="exhibit" data-exhibit="05" data-bg="ink" aria-labelledby="exhibit-05-title">
       <p className="exhibit-opening-row">
         <span className="exhibit-number" aria-hidden="true">05</span>
-        <span className="exhibit-eyebrow">{locale === "en" ? "HOW THIS WAS VERIFIED" : "如何验证"}</span>
+        <span className="exhibit-eyebrow">{locale === "en" ? "HOW THIS WAS VERIFIED" : zhWrapText("如何验证")}</span>
       </p>
       <h2 id="exhibit-05-title" className="exhibit-title">
         {locale === "en" ? (
           <>Every drill opens<br /><em>the same raw file.</em></>
         ) : (
-          <>每场演练，<em>都能打开同一份原始记录。</em></>
+          zhWrapNode(<>每场演练，<em>都能打开同一份原始记录。</em></>)
         )}
       </h2>
       <div className="exhibit-body">

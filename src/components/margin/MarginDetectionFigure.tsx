@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { StatGrid } from "@/components/exhibition/StatGrid";
 import { useI18n } from "@/lib/i18n";
+import { zhWrapNode, zhWrapText } from "@/lib/zh-wrap";
 import { getProject } from "@/lib/projects";
 import { calendarEndWeek, detectionReport, elasticityReport, metricRegistry, totalWeeks, weekIndex } from "./marginData";
 
@@ -83,10 +84,10 @@ export function MarginDetectionFigure() {
         {locale === "en" ? (
           <>Six injected leaks. Six alarms.<br /><em>Thirteen false ones — counted, not hidden.</em></>
         ) : (
-          <>六次注入的泄漏，六次告警。<br /><em>还有十三次假阳性——如实计入，不是藏起来。</em></>
+          zhWrapNode(<>六次注入的泄漏，六次告警。<br /><em>还有十三次假阳性——如实计入，不是藏起来。</em></>)
         )}
       </h1>
-      {locale === "zh" && marginProject ? <p className="cn-gloss" lang="zh">{marginProject.glossZh}</p> : null}
+      {locale === "zh" && marginProject ? <p className="cn-gloss" lang="zh">{zhWrapText(marginProject.glossZh)}</p> : null}
       <p className="exhibit-intro">
         {locale === "en"
           // copy-lint: allow robust -- statistical method name (STL + robust z-score, DetectionPanel.tsx precedent)
@@ -99,8 +100,8 @@ export function MarginDetectionFigure() {
       <div className="margin-detection-figure" data-testid="margin-detection-figure">
         <div className="exhibit-opening-row margin-detection-figure-head">
           {/* copy-lint: allow robust -- statistical method name (STL + robust z-score, DetectionPanel.tsx precedent) */}
-          <span className="exhibit-eyebrow">{locale === "en" ? "EXHIBIT 01 · ROBUST Z AT EACH INJECTED LEAK WEEK" : "展品 01 · 每个注入泄漏周的稳健 Z 值"}</span>
-          <span className="exhibit-eyebrow">{locale === "en" ? `WEEKLY CONTRIBUTION MARGIN · STL PERIOD ${detectionReport.stl_period_weeks} WK` : `周度贡献毛利 · STL 周期 ${detectionReport.stl_period_weeks} 周`}</span>
+          <span className="exhibit-eyebrow">{locale === "en" ? "EXHIBIT 01 · ROBUST Z AT EACH INJECTED LEAK WEEK" : zhWrapText("展品 01 · 每个注入泄漏周的稳健 Z 值")}</span>
+          <span className="exhibit-eyebrow">{locale === "en" ? `WEEKLY CONTRIBUTION MARGIN · STL PERIOD ${detectionReport.stl_period_weeks} WK` : zhWrapText(`周度贡献毛利 · STL 周期 ${detectionReport.stl_period_weeks} 周`)}</span>
         </div>
         <svg className="margin-detection-chart" viewBox={`0 0 ${WIDTH} ${HEIGHT}`} role="img" aria-hidden="true">
           <line className="margin-detection-axis" x1={PAD_X} y1={BASELINE_Y} x2={WIDTH - PAD_X} y2={BASELINE_Y} />

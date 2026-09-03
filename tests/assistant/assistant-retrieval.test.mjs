@@ -11,15 +11,15 @@ import {
 } from "../../src/lib/assistant-retrieval.ts";
 
 const finalRepositoryCommits = new Map([
-  ["LucisZhang/release-guardian", "1be4af55301b6d4a2c1c98b1850a820b698208bb"],
-  ["LucisZhang/rag-quality-lab", "88879a286104d4fe0941c07d75230610093996d3"],
-  ["LucisZhang/privacy-preflight-web", "47eef37aa2aa39198c26f10fd5480c90274091ff"],
-  ["LucisZhang/streaming-reliability-lab", "eda2a7c156059678ecae8c57f4452ef98bd9ae89"],
-  ["LucisZhang/margin-control-tower", "bd68e65b676593dff46c5fec41a8f4879ce5066c"],
-  ["LucisZhang/credit-policy-lab", "53dfd853c9b2d70476ed3b9250a7acdf01777887"],
-  ["LucisZhang/Voice-in-Security", "24b7e3c97ec2158c33a21d3bd37ba233e6d1219d"],
+  ["LucisZhang/release-guardian", "bc7e7fdc6125019ceb6c7aa6e8a7af1084e775fc"],
+  ["LucisZhang/rag-quality-lab", "6e3d6a2b040cc9fe4acb7dd4a61295405138f296"],
+  ["LucisZhang/privacy-preflight", "510454c2393d274168be0d605d938a8abeb7862d"],
+  ["LucisZhang/streaming-reliability-lab", "f323090c36e6b3f84e8cf8e5a1152addedde3410"],
+  ["LucisZhang/margin-control-tower", "c84559f1f141bc86b728d5a8133b926ad8529273"],
+  ["LucisZhang/credit-policy-desk", "bbad7e0dbf997d7fb64caad5ed3c8bf09e74658e"],
+  ["LucisZhang/Voice-in-Security", "81a40142d0f79e8bd8f90db150cd4ffbd4c1a1d8"],
 ]);
-const siteCommit = "e8821702bfe69ee5846a617aa178486f216b5346";
+const siteCommit = "346b8a81cbf9a238081ef179eb622ea8f0614466";
 
 test("generated public knowledge is pinned to final releases and the R2 site revision", () => {
   const snapshot = JSON.parse(readFileSync("src/data/assistant-knowledge.generated.json", "utf8"));
@@ -56,13 +56,13 @@ test("generated public knowledge is pinned to final releases and the R2 site rev
     ["/", "src/lib/home-stats.ts"],
     ["/", "src/lib/i18n.ts"],
     ["/ai/frontier-forge", "src/lib/frontier-project-detail.ts"],
-    ["/ai/release-guardian", "src/lib/structural-copy.ts"],
+    ["/ai/release-guardian", "src/components/guardian/GuardianPage.tsx"],
     ["/ai/release-guardian", "public/case-studies/release-guardian/replay/synthetic-scenarios.json"],
-    ["/ai/rag-quality-lab", "src/lib/structural-copy.ts"],
+    ["/ai/rag-quality-lab", "src/components/ragdiff/RagDiffLab.tsx"],
     ["/ai/privacy-preflight", "src/lib/privacy-localization.ts"],
-    ["/analytics/margin-control-tower", "src/lib/structural-copy.ts"],
+    ["/analytics/margin-control-tower", "src/components/margin/MarginDetectionFigure.tsx"],
     ["/analytics/credit-policy-desk", "src/components/analytics/AnalyticsMethods.tsx"],
-    ["/analytics/credit-policy-desk", "src/lib/structural-copy.ts"],
+    ["/analytics/credit-policy-desk", "src/components/credit/CreditPolicyFrontier.tsx"],
     ["/analytics/analytics-tandem", "src/components/CaseStudyBlock.tsx"],
   ]) {
     assert.ok(snapshot.chunks.some((chunk) => (
@@ -85,6 +85,7 @@ test("generated public knowledge is pinned to final releases and the R2 site rev
     [
       "docs/evidence/digits-eod.md",
       "docs/evidence/digits-forge.md",
+      "docs/evidence/digits-guardian.md",
       "docs/evidence/digits-home.md",
       "docs/evidence/digits-privacy.md",
       "docs/evidence/digits-triage.md",
@@ -143,7 +144,7 @@ test("offline assistant cache fails closed on identity and manifest tampering", 
     encoding: "utf8",
   });
   assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
-  assert.match(result.stdout, /assistant knowledge cache self-test passed: 58 files, 449 chunks/u);
+  assert.match(result.stdout, /assistant knowledge cache self-test passed: 52 files, 496 chunks/u);
 });
 
 test("generated public knowledge has globally unique chunk IDs", () => {

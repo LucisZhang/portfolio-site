@@ -1,6 +1,7 @@
 "use client";
 
 import { useI18n } from "@/lib/i18n";
+import { zhWrapNode } from "@/lib/zh-wrap";
 import { RAG_BASELINE_COMMIT, RAG_RECEIPTS, RAG_REPOSITORY_URL } from "./ragData";
 
 // Exhibit 03 -- SOURCE / RECEIPTS (spec §6.7's 3-exhibit light
@@ -27,7 +28,7 @@ export function RagSourceReceipts() {
       <h2 id="exhibit-03-title" className="exhibit-title">
         {locale === "en"
           ? <>Every number opens<br /><em>the same file.</em></>
-          : <>每个数字，<br /><em>都能点开同一份文件。</em></>}
+          : zhWrapNode(<>每个数字，<br /><em>都能点开同一份文件。</em></>)}
       </h2>
       <div className="exhibit-body">
         <dl className="rag-receipts-dl" data-testid="rag-receipts-list">

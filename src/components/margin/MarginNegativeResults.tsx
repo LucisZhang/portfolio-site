@@ -2,6 +2,7 @@
 
 import { Finding } from "@/components/exhibition/Finding";
 import { useI18n } from "@/lib/i18n";
+import { zhWrapNode } from "@/lib/zh-wrap";
 import { detectionReport, elasticityReport } from "./marginData";
 
 // Exhibit 03: the honesty exhibit -- spec §6.7's "03 negative/limitation
@@ -25,7 +26,7 @@ export function MarginNegativeResults() {
         {locale === "en" ? (
           <>Recall cost <em>precision.</em></>
         ) : (
-          <>召回率，是用<em>精确率换来的。</em></>
+          zhWrapNode(<>召回率，是用<em>精确率换来的。</em></>)
         )}
       </h2>
 

@@ -1,0 +1,1667 @@
+{
+  "generator": "scripts/generate-ask-question-bank.mjs",
+  "mechanism": "authored preset answers (assistant-knowledge/question-bank.json) -- written by the author from the projects' committed evidence; every numeric claim is machine-verified against its named source file by the generator's grounding gate; citations are curated pinned destinations; no model call, no network request on click",
+  "answers": {
+    "home-background": {
+      "route": "/",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:home:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "Xiangguo Zhang portfolio · README.md",
+            "zh": "章向国作品集 · README.md"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/README.md"
+        },
+        {
+          "sourceId": "portfolio-site:ai-frontier-forge:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Frontier Forge · src/lib/projects.ts",
+            "zh": "Frontier Forge · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "portfolio-site:ai-release-guardian:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Release Guardian · src/lib/projects.ts",
+            "zh": "Release Guardian · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "Xiangguo Zhang builds LLM agents and applications, fine-tunes and serves the models himself, and publishes the runs that didn't work. The direction he is applying for is AI agent & LLM application engineering, with backend & distributed systems and data engineering & analytics behind it.",
+            "ref": 1
+          },
+          {
+            "text": "The flagship, Frontier Forge, walks that whole chain on one task: SFT lifted Qwen3.5-4B from 66.35% to 99.05% task success on complaint triage (n=2000, paired 95% CI), served with vLLM behind a C++20 gateway, at $35.68 total measured spend.",
+            "ref": 2
+          },
+          {
+            "text": "The agent work is production-shaped: Release Guardian is a 13-node LangGraph release gate whose human approval survives a process kill — 132 funded live runs, 8/8 aggregate gates, 30/44 strict.",
+            "ref": 3
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "章向国做的是 LLM Agent 与大模型应用：从 Agent 应用到微调、推理服务，这条链自己跑通，跑砸的实验也原样公开。求职方向是 AI Agent 与大模型应用工程，后端与分布式系统、数据工程与分析作支撑。",
+            "ref": 1
+          },
+          {
+            "text": "主打项目 Frontier Forge 在一个任务上走完整条链：SFT 把 Qwen3.5-4B 的投诉分诊任务成功率从 66.35% 提到 99.05%（n=2000，配对 95% CI），vLLM 部署，前面是自己写的 C++20 网关，全程实测花费 $35.68。",
+            "ref": 2
+          },
+          {
+            "text": "Agent 这部分按生产模式设计：Release Guardian 是 13 节点的 LangGraph 发布门禁，人工审批断电也能恢复——132 次付费在线运行，8/8 聚合门禁通过，严格口径 30/44。",
+            "ref": 3
+          }
+        ]
+      }
+    },
+    "home-site-overview": {
+      "route": "/",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:home:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "Xiangguo Zhang portfolio · README.md",
+            "zh": "章向国作品集 · README.md"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/README.md"
+        },
+        {
+          "sourceId": "portfolio-site:ai-frontier-forge:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Frontier Forge · src/lib/projects.ts",
+            "zh": "Frontier Forge · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "portfolio-site:engineering-exactly-once-drills:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Exactly-Once Drills · src/lib/projects.ts",
+            "zh": "Exactly-Once Drills · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "Start with the AI application rooms: Frontier Forge (training to serving to gateway, measured end to end), Release Guardian (an agent release gate with a human approval), and Triage Router (the case against defaulting to the expensive model).",
+            "ref": 1
+          },
+          {
+            "text": "Frontier Forge is the flagship: the whole chain on one page, with the failed runs — distillation and GRPO — kept in red next to the wins.",
+            "ref": 2
+          },
+          {
+            "text": "For the engineering side, Exactly-Once Drills breaks one Flink → Iceberg pipeline ten different ways and reconciles every recovery to zero diffs. Every number on the site traces to a committed file, JSON path, and SHA-256.",
+            "ref": 3
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "先看 AI 应用这几间展厅：Frontier Forge（训练、推理服务到网关，全程实测）、Release Guardian（带人工审批的 Agent 发布门禁）、Triage Router（为什么贵的模型不该是默认选项）。",
+            "ref": 1
+          },
+          {
+            "text": "Frontier Forge 是主打项目：整条链摆在一页上，跑砸的蒸馏和 GRPO 实验标成红色，留在赢的结果旁边。",
+            "ref": 2
+          },
+          {
+            "text": "工程侧可以看 Exactly-Once Drills：把一条 Flink → Iceberg 管道用十种方法弄断，每次恢复都对账到零差异。站上每个数字都能追到文件、JSON path 和 SHA-256。",
+            "ref": 3
+          }
+        ]
+      }
+    },
+    "home-tech-stack": {
+      "route": "/",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:home:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "Xiangguo Zhang portfolio · README.md",
+            "zh": "章向国作品集 · README.md"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/README.md"
+        },
+        {
+          "sourceId": "portfolio-site:ai-frontier-forge:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Frontier Forge · src/lib/projects.ts",
+            "zh": "Frontier Forge · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "portfolio-site:engineering-exactly-once-drills:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Exactly-Once Drills · src/lib/projects.ts",
+            "zh": "Exactly-Once Drills · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "The site itself is Next.js 16 App Router with static generation, React 19, TypeScript, and Tailwind CSS 4; the heavy in-browser engines — DuckDB-WASM for SQL over parquet, onnxruntime-web for in-tab inference, Tesseract.js for OCR — load only behind an explicit click.",
+            "ref": 1
+          },
+          {
+            "text": "On the model side: Qwen3.5-4B fine-tuned with SFT and served with vLLM behind a C++20 token-budget gateway on k3s, LangGraph orchestration in Release Guardian, and int8 ONNX inference running in the browser on the Triage Router page.",
+            "ref": 2
+          },
+          {
+            "text": "The data projects run MySQL CDC → Flink → Iceberg (with a Debezium → Avro → Kafka second path), and Spark + Iceberg for the 43.9M-review Crossover Study.",
+            "ref": 3
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "网站本身是 Next.js 16 App Router 静态生成，加 React 19、TypeScript、Tailwind CSS 4；DuckDB-WASM（SQL over parquet）、onnxruntime-web（页内推理）、Tesseract.js（OCR）这些重引擎都放在明确的点击之后才加载。",
+            "ref": 1
+          },
+          {
+            "text": "模型侧：Qwen3.5-4B 用 SFT 微调、vLLM 部署，前面是 C++20 的 token 预算网关，跑在 k3s 上；Release Guardian 用 LangGraph 编排；Triage Router 页面里跑的是浏览器内 int8 ONNX 推理。",
+            "ref": 2
+          },
+          {
+            "text": "数据项目是 MySQL CDC → Flink → Iceberg（另一路走 Debezium → Avro → Kafka），Crossover Study 用 Spark + Iceberg 处理 43.9M 条评论。",
+            "ref": 3
+          }
+        ]
+      }
+    },
+    "forge-overview": {
+      "route": "/ai/frontier-forge",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:ai-frontier-forge:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Frontier Forge · src/lib/projects.ts",
+            "zh": "Frontier Forge · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "portfolio-site:home:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "Xiangguo Zhang portfolio · README.md",
+            "zh": "章向国作品集 · README.md"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/README.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "One project, one chain: supervised fine-tuning of Qwen3.5-4B for complaint triage, serving with vLLM, and a C++20 token-budget gateway in front, autoscaled 1→3→1 on k3s.",
+            "ref": 1
+          },
+          {
+            "text": "The links are measured together, not separately: 66.35% to 99.05% task success out of training (n=2000, paired 95% CI), GPTQ-int4 p95 0.963 s from serving, zero upstream 5xx at 3× overload through the gateway — and one bill for the whole thing: $35.68, measured.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "一个项目走完一条链：Qwen3.5-4B 在投诉分诊上做 SFT 微调，vLLM 部署，前面挡一层自己写的 C++20 token 预算网关，k3s 上 1→3→1 自动伸缩。",
+            "ref": 1
+          },
+          {
+            "text": "各环节的数字连在一起看，不是各说各的：训练侧 66.35% 到 99.05% 任务成功率（n=2000，配对 95% CI），推理侧 GPTQ-int4 p95 0.963 s，网关侧 3× 过载下上游零 5xx——整条链一张账单：$35.68，实测。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "forge-training-result": {
+      "route": "/ai/frontier-forge",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:ai-frontier-forge:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Frontier Forge · src/lib/projects.ts",
+            "zh": "Frontier Forge · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "portfolio-site:home:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "Xiangguo Zhang portfolio · README.md",
+            "zh": "章向国作品集 · README.md"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/README.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "Scaling free rule labels from 1,450 to 20,000 examples lifted the 4B model from 66.35% to 99.05% task success on complaint triage — a +32.7 pp paired gain (n=2000, paired 95% CI).",
+            "ref": 1
+          },
+          {
+            "text": "The runs that lost are published beside it: SFT distilled from a $12.7 teacher dataset landed 14.2 pp below the free rule labels, and GRPO's confidence interval includes zero. Both stay on the page, in red.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "免费的规则标签从 1,450 条加到 20,000 条，把这个 4B 模型的投诉分诊任务成功率从 66.35% 提到 99.05%——配对增益 +32.7 pp（n=2000，配对 95% CI）。",
+            "ref": 1
+          },
+          {
+            "text": "输掉的实验就摆在旁边：用 $12.7 教师数据蒸馏出来的 SFT，比免费规则标签低 14.2 pp；GRPO 的置信区间含零。这两次都标成红色留在页面上。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "forge-overload": {
+      "route": "/ai/frontier-forge",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:ai-frontier-forge:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Frontier Forge · src/lib/projects.ts",
+            "zh": "Frontier Forge · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "portfolio-site:home:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "Xiangguo Zhang portfolio · README.md",
+            "zh": "章向国作品集 · README.md"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/README.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "It sheds load instead of falling over: under 3× sustained overload the gateway answers the excess with HTTP 429, and the upstream saw zero 5xx (n=492 in the gate run).",
+            "ref": 1
+          },
+          {
+            "text": "The control run is the argument: bare vLLM with no gateway crashed at 5× load. The token-budget admission control in front is what keeps the serving boundary standing.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "它选择把多余的请求挡在门外，而不是自己崩掉：3× 持续过载下，网关用 HTTP 429 拒掉超出的部分，上游 5xx 为零（门禁运行 n=492）。",
+            "ref": 1
+          },
+          {
+            "text": "对照组就是论据：不带网关的裸 vLLM，压到 5× 直接崩。撑住推理服务边界的，是前面这层按 token 预算做的准入控制。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "release-overview": {
+      "route": "/ai/release-guardian",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:ai-release-guardian:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Release Guardian · src/lib/projects.ts",
+            "zh": "Release Guardian · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "release-guardian:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "See the README's verified claims in Release Guardian",
+            "zh": "查看Release Guardian：README 中的已验证结论"
+          },
+          "url": "https://github.com/LucisZhang/release-guardian/blob/bc7e7fdc6125019ceb6c7aa6e8a7af1084e775fc/README.md"
+        },
+        {
+          "sourceId": "portfolio-site:home:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "Xiangguo Zhang portfolio · README.md",
+            "zh": "章向国作品集 · README.md"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/README.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "Because someone has to answer for an automated change before it ships. Release Guardian makes the change prove itself: a 13-node LangGraph graph classifies it, runs four parallel evidence collectors, grades the risk, checks the plan against policy, and only then publishes through the approved branch.",
+            "ref": 1
+          },
+          {
+            "text": "The tool layer is allowlisted per node with call budgets, deterministic validators guard the exit with bounded retries, and a tamper-evident SHA-256 audit chain records everything.",
+            "ref": 2
+          },
+          {
+            "text": "It has run for real: 132 funded live graph runs, 8/8 aggregate gates passed, with the strict per-scenario view (30/44) stated right beside the headline.",
+            "ref": 3
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "因为自动化变更上线之前，得有人说清这次改动会碰到什么。Release Guardian 的做法：13 节点 LangGraph 图先分类，四路并行采集证据，再分级风险、按规则校验计划，最后只通过获批分支发布。",
+            "ref": 1
+          },
+          {
+            "text": "工具层按节点白名单加调用预算，确定性校验带着有界重试守在出口，防篡改的 SHA-256 审计哈希链记录全程。",
+            "ref": 2
+          },
+          {
+            "text": "它真的跑过：132 次付费在线图运行，8/8 聚合门禁全部通过，严格逐场景口径（30/44）就写在标题旁边。",
+            "ref": 3
+          }
+        ]
+      }
+    },
+    "release-human-approval": {
+      "route": "/ai/release-guardian",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:ai-release-guardian:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Release Guardian · src/lib/projects.ts",
+            "zh": "Release Guardian · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "release-guardian:docs/architecture.mmd",
+          "kind": "public-github",
+          "label": {
+            "en": "See the architecture diagram in Release Guardian",
+            "zh": "查看Release Guardian：架构图"
+          },
+          "url": "https://github.com/LucisZhang/release-guardian/blob/bc7e7fdc6125019ceb6c7aa6e8a7af1084e775fc/docs/architecture.mmd"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "Approval is its own node, placed after evidence collection and risk grading and before anything publishes: the graph pauses, persists the interrupt, and waits for a human decision — the pause survives a process kill and resumes with the decision intact.",
+            "ref": 1
+          },
+          {
+            "text": "Publication then goes only through the approved branch, and the decision lands in the audit record — so the team can still explain that sign-off six months later.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "审批是图里独立的一个节点，排在证据采集与风险分级之后、发布动作之前：图会持久化中断、停下来等人做决定——进程被杀掉也不丢，恢复后接着审。",
+            "ref": 1
+          },
+          {
+            "text": "之后只通过获批分支发布，决定本身写进审计记录；半年后再被问起当初为什么放行，翻记录就能答上来。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "release-gate-results": {
+      "route": "/ai/release-guardian",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:ai-release-guardian:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Release Guardian · src/lib/projects.ts",
+            "zh": "Release Guardian · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "release-guardian:evidence/manifest.json",
+          "kind": "public-github",
+          "label": {
+            "en": "See the recorded evidence file in Release Guardian",
+            "zh": "查看Release Guardian：评测证据文件"
+          },
+          "url": "https://github.com/LucisZhang/release-guardian/blob/bc7e7fdc6125019ceb6c7aa6e8a7af1084e775fc/evidence/manifest.json"
+        },
+        {
+          "sourceId": "portfolio-site:home:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "Xiangguo Zhang portfolio · README.md",
+            "zh": "章向国作品集 · README.md"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/README.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "Two honest views of the same 132 funded live runs. 8/8: all eight aggregate gates passed — including 100% citation fidelity, zero tool misuse, and 100% injection defense.",
+            "ref": 1
+          },
+          {
+            "text": "30/44 is the strict view: 30 of 44 scenarios failed at least one criterion in at least one of their three trials, and the agent still misses roughly 17% of the dependencies it should find (missed_dependency_rate 0.1742 against a ≤0.25 threshold).",
+            "ref": 2
+          },
+          {
+            "text": "Both stay on the page, because an aggregate pass is not a claim that every scenario passes.",
+            "ref": 3
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "这是同一批 132 次付费在线运行的两种口径。8/8：八项聚合门禁全部通过——包括引用忠实度 100%、工具误用为零、注入防御 100%。",
+            "ref": 1
+          },
+          {
+            "text": "30/44 是严格口径：44 个场景里有 30 个在三次试验中至少一次至少有一项标准没过；它也依然漏掉了大约 17% 本该找出来的依赖（missed_dependency_rate 0.1742，阈值 ≤0.25）。",
+            "ref": 2
+          },
+          {
+            "text": "两种口径都留在页面上：聚合通过，不等于每个场景都通过。",
+            "ref": 3
+          }
+        ]
+      }
+    },
+    "rag-overview": {
+      "route": "/ai/rag-quality-lab",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:ai-rag-quality-lab:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "RAG Quality Lab · src/lib/projects.ts",
+            "zh": "RAG Quality Lab · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "rag-quality-lab:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "See the README's verified claims in RAG Quality Lab",
+            "zh": "查看RAG Quality Lab：README 中的已验证结论"
+          },
+          "url": "https://github.com/LucisZhang/rag-quality-lab/blob/6e3d6a2b040cc9fe4acb7dd4a61295405138f296/README.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "The regression nobody sees coming: a knowledge-base update that changes no code and no configuration but quietly makes answers worse. In the recorded case, a document-only update dropped the strongest pipeline's faithfulness from 0.988 to 0.867 on the 12 controlled questions — 4 degraded, 8 stable, none improved.",
+            "ref": 1
+          },
+          {
+            "text": "The suite re-runs one pipeline across knowledge-base versions, buckets per-question changes, and fails the gate on measured regression, data drift, or a broken contract. That regression run is the only reason the update was caught.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "它防的是最不容易发现的那种回归：没改代码、没动配置，只更新了知识库，答案质量却悄悄变差。记录在案的那次：只改文档，就让最强 pipeline 的忠实度在 12 道受控题上从 0.988 掉到 0.867——4 题退化、8 题持平、没有一题变好。",
+            "ref": 1
+          },
+          {
+            "text": "回归套件让同一条 pipeline 跨知识库版本重跑，逐题分桶对比；测到退化、数据漂移或契约被破坏就直接失败。那次更新之所以被抓住，只是因为跑了回归。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "rag-c2": {
+      "route": "/ai/rag-quality-lab",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:ai-rag-quality-lab:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "RAG Quality Lab · src/lib/projects.ts",
+            "zh": "RAG Quality Lab · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "rag-quality-lab:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "See the README's verified claims in RAG Quality Lab",
+            "zh": "查看RAG Quality Lab：README 中的已验证结论"
+          },
+          "url": "https://github.com/LucisZhang/rag-quality-lab/blob/6e3d6a2b040cc9fe4acb7dd4a61295405138f296/README.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "C2 confirmed the lab's evidence lifecycle survives enterprise scale: 11,309 synthetic enterprise documents and 130 answerable questions adapted under deterministic manifests, with 68 model-free tests passing at the evidence checkpoint.",
+            "ref": 1
+          },
+          {
+            "text": "It is deliberately a data-integrity and infrastructure result, not an answer-quality one: the quality numbers on the page still belong to the controlled 12-question runs, and the claim registry states exactly where C2's authority stops.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "C2 确认的是这套证据流程扛得住企业规模：11,309 份合成企业文档、130 道可回答问题按确定性清单完成适配，证据检查点上 68 项无模型测试全部通过。",
+            "ref": 1
+          },
+          {
+            "text": "它被有意限定为数据完整性与基础设施结论，不是答案质量结论：页面上的质量指标仍来自受控的 12 题运行，claim registry 里写明了 C2 的效力到哪里为止。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "rag-c3": {
+      "route": "/ai/rag-quality-lab",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:ai-rag-quality-lab:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "RAG Quality Lab · src/lib/projects.ts",
+            "zh": "RAG Quality Lab · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "rag-quality-lab:scripts/run_s1_retrieval_ab.py",
+          "kind": "public-github",
+          "label": {
+            "en": "See a runnable script in RAG Quality Lab",
+            "zh": "查看RAG Quality Lab：可运行脚本"
+          },
+          "url": "https://github.com/LucisZhang/rag-quality-lab/blob/6e3d6a2b040cc9fe4acb7dd4a61295405138f296/scripts/run_s1_retrieval_ab.py"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "No — C3 closed without metrics, and the page says so plainly. The planned deterministic retrieval A/B (all 130 S1-answerable questions over 11,309 documents) was blocked at dependency preflight: the pinned heavy stack — chromadb, sentence-transformers, torch — was not installed, and installing it fell outside the offline timebox.",
+            "ref": 1
+          },
+          {
+            "text": "Substituting an easier pipeline would have invalidated the A/B, so no fallback metrics were produced. What was kept is an improved runner that records dataset hashes, pipeline definitions, and an output manifest — ready for a future real run.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "没有——C3 没有产出指标，页面也直说了。原计划的确定性检索 A/B（130 道 S1 可回答问题、11,309 份文档）卡在依赖预检：锁定的重依赖 chromadb、sentence-transformers、torch 都不在环境里，安装它们超出了这次离线时间盒。",
+            "ref": 1
+          },
+          {
+            "text": "换一条更容易的流水线会让这次 A/B 失去意义，所以没有生成任何替代指标。留下来的是改进后的运行器：记录数据集哈希、流水线定义和输出清单，等一次真正的重跑。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "triage-overview": {
+      "route": "/ai/triage-router",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:ai-triage-router:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Triage Router · src/lib/projects.ts",
+            "zh": "Triage Router · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "portfolio-site:home:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "Xiangguo Zhang portfolio · README.md",
+            "zh": "章向国作品集 · README.md"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/README.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "Consumer-finance complaints — the CFPB corpus — routed across three model tiers: calibrated TF-IDF, fine-tuned transformers (ModernBERT, int8 DistilBERT), and Claude tiers, with a confidence cascade handing each complaint to the cheapest tier that can handle it.",
+            "ref": 1
+          },
+          {
+            "text": "On held-out data the cascade beats the linear baseline by +0.0370 macro-F1 (95% CI +0.0337 to +0.0402) while cutting expected cost by $120.58 per thousand complaints — measured against 11 years of distribution drift, not one convenient slice.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "分的是消费金融投诉（CFPB 语料），路由在三层模型之间：带校准的 TF-IDF、微调 Transformer（ModernBERT、int8 DistilBERT）、Claude 层；置信级联把每条投诉交给接得住的最便宜一档。",
+            "ref": 1
+          },
+          {
+            "text": "留出集上，级联比线性基线高 +0.0370 macro-F1（95% CI +0.0337 到 +0.0402），每千条投诉预期成本省 $120.58——而且是拿跨 11 年的分布漂移实测过的，不是挑了一个顺手的切片。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "triage-tradeoff": {
+      "route": "/ai/triage-router",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:ai-triage-router:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Triage Router · src/lib/projects.ts",
+            "zh": "Triage Router · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "portfolio-site:home:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "Xiangguo Zhang portfolio · README.md",
+            "zh": "章向国作品集 · README.md"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/README.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "By measuring what the expensive tier actually buys. On the same 1,500 held-out rows, Claude Sonnet 5 minus Haiku 4.5 comes out at −0.0073 macro-F1 (CI [−0.0427, +0.0263], McNemar p=1.00) — statistically indistinguishable, at 2.8× the cost: $3.66 versus $1.32 per thousand complaints.",
+            "ref": 1
+          },
+          {
+            "text": "So thresholds are fitted on the calibration slice only, never on test, and the cascade escalates only where the stronger tier is worth its price — the post-cutoff drift slice, where its paired gain is +0.0458 macro-F1. The routing is a cost model made explicit, not a preference.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "办法是把贵的那档到底买到了什么量出来。同样的 1,500 条留出样本上，Claude Sonnet 5 减 Haiku 4.5 是 −0.0073 macro-F1（CI [−0.0427, +0.0263]，McNemar p=1.00）——统计上分不出高下，价格却是 2.8×：每千条投诉 $3.66 对 $1.32。",
+            "ref": 1
+          },
+          {
+            "text": "所以阈值只在校准切片上拟合，绝不碰测试集；级联只在贵模型真正值这个价的地方升级——训练截止之后的漂移切片，配对增益 +0.0458 macro-F1。这套路由是把成本模型摆到明面上，不是偏好。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "triage-boundaries": {
+      "route": "/ai/triage-router",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:ai-triage-router:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Triage Router · src/lib/projects.ts",
+            "zh": "Triage Router · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "portfolio-site:home:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "Xiangguo Zhang portfolio · README.md",
+            "zh": "章向国作品集 · README.md"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/README.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "The page states them itself. Scope: the results hold for this task, this corpus, and the price sheets at measurement time — the dollar savings follow from the disclosed cost model, not a universal claim.",
+            "ref": 1
+          },
+          {
+            "text": "Two tidy explanations failed testing and are kept: the pre-registered expectation that the fine-tuned transformer would ride drift like the LLM tiers was refuted (its 2026-H1 drop splits between class-mix shift and within-class decay), and lexical drift was ruled out — out-of-vocabulary rate barely moved. The cliff is class mix.",
+            "ref": 1
+          },
+          {
+            "text": "And one measured failure mode: under the shared 64-token output budget the stronger model silently returned nothing on up to 2.5% of calls — worst exactly on the drifted slice where you would want it most.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "页面自己把边界写明了。适用范围：结论只对这个任务、这份语料和测量当时的价目表成立——省下的钱来自公开披露的成本模型，不是普适结论。",
+            "ref": 1
+          },
+          {
+            "text": "两个顺手的解释都没能通过检验，并且留了下来：预注册假设「微调 Transformer 在漂移下会像 LLM 层一样稳」被推翻（它在 2026-H1 的下跌一半来自类别构成变化、一半来自类内衰减）；词汇漂移也被排除——词表外比例几乎没动。悬崖来自类别构成。",
+            "ref": 1
+          },
+          {
+            "text": "还有一个实测的失效模式：共享 64 token 输出预算下，更强的模型在最多 2.5% 的调用里悄悄交白卷——最严重的恰好是漂移切片，正是你最想用它的地方。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "privacy-overview": {
+      "route": "/ai/privacy-preflight",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:ai-privacy-preflight:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Privacy Preflight · src/lib/projects.ts",
+            "zh": "隐私预检 · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "privacy-preflight:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "See the README's verified claims in Privacy Preflight",
+            "zh": "查看隐私预检：README 中的已验证结论"
+          },
+          "url": "https://github.com/LucisZhang/privacy-preflight/blob/510454c2393d274168be0d605d938a8abeb7862d/README.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "All three, each through its own path: reviewed text (deterministic rules), raster images, and multi-page PDFs — with local OCR in English and Simplified Chinese, editable redaction regions, and pixel burn-in rather than a box drawn over the text.",
+            "ref": 1
+          },
+          {
+            "text": "The step most tools skip is the check afterwards: it re-opens the rebuilt output and verifies hashes, pixels, text layers, annotations, and document structure. If that verification fails, the export is blocked — fail-closed.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "三类都能：文本、图片、多页 PDF 各走各的路径——文本用确定性规则，图片和 PDF 做像素烧录，不是在文字上盖个黑块；OCR 在本地跑，支持中英双语，脱敏区域可以逐个编辑。",
+            "ref": 1
+          },
+          {
+            "text": "多数工具省掉的是事后那一步：把重建的输出重新打开，逐一校验哈希、像素、文本图层、批注和文档结构。校验不过，导出就被拦下——fail-closed，失败即拦截。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "privacy-local-processing": {
+      "route": "/ai/privacy-preflight",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:ai-privacy-preflight:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Privacy Preflight · src/lib/projects.ts",
+            "zh": "隐私预检 · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "privacy-preflight:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "See the README's verified claims in Privacy Preflight",
+            "zh": "查看隐私预检：README 中的已验证结论"
+          },
+          "url": "https://github.com/LucisZhang/privacy-preflight/blob/510454c2393d274168be0d605d938a8abeb7862d/README.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "It stays local. Detection, OCR (Tesseract.js), PDF work (PDF.js, pdf-lib), and the export checks all run in same-origin Web Workers inside the browser — nothing leaves your browser.",
+            "ref": 1
+          },
+          {
+            "text": "The one exception is explicit and opt-in: an external model is optional, off by default, and receives redacted content only — and the moment that provider is enabled, the page stops calling the workflow offline.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "不会离开浏览器。检测、OCR（Tesseract.js）、PDF 处理（PDF.js、pdf-lib）和导出校验全部在本地同源 Web Worker 里运行——全程不出浏览器。",
+            "ref": 1
+          },
+          {
+            "text": "唯一的例外摆在明处、需要手动开启：外部模型是可选项，默认关闭，而且只接收脱敏后的内容；一旦启用外部服务，页面就不再把这套流程称作离线流程。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "privacy-ocr": {
+      "route": "/ai/privacy-preflight",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:ai-privacy-preflight:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Privacy Preflight · src/lib/projects.ts",
+            "zh": "隐私预检 · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "privacy-preflight:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "See the README's verified claims in Privacy Preflight",
+            "zh": "查看隐私预检：README 中的已验证结论"
+          },
+          "url": "https://github.com/LucisZhang/privacy-preflight/blob/510454c2393d274168be0d605d938a8abeb7862d/README.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "As recall-first, human-confirmed: on the 7 fixed OCR fixtures the detector found every expected value — 19/19 — but reported 21 detections in total, so the 2 extras are false positives and precision is 90.5%.",
+            "ref": 1
+          },
+          {
+            "text": "A detector that misses nothing but also invents two regions is exactly why nothing is exported before a person confirms each box. And it is synthetic fixture evidence, not a general OCR accuracy claim.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "按「宁可多报、由人确认」来读：7 组固定 OCR 夹具上，预期值一项不落全部找到——19/19——但总共报了 21 处，多出的 2 处是误报，精确率 90.5%。",
+            "ref": 1
+          },
+          {
+            "text": "一个什么都不漏、却会凭空多框两块的检测器，正是导出前必须逐块人工确认的原因。这也是合成夹具证据，不代表通用 OCR 准确率。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "eod-overview": {
+      "route": "/engineering/exactly-once-drills",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:engineering-exactly-once-drills:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Exactly-Once Drills · src/lib/projects.ts",
+            "zh": "Exactly-Once Drills · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "streaming-reliability-lab:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "See the README's verified claims in Exactly-Once Drills",
+            "zh": "查看Exactly-Once Drills：README 中的已验证结论"
+          },
+          "url": "https://github.com/LucisZhang/streaming-reliability-lab/blob/f323090c36e6b3f84e8cf8e5a1152addedde3410/README.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "Because a pipeline demo on a good day proves nothing. The drills run one pipeline — MySQL CDC on one path, Debezium → Avro → Kafka on the other, both landing in Flink → Iceberg — then break it on purpose, ten different ways.",
+            "ref": 1
+          },
+          {
+            "text": "The reconciliation afterwards is the actual evidence: after every induced failure, source state, Iceberg table snapshots, and event-ID sets must all agree. All ten recoveries came back with zero diffs, with sustained throughput measured at 1,791 events/s in the B4 SLO run.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "因为跑得顺的演示什么都证明不了。演练用的是同一条管道——MySQL CDC 直连一路，Debezium → Avro → Kafka 一路，汇进 Flink → Iceberg——然后故意用十种方法把它弄断。",
+            "ref": 1
+          },
+          {
+            "text": "真正的证据是事后的对账：每次注入故障后，源库状态、Iceberg 表快照、事件 ID 集合三方必须对得上。十种恢复全部零差异，B4 SLO 压测吞吐实测 1,791 events/s。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "eod-failures": {
+      "route": "/engineering/exactly-once-drills",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:engineering-exactly-once-drills:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Exactly-Once Drills · src/lib/projects.ts",
+            "zh": "Exactly-Once Drills · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "streaming-reliability-lab:RUNBOOK.md",
+          "kind": "public-github",
+          "label": {
+            "en": "See the operations runbook in Exactly-Once Drills",
+            "zh": "查看Exactly-Once Drills：运行手册"
+          },
+          "url": "https://github.com/LucisZhang/streaming-reliability-lab/blob/f323090c36e6b3f84e8cf8e5a1152addedde3410/RUNBOOK.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "Ten recorded failure classes across both ingest paths. On the Flink/CDC side: checkpoint and task crashes, a JobManager restart, and interrupted sink commits — the places where exactly-once actually breaks.",
+            "ref": 1
+          },
+          {
+            "text": "On the Kafka side: duplicate redelivery, mis-keyed ordering, poison messages routed to the DLQ, a broker restart, and offset replay. Every drill ends the same way — reconcile source, snapshots, and event IDs — and all ten reconciled to zero diffs.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "十类已记录的故障，覆盖两条接入路径。Flink/CDC 一侧：检查点与任务崩溃、JobManager 重启、sink 提交被打断——正是 exactly-once 真正容易断的地方。",
+            "ref": 1
+          },
+          {
+            "text": "Kafka 一侧：重复投递、键错导致的乱序、进 DLQ 的坏消息、broker 重启、offset 回放。每个演练的最后一步都一样：对账源库、快照和事件 ID——十种全部零差异。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "eod-recovery-proof": {
+      "route": "/engineering/exactly-once-drills",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:engineering-exactly-once-drills:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Exactly-Once Drills · src/lib/projects.ts",
+            "zh": "Exactly-Once Drills · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "streaming-reliability-lab:harness/harness/eo_verify.py",
+          "kind": "public-github",
+          "label": {
+            "en": "See a runnable script in Exactly-Once Drills",
+            "zh": "查看Exactly-Once Drills：可运行脚本"
+          },
+          "url": "https://github.com/LucisZhang/streaming-reliability-lab/blob/f323090c36e6b3f84e8cf8e5a1152addedde3410/harness/harness/eo_verify.py"
+        },
+        {
+          "sourceId": "streaming-reliability-lab:docs/workstation-run/20260711T034018Z-local-mac/SUMMARY.md",
+          "kind": "public-github",
+          "label": {
+            "en": "See the record of one real run in Exactly-Once Drills",
+            "zh": "查看Exactly-Once Drills：一次真实运行的记录"
+          },
+          "url": "https://github.com/LucisZhang/streaming-reliability-lab/blob/f323090c36e6b3f84e8cf8e5a1152addedde3410/docs/workstation-run/20260711T034018Z-local-mac/SUMMARY.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "Three ledgers have to agree, not one: after recovery the drill reconciles the MySQL source state, the Iceberg table snapshot, and the full event-ID set. Zero snapshot differences, across all ten drills.",
+            "ref": 1
+          },
+          {
+            "text": "The check is runnable code, and each run's reconciliation JSON is committed — the U6 run on a local Mac (20260711T034018Z-local-mac) is the authority for the recent result.",
+            "ref": 2
+          },
+          {
+            "text": "The environment is disclosed with it — Apple Silicon, 16 GiB RAM, a Docker VM reporting 10 CPUs — because one captured run proves that run, not universal hardware compatibility.",
+            "ref": 3
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "要对上的不是一处，是三处：恢复之后，演练把 MySQL 源库状态、Iceberg 表快照和完整的事件 ID 集合放在一起对账。十次演练，快照差异为零。",
+            "ref": 1
+          },
+          {
+            "text": "校验是能跑的代码，每次运行的对账 JSON 都已提交——近期结果以 U6 本地 Mac 运行（20260711T034018Z-local-mac）为准。",
+            "ref": 2
+          },
+          {
+            "text": "环境也一并写明——Apple Silicon、16 GiB 内存、Docker 虚拟机报告 10 个 CPU——因为一次已捕获的运行只证明那一次，不证明通用硬件兼容性。",
+            "ref": 3
+          }
+        ]
+      }
+    },
+    "crossover-overview": {
+      "route": "/engineering/crossover-study",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:engineering-crossover-study:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Crossover Study · src/lib/projects.ts",
+            "zh": "Crossover Study · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "portfolio-site:home:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "Xiangguo Zhang portfolio · README.md",
+            "zh": "章向国作品集 · README.md"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/README.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "One expensive question, asked precisely: how much history does a user need before personalization beats a popularity baseline — and is a routing layer worth building at all? The comparison is popularity versus personalized arms, ranked against the full catalog, with no sampled negatives.",
+            "ref": 1
+          },
+          {
+            "text": "The scale is real: 43.9M Amazon reviews ingested, 15.5M five-core interactions after filtering, frozen temporal splits, pre-registered tests — all on one 16GB laptop with Spark + Iceberg.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "问的是一个很贵的问题，而且问得很准：用户历史要多深，个性化才赢得过热门榜——这层路由到底值不值得再多建一套系统？对比是热门榜对个性化，全目录排序，不抽样负例。",
+            "ref": 1
+          },
+          {
+            "text": "规模是真的：灌入 43.9M 条 Amazon 评论，五核过滤后剩 15.5M 条交互，时间切分冻结、检验预先注册——全程在一台 16GB 的 Mac 上用 Spark + Iceberg 跑完。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "crossover-ml32m": {
+      "route": "/engineering/crossover-study",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:engineering-crossover-study:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Crossover Study · src/lib/projects.ts",
+            "zh": "Crossover Study · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "portfolio-site:home:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "Xiangguo Zhang portfolio · README.md",
+            "zh": "章向国作品集 · README.md"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/README.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "That the crossover regime exists — just not on Amazon. On MovieLens-32M, where catalog churn is 6.40%, item-kNN passes the popularity baseline from n*=20 interactions onward on NDCG@10, surviving Benjamini–Hochberg correction.",
+            "ref": 1
+          },
+          {
+            "text": "The fine print is kept in view: Recall@20 confirms none of the three winning buckets (a ranking-quality win only), and the same arm loses −0.3844 at zero history — a bucket holding 43.9% of test users — so popularity still wins globally. The crossover changes the deep-history tail, not the deployment default.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "说明交叉点这种情形确实存在——只是不在 Amazon。换到目录换血率 6.40% 的 MovieLens-32M 上，item-kNN 在 NDCG@10 上从 n*=20 次交互起超过热门榜，Benjamini–Hochberg 校正后仍成立。",
+            "ref": 1
+          },
+          {
+            "text": "该说的限定都在：Recall@20 没有确认三个获胜分段中的任何一个（只能算排序质量赢）；同一模型在零历史用户上输 −0.3844，而这个分段占测试用户的 43.9%——全局仍是热门榜赢。交叉点改变的是深历史尾部，不是默认部署选择。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "crossover-amazon-null": {
+      "route": "/engineering/crossover-study",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:engineering-crossover-study:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Crossover Study · src/lib/projects.ts",
+            "zh": "Crossover Study · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "portfolio-site:home:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "Xiangguo Zhang portfolio · README.md",
+            "zh": "章向国作品集 · README.md"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/README.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "Because it answers the deployment question with a measured mechanism instead of a shrug. On Amazon, ALS trails trailing-12-month popularity at every observed history depth, so the fitted policy is n*=∞: build no personalization-routing layer for this regime.",
+            "ref": 1
+          },
+          {
+            "text": "Then the study measured why: 41.11% catalog churn — test purchases landing on items with little or no training support. Paired with the low-churn ML-32M contrast, the null becomes a usable decision rule about when personalization can pay — under pre-registered tests, not after-the-fact stories.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "因为它不是简单给个否定回答，而是带着量出来的机制回答了部署问题。Amazon 上，ALS 在每个观测深度都落后于近 12 个月热门榜，拟合结论是 n*=∞：这套数据不值得再建个性化路由层。",
+            "ref": 1
+          },
+          {
+            "text": "接着把原因也量了出来：41.11% 的目录换血率——测试期购买大量落在训练支持度很低甚至为零的商品上。再对照换血慢的 ML-32M，这个 null 结果就变成一条能用的决策规则：什么时候个性化才可能有回报。检验都在事前注册，不是事后找理由。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "margin-overview": {
+      "route": "/analytics/margin-control-tower",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:analytics-margin-control-tower:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Margin Control Tower · src/lib/projects.ts",
+            "zh": "Margin Control Tower · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "margin-control-tower:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "See the README's verified claims in Margin Control Tower",
+            "zh": "查看Margin Control Tower：README 中的已验证结论"
+          },
+          "url": "https://github.com/LucisZhang/margin-control-tower/blob/c84559f1f141bc86b728d5a8133b926ad8529273/README.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "It helps a category manager answer two questions on the spot: why did this week's contribution margin move, and what happens if I respond? The browser decomposes the weekly move into drivers — discounts, returns, cost of goods, fulfillment — then recomputes a bounded promotion scenario and records the chosen action for review.",
+            "ref": 1
+          },
+          {
+            "text": "It is a working desk, not a dashboard: everything runs client-side over a hash-verified Olist aggregate (15,809 rows built from 99,441 source orders) in DuckDB-WASM, policed by 10 fail-closed contract checks.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "它让品类经理当场回答两件事：这周的贡献毛利为什么动了？我要是出手，会怎么样？浏览器把周度变化拆解到驱动项——折扣、退货、商品成本、履约——再重算一个有边界的促销情景，并把选定的行动记录下来供复核。",
+            "ref": 1
+          },
+          {
+            "text": "这是一张能干活的工作台，不是仪表盘：一切在浏览器端进行，数据是经哈希校验的 Olist 聚合（99,441 个源订单聚成 15,809 条记录），DuckDB-WASM 就地计算，10 项 fail-closed（失败即拦截）契约检查把关。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "margin-data": {
+      "route": "/analytics/margin-control-tower",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:analytics-margin-control-tower:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Margin Control Tower · src/lib/projects.ts",
+            "zh": "Margin Control Tower · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "margin-control-tower:pipelines/olist-margin/PROVENANCE.md",
+          "kind": "public-github",
+          "label": {
+            "en": "See the pinned source lines in Margin Control Tower",
+            "zh": "查看Margin Control Tower：锁定的源码行"
+          },
+          "url": "https://github.com/LucisZhang/margin-control-tower/blob/c84559f1f141bc86b728d5a8133b926ad8529273/pipelines/olist-margin/PROVENANCE.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "Real Olist data, by default: the page loads and hash-verifies a committed aggregate built from 99,441 orders and 112,650 item rows (CC BY-NC-SA 4.0, retrieved 2026-07-17), with source-table hashes, transforms, and proxy boundaries embedded in the Parquet metadata.",
+            "ref": 1
+          },
+          {
+            "text": "A synthetic fixture exists but is quarantined: seed-2026071301, 9,360 rows across 52 weeks, kept only as a reproducible fallback and test mode. If the real artifact is missing or fails verification, the page fails closed and stays visibly pending — it never renders placeholder results as if they were real.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "默认就是真实 Olist 数据：页面加载并哈希校验一份已提交的聚合产物，由 99,441 个订单和 112,650 条商品明细生成（CC BY-NC-SA 4.0，获取于 2026-07-17），源表哈希、转换和代理边界都嵌在 Parquet 元数据里。",
+            "ref": 1
+          },
+          {
+            "text": "合成夹具有，但被隔离着：seed-2026071301，52 周共 9,360 条记录，只作为可复现的回退与测试模式。真实产物缺失或校验失败时，页面失败即拦截、状态明确保持待提交——不会把占位结果当成真数据渲染出来。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "margin-boundaries": {
+      "route": "/analytics/margin-control-tower",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:analytics-margin-control-tower:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Margin Control Tower · src/lib/projects.ts",
+            "zh": "Margin Control Tower · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "margin-control-tower:public/case-studies/margin-control-tower/elasticity-report.json",
+          "kind": "public-github",
+          "label": {
+            "en": "See the recorded evidence file in Margin Control Tower",
+            "zh": "查看Margin Control Tower：评测证据文件"
+          },
+          "url": "https://github.com/LucisZhang/margin-control-tower/blob/c84559f1f141bc86b728d5a8133b926ad8529273/public/case-studies/margin-control-tower/elasticity-report.json"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "A disclosed assumption, and the page says so in as many words: the scenario applies an associational elasticity coefficient fitted on the analysis window — it is not a forecast, and no causal lift is claimed.",
+            "ref": 1
+          },
+          {
+            "text": "That honesty runs through the rest of the numbers: the later 8-week holdout evaluates MAPE only; reference price, return deductions, and 60% COGS are disclosed proxies; and the anomaly detector's own audit records recall 1.000000 with precision 0.315789 — both written down instead of tuned away.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "是公开说明的假设，页面原话就是这么写的：情景用的是在分析期窗口内拟合的相关性弹性系数——不是预测，也不声称因果提升。",
+            "ref": 1
+          },
+          {
+            "text": "其余数字也是同一种口径：后续 8 周留出期只评估 MAPE；参考价、退货扣减和 60% COGS 是明确披露的代理值；检测器自己的审计里写着召回率 1.000000、精确率 0.315789——两个数字原样记下，没有为了好看去动阈值。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "credit-overview": {
+      "route": "/analytics/credit-policy-desk",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:analytics-credit-policy-desk:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Credit Policy Desk · src/lib/projects.ts",
+            "zh": "Credit Policy Desk · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "credit-policy-desk:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "See the README's verified claims in Credit Policy Desk",
+            "zh": "查看Credit Policy Desk：README 中的已验证结论"
+          },
+          "url": "https://github.com/LucisZhang/credit-policy-desk/blob/bbad7e0dbf997d7fb64caad5ed3c8bf09e74658e/README.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "By walking the remaining distance from a probability to a decision: expected loss from PD × LGD × EAD, approve / review / decline thresholds, an analyst review-capacity constraint, and a recorded human sign-off with an audit trail at the end.",
+            "ref": 1
+          },
+          {
+            "text": "It runs on real granting data by default: 120,000 deterministically selected Lending Club applications, scored offline in disjoint time-ordered windows (72,000 / 24,000 / 24,000) and verified in the browser through DuckDB-WASM before anything renders.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "因为从「分数」到「决策」还有一段路，这个工作台把它走完：用 PD × LGD × EAD 算预期损失，定批准 / 复核 / 拒绝三段阈值，把分析师复核容量算进约束，最后由人签字放行并留下审计记录。",
+            "ref": 1
+          },
+          {
+            "text": "默认跑的是真实授信数据：从 Lending Club 档案中确定性选取 120,000 笔申请，离线按互不重叠的时间窗口（72,000 / 24,000 / 24,000）评分，浏览器里先经 DuckDB-WASM 校验再渲染。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "credit-thresholds": {
+      "route": "/analytics/credit-policy-desk",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:analytics-credit-policy-desk:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Credit Policy Desk · src/lib/projects.ts",
+            "zh": "Credit Policy Desk · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "credit-policy-desk:public/case-studies/credit-policy-lab/policy-contract.json",
+          "kind": "public-github",
+          "label": {
+            "en": "See the recorded evidence file in Credit Policy Desk",
+            "zh": "查看Credit Policy Desk：评测证据文件"
+          },
+          "url": "https://github.com/LucisZhang/credit-policy-desk/blob/bbad7e0dbf997d7fb64caad5ed3c8bf09e74658e/public/case-studies/credit-policy-lab/policy-contract.json"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "Against the backtest, under disclosed economics, and under a capacity gate that is allowed to say no. The workbench deliberately opens on a policy that cannot be published: at approve ≤12% / review ≤28% with review capacity 180, the fixture's final vintage sends 345 applications to manual review — 165 over capacity — so the gate blocks publication.",
+            "ref": 1
+          },
+          {
+            "text": "Moving a threshold means re-running the consequences on the 24,000 later backtest rows — swap sets, queue overflow, expected loss, calibration — not sliding a cutoff until the queue happens to fit.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "对着回测定，在公开的经济假设下定，而且头上有一道可以说「不」的容量门禁。工作台故意一打开就是一条发不出去的策略：批准 ≤12% / 复核 ≤28%、复核容量 180 时，夹具最后一个放款批次会送 345 笔进人工复核——超出容量 165 笔——门禁直接拦下发布。",
+            "ref": 1
+          },
+          {
+            "text": "动一下阈值，就要在 24,000 条后续回测记录上把后果重算一遍——换入换出集合、队列溢出、预期损失、校准——而不是把线挪到队列刚好装得下为止。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "credit-boundaries": {
+      "route": "/analytics/credit-policy-desk",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:analytics-credit-policy-desk:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Credit Policy Desk · src/lib/projects.ts",
+            "zh": "Credit Policy Desk · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "credit-policy-desk:public/case-studies/credit-policy-lab/backtest-report.json",
+          "kind": "public-github",
+          "label": {
+            "en": "See the recorded evidence file in Credit Policy Desk",
+            "zh": "查看Credit Policy Desk：评测证据文件"
+          },
+          "url": "https://github.com/LucisZhang/credit-policy-desk/blob/bbad7e0dbf997d7fb64caad5ed3c8bf09e74658e/public/case-studies/credit-policy-lab/backtest-report.json"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "It means the evidence can only describe loans that were granted: the archive contains no rejected applicants, so the backtest cannot identify what a policy would do to the full acceptance population.",
+            "ref": 1
+          },
+          {
+            "text": "The page scopes every claim to match — an offline historical backtest, not causal impact, not live or production decisioning, not regulatory validation, not real-world fairness evidence. The assumptions that fill the gaps are disclosed, LGD's flat 45% first among them.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "意味着证据只能说明「已放款的贷款表现如何」：档案里没有被拒的申请人，所以回测无法识别一条策略对完整受理人群的效果。",
+            "ref": 1
+          },
+          {
+            "text": "页面把每条声明的范围都限定在这一点上——离线历史回测，不是因果影响，不是在线或生产决策，不是监管验证，也不是真实世界的公平性证据。用来补位的假设全部公开，头一条就是 LGD 固定 45%。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "tandem-overview": {
+      "route": "/analytics/analytics-tandem",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:analytics-analytics-tandem:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Analytics Tandem · src/lib/projects.ts",
+            "zh": "Analytics Tandem · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "portfolio-site:analytics-credit-policy-desk:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Credit Policy Desk · src/lib/projects.ts",
+            "zh": "Credit Policy Desk · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "It is a legacy compatibility entry, kept so old links keep resolving: one qualitative case study pairing an e-commerce decision dashboard (Tableau) with a bilingual interactive risk demo (Streamlit).",
+            "ref": 1
+          },
+          {
+            "text": "Its rebuilt successor is Credit Policy Desk — the risk half redone with real granting data, contracts, and a recorded decision. The old page deliberately stays qualitative and claims no performance numbers.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "这是一个旧版兼容入口，留着是为了让旧链接还能打开：一个定性组合案例，把电商决策仪表盘（Tableau）和双语交互式风险演示（Streamlit）放在一起。",
+            "ref": 1
+          },
+          {
+            "text": "重建后的继任项目是 Credit Policy Desk——风险这一半用真实授信数据、契约和留档的人工决策重做了一遍。旧页面则有意停在定性层面，不引用任何性能数字。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "tandem-combination": {
+      "route": "/analytics/analytics-tandem",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:analytics-analytics-tandem:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Analytics Tandem · src/lib/projects.ts",
+            "zh": "Analytics Tandem · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "portfolio-site:analytics-credit-policy-desk:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Credit Policy Desk · src/lib/projects.ts",
+            "zh": "Credit Policy Desk · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "Two kinds: BI exploration — e-commerce funnel, RFM, and segmentation views — and model interaction, a deployed bilingual Streamlit demo where synthetic cases run through predict_proba to an approve-or-block outcome.",
+            "ref": 1
+          },
+          {
+            "text": "Both remain public inspection surfaces (the source repository is private and is not used as evidence), and the risk-interaction half has since been rebuilt with real evidence as Credit Policy Desk.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "两类：一类是 BI 探索——电商漏斗、RFM 和客户分群视图；另一类是模型交互——部署好的双语 Streamlit 演示，用合成案例经 predict_proba 得到批准或拦截的结果。",
+            "ref": 1
+          },
+          {
+            "text": "两者仍是公开检查界面（源码仓库为私有，不作为证据使用）；风险交互这一半，后来在 Credit Policy Desk 里用真实证据重建了。",
+            "ref": 2
+          }
+        ]
+      }
+    },
+    "tandem-boundaries": {
+      "route": "/analytics/analytics-tandem",
+      "citations": [
+        {
+          "sourceId": "portfolio-site:analytics-analytics-tandem:src/lib/projects.ts",
+          "kind": "public-github",
+          "label": {
+            "en": "Analytics Tandem · src/lib/projects.ts",
+            "zh": "Analytics Tandem · src/lib/projects.ts"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
+        },
+        {
+          "sourceId": "portfolio-site:home:README.md",
+          "kind": "public-github",
+          "label": {
+            "en": "Xiangguo Zhang portfolio · README.md",
+            "zh": "章向国作品集 · README.md"
+          },
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/README.md"
+        }
+      ],
+      "en": {
+        "segments": [
+          {
+            "text": "All of the quantitative ones, explicitly: the page makes no dataset-size, funnel-rate, segment-size, class-balance, validation, or model-performance claim.",
+            "ref": 1
+          },
+          {
+            "text": "The model interaction is a demonstration on synthetic inputs, not production risk approval or verified predictive performance — and the inherited dashboards are prior work, not evidence for the rebuilt analytics projects. On this site, a page without receipts says so.",
+            "ref": 2
+          }
+        ]
+      },
+      "zh": {
+        "segments": [
+          {
+            "text": "所有量化结论都明确不主张：本页不声明数据集规模、漏斗比率、分群规模、类别平衡、验证结果或模型性能。",
+            "ref": 1
+          },
+          {
+            "text": "模型交互是用合成输入做的演示，不代表生产风险审批，也不代表已验证的预测性能；继承的仪表盘只是既往成果，不构成重建后分析项目的证据。在这个站上，拿不出收据的页面会自己说清楚。",
+            "ref": 2
+          }
+        ]
+      }
+    }
+  }
+}

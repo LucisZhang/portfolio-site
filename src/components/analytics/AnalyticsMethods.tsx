@@ -1,8 +1,8 @@
 "use client";
 
-import { CircleAlert, Database, FileCheck2, FlaskConical, GitCompareArrows, ShieldCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useI18n, type Locale } from "@/lib/i18n";
+import { zhWrapNode } from "@/lib/zh-wrap";
 import styles from "./AnalyticsMethods.module.css";
 
 type Project = "margin" | "credit";
@@ -69,8 +69,8 @@ function isEvidence(value: unknown, project: Project): value is MethodsEvidence 
     && Array.isArray(evidence.reproduction) && evidence.reproduction.length > 0 && evidence.reproduction.every((command) => typeof command === "string" && Boolean(command.trim()));
 }
 
-function MethodBlock({ title, items, locale, icon }: { title: Localized; items: LocalizedList; locale: Locale; icon: React.ReactNode }) {
-  return <article><header>{icon}<h4>{title[locale]}</h4></header><ol>{items[locale].map((item) => <li key={item}>{item}</li>)}</ol></article>;
+function MethodBlock({ num, title, items, locale }: { num: string; title: Localized; items: LocalizedList; locale: Locale }) {
+  return <article><span className={styles.mnum} aria-hidden="true">{num}</span><h4>{title[locale]}</h4><ol>{items[locale].map((item) => <li key={item}>{item}</li>)}</ol></article>;
 }
 
 export default function AnalyticsMethods({ project }: { project: Project }) {
@@ -91,9 +91,33 @@ export default function AnalyticsMethods({ project }: { project: Project }) {
   }, [project]);
 
   if (state.kind !== "ready") {
-    return <section className={styles.methods} data-testid={`analytics-methods-${project}`}><div className={styles.pending}><CircleAlert aria-hidden="true" /><div><h3>{locale === "en" ? "Methods / Results / Real-data analysis" : "方法 / 结果 / 真实数据分析"}</h3><p>{state.kind === "invalid" ? (locale === "en" ? "The methods report is unavailable because its data contract did not pass." : "方法报告的数据契约未通过，暂不可用。") : state.kind === "loading" ? (locale === "en" ? "Loading the pipeline-backed methods report…" : "正在载入由流水线支持的方法报告……") : (locale === "en" ? "The methods report is being prepared with the real-data artifact." : "正在基于真实数据产物准备方法报告。")}</p></div></div></section>;
+    return <section className={styles.methods} data-testid={`analytics-methods-${project}`}><div className={styles.pending}><h3>{locale === "en" ? "Methods / Results / Real-data analysis" : "方法 / 结果 / 真实数据分析"}</h3><p>{state.kind === "invalid" ? (locale === "en" ? "The methods report is unavailable because its data contract did not pass." : "方法报告的数据契约未通过，暂不可用。") : state.kind === "loading" ? (locale === "en" ? "Loading the pipeline-backed methods report…" : "正在载入由流水线支持的方法报告……") : (locale === "en" ? "The methods report is being prepared with the real-data artifact." : "正在基于真实数据产物准备方法报告。")}</p></div></section>;
   }
 
   const evidence = state.evidence;
-  return <section className={styles.methods} data-testid={`analytics-methods-${project}`} aria-labelledby={`${project}-methods-title`}><header className={styles.heading}><div><p>{locale === "en" ? "Pipeline-backed analysis" : "由流水线支持的分析"}</p><h3 id={`${project}-methods-title`}>{locale === "en" ? "Methods / Results / Real-data analysis" : "方法 / 结果 / 真实数据分析"}</h3></div><a href={evidence.dataset.source_url} target="_blank" rel="noreferrer">{locale === "en" ? "Open source record" : "打开来源记录"}</a></header><div className={styles.dataset}><div><span>{locale === "en" ? "Dataset" : "数据集"}</span><strong>{evidence.dataset.name}</strong><small>{evidence.dataset.license} · {locale === "en" ? "retrieved" : "获取于"} {evidence.dataset.retrieval_date}</small></div><div><span>{locale === "en" ? "Source → derived" : "来源 → 派生"}</span><strong>{evidence.dataset.raw_records.toLocaleString()} → {evidence.dataset.derived_rows.toLocaleString()}</strong><small>{evidence.dataset.date_range.join(" → ")}</small></div><div><span>{locale === "en" ? "Artifact SHA-256" : "产物 SHA-256"}</span><code title={evidence.dataset.artifact_sha256}>{evidence.dataset.artifact_sha256}</code></div></div><div className={styles.metrics}>{evidence.metrics.map((metric) => <div key={metric.label.en}><span>{metric.label[locale]}</span><strong>{metric.value}</strong></div>)}</div><div className={styles.grid}><MethodBlock title={{ en: "Acquire and clean", zh: "获取与清洗" }} items={evidence.acquisition_and_cleaning} locale={locale} icon={<Database aria-hidden="true" />} /><MethodBlock title={{ en: "Train and estimate", zh: "训练与估计" }} items={evidence.modeling} locale={locale} icon={<FlaskConical aria-hidden="true" />} /><MethodBlock title={{ en: "Split and prevent leakage", zh: "切分与防止泄漏" }} items={evidence.split_and_leakage} locale={locale} icon={<GitCompareArrows aria-hidden="true" />} /><MethodBlock title={{ en: "Outcome / anomaly labels", zh: "结果 / 异常标签" }} items={evidence.labels} locale={locale} icon={<FileCheck2 aria-hidden="true" />} /><MethodBlock title={{ en: "Quality controls", zh: "质量控制" }} items={evidence.trust} locale={locale} icon={<ShieldCheck aria-hidden="true" />} /></div><div className={styles.changed}><span>{locale === "en" ? "What changed with real data" : "真实数据带来的变化"}</span><p>{evidence.changed[locale]}</p></div><div className={styles.reproduce}><div><span>{locale === "en" ? "Reproduce" : "复现"}</span>{evidence.reproduction.map((command) => <code key={command}>{command}</code>)}</div></div></section>;
+  return <section className={styles.methods} data-testid={`analytics-methods-${project}`} aria-labelledby={`${project}-methods-title`}>
+    <header className={styles.head}>
+      <p className={styles.eyebrow}>{locale === "en" ? "Pipeline-backed analysis" : "由流水线支持的分析"}</p>
+      <a className={styles.openRecord} href={evidence.dataset.source_url} target="_blank" rel="noreferrer">{locale === "en" ? "Open source record" : "打开来源记录"}</a>
+    </header>
+    <h3 id={`${project}-methods-title`} className={styles.title}>{locale === "en" ? <>Methods / Results / <em>Real-data analysis.</em></> : zhWrapNode(<>方法 / 结果 / <em>真实数据分析。</em></>)}</h3>
+    <div className={styles.meta}>
+      {/* The literal space after each .k label keeps innerText from fusing the
+          uppercase Latin label onto the value ("DERIVED547,593"), which erases
+          the \b word boundary the numeric-parity extractor needs in en. */}
+      <div><span className={styles.k}>{locale === "en" ? "Dataset" : "数据集"}</span>{" "}{evidence.dataset.name} · {evidence.dataset.license} · {locale === "en" ? "retrieved" : "获取于"} {evidence.dataset.retrieval_date}</div>
+      <div><span className={styles.k}>{locale === "en" ? "Source → derived" : "来源 → 派生"}</span>{" "}{evidence.dataset.raw_records.toLocaleString()} → {evidence.dataset.derived_rows.toLocaleString()} · {evidence.dataset.date_range.join(" → ")}</div>
+      <div><span className={styles.k}>{locale === "en" ? "Artifact SHA-256" : "产物 SHA-256"}</span>{" "}<code title={evidence.dataset.artifact_sha256}>{evidence.dataset.artifact_sha256}</code></div>
+    </div>
+    <div className={styles.statRow}>{evidence.metrics.map((metric) => <div key={metric.label.en} className={styles.stat}><strong>{metric.value}</strong><span>{metric.label[locale]}</span></div>)}</div>
+    <div className={styles.grid}>
+      <MethodBlock num="01" title={{ en: "Acquire and clean", zh: "获取与清洗" }} items={evidence.acquisition_and_cleaning} locale={locale} />
+      <MethodBlock num="02" title={{ en: "Train and estimate", zh: "训练与估计" }} items={evidence.modeling} locale={locale} />
+      <MethodBlock num="03" title={{ en: "Split and prevent leakage", zh: "切分与防止泄漏" }} items={evidence.split_and_leakage} locale={locale} />
+      <MethodBlock num="04" title={{ en: "Outcome / anomaly labels", zh: "结果 / 异常标签" }} items={evidence.labels} locale={locale} />
+      <MethodBlock num="05" title={{ en: "Quality controls", zh: "质量控制" }} items={evidence.trust} locale={locale} />
+    </div>
+    <div className={styles.finding}><span className={styles.flabel}>{locale === "en" ? "What changed with real data" : "真实数据带来的变化"}</span><p>{evidence.changed[locale]}</p></div>
+    <div className={styles.repro}><span className={styles.flabel}>{locale === "en" ? "Reproduce" : "复现"}</span><div className={styles.cmds}>{evidence.reproduction.map((command) => <code key={command}>{command}</code>)}</div></div>
+  </section>;
 }

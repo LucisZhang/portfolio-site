@@ -89,7 +89,7 @@
       },
       {
         "q_en": "What are the main limits of the Triage Router evidence?",
-        "q_zh": "看 Triage Router 的结果时，最重要的四条限制是什么？",
+        "q_zh": "Triage Router 的结果有哪些局限与边界？",
         "id": "triage-boundaries"
       }
     ]
@@ -122,7 +122,7 @@
       },
       {
         "q_en": "Which failures does Exactly-Once Drills test?",
-        "q_zh": "Exactly-Once Drills 演练了哪十类故障？",
+        "q_zh": "Exactly-Once Drills 演练了哪些故障？",
         "id": "eod-failures"
       },
       {

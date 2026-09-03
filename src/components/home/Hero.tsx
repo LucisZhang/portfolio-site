@@ -6,6 +6,7 @@ import WeChatContact from "@/components/WeChatContact";
 import { localize, useI18n } from "@/lib/i18n";
 import { homeStats, localizeStatText } from "@/lib/home-stats";
 import { siteIdentity } from "@/lib/site-config";
+import { zhWrapText } from "@/lib/zh-wrap";
 
 export type HeroVariant = "a" | "b" | "c";
 
@@ -71,7 +72,7 @@ export default function Hero({ variant }: { variant: HeroVariant }) {
           line is an independent draft, not a translation of the English
           title above, so it renders only in zh locale — the en locale
           shows the English assertion (h1) and nothing else here. */}
-      {locale === "zh" ? <p className="home-hero-zh" lang="zh">{zh}</p> : null}
+      {locale === "zh" ? <p className="home-hero-zh" lang="zh">{zhWrapText(zh)}</p> : null}
       <div className="exhibit-body home-hero-body">
         <StatGrid
           items={homeStats.heroTiles.map((tile) => ({ value: tile.value, label: localizeStatText(tile.label, locale) }))}

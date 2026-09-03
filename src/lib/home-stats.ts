@@ -78,16 +78,16 @@ const STAT_TEXT_ZH: Record<string, string> = {
   "failure classes drilled": "已演练故障类别",
   "10 failure classes drilled": "10 个已演练故障类别",
   "0 snapshot diffs across 5 recovery drills": "0 次快照差异，覆盖 5 次恢复演练",
-  "132 funded live graph runs": "132 次投入真实资金的实盘图运行",
+  "132 funded live graph runs": "132 次付费在线图运行",
   "GRPO +0.25 pp in both completed seeds; both CIs contain zero":
     "GRPO 在两个跑完的种子上都是 +0.25 pp；两次置信区间都包含零",
   "The unchanged ten-step reward-variance guard stopped R4 v2; no three-seed aggregate or missing paired delta is fabricated.":
-    "同一套十步奖励方差守卫拦停了 R4 v2；不存在编造的三种子汇总，也没有缺失的配对差值。",
-  "30 of 44 strict all-trials residuals": "44 个场景中有 30 个属于严格全试验残差",
+    "同一套十步奖励方差守卫拦停了 R4 v2；三种子汇总没有硬凑，缺失的配对差值也没有补造。",
+  "30 of 44 strict all-trials residuals": "44 个场景，30 个没过严格全试验口径",
   "Aggregate gates pass; 30/44 scenarios fail the strict all-trials outcome view. This is not a claim that all scenarios pass.":
-    "汇总门槛通过；但按严格全试验口径看，44 个场景里有 30 个未过，这不代表所有场景都通过。",
+    "聚合门禁均已通过；但按严格全试验口径，44 个场景仍有 30 个没过，不能说所有场景都通过。",
   "The Amazon null is scoped to this catalog, temporal split, five-core population, and observed history depths.":
-    "这一条“亚马逊臂为零”的结论，只在这个目录、这种时间切分、five-core 人群和已观测的历史深度范围内成立。",
+    "Amazon 上「个性化在各个观测深度都未胜过热门榜」这一 null 结果，只适用于这份目录、这种时间切分、five-core 人群和已观测的历史深度。",
   "all original requests; uncovered two-pass rows count as failure; two-pass task success 100%":
     "以全部原始请求为分母；未覆盖的 two-pass 行一律记为失败；two-pass 任务成功率 100%",
   "One-pass structured output: 0% task success":

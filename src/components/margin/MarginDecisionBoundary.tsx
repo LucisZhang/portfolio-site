@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useI18n } from "@/lib/i18n";
+import { zhWrapNode } from "@/lib/zh-wrap";
 import { detectionReport, metricRegistry } from "./marginData";
 
 const RULER_WIDTH = 640;
@@ -34,7 +35,7 @@ export function MarginDecisionBoundary() {
         {locale === "en" ? (
           <>One number decides<br /><em>every alarm.</em></>
         ) : (
-          <>一个数字，<br /><em>决定每一次告警。</em></>
+          zhWrapNode(<>一个数字，<br /><em>决定每一次告警。</em></>)
         )}
       </h2>
       <p className="exhibit-intro">

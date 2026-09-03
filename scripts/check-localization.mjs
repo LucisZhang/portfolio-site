@@ -218,6 +218,16 @@ const PROSE_ALLOWLIST_PATTERNS = [
   // same recorded fixture -- after the literal field-label "SUBJECT". Real
   // prose does not open a sentence on an all-caps field-label token.
   /^SUBJECT\s/,
+  // Task R9a: the circuit chain's top strip (CircuitNav.tsx) renders
+  // "← {prev} {GROUP} · {n} of {N} {next} →" as one flex line of mono
+  // navigation fabric -- project titles and the position label stay
+  // English in both locales per the sitewide UI-fabric convention (the
+  // same ruling as the rail footer's SEARCH/RESUME row and the colophon's
+  // mono labels). Long neighbor titles (e.g. "MARGIN CONTROL TOWER") can
+  // exceed the 4-word threshold once stripNumericSubstrings erases the
+  // position digits, so the line is exempted by its own anchor: real zh
+  // narrative prose never opens a line with a directional arrow glyph.
+  /^←\s/,
 ];
 // Removes the numeric substring itself (digit run + comma/dot/colon/percent/
 // dollar/times/sign punctuation, plus one immediately-trailing letter for

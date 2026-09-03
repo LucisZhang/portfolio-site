@@ -396,7 +396,7 @@ test("root, project, and artifact metadata follow the active locale", async ({ p
 
   await page.goto("/?lang=zh", { waitUntil: "networkidle" });
   await expect.poll(() => page.title()).toBe("章向国 | 作品集");
-  await expect.poll(() => description.evaluateAll((nodes) => nodes.length > 0 && nodes.every((node) => node.getAttribute("content") === "数据工程、决策分析与 AI 应用项目——交互式演示，并明确每项所能验证的范围。"))).toBe(true);
+  await expect.poll(() => description.evaluateAll((nodes) => nodes.length > 0 && nodes.every((node) => node.getAttribute("content") === "主打 LLM Agent 与 AI 应用系统，后端和数据工程作支撑。项目可以上手、回放实录，也说清能证明到哪一步。"))).toBe(true);
   // Task 0.5: the deleted site-header's aria-labelledby="Primary navigation"
   // / "主要导航" <nav> no longer exists — its wayfinding duty moved to the
   // exhibition rail's <nav data-exhibition-rail aria-label="Exhibition

@@ -1,55 +1,243 @@
-/* This panel is a light "paper" surface deliberately nested inside a dark
-   exhibit[data-bg="ink"] ambient (exhibit 04's ink surround) -- its own
-   sub-panels paint light backgrounds (--paper / --paper-bright /
-   --paper-alt) but, before this fix, never reset `color` away from the
-   inherited --ink-invert-fg, so any text here without its own explicit
-   color (the heading h3, dataset/metric values, reproduce commands, method
-   card h4s) rendered near-invisible (down to an exact 1:1 ratio) against
-   its own light backgrounds. --ink here restores the light-surface default;
-   .changed below already opts back into --ink-invert-fg for its own
-   deliberately dark sub-background. */
-.methods { margin-top: 24px; border: 1px solid var(--line-dark); background: var(--paper); color: var(--ink); }
-.heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; padding: 18px 20px; border-bottom: 1px solid var(--line-dark); background: var(--paper-alt); }
-.heading p { margin: 0 0 4px; color: var(--muted); font-family: var(--font-geist-mono); font-size: 9px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
-.heading h3 { margin: 0; max-width: 760px; font-size: clamp(19px, 2.4vw, 27px); line-height: 1.12; }
-.heading a { flex: 0 0 auto; color: var(--ink); font-family: var(--font-geist-mono); font-size: 10px; font-weight: 700; text-underline-offset: 3px; }
-.dataset { display: grid; grid-template-columns: 1.3fr .75fr 1fr; border-bottom: 1px solid var(--line); }
-.dataset > div { display: flex; flex-direction: column; justify-content: center; gap: 4px; min-width: 0; min-height: 88px; padding: 12px 16px; border-right: 1px solid var(--line); }
-.dataset > div:last-child { border-right: 0; }
-.dataset span, .metrics span, .changed span, .reproduce span { color: var(--muted); font-family: var(--font-geist-mono); font-size: 8px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
-.dataset strong { font-size: 12px; line-height: 1.4; }
-.dataset small { color: var(--muted); font-size: 9px; }
-.dataset code { overflow: hidden; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
-.metrics { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--line-dark); background: var(--paper-bright); }
-.metrics > div { display: flex; flex-direction: column; gap: 7px; padding: 12px 16px; border-right: 1px solid var(--line); }
-.metrics > div:last-child { border-right: 0; }
-.metrics strong { font-family: var(--font-geist-mono); font-size: 18px; }
-.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.grid article { min-width: 0; padding: 18px 20px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.grid article:nth-child(2n) { border-right: 0; }
-.grid article:last-child { grid-column: 1 / -1; border-right: 0; }
-.grid header { display: flex; align-items: center; gap: 8px; }
-.grid header svg { width: 15px; height: 15px; color: var(--accent); }
-.grid h4 { margin: 0; font-size: 13px; }
-.grid ol { margin: 10px 0 0; padding-left: 18px; }
-.grid li { margin: 6px 0; color: var(--muted); font-size: 10px; line-height: 1.58; }
-.changed { padding: 18px 20px; border-bottom: 1px solid var(--line-dark); background: var(--ink-invert); color: var(--ink-invert-fg); }
-.changed span { color: var(--ink-invert-fg); }
-.changed p { margin: 8px 0 0; max-width: 900px; font-size: 12px; line-height: 1.65; }
-.reproduce { display: grid; grid-template-columns: 1.35fr 1fr; }
-.reproduce > div, .reproduce > p { min-width: 0; margin: 0; padding: 16px 20px; }
-.reproduce > div { display: flex; flex-direction: column; gap: 7px; border-right: 1px solid var(--line); }
-.reproduce code { overflow-x: auto; padding: 7px 8px; background: var(--paper-alt); font-size: 8px; white-space: nowrap; }
-.reproduce p { color: var(--muted); font-size: 9px; line-height: 1.65; }
-.reproduce p strong { display: block; margin-bottom: 5px; color: var(--ink); }
-.pending { display: flex; gap: 12px; padding: 20px; }
-.pending svg { flex: 0 0 auto; width: 18px; }
-.pending h3 { margin: 0; font-size: 18px; }
-.pending p { margin: 6px 0 0; color: var(--muted); font-size: 10px; }
+/* B6 de-box (owner revoked the analytics box exemption): the former
+   full-border beige Methods card is dissolved into page grammar per the
+   approved mocks output/r3-align/mocks/b6-margin-debox.html and
+   b6-credit-debox.html. This component renders inside exhibit 04's dark
+   [data-bg="ink"] ambient; the mock presents Methods as its own light
+   paper section, so `.methods` full-bleeds back out of .exhibit's padding
+   with matching negative margins (exhibition.css is shared and off-limits
+   to this task -- the override lives here) and re-applies the same
+   clamp() padding on its own light surface. Every interior box of the old
+   card -- heading band fill, dataset/metric cell borders, per-method card
+   borders, icon headers, the dark "what changed" band, filled code chips
+   -- is replaced by border-top hairlines + typographic hierarchy; the
+   finding uses the heavier 3px ink rule, not a box. */
+.methods {
+  margin: clamp(54px, 7vw, 105px) calc(-1 * clamp(34px, 7vw, 110px)) calc(-1 * clamp(54px, 7vw, 105px));
+  padding: clamp(54px, 7vw, 105px) clamp(34px, 7vw, 110px);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: .7rem;
+  font-weight: 650;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.openRecord {
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: .72rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 4px;
+}
+
+.title {
+  margin: 18px 0 0;
+  max-width: 20ch;
+  font-family: var(--display-serif);
+  font-size: clamp(2rem, 3.4vw, 3.6rem);
+  font-weight: 400;
+  letter-spacing: -.02em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.title:lang(zh) {
+  font-family: var(--display-serif-zh);
+}
+
+.title em {
+  font-style: italic;
+}
+
+.meta {
+  max-width: 940px;
+  margin-top: 26px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 14px;
+  font-family: var(--mono);
+  font-size: .78rem;
+  line-height: 2.05;
+}
+
+.meta .k {
+  /* 6px + the literal space that follows the label in markup ≈ the former 14px gap */
+  margin-right: 6px;
+  color: var(--muted);
+  font-size: .66rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.meta code {
+  word-break: break-all;
+}
+
+.statRow {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: clamp(28px, 4vw, 56px);
+  row-gap: 16px;
+  max-width: 940px;
+  margin-top: 30px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 16px;
+}
+
+.stat {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.stat strong {
+  font-family: var(--mono);
+  font-size: clamp(1.3rem, 1.8vw, 1.9rem);
+  font-weight: 600;
+  letter-spacing: -.02em;
+  white-space: nowrap;
+}
+
+.stat span {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: .66rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(30px, 4vw, 70px);
+  row-gap: 40px;
+  max-width: 1080px;
+  margin-top: 48px;
+}
+
+.grid article {
+  min-width: 0;
+  border-top: 1px solid var(--hairline);
+  padding-top: 12px;
+}
+
+.grid article:last-child {
+  grid-column: 1 / -1;
+}
+
+.mnum {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: .66rem;
+}
+
+.grid h4 {
+  margin: 4px 0 0;
+  font-size: 1.02rem;
+  font-weight: 600;
+}
+
+.grid ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.grid li {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: .88rem;
+  line-height: 1.6;
+}
+
+.finding {
+  max-width: 940px;
+  margin-top: 52px;
+  border-top: 3px solid var(--ink);
+  padding-top: 12px;
+}
+
+.flabel {
+  font-family: var(--mono);
+  font-size: .7rem;
+  font-weight: 650;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.finding p {
+  margin: 8px 0 0;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.repro {
+  max-width: 940px;
+  margin-top: 44px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 12px;
+}
+
+.repro .flabel {
+  color: var(--muted);
+}
+
+.cmds {
+  margin-top: 14px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: .78rem;
+  line-height: 2;
+}
+
+.cmds code {
+  display: block;
+  white-space: pre-wrap;
+}
+
+.cmds code::before {
+  content: "$ ";
+  color: var(--muted);
+}
+
+.pending {
+  border-top: 3px solid var(--ink);
+  padding-top: 12px;
+}
+
+.pending h3 {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 600;
+}
+
+.pending p {
+  margin: 8px 0 0;
+  max-width: 78ch;
+  color: var(--muted);
+  font-size: .88rem;
+  line-height: 1.6;
+}
 
 @media (max-width: 700px) {
-  .heading { align-items: flex-start; flex-direction: column; }
-  .dataset, .metrics, .grid, .reproduce { grid-template-columns: 1fr; }
-  .dataset > div, .metrics > div, .grid article, .reproduce > div { border-right: 0; border-bottom: 1px solid var(--line); }
-  .grid article:last-child { grid-column: auto; }
+  .grid {
+    grid-template-columns: 1fr;
+    row-gap: 28px;
+  }
 }

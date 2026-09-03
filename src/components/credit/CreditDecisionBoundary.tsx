@@ -1,6 +1,7 @@
 "use client";
 
 import { useI18n } from "@/lib/i18n";
+import { zhWrapNode } from "@/lib/zh-wrap";
 import { DISCLOSED_LGD_ASSUMPTION, policyContract, policyFrontierReport } from "./creditData";
 
 function pct(value: number, digits = 0) {
@@ -34,7 +35,7 @@ export function CreditDecisionBoundary() {
         {locale === "en" ? (
           <>One threshold decides<br /><em>who gets a loan.</em></>
         ) : (
-          <>一道阈值，<br /><em>决定谁能拿到贷款。</em></>
+          zhWrapNode(<>一道阈值，<br /><em>决定谁能拿到贷款。</em></>)
         )}
       </h2>
       <p className="exhibit-intro">

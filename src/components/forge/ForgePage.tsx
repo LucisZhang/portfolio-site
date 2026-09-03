@@ -6,6 +6,7 @@ import { useI18n } from "@/lib/i18n";
 import type { Project } from "@/lib/projects";
 import { frontierProjectDetail } from "@/lib/frontier-project-detail";
 import { siteIdentity } from "@/lib/site-config";
+import { zhWrapNode, zhWrapText } from "@/lib/zh-wrap";
 import claimCommandsJson from "../../../public/case-studies/frontier-forge/claim-commands.json";
 import forgeReceipts from "@/data/generated/forge-receipts.json";
 import releaseJson from "../../../public/case-studies/frontier-forge/release.json";
@@ -57,12 +58,12 @@ export default function ForgePage({ project }: { project: Project }) {
           {locale === "en" ? (
             <>Know the frontier.<br /><em>Then forge past it.</em></>
           ) : (
-            <>看清前沿边界，<br /><em>然后越界而行。</em></>
+            zhWrapNode(<>看清前沿边界，<br /><em>然后越界而行。</em></>)
           )}
         </h1>
         {/* Locale purity (task F5): the gloss line is zh-only, not a
             second English narrative — it must not render in en locale. */}
-        {locale === "zh" ? <p className="cn-gloss" lang="zh">{project.glossZh}</p> : null}
+        {locale === "zh" ? <p className="cn-gloss" lang="zh">{zhWrapText(project.glossZh)}</p> : null}
         <p className="exhibit-intro">
           {locale === "en"
             ? headline.statement
@@ -91,7 +92,7 @@ export default function ForgePage({ project }: { project: Project }) {
           </div>
           <div className="forge-hero-metric">
             <strong>{usd(headline.usd, 3)}</strong>
-            <span>{locale === "en" ? "MEASURED TRAINING COST" : "实测训练成本"}</span>
+            <span>{locale === "en" ? "MEASURED TRAINING COST" : zhWrapText("实测训练成本")}</span>
           </div>
         </div>
         <p className="forge-scope-note">
@@ -162,7 +163,7 @@ function ForgeFullInstrument() {
         {locale === "en" ? (
           <>The same instrument,<br /><em>full size, zero clicks.</em></>
         ) : (
-          <>同一台仪器，<em>放大到整版，无需点击。</em></>
+          zhWrapNode(<>同一台仪器，<em>放大到整版，无需点击。</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -178,13 +179,13 @@ function SourceReceipts() {
     <section id="exhibit-07" className="exhibit" data-exhibit="07" data-bg="ink" aria-labelledby="exhibit-07-title">
       <p className="exhibit-opening-row">
         <span className="exhibit-number" aria-hidden="true">07</span>
-        <span className="exhibit-eyebrow">{locale === "en" ? "HOW THIS WAS VERIFIED" : "如何验证"}</span>
+        <span className="exhibit-eyebrow">{locale === "en" ? "HOW THIS WAS VERIFIED" : zhWrapText("如何验证")}</span>
       </p>
       <h2 id="exhibit-07-title" className="exhibit-title">
         {locale === "en" ? (
           <>Every claim opens<br /><em>the same command.</em></>
         ) : (
-          <>每个说法，<em>都能点开同一条命令。</em></>
+          zhWrapNode(<>每个说法，<em>都能点开同一条命令。</em></>)
         )}
       </h2>
       <div className="exhibit-body">

@@ -2,13 +2,14 @@ import type { CSSProperties, ReactNode } from "react";
 import RailCopy from "./RailCopy";
 import RailSpy from "./RailSpy";
 import RailAuto from "./RailAuto";
+import CircuitNav from "./CircuitNav";
 import "./exhibition.css";
 
 // Frozen interface (Round-2 spec §2.1): every page passes its own rail spec
 // as a prop into this server component. Rail markup is rendered exactly
 // once per page and never lives inside RootLayout, so the shell itself
-// never becomes a client boundary — RailSpy/RailAuto are the only
-// "use client" files in this directory.
+// never becomes a client boundary — RailSpy/RailAuto/RailCopy/CircuitNav
+// are the only "use client" files in this directory.
 export type RailSpec = {
   wordmark: {
     lines: [string, string];
@@ -204,7 +205,16 @@ export function ExhibitShell({
 
         <RailSpy />
       </nav>
-      <main id="main-content">{children}</main>
+      {/* Task R9a (checklist A3 b+c): circuit chain + colophon index. The
+          shell mounts both slots unconditionally to keep this interface
+          frozen (no new prop, no page-wrapper edits); CircuitNav itself is
+          pathname-gated and renders null on every non-circuit route (home,
+          /artifact, the dev fixture). */}
+      <main id="main-content">
+        <CircuitNav slot="top" />
+        {children}
+        <CircuitNav slot="bottom" />
+      </main>
       {isAuto ? <RailAuto /> : null}
     </div>
   );

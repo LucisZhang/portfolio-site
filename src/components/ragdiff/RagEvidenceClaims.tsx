@@ -2,6 +2,7 @@
 
 import ArtifactLink from "@/components/ArtifactLink";
 import { useI18n } from "@/lib/i18n";
+import { zhWrapNode } from "@/lib/zh-wrap";
 import {
   RAG_BASELINE_COMMIT,
   RAG_CHECKPOINT_COMMIT,
@@ -57,7 +58,7 @@ export function RagEvidenceClaims() {
       <h2 id="exhibit-02-title" className="exhibit-title">
         {locale === "en"
           ? <>Verified stays verified.<br /><em>Blocked stays blocked.</em></>
-          : <>已验证的保持已验证，<br /><em>被阻断的保持被阻断。</em></>}
+          : zhWrapNode(<>已验证的保持已验证，<br /><em>被阻断的保持被阻断。</em></>)}
       </h2>
       <p className="exhibit-intro">
         {locale === "en"

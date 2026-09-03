@@ -4,6 +4,7 @@ import { Finding } from "@/components/exhibition/Finding";
 import AnalyticsMethods from "@/components/analytics/AnalyticsMethods";
 import LocaleDocumentMetadata from "@/components/LocaleDocumentMetadata";
 import { useI18n } from "@/lib/i18n";
+import { zhWrapNode } from "@/lib/zh-wrap";
 import type { Project } from "@/lib/projects";
 import { siteIdentity } from "@/lib/site-config";
 import "./margin.css";
@@ -92,7 +93,7 @@ function SourceReceipts() {
         {locale === "en" ? (
           <>Every number opens<br /><em>the same file.</em></>
         ) : (
-          <>每个数字，<em>都能点开同一份文件。</em></>
+          zhWrapNode(<>每个数字，<em>都能点开同一份文件。</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -118,7 +119,7 @@ function SourceReceipts() {
           </p>
         </details>
 
-        <p>
+        <p className="margin-pipe-note">
           {locale === "en"
             ? "olist-margin.parquet, detection-report.json, and elasticity-report.json are produced by the pipeline below from a licensed Olist source lock; metric-registry.json is a hand-authored governance file. docs/evidence/digits-margin.md pins every number on this page to one of these files."
             : "olist-margin.parquet、detection-report.json 与 elasticity-report.json 均由下方流水线从已授权的 Olist 源锁定生成；metric-registry.json 为人工撰写的治理文件。docs/evidence/digits-margin.md 把本页每个数字都固定映射到其中一个文件。"}

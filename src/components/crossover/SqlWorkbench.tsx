@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useI18n } from "@/lib/i18n";
+import { zhWrapNode, zhWrapText } from "@/lib/zh-wrap";
 import { getProject } from "@/lib/projects";
 import { ml32mNStar } from "./crossoverCurvesData";
 import {
@@ -101,7 +102,7 @@ const INDEX_BLURBS: Record<string, { en: string; zh: string }> = {
   },
   "cross-purchase": {
     en: "Which leading category pairs share the most verified purchasers? The query scans the interaction-item join and deduplicates each user-category edge first.",
-    zh: "哪些头部品类组合共享的核实购买者最多？这条查询先扫描交互与商品的关联表，再对每条用户-品类边先去重。",
+    zh: "哪些头部品类组合共享的核实购买者最多？查询会扫描交互与商品的关联表，先去重每条用户-品类边。",
   },
   "amazon-null-test": {
     en: "Does any personalized Amazon arm beat recent popularity as user history grows? These paired TEST deltas retain their bootstrap intervals across all five frozen depth buckets.",
@@ -171,9 +172,9 @@ export function SqlWorkbench({ icebergSnapshotId }: { icebergSnapshotId: string 
         <span className="exhibit-eyebrow">SQL WORKBENCH · CACHED STATE · BUILD {activeResult.builtAt.slice(0, 10)}</span>
       </p>
       <h1 id="exhibit-01-title" className="exhibit-title">
-        {locale === "en" ? <>Run the argument, <em>query by query.</em></> : <>跑一遍论证过程，<em>一条查询接一条查询。</em></>}
+        {locale === "en" ? <>Run the argument, <em>query by query.</em></> : zhWrapNode(<>跑一遍论证过程，<em>一条查询接一条查询。</em></>)}
       </h1>
-      {locale === "zh" && crossoverProject ? <p className="cn-gloss" lang="zh">{crossoverProject.glossZh}</p> : null}
+      {locale === "zh" && crossoverProject ? <p className="cn-gloss" lang="zh">{zhWrapText(crossoverProject.glossZh)}</p> : null}
       <p className="exhibit-intro">
         {locale === "en"
           ? "Six curated queries walk from raw scale to the study's null result and its one honest counterexample. Every result on this screen is cached from the full local build — the workbench replays it exactly, and says so."

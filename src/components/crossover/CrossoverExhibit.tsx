@@ -133,7 +133,7 @@ export default function CrossoverExhibit() {
 
       <article className="crossover-panel" data-exhibit="catalog-churn">
         <header><p className="eyebrow">03 · Mechanism</p><h3>{locale === "en" ? "41.11% of test purchases changed the feasible catalog" : "41.11% 的测试期购买落在新换进的目录"}</h3><p>{locale === "en" ? "Those purchases land on items with zero or only 1–4 interactions in TRAIN. A train-frozen factor model has no useful support for them." : "这些购买落在训练期支持度为 0 或只有 1–4 次交互的商品上。冻结在训练期的因子模型没有足够信号去排它们。"}</p></header>
-        <div className="crossover-churn-bars" aria-label={locale === "en" ? "Amazon test purchase mass by training support" : "Amazon 测试期购买质量按训练支持度拆分"}>
+        <div className="crossover-churn-bars" aria-label={locale === "en" ? "Amazon test purchase mass by training support" : "Amazon 测试期购买份额按训练支持度拆分"}>
           <div className="crossover-stacked-bar">{support.map((item) => <span className={item.key} style={{ width: `${item.value * 100}%` }} key={item.key}><i>{(item.value * 100).toFixed(2)}%</i></span>)}</div>
           <div className="crossover-support-legend">{support.map((item) => <span className={item.key} key={item.key}><i aria-hidden="true" />{item.label}<strong>{(item.value * 100).toFixed(2)}%</strong></span>)}</div>
         </div>

@@ -1,9 +1,9 @@
 "use client";
 
-import { Check, Columns2, Download, Eye, FileImage, RotateCcw, ScanSearch, Trash2, X, ZoomIn } from "lucide-react";
 import NextImage from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { Locale } from "@/lib/i18n";
+import { zhWrapText } from "@/lib/zh-wrap";
 import { privacyOcrProgressStatus, privacySourceLabel } from "@/lib/privacy-localization";
 import { cancelPrivacyOcrWorker, withPrivacyOcrTimeout, withPrivacyOcrWorker } from "@/lib/privacy-ocr-worker";
 import { mapSensitiveOcrLine } from "@/lib/privacy-redaction";
@@ -418,40 +418,63 @@ export default function PrivacyImageLab({ locale, sampleTrigger }: { locale: Loc
     if (inputRef.current) inputRef.current.value = "";
   }
 
+  // Task B4 (r3 galley alignment): decorative dot separator between the
+  // typographic command words -- same "·" grammar as PrivacyActionLine.
+  const dot = <span className="privacy-actionbar-dot" aria-hidden="true">·</span>;
+  const caption = locale === "en"
+    ? <><b>Fig. 1</b> — image specimen{fileName ? <> · <span className="privacy-fig-file">{fileName}</span></> : null} · marked like a proof</>
+    : <><b>图 1</b> — {zhWrapText("图像样张")}{fileName ? <> · <span className="privacy-fig-file">{fileName}</span></> : null} · {zhWrapText("按校样标记")}</>;
+
   return (
     <div className="privacy-image-workspace">
       <div className="privacy-actionbar">
         <input ref={inputRef} className="sr-only" type="file" accept="image/png,image/jpeg" onChange={(event) => { const file = event.target.files?.[0]; if (file) void loadFile(file); }} />
-        <button type="button" onClick={() => inputRef.current?.click()}><FileImage aria-hidden="true" />{copy.choose}</button>
-        <button type="button" onClick={() => void loadExample("/case-studies/privacy-preflight/image-example-english.png", "privacy-english-example.png", "eng")}><FileImage aria-hidden="true" />{copy.exampleEnglish}</button>
-        <button type="button" onClick={() => void loadExample("/case-studies/privacy-preflight/image-example-chinese.png", "privacy-chinese-example.png", "eng+chi_sim")}><FileImage aria-hidden="true" />{copy.exampleChinese}</button>
+        <button type="button" onClick={() => inputRef.current?.click()}>{copy.choose}</button>
+        {dot}
+        <button type="button" onClick={() => void loadExample("/case-studies/privacy-preflight/image-example-english.png", "privacy-english-example.png", "eng")}>{copy.exampleEnglish}</button>
+        {dot}
+        <button type="button" onClick={() => void loadExample("/case-studies/privacy-preflight/image-example-chinese.png", "privacy-chinese-example.png", "eng+chi_sim")}>{copy.exampleChinese}</button>
+        {dot}
         <span className="privacy-file-name">{fileName || copy.drop}</span>
-        <select value={ocrLanguage} onChange={(event) => setOcrLanguage(event.target.value as "eng" | "eng+chi_sim")} aria-label={locale === "en" ? "OCR language" : "OCR 语言"}><option value="eng">{copy.english}</option><option value="eng+chi_sim">{copy.bilingual}</option></select>
-        <button type="button" className="privacy-scan-primary" onClick={() => void runOcr()} disabled={!image || isOcrRunning}><ScanSearch aria-hidden="true" />{copy.ocr}</button>
-        <div className="privacy-segmented">{(["blackout", "pixelate"] as const).map((value) => <button key={value} type="button" className={style === value ? "active" : ""} onClick={() => { setStyle(value); clearOutput(); }}>{value === "blackout" ? copy.blackout : copy.pixelate}</button>)}</div>
-        <label className="privacy-zoom"><ZoomIn aria-hidden="true" /><span>{copy.zoom}</span><input type="range" min="70" max="200" value={zoom} onChange={(event) => setZoom(Number(event.target.value))} /></label>
-        <button type="button" onClick={reset} disabled={!image}><RotateCcw aria-hidden="true" />{copy.reset}</button>
+        <span className="privacy-lang"><span aria-hidden="true">Lang:</span><select value={ocrLanguage} onChange={(event) => setOcrLanguage(event.target.value as "eng" | "eng+chi_sim")} aria-label={locale === "en" ? "OCR language" : "OCR 语言"}><option value="eng">{copy.english}</option><option value="eng+chi_sim">{copy.bilingual}</option></select></span>
       </div>
-      <div className="privacy-image-grid">
+      <div className="privacy-actionbar privacy-actionbar-ops">
+        <button type="button" className="privacy-scan-primary" onClick={() => void runOcr()} disabled={!image || isOcrRunning}>{copy.ocr}</button>
+        {dot}
+        <div className="privacy-segmented">{(["blackout", "pixelate"] as const).map((value) => <button key={value} type="button" className={style === value ? "active" : ""} onClick={() => { setStyle(value); clearOutput(); }}>{value === "blackout" ? copy.blackout : copy.pixelate}</button>)}</div>
+        {dot}
+        <label className="privacy-zoom"><span>{copy.zoom}</span><input type="range" min="70" max="200" value={zoom} onChange={(event) => setZoom(Number(event.target.value))} /><span className="privacy-zoom-value">{zoom}%</span></label>
+        {dot}
+        <button type="button" onClick={reset} disabled={!image}>{copy.reset}</button>
+      </div>
+      <figure className="privacy-figure privacy-image-grid">
+        <figcaption className="privacy-fig-caption">{caption}</figcaption>
         <div className="privacy-canvas-wrap privacy-main-result-area" onDragOver={(event) => event.preventDefault()} onDrop={(event) => { event.preventDefault(); const file = event.dataTransfer.files[0]; if (file) void loadFile(file); }}>
           {image ? (output && verification?.safe && !showOriginal
             ? <NextImage data-testid="privacy-image-redacted-view" className="privacy-inplace-image" unoptimized width={image.naturalWidth} height={image.naturalHeight} style={{ width: `${zoom}%` }} src={output.url} alt={locale === "en" ? "Generated redacted PNG result" : "实时生成的脱敏 PNG 结果"} />
             : <canvas ref={canvasRef} data-testid="privacy-image-original-view" style={{ width: `${zoom}%` }} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp} aria-label={output ? copy.originalView : copy.manual} />)
-            : <button type="button" className="privacy-drop-target" onClick={() => inputRef.current?.click()}><FileImage aria-hidden="true" /><strong>{copy.choose}</strong><span>{copy.drop}</span></button>}
-          {output && verification?.safe ? <div className="privacy-inplace-result-toolbar" data-testid="privacy-image-output"><button type="button" className="privacy-before-after-toggle" aria-pressed={showOriginal} onClick={() => setShowOriginal((current) => !current)}><Columns2 aria-hidden="true" />{copy.compare}</button><span role="status">{showOriginal ? copy.originalView : copy.redactedView}</span><a className="button-link primary" href={output.url} download={output.name}><Download aria-hidden="true" />{copy.download}</a></div> : null}
+            : <button type="button" className="privacy-drop-target" onClick={() => inputRef.current?.click()}><strong>{copy.choose}</strong><span>{copy.drop}</span></button>}
+          {output && verification?.safe ? <div className="privacy-inplace-result-toolbar" data-testid="privacy-image-output"><button type="button" className="privacy-before-after-toggle" aria-pressed={showOriginal} onClick={() => setShowOriginal((current) => !current)}>{copy.compare}</button><span role="status">{showOriginal ? copy.originalView : copy.redactedView}</span><a className="button-link primary" href={output.url} download={output.name}>{copy.download}</a></div> : null}
         </div>
         <aside className="privacy-image-review">
-          <div><p className="eyebrow">{copy.local}</p><h4>{copy.manual}</h4><p>{copy.note}</p><small>{copy.processing}</small></div>
-          <div className="privacy-output-steps" aria-label={locale === "en" ? "Redaction progress" : "脱敏进度"}><span className={image ? "done" : ""}>{copy.before}</span><span className={boxes.length ? "done" : ""}>{copy.detected}</span><span className={output ? "done" : ""}>{copy.redacted}</span></div>
+          <div><h4>{copy.manual}</h4><p className="privacy-local-line">{copy.local}</p></div>
+          <div className="privacy-box-list"><h5>{copy.boxes} <span>{boxes.length}</span></h5>{!boxes.length ? <p>{copy.none}</p> : boxes.map((box, index) => <article className={box.accepted === false ? "rejected" : ""} key={box.id}><div><strong><span className="privacy-note-num">{index + 1}</span>{box.type || copy.region}</strong><div><code>{privacySourceLabel(locale, box.source || "manual")}</code><button type="button" className="privacy-box-accept" aria-pressed={box.accepted !== false} onClick={() => updateBox(box.id, { accepted: box.accepted === false })}>{box.accepted === false ? copy.reject : copy.accept}</button><button type="button" className="icon-only" title={copy.delete} aria-label={copy.delete} onClick={() => { setBoxes((current) => current.filter((item) => item.id !== box.id)); clearOutput(); }}><span aria-hidden="true">×</span></button></div></div>{box.text ? <p><code>{box.text}</code>{box.reason}</p> : null}<div className="privacy-box-fields">{(["x", "y", "width", "height"] as const).map((field) => <label key={field}>{field}<input type="number" value={box[field]} onChange={(event) => updateBox(box.id, { [field]: Number(event.target.value) })} /></label>)}</div></article>)}</div>
+          <div className="privacy-output-steps" aria-label={locale === "en" ? "Redaction progress" : "脱敏进度"}><span className="privacy-state-word">{locale === "en" ? "State:" : "状态："}</span><span className={image ? "done" : ""}>{copy.before}</span><span className={boxes.length ? "done" : ""}>{copy.detected}</span><span className={output ? "done" : ""}>{copy.redacted}</span></div>
           <div className="privacy-ocr-status" aria-live="polite"><span>{ocrStatus ? privacyOcrProgressStatus(locale, ocrStatus, ocrProgress, copy.processing) : copy.ocrIdle}</span><progress max="100" value={ocrProgress} /></div>
-          <div className="privacy-box-list"><h5>{copy.boxes} <span>{boxes.length}</span></h5>{!boxes.length ? <p>{copy.none}</p> : boxes.map((box, index) => <article className={box.accepted === false ? "rejected" : ""} key={box.id}><div><strong>{box.type || copy.region} {index + 1}</strong><div><code>{privacySourceLabel(locale, box.source || "manual")}</code><button type="button" className="privacy-box-accept" aria-pressed={box.accepted !== false} onClick={() => updateBox(box.id, { accepted: box.accepted === false })}>{box.accepted === false ? <X aria-hidden="true" /> : <Check aria-hidden="true" />}{box.accepted === false ? copy.reject : copy.accept}</button><button type="button" className="icon-only" title={copy.delete} onClick={() => { setBoxes((current) => current.filter((item) => item.id !== box.id)); clearOutput(); }}><Trash2 aria-hidden="true" /></button></div></div>{box.text ? <p><code>{box.text}</code>{box.reason}</p> : null}<div className="privacy-box-fields">{(["x", "y", "width", "height"] as const).map((field) => <label key={field}>{field}<input type="number" value={box[field]} onChange={(event) => updateBox(box.id, { [field]: Number(event.target.value) })} /></label>)}</div></article>)}</div>
+          <p className="privacy-ocr-note">{copy.note}</p>
+          <small className="privacy-ocr-note">{copy.processing}</small>
           <p className="privacy-metadata-note">{copy.metadata}</p>
-          <button type="button" className="privacy-export-button" onClick={() => void exportImage()} disabled={!image || !boxes.some((box) => box.accepted !== false)}><Eye aria-hidden="true" />{copy.preview}</button>
+          <button type="button" className="privacy-export-button" onClick={() => void exportImage()} disabled={!image || !boxes.some((box) => box.accepted !== false)}><span aria-hidden="true">◎</span>{copy.preview}</button>
           {output && verification?.safe ? <dl className="privacy-result-meta"><div><dt>{locale === "en" ? "File" : "文件"}</dt><dd>{output.name}</dd></div><div><dt>{locale === "en" ? "Type" : "类型"}</dt><dd>{output.type}</dd></div><div><dt>{locale === "en" ? "Size" : "大小"}</dt><dd>{(output.size / 1024).toFixed(1)} KB</dd></div></dl> : null}
-          {verification ? <div className={`privacy-validation ${verification.safe ? "pass" : "fail"}`}><div>{verification.safe ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}<strong>{verification.safe ? copy.verify : copy.unsafeStatus}</strong></div><p>{verification.message}</p><code>{verification.dimensions}</code><code>{copy.source} {verification.originalHash.slice(0, 16)}...</code><code>{copy.output} {verification.outputHash.slice(0, 16)}...</code></div> : null}
+          {verification ? <div className={`privacy-validation ${verification.safe ? "pass" : "fail"}`}><div>{/* De-glyph pass (r3 fix): was a ✓/× Unicode glyph — the site's semantic
+              convention is a colored mono status WORD (see BoundaryMatrix, task
+              F2), never a symbol. Unsafe here means the export is refused, so
+              the fail-side verdict is BLOCKED. English mono fabric word in both
+              locales, matching the zh fabric exemption. */}
+          <span className={`privacy-status-word ${verification.safe ? "is-pass" : "is-blocked"}`} aria-hidden="true">{verification.safe ? "PASS" : "BLOCKED"}</span><strong>{verification.safe ? copy.verify : copy.unsafeStatus}</strong></div><p>{verification.message}</p><code>{verification.dimensions}</code><code>{copy.source} {verification.originalHash.slice(0, 16)}...</code><code>{copy.output} {verification.outputHash.slice(0, 16)}...</code></div> : null}
           {error ? <p className="privacy-error" role="alert">{error}</p> : null}
         </aside>
-      </div>
+      </figure>
     </div>
   );
 }

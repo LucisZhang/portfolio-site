@@ -5,6 +5,7 @@ import { InstrumentFrame } from "@/components/exhibition/InstrumentFrame";
 import { StatGrid } from "@/components/exhibition/StatGrid";
 import LocaleDocumentMetadata from "@/components/LocaleDocumentMetadata";
 import { useI18n } from "@/lib/i18n";
+import { zhWrapNode, zhWrapText } from "@/lib/zh-wrap";
 import type { Project } from "@/lib/projects";
 import { siteIdentity } from "@/lib/site-config";
 import ocrBenchmark from "../../../public/case-studies/privacy-preflight/ocr-fixture-benchmark.json";
@@ -46,10 +47,10 @@ export default function PrivacyPage({ project }: { project: Project }) {
               {locale === "en" ? (
                 <>A black box over text<br /><em>is not redaction.</em></>
               ) : (
-                <>文字上盖个黑块，<em>不叫脱敏。</em></>
+                zhWrapNode(<>文字上盖个黑块，<em>不叫脱敏。</em></>)
               )}
             </h1>
-            {locale === "zh" ? <p className="cn-gloss" lang="zh">{project.glossZh}</p> : null}
+            {locale === "zh" ? <p className="cn-gloss" lang="zh">{zhWrapText(project.glossZh)}</p> : null}
             <p className="exhibit-intro">
               {locale === "en" ? project.summary.en : project.summary.zh}
             </p>
@@ -136,7 +137,7 @@ function FullInstrument() {
         {locale === "en" ? (
           <>The document is <em>the interface.</em></>
         ) : (
-          <>文档本身，<em>就是界面。</em></>
+          zhWrapNode(<>文档本身，<em>就是界面。</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -161,7 +162,7 @@ function DetectReviewDestroy({ project }: { project: Project }) {
         {locale === "en" ? (
           <>Detection proposes.<br /><em>The reviewer decides.</em></>
         ) : (
-          <>检测只是提议，<em>拍板的是复核者。</em></>
+          zhWrapNode(<>检测只是提议，<em>拍板的是复核者。</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -184,7 +185,7 @@ function OcrBenchmarkExhibit() {
         {locale === "en" ? (
           <>Perfect recall still produced<br /><em>two wrong boxes.</em></>
         ) : (
-          <>召回率满分，<em>还是多框了两处。</em></>
+          zhWrapNode(<>召回率满分，<em>还是多框了两处。</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -204,13 +205,13 @@ function FailClosedExhibit() {
     <section id="exhibit-04" className="exhibit" data-exhibit="04" data-bg="ink" aria-labelledby="exhibit-04-title">
       <p className="exhibit-opening-row">
         <span className="exhibit-number" aria-hidden="true">04</span>
-        <span className="exhibit-eyebrow">{locale === "en" ? "FAIL-CLOSED EXPORT GATE" : "默认拦截的导出关卡"}</span>
+        <span className="exhibit-eyebrow">{locale === "en" ? "FAIL-CLOSED EXPORT GATE" : zhWrapText("默认拦截的导出关卡")}</span>
       </p>
       <h2 id="exhibit-04-title" className="exhibit-title">
         {locale === "en" ? (
           <>Export is earned<br /><em>by a second read.</em></>
         ) : (
-          <>导出资格，<em>要靠第二遍复核才能拿到。</em></>
+          zhWrapNode(<>导出资格，<em>要靠第二遍复核才能拿到。</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -236,7 +237,7 @@ function BoundaryExhibit({ project }: { project: Project }) {
         {locale === "en" ? (
           <>Local does not mean<br /><em>infallible.</em></>
         ) : (
-          <>本地运行，<em>不等于万无一失。</em></>
+          zhWrapNode(<>本地运行，<em>不等于万无一失。</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -256,13 +257,13 @@ function SourceReceipts() {
     <section id="exhibit-06" className="exhibit" data-exhibit="06" data-bg="ink" aria-labelledby="exhibit-06-title">
       <p className="exhibit-opening-row">
         <span className="exhibit-number" aria-hidden="true">06</span>
-        <span className="exhibit-eyebrow">{locale === "en" ? "HOW THIS WAS VERIFIED" : "如何验证"}</span>
+        <span className="exhibit-eyebrow">{locale === "en" ? "HOW THIS WAS VERIFIED" : zhWrapText("如何验证")}</span>
       </p>
       <h2 id="exhibit-06-title" className="exhibit-title">
         {locale === "en" ? (
           <>Every number opens<br /><em>the same file.</em></>
         ) : (
-          <>每个数字，<em>都能点开同一份文件。</em></>
+          zhWrapNode(<>每个数字，<em>都能点开同一份文件。</em></>)
         )}
       </h2>
       <div className="exhibit-body">

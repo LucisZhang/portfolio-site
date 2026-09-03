@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { StatGrid } from "@/components/exhibition/StatGrid";
 import { useI18n } from "@/lib/i18n";
+import { zhWrapText } from "@/lib/zh-wrap";
 import { CREDIT_BACKTEST_FULL_ROW_COUNT } from "@/lib/credit-backtest-identity";
 import { getProject } from "@/lib/projects";
 import { activePolicyPoint, backtestReport, policyFrontierReport } from "./creditData";
@@ -88,7 +89,7 @@ export function CreditPolicyFrontier() {
       <h1 id="exhibit-01-title" className="exhibit-title">
         A score is not <em>a policy.</em>
       </h1>
-      {locale === "zh" && creditProject ? <p className="cn-gloss" lang="zh">{creditProject.glossZh}</p> : null}
+      {locale === "zh" && creditProject ? <p className="cn-gloss" lang="zh">{zhWrapText(creditProject.glossZh)}</p> : null}
       <p className="exhibit-intro">
         {locale === "en"
           ? "The same calibrated score column supports any portfolio you like — the decision lives in the threshold below it. The figure recomputes approval share against realized defaults from the published backtest rows; no model runs here, and the scores are offline and frozen."
@@ -99,8 +100,8 @@ export function CreditPolicyFrontier() {
 
       <div className="credit-frontier-figure" data-testid="credit-policy-frontier-figure">
         <div className="exhibit-opening-row credit-frontier-figure-head">
-          <span className="exhibit-eyebrow">{locale === "en" ? "EXHIBIT 01 · THE POLICY FRONTIER — APPROVAL SHARE VS REALIZED DEFAULT" : "展品 01 · 策略前沿——批准比例与实际违约的关系"}</span>
-          <span className="exhibit-eyebrow">{locale === "en" ? `COMPUTED FROM PUBLISHED PREVIEW ROWS · ${policyFrontierReport.backtest_preview_row_count} BACKTEST APPLICATIONS` : `根据已发布的预览记录计算 · ${policyFrontierReport.backtest_preview_row_count} 笔回测申请`}</span>
+          <span className="exhibit-eyebrow">{locale === "en" ? "EXHIBIT 01 · THE POLICY FRONTIER — APPROVAL SHARE VS REALIZED DEFAULT" : zhWrapText("展品 01 · 策略前沿——批准比例与实际违约的关系")}</span>
+          <span className="exhibit-eyebrow">{locale === "en" ? `COMPUTED FROM PUBLISHED PREVIEW ROWS · ${policyFrontierReport.backtest_preview_row_count} BACKTEST APPLICATIONS` : zhWrapText(`根据已发布的预览记录计算 · ${policyFrontierReport.backtest_preview_row_count} 笔回测申请`)}</span>
         </div>
         <svg className="credit-frontier-chart" viewBox={`0 0 ${WIDTH} ${HEIGHT}`} role="img" aria-hidden="true">
           <line className="credit-frontier-axis" x1={PAD_LEFT} y1={BASELINE_Y} x2={WIDTH - PAD_RIGHT} y2={BASELINE_Y} />

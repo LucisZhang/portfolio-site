@@ -35,18 +35,16 @@
 .userMessage { margin-left: auto; background: var(--ink); color: var(--white); }
 .userMessage strong { color: #cfd4d1 !important; }
 .assistantMessage { background: var(--paper); }
-.sources { margin-top: 8px; border-top: 1px solid var(--line); padding-top: 7px; }
-.sources > span { display: block; color: var(--muted); font-size: 8px; font-weight: 700; text-transform: uppercase; }
-.sources ul { display: grid; gap: 4px; margin: 5px 0 0; padding-left: 15px; }
-.sources li { color: var(--muted); font-size: 9px; line-height: 1.4; overflow-wrap: anywhere; }
-.sources a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
-.sources a:focus-visible { border-radius: var(--radius); outline: 3px solid rgba(30, 79, 122, .28); outline-offset: 2px; }
 .richAnswer { display: grid; gap: 8px; }
 .richAnswer h3 { margin: 3px 0 0; font-size: 12px; line-height: 1.45; }
 .richAnswer strong { font-weight: 750; }
 .richAnswer ul { display: grid; gap: 6px; margin: 0; padding-left: 18px; }
 .richAnswer li { overflow-wrap: anywhere; font-size: 11px; line-height: 1.55; }
 .richAnswer a { color: var(--accent); font-weight: 700; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+/* Task R14: microlabel over an AUTHORED preset answer (预置回答) -- quiet
+   text tag, no new box grammar. */
+.presetTag { margin: 0 0 4px !important; color: var(--muted); font-size: 8px; letter-spacing: .04em; text-transform: uppercase; }
+
 .retry { margin-top: 8px; border: 1px solid var(--accent); border-radius: var(--radius); background: var(--white); padding: 5px 9px; color: var(--accent); cursor: pointer; font-size: 9px; font-weight: 700; }
 .retry:disabled { opacity: .48; cursor: not-allowed; }
 .pending { width: fit-content; display: inline-flex; align-items: center; gap: 4px; margin-top: 10px; border-radius: var(--radius); background: var(--paper); padding: 8px 10px; color: var(--muted); font-size: 10px; }

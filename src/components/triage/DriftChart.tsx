@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useI18n } from "@/lib/i18n";
+import { zhWrapNode } from "@/lib/zh-wrap";
 import driftJson from "../../../public/case-studies/triage-router/drift.compact.json";
 import { macroF1 as fmtMacroF1 } from "./triageFormat";
 
@@ -72,7 +73,7 @@ export function DriftChart() {
         {locale === "en" ? (
           <>The model<br /><em>aged out.</em></>
         ) : (
-          <>模型，<em>在时间里过期了。</em></>
+          zhWrapNode(<>模型，<em>在时间里过期了。</em></>)
         )}
       </h2>
       <div className="exhibit-body">

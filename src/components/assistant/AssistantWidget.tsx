@@ -3,10 +3,13 @@
 import { type FormEvent, type KeyboardEvent as ReactKeyboardEvent, useCallback, useEffect, useId, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { getRouteQuestions } from "@/lib/ask-question-bank";
+import { prefetchPresetAnswers } from "@/lib/ask-preset-answers";
 import { useI18n } from "@/lib/i18n";
 import { getTrack, projects } from "@/lib/projects";
 import { useAssistantConversation } from "@/lib/use-assistant-conversation";
+import { zhWrapText } from "@/lib/zh-wrap";
 import AssistantRichAnswer from "./AssistantRichAnswer";
+import AssistantSourcesIndex from "./AssistantSourcesIndex";
 import styles from "./AssistantWidget.module.css";
 
 const MAX_INPUT_CHARACTERS = 2_500;
@@ -26,7 +29,7 @@ const copy = {
     disclosure: "Your question is sent only to a zero-data-retention external AI service. Do not enter credentials or private contact details.",
     user: "You",
     assistant: "Portfolio guide",
-    sources: "Related sources",
+    presetLabel: "PRESET · authored answer · cited · no model call",
   },
   zh: {
     eyebrow: "AI 作品集向导",
@@ -42,7 +45,7 @@ const copy = {
     disclosure: "你的问题仅会发送到采用零数据保留策略的外部 AI 服务。请勿输入凭据或私人联系方式。",
     user: "你",
     assistant: "作品集向导",
-    sources: "相关来源",
+    presetLabel: "预置回答 · 附引用 · 未调用模型",
   },
 } as const;
 
@@ -75,7 +78,7 @@ export default function AssistantWidget({ onClose, initialPrompt }: { onClose: (
   const headingId = useId();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const logRef = useRef<HTMLDivElement>(null);
-  const { messages, busy, send: sendMessage, retry } = useAssistantConversation({
+  const { messages, busy, send: sendMessage, sendPreset, retry } = useAssistantConversation({
     locale,
     pathname,
     promptSet: context.prompts,
@@ -151,24 +154,30 @@ export default function AssistantWidget({ onClose, initialPrompt }: { onClose: (
         {messages.map((message) => (
           <article key={message.id} className={message.role === "user" ? styles.userMessage : styles.assistantMessage}>
             <strong>{message.role === "user" ? labels.user : labels.assistant}</strong>
-            {message.role === "assistant"
+            {/* Task R14: a preset click renders its AUTHORED preset answer —
+                committed prose labeled truthfully as a preset (预置回答),
+                never as retrieval output or model generation, with
+                superscripts into the citation index below. */}
+            {message.role === "assistant" && message.presetSegments ? (
+              <>
+                <p className={styles.presetTag}>{labels.presetLabel}</p>
+                <p>
+                  {message.presetSegments.map((segment, index) => (
+                    <span key={segment.ref}>
+                      {index > 0 ? " " : null}
+                      <em>{locale === "zh" ? zhWrapText(segment.text) : segment.text}</em>
+                      <sup>{segment.ref}</sup>
+                    </span>
+                  ))}
+                </p>
+              </>
+            ) : message.role === "assistant"
               ? message.blocks
                 ? <AssistantRichAnswer blocks={message.blocks} locale={locale} />
                 : <p>{message.content}</p>
               : <p>{message.content}</p>}
             {message.role === "assistant" && message.sources?.length ? (
-              <div className={styles.sources}>
-                <span>{labels.sources}</span>
-                <ul>
-                  {message.sources.map((source) => (
-                    <li key={source.sourceId}>
-                      {source.url ? (
-                        <a href={source.url} target="_blank" rel="noopener noreferrer">{source.label[locale]}</a>
-                      ) : <span>{source.label[locale]}</span>}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <AssistantSourcesIndex citations={message.sources} locale={locale} variant="compact" />
             ) : null}
             {message.role === "assistant" && message.retryable ? (
               <button className={styles.retry} type="button" onClick={() => retry(message)} disabled={busy}>{labels.retry}</button>
@@ -181,7 +190,21 @@ export default function AssistantWidget({ onClose, initialPrompt }: { onClose: (
       {messages.length === 0 ? (
         <div className={styles.prompts} aria-label={labels.title}>
           {context.prompts.map((prompt) => (
-            <button key={prompt} type="button" onClick={() => void send(prompt)} disabled={busy}>{prompt}</button>
+            <button
+              key={prompt}
+              type="button"
+              onMouseEnter={prefetchPresetAnswers}
+              onFocus={prefetchPresetAnswers}
+              onClick={() => {
+                // Task R14: preset click -> authored preset answer, no
+                // /api call; every bank preset carries a committed answer,
+                // so the live path only serves typed questions.
+                if (!sendPreset(prompt)) void send(prompt);
+              }}
+              disabled={busy}
+            >
+              {prompt}
+            </button>
           ))}
         </div>
       ) : null}

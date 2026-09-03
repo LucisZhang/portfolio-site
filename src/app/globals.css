@@ -135,6 +135,28 @@ h1, h2, h3 { font-family: var(--display-serif); }
    stay at or above 28px. Smaller Chinese headings remain on the sans stack. */
 :lang(zh) h1 { font-family: var(--display-serif-zh); }
 :lang(zh) :is(h2, h3) { font-family: var(--font-geist-sans); }
+/* Task R8 (checklist A2): phrase-aware zh line breaking.
+   - .zh-seg spans are emitted by src/lib/zh-wrap.tsx around each
+     Intl.Segmenter zh phrase in display-type text (titles, hero/gloss
+     lines, findings, stat labels, eyebrows); inline-block makes each
+     phrase an unbreakable unit, so lines break only BETWEEN phrases —
+     never mid-word (the owner's 同一个词拆成两行 complaint).
+   - line-break: strict tightens kinsoku for all remaining zh body prose
+     (small kana/hyphen classes; no effect on Latin text, and en pages
+     never match :lang(zh)).
+   - text-wrap: pretty on zh prose blocks avoids orphan short last lines;
+     .exhibit-title deliberately KEEPS its existing text-wrap: balance
+     (balance suits 2-3-line display assertions and works with
+     inline-block segments; pretty is the paragraph-shaped counterpart). */
+/* !important is load-bearing: several label containers style ALL descendant
+   spans (e.g. .forge-hero-metric span / .classification-row span, both
+   display:block|flex at specificity 0,1,1), which would otherwise flatten
+   nested phrase segments into one-chunk-per-line stacks (caught on the
+   forge hero metric band, 390w). A phrase segment must never be anything
+   but an inline unbreakable unit. */
+.zh-seg { display: inline-block !important; }
+:lang(zh) { line-break: strict; }
+:lang(zh) :is(.exhibit-intro, .exhibit-finding-body, .cn-gloss, .home-hero-zh) { text-wrap: pretty; }
 a { color: inherit; text-decoration: none; }
 button, input { font: inherit; letter-spacing: 0; }
 button, a { -webkit-tap-highlight-color: transparent; }
