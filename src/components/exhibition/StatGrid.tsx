@@ -1,3 +1,5 @@
+import { zhWrapText } from "@/lib/zh-wrap";
+
 // Task F10 (box-grammar ruling, controller-approved mocks
 // output/design-align-r2/concept-a-logbook.png + output/design-align/
 // direction-privacy-b.png): plain typographic stat row — a single hairline
@@ -21,7 +23,7 @@ export function StatGrid({
       {items.map((item) => (
         <div className="exhibit-stat-cell" key={`${item.label}-${item.value}`}>
           <strong className="exhibit-stat-value">{item.value}</strong>
-          <span className="exhibit-stat-label">{item.label}</span>
+          <span className="exhibit-stat-label">{zhWrapText(item.label)}</span>
         </div>
       ))}
     </div>

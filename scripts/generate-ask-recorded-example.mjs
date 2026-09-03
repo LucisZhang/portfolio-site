@@ -30,7 +30,13 @@ import { retrieveAssistantKnowledge } from "../src/lib/assistant-retrieval.ts";
 // stale -- update QUESTION_ID/EXPECTED_PATH_FRAGMENT by hand and re-run.
 
 const outputUrl = new URL("../src/data/generated/ask-recorded-example.json", import.meta.url);
-const QUESTION_ID = "home-site-overview";
+// Task R10 (2026-09-02 knowledge re-pin): after re-pinning the site to
+// cbbd371 the re-chunked snapshot no longer ranks a site-config.ts chunk in
+// the top results for "home-site-overview"; "home-background" still ranks
+// the siteMetadata chunk (src/lib/site-config.ts:L60-L69, which holds the
+// description literal frozen below), so the recorded example now freezes
+// that question's run instead -- same mechanism, same source file.
+const QUESTION_ID = "home-background";
 const EXPECTED_PATH_FRAGMENT = "src/lib/site-config.ts";
 
 const homeEntry = questionBankData["/"];

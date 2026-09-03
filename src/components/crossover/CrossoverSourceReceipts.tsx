@@ -1,6 +1,7 @@
 "use client";
 
 import { LocalizedText, useI18n } from "@/lib/i18n";
+import { zhWrapNode } from "@/lib/zh-wrap";
 import { getProject } from "@/lib/projects";
 import { crossoverReceipts, type CrossoverReceipt } from "./crossoverCurvesData";
 
@@ -41,7 +42,7 @@ export function CrossoverSourceReceipts() {
         <span className="exhibit-eyebrow">SOURCE / RECEIPTS</span>
       </p>
       <h1 id="exhibit-03-title" className="exhibit-title">
-        {locale === "en" ? <>Every curve opens<br /><em>the same six runs.</em></> : <>每条曲线，<br /><em>都能点开同样六次运行。</em></>}
+        {locale === "en" ? <>Every curve opens<br /><em>the same six runs.</em></> : zhWrapNode(<>每条曲线，<br /><em>都能点开同样六次运行。</em></>)}
       </h1>
 
       <div className="crossover-provenance">

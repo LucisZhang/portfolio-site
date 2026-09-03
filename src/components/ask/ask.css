@@ -77,33 +77,6 @@
   margin-left: 2px;
 }
 
-.ask-chain {
-  margin-top: 10px;
-}
-
-.ask-chain-row {
-  display: grid;
-  grid-template-columns: 20px 1fr;
-  gap: 8px;
-  padding: 3px 0;
-  font-family: var(--mono);
-  font-size: 11px;
-  line-height: 1.55;
-  color: var(--ink);
-}
-
-.ask-chain-row b {
-  color: var(--accent);
-  font-weight: 600;
-}
-
-.ask-chain-row a {
-  color: var(--ink);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-}
-
 .ask-recorded-note {
   margin: 10px 0 0;
   padding: 10px 0 0;
@@ -305,13 +278,72 @@
   color: var(--ink);
 }
 
-.ask-guard-example {
-  margin: 10px 0 0;
-  padding: 8px 0 8px 14px;
-  border-left: 2px solid var(--accent);
-  font-size: 13px;
-  font-style: italic;
+/* Task R9c (B5-a): the recorded refusals as a ledger of verbatim data —
+   hairline rules, mono record label, roman serif text — never bar-quote
+   grammar (output/r3-align/mocks/b5-a-guard-refusals.html is the visual
+   authority). */
+.ask-refusals {
+  margin-top: 12px;
+}
+
+.ask-refusal {
+  border-top: 1px solid var(--hairline);
+  padding: 10px 0 12px;
+}
+
+.ask-refusal:last-child {
+  border-bottom: 1px solid var(--hairline);
+}
+
+.ask-refusal > .ask-refusal-kind {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ask-refusal > .ask-refusal-kind span {
+  color: var(--ink);
+  margin-right: 8px;
+}
+
+.ask-refusal > .ask-refusal-text {
+  margin: 6px 0 0;
+  font-family: var(--display-serif);
+  font-size: 15.5px;
   line-height: 1.55;
+  font-style: normal;
+  color: var(--ink);
+}
+
+:lang(zh) .ask-refusal > .ask-refusal-text {
+  font-family: var(--display-serif-zh);
+}
+
+.ask-refusal > .ask-refusal-text::before {
+  content: "\201C";
+}
+
+.ask-refusal > .ask-refusal-text::after {
+  content: "\201D";
+}
+
+:lang(zh) .ask-refusal > .ask-refusal-text::before {
+  content: "「";
+}
+
+:lang(zh) .ask-refusal > .ask-refusal-text::after {
+  content: "」";
+}
+
+.ask-refusal > .ask-refusal-meta {
+  margin: 6px 0 0;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
   color: var(--muted);
 }
 

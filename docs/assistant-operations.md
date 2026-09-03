@@ -34,7 +34,7 @@ The browser never receives the full knowledge stores or any provider credential.
 The public manifest is `assistant-knowledge/manifest.json`. Every source is tied to an exact
 40-character commit and a reviewed path. Seven upstream repositories retain their existing pinned
 source lists. The Round-2 `portfolio-site` layer adds 11 route-scoped source groups at commit
-`e8821702bfe69ee5846a617aa178486f216b5346`: current bilingual page copy, project registry and
+`346b8a81cbf9a238081ef179eb622ea8f0614466`: current bilingual page copy, project registry and
 site identity, all five digits audits, selected compact evidence payloads, and route-scoped
 bilingual localization tables. Project entries and shared page wrappers are sliced to reviewed
 line ranges before chunking. The generated payload

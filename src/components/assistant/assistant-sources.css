@@ -1,0 +1,118 @@
+/* Task R9c (B5-c) [CLAUDE]: the answer-reference navigation index
+   (output/r3-align/mocks/b5-c-reference-index.html is the visual authority).
+   Quiet typographic index — hairline rules, serif destination lines, mono
+   route lines — no boxes. All selectors are namespaced ask-go-*; nothing
+   here touches the shared shell or exhibition styles. */
+
+.ask-go {
+  margin-top: 18px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 10px;
+}
+
+.ask-go-label {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ask-go ul {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+}
+
+.ask-go li {
+  padding: 10px 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.ask-go li:first-child {
+  border-top: 0;
+  margin-top: 2px;
+}
+
+.ask-go-dest {
+  font-family: var(--display-serif);
+  font-size: 16.5px;
+  line-height: 1.45;
+  font-style: normal;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+:lang(zh) .ask-go-dest {
+  font-family: var(--display-serif-zh);
+}
+
+a.ask-go-dest:hover,
+a.ask-go-dest:focus-visible {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.ask-go-n {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-right: 10px;
+  vertical-align: 2px;
+}
+
+.ask-go-arrow {
+  margin-left: 10px;
+}
+
+.ask-go-route {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.ask-go-kind {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 9.5px;
+  margin-left: 12px;
+}
+
+/* Private label-only entries render the badge with no route text before it. */
+.ask-go-kind-solo {
+  margin-left: 0;
+}
+
+/* Compact variant for the floating assistant panel. */
+.ask-go-compact {
+  margin-top: 8px;
+  padding-top: 7px;
+}
+
+.ask-go-compact .ask-go-label {
+  font-size: 8.5px;
+}
+
+.ask-go-compact li {
+  padding: 7px 0;
+}
+
+.ask-go-compact .ask-go-dest {
+  font-size: 13.5px;
+  line-height: 1.4;
+}
+
+.ask-go-compact .ask-go-route {
+  font-size: 9px;
+}
+
+.ask-go-compact .ask-go-kind {
+  font-size: 8px;
+}

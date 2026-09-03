@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { zhWrapNode, zhWrapText } from "@/lib/zh-wrap";
+
 export type ExhibitBackground = "paper" | "ink" | "white" | "paper-alt";
 
 // Opening formula fixed by spec §2.1: mono number + uppercase mono eyebrow +
@@ -30,10 +32,10 @@ export function Exhibit({
         <span className="exhibit-number" aria-hidden="true">
           {num}
         </span>
-        <span className="exhibit-eyebrow">{eyebrow}</span>
+        <span className="exhibit-eyebrow">{zhWrapText(eyebrow)}</span>
       </p>
       <h2 id={titleId} className="exhibit-title">
-        {title}
+        {zhWrapNode(title)}
       </h2>
       {intro ? <p className="exhibit-intro">{intro}</p> : null}
       <div className="exhibit-body">{children}</div>

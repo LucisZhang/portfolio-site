@@ -87,7 +87,7 @@ export function BoundaryMatrix() {
       title={locale === "en" ? <>{localizedTitle.en.split(". ")[0]}.<br /><em>{localizedTitle.en.split(". ")[1]}</em></> : <>模型有它的边界，<em>边界画在这里。</em></>}
       intro={locale === "en"
         ? `${yesCount} capabilities hold up under measurement; ${noCount} do not — the failing count is not hidden below the passing one.`
-        : `${yesCount} 项能力经得起实测；${noCount} 项经不起——不做的事和做得到的事一样多，不藏在下面。`}
+        : `${yesCount} 项能力经得起实测，${noCount} 项经不起；过与不过同等展示，没过的也摆在明处。`}
     >
       <ul className="forge-matrix">
         {items.map((item) => (

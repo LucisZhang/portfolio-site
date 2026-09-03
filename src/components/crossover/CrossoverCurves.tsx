@@ -1,6 +1,7 @@
 "use client";
 
 import { useI18n } from "@/lib/i18n";
+import { zhWrapNode } from "@/lib/zh-wrap";
 import { amazonNull, ml32mChurnPercent, ml32mCrossover, ml32mMarkerIndex, ml32mNStar, type CurveSeries } from "./crossoverCurvesData";
 
 // Task L6 [CLAUDE]: exhibit 02, the two main curves the task brief keeps
@@ -117,7 +118,7 @@ export function CrossoverCurves() {
         <span className="exhibit-eyebrow">NDCG@10 BY HISTORY DEPTH · AMAZON ELECTRONICS + MOVIELENS-32M</span>
       </p>
       <h1 id="exhibit-02-title" className="exhibit-title">
-        {locale === "en" ? <>One curve never crosses. <em>The other crosses at n*={ml32mNStar}.</em></> : <>一条曲线从未交叉，<em>另一条在 n*={ml32mNStar} 处交叉。</em></>}
+        {locale === "en" ? <>One curve never crosses. <em>The other crosses at n*={ml32mNStar}.</em></> : zhWrapNode(<>一条曲线从未交叉，<em>另一条在 n*={ml32mNStar} 处交叉。</em></>)}
       </h1>
       <p className="exhibit-intro">
         {locale === "en"

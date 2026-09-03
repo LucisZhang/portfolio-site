@@ -133,7 +133,7 @@ const projectCatalog: Project[] = [
     metrics: { en: "132 live runs · 8/8 gates · 30/44 strict · citation fidelity 100%", zh: "132 live runs · 8/8 gates · 30/44 strict · citation fidelity 100%" },
     problem: {
       en: "Before code ships automatically, someone needs to know what it touches, keep the model inside clear limits, and leave a durable approval record.",
-      zh: "代码自动发布前，必须厘清影响范围，将模型约束在清晰边界内，并留存持久可查的审批记录。",
+      zh: "代码自动发布前，得弄清这次改动会碰到什么，把模型限制在明确边界内，并留下日后可查的审批记录。",
     },
     audience: {
       en: "Teams that have to sign off on automated changes — and explain that sign-off six months later.",
@@ -149,7 +149,7 @@ const projectCatalog: Project[] = [
     },
     stack: projectStack("LangGraph", "FastAPI", "Go", "Spring Boot", "PostgreSQL + pgvector", "OpenTelemetry", "Next.js"),
     architecture: [
-      { label: { en: "Intake", zh: "接入" }, detail: { en: "Classify and parse an incoming change.", zh: "分类并解析传入的变更。" } },
+      { label: { en: "Intake", zh: "接入" }, detail: { en: "Classify and parse an incoming change.", zh: "先给新变更分类，再解析。" } },
       { label: { en: "Evidence", zh: "证据" }, detail: { en: "Four parallel evidence collectors.", zh: "四路并行证据采集。" } },
       { label: { en: "Risk", zh: "风险" }, detail: { en: "Grade the change, build a plan, and check both against the rules.", zh: "聚合、分级、制定计划并校验。" } },
       { label: { en: "Approval", zh: "审批" }, detail: { en: "Pause and wait for a human decision before publish.", zh: "发布前持久化中断并等待审批。" } },
@@ -176,11 +176,11 @@ const projectCatalog: Project[] = [
       },
       {
         en: "System and delivery details come from source commit ca2ef58 and the W2/W3 review of claims against their source files.",
-        zh: "系统与交付声明限定于源码提交 ca2ef58 以及 W2/W3 声明证据审计。",
+        zh: "系统与交付细节来自源码提交 ca2ef58，并经 W2/W3 两轮逐条对照源文件审查。",
       },
       {
         en: "The exact nine-file sanitized package was approved after its immutable candidate manifest was generated; the approval record is published separately.",
-        zh: "九文件脱敏包在不可变候选清单生成后按精确哈希获批；批准记录单独公开。",
+        zh: "这份脱敏包恰好有九个文件。不可变候选清单生成后，它按精确哈希获批；批准记录另行公开。",
       },
     ],
     boundaries: [
@@ -289,11 +289,11 @@ const projectCatalog: Project[] = [
     metrics: { en: "4/12 questions regressed · 11,309 docs · 130 enterprise questions", zh: "12 题中 4 题退化 · 11,309 份文档 · 130 道企业问题" },
     problem: {
       en: "RAG changes often look harmless while silently reducing answer quality. Teams need a repeatable gate that catches regressions and still works when the corpus becomes too large to inspect manually.",
-      zh: "RAG 变更看似无害，却可能悄然降低答案质量。团队需要一套可重复的门禁，既能发现退化，也能在语料大到无法人工逐份检查时继续运作。",
+      zh: "RAG 改动常常看着没事，答案质量却可能悄悄变差。门禁得能反复跑、抓住退化，语料多到人工看不过来时也照样管用。",
     },
     audience: {
       en: "Applied-AI, retrieval, and evaluation teams that need reviewable evidence before a RAG change reaches users.",
-      zh: "需要在 RAG 变更触达用户前取得可审阅证据的 AI 应用、检索与评估团队。",
+      zh: "做 AI 应用、检索和评估的团队，得在 RAG 改动交给用户前先拿到一份能复核的证据。",
     },
     role: {
       en: "I built the A/B and regression harness first, then everything the scale-up needed: corpus adapters, deterministic manifests, a judge-free retrieval runner, and the verifiers that gate a run.",
@@ -301,7 +301,7 @@ const projectCatalog: Project[] = [
     },
     outcome: {
       en: "On the controlled 12-question set, a document-only update degraded four questions and every reported quality metric. The repository now carries the same versioned-data and verification lifecycle to 11,309 synthetic enterprise documents and 130 answerable questions.",
-      zh: "在受控的 12 题集合中，仅修改文档就导致 4 道题及全部已报告质量指标退化。仓库现已把同一套版本化数据与验证生命周期扩展至 11,309 份合成企业文档和 130 道可回答问题。",
+      zh: "受控的 12 道题里，只改文档就让 4 道题和全部已报告的质量指标退化。仓库已把同一套版本化数据与验证流程扩展到 11,309 份合成企业文档和 130 道可回答问题。",
     },
     stack: projectStack(
       "Python",
@@ -341,7 +341,7 @@ const projectCatalog: Project[] = [
     boundaries: [
       {
         en: "The reported quality and latency measurements belong to the controlled saved runs; they do not transfer to the 11,309-document enterprise corpus.",
-        zh: "已报告的质量与延迟测量仅属于受控的已保存运行，不能迁移解释为 11,309 份企业文档语料的结果。",
+        zh: "页面报告的质量与延迟数据只来自那几次受控的已保存运行，不能当作 11,309 份企业文档语料的结果。",
       },
       {
         en: "At enterprise scale, the current evidence establishes data integrity and runnable evaluation infrastructure, not a new answer-quality result.",
@@ -466,7 +466,7 @@ const projectCatalog: Project[] = [
     },
     audience: {
       en: "Anyone reviewing sensitive material in a desktop or mobile browser, plus developers who want the same review step inside their own applications.",
-      zh: "任何在桌面或移动浏览器中审阅敏感材料的人，以及希望将这一复核环节嵌入自身应用的开发者。",
+      zh: "适合在桌面或手机浏览器里审阅敏感材料的人，也适合想把同一道复核环节放进自己应用的开发者。",
     },
     role: {
       en: "I built the TypeScript review model, same-origin OCR and PDF workers, editable redaction regions, pixel burn-in, and fail-closed export checks.",
@@ -515,7 +515,7 @@ const projectCatalog: Project[] = [
       },
       {
         en: "An external model remains optional and receives redacted content only by default. The workflow is not described as offline when that provider is enabled.",
-        zh: "外部模型仍为可选项，默认仅接收已脱敏内容；启用外部提供商时，不将该流程描述为离线运行。",
+        zh: "外部模型始终是可选项，默认只接收脱敏后的内容。一旦启用外部服务，这套流程就不再称作离线流程。",
       },
     ],
     links: [
@@ -529,10 +529,10 @@ const projectCatalog: Project[] = [
     title: { en: "Margin Control Tower", zh: "Margin Control Tower" },
     glossZh: "浏览器毛利归因工作台",
     eyebrow: { en: "Analytics engineering / margin decisions", zh: "分析工程 / 毛利决策" },
-    summary: { en: "Weekly margin moves, decomposed in the browser on a hash-verified Olist aggregate — DuckDB-WASM, no server.", zh: "Weekly margin moves, decomposed in the browser on a hash-verified Olist aggregate — DuckDB-WASM, no server." },
+    summary: { en: "Weekly margin moves, decomposed in the browser on a hash-verified Olist aggregate — DuckDB-WASM, no server.", zh: "浏览器里当场拆解每周毛利变化。Olist 聚合经过哈希校验，由 DuckDB-WASM 就地处理，不用服务器。" },
     metrics: { en: "15,809 Olist aggregate rows · 99,441 source orders · 10 fail-closed contract checks", zh: "15,809 条 Olist 聚合记录 · 99,441 个源订单 · 10 项 fail-closed（失败即拦截）契约检查" },
     problem: { en: "A revenue-only view hides the margin lost to discounts, returns, cost of goods, and fulfillment, and gives a category manager no way to test a response.", zh: "只看收入会看不见折扣、退货、商品成本、履约这四类因素造成的毛利损失，品类经理也没法测试应对方案。" },
-    audience: { en: "E-commerce category managers and analytics engineers who need to test a margin decision, not just chart it.", zh: "本页面面向电商品类经理与数据分析工程师，帮助他们验证毛利决策，而非仅将决策绘制成图表。" },
+    audience: { en: "E-commerce category managers and analytics engineers who need to test a margin decision, not just chart it.", zh: "适合电商品类经理和数据分析工程师。毛利决策得拿来验证，画成图还不够。" },
     role: { en: "The whole path is mine: the six-table Olist pipeline, the data contracts and source locks that police it, the diagnosis and scenario engine, and the browser UI.", zh: "整条链路都是我搭的：六表 Olist 管线、负责把关的数据契约与来源锁、诊断与情景引擎，以及浏览器界面。" },
     outcome: { en: "The default path verifies the committed Olist artifact before rendering, exposes measured detection and elasticity reports, recomputes a bounded scenario, and records a category action for review.", zh: "默认路径会在渲染前校验已提交的 Olist 产物，展示实测的检测与弹性报告，重算有边界的情景，并记录品类行动供复核。" },
     stack: projectStack(
@@ -560,7 +560,7 @@ const projectCatalog: Project[] = [
       },
     ],
     provenance: [
-      { en: "The source toggle requests real data first: the browser loads and verifies olist-margin.parquet through DuckDB-WASM by default. If that offline-pipeline artifact is missing or invalid, the real path fails closed, stays labeled pending or blocked, and falls back to the governed synthetic fixture.", zh: "来源切换优先请求真实数据：浏览器默认通过 DuckDB-WASM 加载并校验 olist-margin.parquet。若该离线管道产物缺失或无效，真实路径直接阻断，状态保持标注为 pending 或 blocked，并单独回退至受约束的合成数据。" },
+      { en: "The source toggle requests real data first: the browser loads and verifies olist-margin.parquet through DuckDB-WASM by default. If that offline-pipeline artifact is missing or invalid, the real path fails closed, stays labeled pending or blocked, and falls back to the governed synthetic fixture.", zh: "切换数据源时，页面先请求真实数据：浏览器默认用 DuckDB-WASM 加载并校验 olist-margin.parquet。离线管道产物一旦缺失或校验失败，真实路径立即阻断，状态保持为 pending 或 blocked，页面回退到受治理的合成夹具。" },
       { en: "Real mode loads the committed Olist aggregate produced from 99,441 orders and 112,650 item rows under CC BY-NC-SA 4.0 (retrieved 2026-07-17); source-table hashes, transport commit, transforms, and proxy boundaries are embedded in the Parquet metadata.", zh: "真实模式载入由 99,441 个订单与 112,650 条商品明细生成的已提交 Olist 聚合产物，许可证为 CC BY-NC-SA 4.0（获取于 2026-07-17）；Parquet 元数据内嵌源表哈希、传输 commit、转换与代理边界。" },
       { en: "Measured fields use observed order items and freight after payment/review reconciliation; discounts, returns, and COGS remain explicitly documented proxies. The first observed week of each category falls back to current item price and therefore has zero proxy discount.", zh: "实测字段来自支付/评价对账后的订单明细与运费；折扣、退货和 COGS 仍是明确记录的代理值。各品类首个观测周回填当前商品价格，因此代理折扣为零。" },
       { en: "The optional seed-2026071301 fixture contains 9,360 synthetic rows across 52 weeks and remains isolated as a reproducible fallback and test mode.", zh: "可选的 seed-2026071301 夹具含 52 周共 9,360 条合成记录，仅作为可复现的回退与测试模式独立保留。" },
@@ -696,9 +696,9 @@ const projectCatalog: Project[] = [
     title: { en: "Credit Policy Desk", zh: "Credit Policy Desk" },
     glossZh: "信贷策略模拟工作台",
     eyebrow: { en: "Risk analytics / policy governance", zh: "风险分析 / 策略治理" },
-    summary: { en: "A score is not a policy. This desk walks the rest of the way: expected loss, thresholds, review capacity, and a recorded human decision.", zh: "A score is not a policy. This desk walks the rest of the way: expected loss, thresholds, review capacity, and a recorded human decision." },
+    summary: { en: "A score is not a policy. This desk walks the rest of the way: expected loss, thresholds, review capacity, and a recorded human decision.", zh: "分数不等于策略。这个工作台继续往下走：算预期损失、定阈值，把复核容量算进去，最后由人拍板并留档。" },
     metrics: { en: "120,000 scored loans · 24,000 later backtest rows · capacity-gated policy audit", zh: "120,000 笔已评分贷款 · 24,000 条后续回测记录 · 容量门控的策略审计" },
-    problem: { en: "A probability and one cutoff cannot capture loss economics, review capacity, score drift, or the human decision that sets policy.", zh: "单一概率与阈值无法涵盖损失经济学、复核容量、评分漂移，以及制定策略所需的人工决策。" },
+    problem: { en: "A probability and one cutoff cannot capture loss economics, review capacity, score drift, or the human decision that sets policy.", zh: "一个概率加一道阈值，说不清损失怎么算、人工复核排不排得开、分数会不会漂，也代替不了最后那次人工拍板。" },
     audience: { en: "Credit policy managers, risk analysts, and applied-ML governance teams whose job starts where the score ends.", zh: "信贷策略经理、风险分析师和机器学习治理团队——评分结束后，才进入他们负责的决策工作。" },
     role: { en: "I built the time-disciplined training and backtest pipeline, the score-to-policy contracts, the expected-loss and queue engine, and the browser UI that holds it together.", zh: "我构建了严格按时间切分的训练与回测管线、评分到策略的契约、预期损失与队列引擎，以及把这一切串起来的浏览器界面。" },
     outcome: { en: "The default path verifies committed offline scores, then recomputes approve/review/decline bands, swap sets, queue overflow, expected loss, calibration, vintage drift, descriptive slices, and a policy audit record.", zh: "默认路径先校验已提交的离线评分，再重算批准/复核/拒绝区间、换入换出集合、队列溢出、预期损失、校准、批次漂移、描述性切片与策略审计记录。" },
@@ -728,7 +728,7 @@ const projectCatalog: Project[] = [
       },
     ],
     provenance: [
-      { en: "The source toggle requests real data first: the browser verifies scored-backtest.parquet through DuckDB-WASM by default. If that offline training artifact is missing or invalid, the real backtest fails closed, stays labeled pending or blocked, and falls back to the governed synthetic fixture.", zh: "来源切换优先请求真实数据：浏览器默认通过 DuckDB-WASM 校验 scored-backtest.parquet。若该离线训练产物缺失或无效，真实回测直接阻断，状态保持标注为 pending 或 blocked，并单独回退至受约束的合成数据。" },
+      { en: "The source toggle requests real data first: the browser verifies scored-backtest.parquet through DuckDB-WASM by default. If that offline training artifact is missing or invalid, the real backtest fails closed, stays labeled pending or blocked, and falls back to the governed synthetic fixture.", zh: "切换数据源时，页面先请求真实数据：浏览器默认用 DuckDB-WASM 校验 scored-backtest.parquet。离线训练产物一旦缺失或校验失败，真实回测立即阻断，状态保持为 pending 或 blocked，页面回退到受治理的合成夹具。" },
       { en: "Real mode loads 120,000 deterministically selected applications from the 1,347,681-row UCM-curated Lending Club granting archive (Zenodo 10.5281/zenodo.11295916, CC BY 4.0, retrieved 2026-07-17); the source size, MD5, SHA-256, creators, and time cutoffs are embedded in the Parquet metadata.", zh: "真实模式载入从 UCM 整理的 1,347,681 行 Lending Club 授信档案中确定性选取的 120,000 条申请（Zenodo 10.5281/zenodo.11295916，CC BY 4.0，获取于 2026-07-17）；Parquet 元数据内嵌源文件大小、MD5、SHA-256、作者与时间截止点。" },
       { en: "The committed artifact contains disjoint time-ordered 72,000 / 24,000 / 24,000 train, isotonic-calibration, and later backtest rows, observed final outcomes, calibrated logistic/XGBoost scores, and top-three SHAP-derived reason codes.", zh: "已提交产物包含互不重叠且按时间排序的 72,000 / 24,000 / 24,000 条训练集、等渗校准集与后续回测集记录，含观测到的最终结局、校准后的逻辑回归/XGBoost 分数，以及 SHAP 推导的前三位原因码。" },
       { en: "The optional seed-2026071302 fixture contains 12,000 fictional applications and remains isolated as a reproducible fallback and test mode.", zh: "可选的 seed-2026071302 夹具含 12,000 笔虚构申请，仅作为可复现的回退与测试模式独立保留。" },

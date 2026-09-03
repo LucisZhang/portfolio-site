@@ -48,7 +48,7 @@ export function MarginVerify() {
           ? (locale === "en" ? "Verified in this browser" : "已在本浏览器验证")
           : status === "loading"
             ? (locale === "en" ? "Verifying…" : "验证中……")
-            : (locale === "en" ? "Verify olist-margin.parquet in this browser (DuckDB-WASM)" : "在本浏览器中验证 olist-margin.parquet（DuckDB-WASM）")}
+            : (locale === "en" ? "Verify olist-margin.parquet in this browser — DuckDB-WASM" : "在本浏览器中验证 olist-margin.parquet（DuckDB-WASM）")}
       </button>
       {status === "verified" && rowCount !== null && sha256 ? (
         <p className="margin-verify-result">

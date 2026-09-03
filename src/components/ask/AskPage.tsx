@@ -1,14 +1,18 @@
 "use client";
 
-import { type FormEvent, useId, useState } from "react";
+import { type FormEvent, Fragment, useId, useState } from "react";
 import { usePathname } from "next/navigation";
 import AssistantRichAnswer from "@/components/assistant/AssistantRichAnswer";
+import AssistantSourcesIndex from "@/components/assistant/AssistantSourcesIndex";
 import { Exhibit } from "@/components/exhibition/Exhibit";
 import { Finding } from "@/components/exhibition/Finding";
 import LocaleDocumentMetadata from "@/components/LocaleDocumentMetadata";
 import LocaleLink from "@/components/LocaleLink";
 import { getRouteQuestions } from "@/lib/ask-question-bank";
+import { prefetchPresetAnswers } from "@/lib/ask-preset-answers";
+import type { AssistantCitation } from "@/lib/assistant-policy";
 import { localize, useI18n } from "@/lib/i18n";
+import { zhWrapText } from "@/lib/zh-wrap";
 import { getProject, type Project } from "@/lib/projects";
 import { siteIdentity } from "@/lib/site-config";
 import { useAssistantConversation } from "@/lib/use-assistant-conversation";
@@ -38,6 +42,8 @@ const copy = {
     recordedPortfolio: "The portfolio",
     recordedAnsweredLabel: "retrieved evidence · no generation",
     recordedNote: "RECORDED — this exchange is frozen at build/dev time from a real offline retrieval run over the committed knowledge snapshot (no model call, no network request). Ask your own question below for a live, model-generated answer with the same citation contract.",
+    presetAnsweredLabel: "preset answer · authored, cited · no model call",
+    presetNote: "The three openers return preset answers written for this page — every number in them is checked against its committed source file at build time, and clicking one calls no model. Type your own question for a live, model-generated reply.",
     yourTurnLabel: "your turn",
     inputPlaceholder: "Ask anything about this portfolio, its projects, or its evidence…",
     send: "Send",
@@ -58,6 +64,9 @@ const copy = {
     how2Body: "A separate guard model classifies the question before any answer model runs. Off-topic, prompt-injection, and sensitive-input questions are refused locally — nothing reaches the answer model at all. Two real refusals, verbatim:",
     how3Title: "Citation contract",
     how3Body: "Every sentence the model returns is checked against the retrieved chunks before it is shown. Public sources link straight to the pinned GitHub line range; the private profile is cited by label only, never by raw text. An answer that fails this check is not displayed.",
+    refusal1Kind: "OFF-TOPIC · REFUSED LOCALLY",
+    refusal2Kind: "PROMPT INJECTION · REFUSED LOCALLY",
+    refusalMeta: "recorded verbatim — no model reached",
     eyebrow03: "SOURCE / REPORT",
     title03a: "Every citation opens",
     title03b: "the exact commit.",
@@ -74,6 +83,8 @@ const copy = {
     recordedPortfolio: "作品集",
     recordedAnsweredLabel: "检索结果 · 未经生成",
     recordedNote: "RECORDED——这段对话是构建/开发阶段冻结的一次真实离线检索结果，基于已提交的知识快照（未调用模型、未发出网络请求）。在下方提问可获得实时、模型生成且遵循同一引用规则的回答。",
+    presetAnsweredLabel: "预置回答 · 附引用 · 未调用模型",
+    presetNote: "三个开场问题返回的是为本页写好的预置回答：其中每个数字都在构建时对照已提交的来源文件核验过，点击时不调用模型。想要实时的模型回答，请在下方自行提问。",
     yourTurnLabel: "轮到你了",
     inputPlaceholder: "可以询问这个作品集、其中的项目，或它给出的证据……",
     send: "发送",
@@ -94,6 +105,9 @@ const copy = {
     how2Body: "在任何回答模型运行之前，先有一个独立的审查模型对问题分类。偏离主题、提示词注入与敏感信息类问题会在本地被直接拒答——完全不会进入回答模型。以下是两个真实的原文拒答示例：",
     how3Title: "引用契约",
     how3Body: "模型返回的每一句话在展示前都会对照检索到的片段核对。公开来源直接链接到锁定的 GitHub 行号区间；私有材料只标注来源标签，不展示原文。任何未通过核对的回答都不会展示。",
+    refusal1Kind: "偏离主题 · 本地拒答",
+    refusal2Kind: "提示词注入 · 本地拒答",
+    refusalMeta: "逐字记录——未调用任何模型",
     eyebrow03: "来源 / 报告",
     title03a: "每条引用，",
     title03b: "都能打开同一次提交。",
@@ -134,13 +148,13 @@ export default function AskPage({ project }: { project: Project }) {
   const inputId = useId();
   const prompts = getRouteQuestions(askQuestionBankRoute, locale);
   const [draft, setDraft] = useState("");
-  const { messages, busy, rateLimit, send, retry } = useAssistantConversation({
+  const { messages, busy, rateLimit, send, sendPreset, retry } = useAssistantConversation({
     locale,
     pathname: pathname ?? askQuestionBankRoute,
     promptSet: prompts,
     failedMessage: locale === "en"
       ? "The portfolio assistant is unavailable right now. Explore the project pages directly instead."
-      : "作品集助手目前暂不可用，可以直接查看下面的项目页面。",
+      : "作品集助手暂时不可用，可以直接查看下面的项目页面。",
   });
 
   function submit(event: FormEvent<HTMLFormElement>) {
@@ -178,18 +192,10 @@ export default function AskPage({ project }: { project: Project }) {
               <span className="ask-who">{labels.recordedPortfolio}<small>{labels.recordedAnsweredLabel}</small></span>
               <div className="ask-say">
                 <p><em>{locale === "en" ? recordedExample.answer.en : recordedExample.answer.zh}</em><sup>1</sup></p>
-                <div className="ask-chain">
-                  <div className="ask-chain-row">
-                    <b>1</b>
-                    <span>
-                      {recordedExample.citation.url ? (
-                        <a href={recordedExample.citation.url} target="_blank" rel="noopener noreferrer">
-                          {recordedExample.citation.label[locale]}
-                        </a>
-                      ) : recordedExample.citation.label[locale]}
-                    </span>
-                  </div>
-                </div>
+                <AssistantSourcesIndex
+                  citations={[recordedExample.citation as AssistantCitation]}
+                  locale={locale}
+                />
               </div>
             </div>
             <p className="ask-recorded-note">{labels.recordedNote}</p>
@@ -197,24 +203,31 @@ export default function AskPage({ project }: { project: Project }) {
             {messages.map((message) => (
               <div key={message.id} className={message.role === "user" ? "ask-turn ask-turn-you" : "ask-turn ask-turn-folio"}>
                 <span className="ask-who">
-                  {message.role === "user" ? labels.you : labels.portfolio}
+                  {message.role === "user"
+                    ? labels.you
+                    : message.presetSegments
+                      ? <>{labels.recordedPortfolio}<small>{labels.presetAnsweredLabel}</small></>
+                      : labels.portfolio}
                 </span>
                 {message.role === "assistant" ? (
                   <div className="ask-say">
-                    {message.blocks ? <AssistantRichAnswer blocks={message.blocks} locale={locale} /> : <p>{message.content}</p>}
-                    {message.sources?.length ? (
-                      <div className="ask-chain">
-                        {message.sources.map((source, index) => (
-                          <div className="ask-chain-row" key={source.sourceId}>
-                            <b>{index + 1}</b>
-                            <span>
-                              {source.url ? (
-                                <a href={source.url} target="_blank" rel="noopener noreferrer">{source.label[locale]}</a>
-                              ) : source.label[locale]}
-                            </span>
-                          </div>
+                    {/* Task R14: a preset click renders its AUTHORED preset
+                        answer — committed prose labeled truthfully as a
+                        preset (预置回答), never as retrieval output, with
+                        superscripts into the B5-c navigation index below. */}
+                    {message.presetSegments ? (
+                      <p>
+                        {message.presetSegments.map((segment, index) => (
+                          <Fragment key={segment.ref}>
+                            {index > 0 ? " " : null}
+                            <em>{locale === "zh" ? zhWrapText(segment.text) : segment.text}</em>
+                            <sup>{segment.ref}</sup>
+                          </Fragment>
                         ))}
-                      </div>
+                      </p>
+                    ) : message.blocks ? <AssistantRichAnswer blocks={message.blocks} locale={locale} /> : <p>{message.content}</p>}
+                    {message.sources?.length ? (
+                      <AssistantSourcesIndex citations={message.sources} locale={locale} />
                     ) : null}
                     {message.retryable ? (
                       <button type="button" className="ask-retry" onClick={() => retry(message)} disabled={busy}>{labels.retry}</button>
@@ -274,7 +287,14 @@ export default function AskPage({ project }: { project: Project }) {
                   type="button"
                   key={prompt}
                   className={index === 1 ? "ask-opener ask-opener-active" : "ask-opener"}
-                  onClick={() => void send(prompt)}
+                  onMouseEnter={prefetchPresetAnswers}
+                  onFocus={prefetchPresetAnswers}
+                  onClick={() => {
+                    // Task R14: preset click -> authored preset answer, no
+                    // /api call; the live path only serves typed questions
+                    // (every bank preset carries a committed answer).
+                    if (!sendPreset(prompt)) void send(prompt);
+                  }}
                   disabled={busy}
                 >
                   <span className="ask-opener-num">{String(index + 1).padStart(2, "0")}</span>
@@ -282,6 +302,7 @@ export default function AskPage({ project }: { project: Project }) {
                 </button>
               ))}
             </div>
+            <p className="ask-recorded-note">{labels.presetNote}</p>
           </div>
         </div>
       </Exhibit>
@@ -295,8 +316,23 @@ export default function AskPage({ project }: { project: Project }) {
           <div className="ask-how-block">
             <h3>{labels.how2Title}</h3>
             <p>{labels.how2Body}</p>
-            <blockquote className="ask-guard-example">{guardExamples.off_topic[locale]}</blockquote>
-            <blockquote className="ask-guard-example">{guardExamples.injection[locale]}</blockquote>
+            {/* Task R9c (B5-a): the two recorded refusals are verbatim data, not
+                quotations to admire — re-set as ledger rows (mono record label,
+                roman serif text between hairlines) per
+                output/r3-align/mocks/b5-a-guard-refusals.html. No bar-quote
+                grammar, no italics; the refusal texts themselves are unchanged. */}
+            <div className="ask-refusals">
+              {([
+                { kind: labels.refusal1Kind, number: "R1", text: guardExamples.off_topic[locale] },
+                { kind: labels.refusal2Kind, number: "R2", text: guardExamples.injection[locale] },
+              ] as const).map((refusal) => (
+                <div className="ask-refusal" key={refusal.number}>
+                  <p className="ask-refusal-kind"><span>{refusal.number}</span>{refusal.kind}</p>
+                  <p className="ask-refusal-text">{locale === "zh" ? zhWrapText(refusal.text) : refusal.text}</p>
+                  <p className="ask-refusal-meta">{labels.refusalMeta}</p>
+                </div>
+              ))}
+            </div>
           </div>
           <div className="ask-how-block">
             <h3>{labels.how3Title}</h3>
@@ -319,6 +355,10 @@ export default function AskPage({ project }: { project: Project }) {
             <div>
               <dt><code>scripts/generate-ask-recorded-example.mjs</code></dt>
               <dd>{locale === "en" ? "Regenerates the recorded exchange above" : "重新生成上方的已记录对话"}</dd>
+            </div>
+            <div>
+              <dt><code>scripts/generate-ask-question-bank.mjs</code></dt>
+              <dd>{locale === "en" ? "Builds the preset answers and checks every number in them against its committed source" : "生成预置回答，并逐个数字对照已提交的来源核验"}</dd>
             </div>
           </dl>
 

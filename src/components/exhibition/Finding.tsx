@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { zhWrapNode } from "@/lib/zh-wrap";
+
 export type FindingKind = "negative" | "limitation" | "note" | "pass";
 
 // UI fabric stays English-only per spec §2.6; narrative body content is left
@@ -28,7 +30,7 @@ export function Finding({
   return (
     <div className="exhibit-finding" data-finding={kind}>
       <p className="exhibit-finding-label">{label ?? DEFAULT_LABELS[kind]}</p>
-      <div className="exhibit-finding-body">{children}</div>
+      <div className="exhibit-finding-body">{zhWrapNode(children)}</div>
     </div>
   );
 }

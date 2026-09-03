@@ -539,7 +539,7 @@ export default function MarginControlTower() {
   }, [activeSource, channel, dataset, region, selectedRows, week]);
 
   if (loadError) return <div className="analytics-lab-loading error"><CircleAlert aria-hidden="true" />{userFacingError("dataset", locale)}</div>;
-  if (!dataset || !scenario || !week || !category) return <div className="analytics-lab-loading" aria-live="polite">{locale === "en" ? "Loading the requested margin source..." : "正在载入所请求的毛利数据源……"}</div>;
+  if (!dataset || !scenario || !week || !category) return <div className="analytics-lab-loading" aria-live="polite">{locale === "en" ? "Loading the requested margin source..." : "正在载入所选毛利数据源……"}</div>;
 
   const marginRate = selected.gross_revenue ? selected.contribution_margin / selected.gross_revenue : 0;
   const baselineDelta = selected.contribution_margin - baseline;
@@ -610,7 +610,7 @@ export default function MarginControlTower() {
           <p className="eyebrow">{activeSource === "synthetic" ? (locale === "en" ? "Synthetic dataset / linked decision workspace" : "合成数据集 / 联动决策工作区") : (locale === "en" ? "Olist Parquet / browser-native decision workspace" : "Olist Parquet / 浏览器原生决策工作区")}</p>
           <h3 id="margin-lab-title">Margin Control Tower</h3>
           <p>{activeSource === "synthetic"
-            ? (locale === "en" ? "Find where contribution margin breaks, trace the cost driver, and test one bounded operating change against a held-out synthetic period." : "定位贡献毛利异常点，追溯成本驱动因素，并以预留的合成周期验证一项有限运营调整。")
+            ? (locale === "en" ? "Find where contribution margin breaks, trace the cost driver, and test one bounded operating change against a held-out synthetic period." : "找出贡献毛利在哪一周出了问题，追到具体的成本驱动项，再用合成数据的留出期检验一项范围明确的运营调整。")
             : compactRealVisible
               ? (locale === "en" ? "Explore a hash-bound compact view generated from the exact Olist artifact; full browser DuckDB materialization is deferred." : "探索由精确 Olist 产物生成的哈希绑定轻量视图，浏览器端 DuckDB 的完整物化将延后执行。")
               : (locale === "en" ? "Query the committed offline Olist artifact in-browser, trace margin drivers, and keep scenario assumptions separate from measured data." : "在浏览器内查询已提交的离线 Olist 产物，追查毛利驱动，并将情景假设与实测数据分开。")}</p>

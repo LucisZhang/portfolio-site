@@ -261,15 +261,32 @@ test("assistant prompts follow the page context and typed project segments becom
   await page.getByRole("button", { name: "Ask Portfolio" }).click();
   const widget = page.getByTestId("assistant-widget");
   await expect(widget.getByPlaceholder("Ask how RAG Quality Lab demonstrates Xiangguo's strengths…")).toBeVisible();
+  // Task R14 (owner ruling): a preset click renders its AUTHORED preset
+  // answer instantly from the committed artifact -- no /api/assistant call,
+  // no pending state -- labeled truthfully as a preset, never as retrieval.
   const [ragOverviewPrompt] = bankPrompts("/ai/rag-quality-lab");
   await widget.getByRole("button", { name: ragOverviewPrompt, exact: true }).click();
+  await expect(widget).toContainText("PRESET · authored answer · cited · no model call");
+  expect(contextualRequestBodies).toHaveLength(0);
+
+  // A typed free-form question keeps the live path untouched. The recorded
+  // preset exchange stays in history, and the preset user turn still reaches
+  // the API carrying the page-context prefix.
+  const typedQuestion = "How does the RAG project prove its own evaluation discipline?";
+  await widget.getByPlaceholder("Ask how RAG Quality Lab demonstrates Xiangguo's strengths…").fill(typedQuestion);
+  await widget.getByRole("button", { name: "Send", exact: true }).click();
   await expect.poll(() => contextualRequestBodies.length).toBe(1);
-  expect(contextualRequestBodies[0].messages.at(-1)?.content).toContain("Portfolio question about Xiangguo Zhang on /ai/rag-quality-lab:");
+  expect(contextualRequestBodies[0].messages.at(-1)?.content).toBe(typedQuestion);
+  expect(contextualRequestBodies[0].messages[0]?.content).toContain("Portfolio question about Xiangguo Zhang on /ai/rag-quality-lab:");
   await expect(widget.locator(SEL.i)).toHaveCount(3);
   await expect(widget).toContainText("Thinking");
   await expect(widget.getByRole("heading", { name: "Strongest match" })).toBeVisible();
   await expect(widget.locator(SEL.strong, { hasText: "RAG Quality Lab" })).toBeVisible();
-  await expect(widget.getByRole("link", { name: "RAG Quality Lab" })).toHaveAttribute("href", "/ai/rag-quality-lab");
+  // Task R11 (B5-b): the destination now legitimately appears as a link
+  // twice -- the answer's canonical inline project link and the recorded
+  // index's destination entry -- so each is asserted in its own region.
+  await expect(widget.locator("a:not(.ask-go-dest)", { hasText: "RAG Quality Lab" })).toHaveAttribute("href", "/ai/rag-quality-lab");
+  await expect(widget.locator("a.ask-go-dest", { hasText: "RAG Quality Lab" }).first()).toHaveAttribute("href", "/ai/rag-quality-lab");
   await expect(widget).not.toContainText("**");
 });
 

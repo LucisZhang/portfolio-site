@@ -138,8 +138,8 @@ const zh: Dictionary = {
   footer: "大模型应用系统，从训练到上线，每一步都对得上账。",
   inspectProject: "查看案例",
   homeCore: "核心项目",
-  homeSecondary: "次级项目",
-  homeMethodology: "方法论",
+  homeSecondary: "佐证项目",
+  homeMethodology: "工作方法",
   homeArchive: "归档",
   homeArchiveSummary: "两项较早的产品研究",
   homeEvidenceExplorer: "Evidence Explorer",
@@ -239,5 +239,10 @@ export function localeHref(href: string, locale: Locale) {
 
 export function LocalizedText({ text, className }: { text: LocalizedString; className?: string }) {
   const { locale } = useI18n();
+  // Task R8 deliberately does NOT wrap this path: i18n.ts sits in the
+  // layout-level chunk every route pays for, and adding zh-wrap here grew
+  // /artifact's initial budget (+634 gzip B) for the benefit of a single
+  // remaining legacy slug (analytics-tandem — see [track]/[project]/
+  // page.tsx). Phrase wrapping rides in the exhibition components instead.
   return createElement("span", { className }, text[locale]);
 }

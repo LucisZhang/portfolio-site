@@ -2,6 +2,8 @@
 
 **Every number on the site must survive an audit.**
 
+> 站上的每一个数字，都要经得起查账。
+
 > 这是 [xiangguozhang.com](https://xiangguozhang.com) 的源码仓库：十个项目的展馆。页面上出现的每一个数字，都要能追到生成它的文件、字段和哈希。
 
 This repository builds the exhibition layer of [xiangguozhang.com](https://xiangguozhang.com):
@@ -72,7 +74,7 @@ inference, Tesseract.js for OCR — never load with the page: each sits behind a
 that advertises its ledger-checked size first (the DuckDB engine is 39,362,651 bytes, shared by
 the three data routes; the triage int8 model is 67,575,183 bytes).
 
-> 前端是 Next.js 16 App Router 静态生成 + React 19 + TypeScript + Tailwind CSS 4，浏览器门禁由 Playwright 驱动。字体全部自托管，中文衬线子集由 [`scripts/subset-zh-serif.mjs`](scripts/subset-zh-serif.mjs) 生成。DuckDB-WASM、onnxruntime-web、Tesseract.js 这类重引擎一律不随页面加载：先明示体积（该体积与账本核对过），点击后才下载。
+> 前端是 Next.js 16 App Router 静态生成 + React 19 + TypeScript + Tailwind CSS 4，浏览器门禁由 Playwright 驱动。字体全部自托管：IBM Plex 拉丁子集，加上由 [`scripts/subset-zh-serif.mjs`](scripts/subset-zh-serif.mjs) 生成的中文衬线子集。DuckDB-WASM（SQL over parquet）、onnxruntime-web（页内推理）、Tesseract.js（OCR）这类重引擎一律不随页面加载：每一个都藏在明确的点击之后，点击前先按账本核对过的体积明示——DuckDB 引擎 39,362,651 字节，由三条数据路由共用；triage int8 模型 67,575,183 字节。
 
 ## Run and verify · 本地运行与验证
 
@@ -88,6 +90,8 @@ external service to browse the site.
 > `predev` 会从已安装的 npm 包里复制 DuckDB-WASM 与 ONNX runtime 的浏览器文件，并重建确定性的分析 fixtures；新克隆的仓库不依赖任何外部服务即可本地浏览。
 
 The full gate chain, in dependency order:
+
+> 完整门禁链按依赖顺序如下：
 
 ```bash
 npm run typecheck
@@ -118,7 +122,7 @@ quoted from upstream projects carry their upstream qualifications — a replayed
 frozen-eval number against a rule policy, not a production claim, and this repository does not
 promote any of them beyond what their source artifacts state.
 
-> 在线层——服务端推理、Agent 工具链、托管查询引擎——属于后续阶段。当前上线的内容要么是录制回放，要么是确定性演示，页面原地标明；浏览器内计算（DuckDB-WASM、int8 模型、OCR）是真实执行，但只在访问者本机、基于固定数据运行。引用自上游项目的数字保留上游限定条件，本仓库不做任何超出源产物表述的拔高。
+> 在线层——服务端推理、Agent 工具链、托管查询引擎——属于后续阶段。当前上线的内容要么是录制回放，要么是确定性演示，页面在你所站的位置原地标明：Agent 运行回放已提交记录，stub 标注为确定性，浏览器内计算（DuckDB-WASM、int8 模型、OCR）是真实执行，但只在访问者本机、基于固定数据运行。引用自上游项目的数字保留上游的限定条件——回放出来的 99.05% 仍然是针对 rule policy 的 frozen-eval 数字，不是生产结论；本仓库不把其中任何一个数字拔高到超出源产物的表述。
 
 ## Rights
 

@@ -2,6 +2,7 @@
 
 import { Finding } from "@/components/exhibition/Finding";
 import { useI18n } from "@/lib/i18n";
+import { zhWrapNode } from "@/lib/zh-wrap";
 import { DISCLOSED_LGD_ASSUMPTION, backtestReport } from "./creditData";
 
 function pct(value: number, digits = 1) {
@@ -40,7 +41,7 @@ export function CreditNegativeResults() {
         {locale === "en" ? (
           <>The challenger <em>doesn&rsquo;t win.</em></>
         ) : (
-          <>挑战者，<em>并没有赢。</em></>
+          zhWrapNode(<>挑战者，<em>并没有赢。</em></>)
         )}
       </h2>
 

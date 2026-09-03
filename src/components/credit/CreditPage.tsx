@@ -6,6 +6,7 @@ import LocaleDocumentMetadata from "@/components/LocaleDocumentMetadata";
 import { useI18n } from "@/lib/i18n";
 import type { Project } from "@/lib/projects";
 import { siteIdentity } from "@/lib/site-config";
+import { zhWrapNode } from "@/lib/zh-wrap";
 import "./credit.css";
 import { CreditDecisionBoundary } from "./CreditDecisionBoundary";
 import { CreditNegativeResults } from "./CreditNegativeResults";
@@ -92,7 +93,7 @@ function SourceReceipts() {
         {locale === "en" ? (
           <>Every number opens<br /><em>the same file.</em></>
         ) : (
-          <>每个数字，<em>都能点开同一份文件。</em></>
+          zhWrapNode(<>每个数字，<em>都能点开同一份文件。</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -117,7 +118,7 @@ function SourceReceipts() {
           </p>
         </details>
 
-        <p>
+        <p className="credit-pipe-note">
           {locale === "en"
             ? "scored-backtest.parquet, backtest-report.json, and methods-evidence.json are produced by the pipeline below from a licensed Lending Club source lock; credit-backtest-compact.json and policy-frontier-report.json are derived from that same committed artifact by two npm scripts. docs/evidence/digits-credit.md pins every number on this page to one of these files."
             : "scored-backtest.parquet、backtest-report.json 与 methods-evidence.json 均由下方流水线从已授权的 Lending Club 源锁定生成；credit-backtest-compact.json 与 policy-frontier-report.json 则由两个 npm 脚本从同一份已提交产物派生而来。docs/evidence/digits-credit.md 把本页每个数字都固定映射到其中一个文件。"}

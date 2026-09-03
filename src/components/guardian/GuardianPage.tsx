@@ -6,6 +6,7 @@ import ArtifactLink from "@/components/ArtifactLink";
 import { Finding } from "@/components/exhibition/Finding";
 import LocaleDocumentMetadata from "@/components/LocaleDocumentMetadata";
 import { useI18n } from "@/lib/i18n";
+import { zhWrapNode } from "@/lib/zh-wrap";
 import type { Project } from "@/lib/projects";
 import { siteIdentity } from "@/lib/site-config";
 import "./guardian.css";
@@ -267,7 +268,7 @@ function GuardianDossier() {
                   <b><LocaleText en="If blocked — recorded." zh="若拦截——已记录。" /></b>{" "}
                   <LocaleText
                     en={<>Block recorded at {fmtMs(blockOutcome.recordedAtMs)}, publication refused at {fmtMs(blockOutcome.rejectedAtMs)}. Disposition of record: {blockOutcome.disposition}.</>}
-                    zh={<>拦截记录于 {fmtMs(blockOutcome.recordedAtMs)}，发布已拒绝于 {fmtMs(blockOutcome.rejectedAtMs)}。记录的处理结果：{blockOutcome.disposition === "rejected" ? "已拒绝" : blockOutcome.disposition}。</>}
+                    zh={<>拦截记录于 {fmtMs(blockOutcome.recordedAtMs)}，发布请求于 {fmtMs(blockOutcome.rejectedAtMs)} 被拒绝。记录在案的处理结果：{blockOutcome.disposition === "rejected" ? "已拒绝" : blockOutcome.disposition}。</>}
                   />
                 </p>
                 <div className="guardian-branch-trace" data-testid="guardian-branch-trace-block">
@@ -312,7 +313,7 @@ function RecordedTrace() {
       <h2 id="exhibit-02-title" className="exhibit-title">
         <LocaleText
           en={<>Four tools query the blast radius.<br /><em>None of them ask the model.</em></>}
-          zh={<>四路工具查询影响范围，<em>没有一路问过模型。</em></>}
+          zh={zhWrapNode(<>四路工具查询影响范围，<em>没有一路问过模型。</em></>)}
         />
       </h2>
       <p className="exhibit-intro">
@@ -358,7 +359,7 @@ function ApprovalGateNarrative({ project }: { project: Project }) {
       <h2 id="exhibit-03-title" className="exhibit-title">
         <LocaleText
           en={<>Approval survives<br /><em>the process that asked for it.</em></>}
-          zh={<>审批能够挺过<em>提出请求的那个进程本身。</em></>}
+          zh={zhWrapNode(<>审批能够挺过<em>提出请求的那个进程本身。</em></>)}
         />
       </h2>
       <p className="exhibit-intro">
@@ -400,7 +401,7 @@ function RecordedOutcomes({ live, stub }: { live: GuardianEvalRow[]; stub: Guard
       <h2 id="exhibit-04-title" className="exhibit-title">
         <LocaleText
           en={<>Aggregate pass<br /><em>does not erase {liveFirst.strictFlaggedScenarios} strict failures.</em></>}
-          zh={<>聚合门禁全过，<em>但 {liveFirst.strictFlaggedScenarios} 项严格残差依旧摆在那里。</em></>}
+          zh={zhWrapNode(<>聚合门禁全过，<em>但 {liveFirst.strictFlaggedScenarios} 项严格残差依旧摆在那里。</em></>)}
         />
       </h2>
       <p className="exhibit-intro">
@@ -456,7 +457,7 @@ function MethodNotes() {
       <h2 id="exhibit-05-title" className="exhibit-title">
         <LocaleText
           en={<>Run it yourself.<br /><em>Data never leaves your machine.</em></>}
-          zh={<>自己跑一遍，<em>数据不出你自己的机器。</em></>}
+          zh={zhWrapNode(<>自己跑一遍，<em>数据不出你自己的机器。</em></>)}
         />
       </h2>
       <div className="exhibit-body guardian-install">

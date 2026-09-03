@@ -270,14 +270,17 @@
 /* ---------- Exhibit 04: receipts ---------- */
 
 .margin-receipts-dl {
-  display: grid;
-  gap: 10px;
-  margin: 0 0 20px;
+  max-width: 940px;
+  margin: 0;
 }
 
 .margin-receipts-dl > div {
   border-top: 1px solid color-mix(in srgb, var(--ink-invert-fg) 22%, transparent);
-  padding-top: 8px;
+  padding: 12px 0;
+}
+
+.margin-receipts-dl > div:last-child {
+  border-bottom: 1px solid color-mix(in srgb, var(--ink-invert-fg) 22%, transparent);
 }
 
 .margin-receipts-dl dt code,
@@ -286,33 +289,58 @@
   word-break: break-all;
 }
 
+.margin-receipts-dl dd {
+  margin: 0;
+  color: color-mix(in srgb, var(--ink-invert-fg) 62%, transparent);
+}
+
+/* B6 de-box: the verify act is typographic (mock b6-margin-debox.html
+   `.verify a`) -- no border, no fill, accent-colored underline -- but stays
+   a real click-gated <button> with a >=44px touch target. */
 .margin-verify {
-  margin: 4px 0 20px;
+  margin: 26px 0 12px;
 }
 
 .margin-verify-button {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  border: 1px solid color-mix(in srgb, var(--ink-invert-fg) 40%, transparent);
+  border: 0;
   background: transparent;
-  padding: 10px 16px;
+  padding: 0;
   color: var(--ink-invert-fg);
   cursor: pointer;
   font-family: var(--mono);
-  font-size: .74rem;
+  font-size: .8rem;
   font-weight: 650;
-  letter-spacing: .02em;
+  letter-spacing: .05em;
+  text-align: left;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-decoration-color: var(--accent-on-ink);
+  text-underline-offset: 4px;
 }
 
 .margin-verify-button:hover:not(:disabled),
 .margin-verify-button:focus-visible:not(:disabled) {
-  border-color: var(--accent-on-ink);
   color: var(--accent-on-ink);
 }
 
 .margin-verify-button:disabled {
   cursor: default;
+  text-decoration: none;
+}
+
+.margin-verify[data-verify-status="idle"] .margin-verify-button::after {
+  content: " \2192";
+  white-space: pre;
+}
+
+.margin-pipe-note {
+  max-width: 78ch;
+  margin: 26px 0 0;
+  font-size: .95rem;
+  line-height: 1.65;
 }
 
 .margin-verify-result {
@@ -332,22 +360,23 @@
 }
 
 .margin-verify-sql {
-  margin: 0 0 20px;
-  color: color-mix(in srgb, var(--ink-invert-fg) 82%, transparent);
+  margin: 0 0 26px;
+  color: color-mix(in srgb, var(--ink-invert-fg) 62%, transparent);
 }
 
 .margin-verify-sql summary {
   cursor: pointer;
+  padding: 12px 0;
   font-family: var(--mono);
-  font-size: .74rem;
-  font-weight: 650;
+  font-size: .76rem;
+  letter-spacing: .05em;
+  text-transform: uppercase;
 }
 
+/* B6 de-box: no filled code block -- the SQL reads as plain mono text. */
 .margin-verify-sql pre {
   overflow-x: auto;
   margin: 10px 0;
-  padding: 10px 12px;
-  background: color-mix(in srgb, var(--ink-invert-fg) 10%, transparent);
 }
 
 .margin-verify-sql pre code {
@@ -364,13 +393,24 @@
 .margin-reproduce-command {
   display: flex;
   flex-direction: column;
-  gap: 6px;
   overflow-x: auto;
+  margin: 14px 0 0;
+  font-family: var(--mono);
+  font-size: .78rem;
+  line-height: 2;
 }
 
 .margin-reproduce-command code {
-  font-size: .74rem;
-  white-space: pre;
+  white-space: pre-wrap;
+}
+
+.margin-reproduce-command code::before {
+  content: "$ ";
+  color: color-mix(in srgb, var(--ink-invert-fg) 62%, transparent);
+}
+
+.margin-repo-link {
+  margin: 12px 0 0;
 }
 
 .margin-repo-link a {
@@ -378,6 +418,22 @@
   align-items: center;
   min-height: 44px;
   color: var(--accent-on-ink);
+  font-family: var(--mono);
+  font-size: .8rem;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.margin-repo-link a::after {
+  content: " \2192";
+  white-space: pre;
+}
+
+.margin-repo-link a:hover,
+.margin-repo-link a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 /* ---------- Report layer ---------- */

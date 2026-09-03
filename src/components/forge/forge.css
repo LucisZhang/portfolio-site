@@ -36,7 +36,16 @@
    a full 94vh canvas. See task-W1-report.md for the measured numbers. */
 
 .forge-hero {
-  padding-block: clamp(40px, 5vw, 60px);
+  /* Task R12 fold fix: CircuitNav's top chain (a3-b mock spacing, ~58px of
+     chrome the W1 fold budget never contained) now sits directly above this
+     hero, and at 1440x900 the zh serif h1 (1.15 line-height vs en's 1.0)
+     pushed exhibit-01's instrument to y=969.6 vs the <940 contract. The
+     chain itself is already at the approved mock's own 20px padding, so the
+     compensation comes from this hero's top whitespace instead (identical
+     in both locales): the top pad gives back the chain's height against the
+     W1 clamp (calc term), floored at 10px so the kicker never touches the
+     chain's hairline. Bottom pad keeps the original W1 clamp untouched. */
+  padding-block: clamp(10px, calc(5vw - 58px), 14px) clamp(40px, 5vw, 60px);
 }
 
 /* Reference kicker is orange (.kicker{color:var(--orange)}); the shared

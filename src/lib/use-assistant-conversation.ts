@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { AssistantCitation, AssistantMessage } from "@/lib/assistant-policy";
+import { getPresetAnswer, isPresetPrompt, type PresetAnswerSegment } from "@/lib/ask-preset-answers";
 import { validateAssistantAnswerBlocks, type AssistantAnswerBlock } from "@/lib/assistant-project-references";
 
 // Task L5 [CLAUDE]: extracted out of AssistantWidget.tsx so the new full-page
@@ -21,6 +22,11 @@ export interface AssistantDisplayMessage extends AssistantMessage {
   blocks?: AssistantAnswerBlock[];
   retryable?: boolean;
   retryQuestion?: string;
+  /** Task R14: set when this assistant turn is an AUTHORED preset answer
+   * (committed prose with grounded citations, no model call) — renders
+   * under the preset-answer ("预置回答") labeling, never as retrieval
+   * output or model generation. */
+  presetSegments?: PresetAnswerSegment[];
 }
 
 export interface AssistantRateLimitStatus {
@@ -118,6 +124,44 @@ export function useAssistantConversation({
     }
   }
 
+  // Task R14 (owner ruling): a bank-preset click returns its AUTHORED
+  // preset answer -- appended locally from the committed artifact, no
+  // /api/assistant request, no model. Every bank preset has a committed
+  // answer in both locales (the generator enforces it), so a false return
+  // simply means the prompt is not a preset for this route; the caller
+  // then uses the live path. The prompt-vs-preset decision is synchronous
+  // (small routed bank); the answer content rides its own lazily-imported
+  // chunk (see src/lib/ask-preset-answers.ts) and resolves locally.
+  // Typed free-form questions must keep calling send() directly.
+  function sendPreset(content: string): boolean {
+    const question = content.trim();
+    if (!question || busy || !isPresetPrompt(pathname, question, locale)) return false;
+    const userMessage: AssistantDisplayMessage = { id: crypto.randomUUID(), role: "user", content: question };
+    setMessages((current) => [...current, userMessage].slice(-HISTORY_LIMIT));
+    void getPresetAnswer(pathname, question, locale).then((preset) => {
+      if (!preset) throw new Error("preset answer missing");
+      const assistantMessage: AssistantDisplayMessage = {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        content: preset.segments.map((segment) => segment.text).join(" "),
+        sources: preset.citations,
+        presetSegments: preset.segments,
+      };
+      setMessages((current) => [...current, assistantMessage].slice(-HISTORY_LIMIT));
+    }).catch(() => {
+      // The answer chunk failed to load (it is a same-origin static asset,
+      // so this is an offline-grade failure). State it honestly -- never
+      // fall through to a model call the user did not ask for.
+      const failure: AssistantDisplayMessage = {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        content: failedMessage,
+      };
+      setMessages((current) => [...current, failure].slice(-HISTORY_LIMIT));
+    });
+    return true;
+  }
+
   async function send(content: string) {
     const question = content.trim();
     if (!question) return false;
@@ -136,5 +180,5 @@ export function useAssistantConversation({
     void requestConversation(conversation, question);
   }
 
-  return { messages, setMessages, busy, rateLimit, send, retry };
+  return { messages, setMessages, busy, rateLimit, send, sendPreset, retry };
 }

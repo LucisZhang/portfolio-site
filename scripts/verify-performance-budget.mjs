@@ -116,8 +116,113 @@ const routeClasses = {
 // (226,500) across two consecutive clean runs before re-pinning; purely
 // provisional policy for this route (never home, never a plan-target
 // route), same ratchet convention as the three prior applications above.
+//
+// R13 pattern applied a fifth time, task R9a (checklist A3 b+c, circuit
+// chain + colophon index): CircuitNav.tsx + src/lib/site-circuit.ts are
+// mounted by ExhibitShell itself (pathname-gated client island), so their
+// JS plus the new exhibition.css rules land in the shared-chunk/CSS
+// intersection every measured route pays for. Route-own is untouched
+// everywhere ("/" stays 11,564 vs its hard 50,000 target; every
+// provisional route-own pin passes with its prior headroom), and every
+// project route absorbs the growth inside its existing initial ceiling.
+// The two zero-/near-zero-headroom PROVISIONAL initial pins tipped and
+// are re-pinned at their freshly measured values: "/" 182,544 -> 183,250
+// (R7 provisional initial; the hard plan-class budget for "/" is
+// route-own, untouched) and /artifact 226,500 -> 229,990 (provisional,
+// never a plan-target route). Both numbers reproduced identically across
+// two consecutive clean runs of this script before re-pinning. Measured
+// with task F13a's in-flight working-tree edits present (margin/credit/
+// privacy component files), whose imports are route-scoped to routes that
+// all pass -- the shared-chunk growth is the circuit nav's own.
+//
+// R13 pattern applied a sixth time, task R9c (B5-c, citation navigation
+// index): AssistantSourcesIndex.tsx + src/lib/assistant-citation-index.ts
+// + assistant-sources.css are imported by AssistantWidget (the floating
+// launcher island every route mounts), so the shared citation
+// destination-mapping layer lands in the shared-chunk/CSS intersection
+// every measured route pays for (+262 gzip bytes). Route-own is untouched
+// everywhere ("/" stays 11,566 vs its hard 50,000 target; every
+// provisional route-own pin keeps its prior headroom), and every project
+// route absorbs the growth inside its existing initial ceiling. The two
+// zero-headroom PROVISIONAL initial pins tipped and are re-pinned at
+// their freshly measured values: "/" 183,250 -> 183,513 (R7 provisional
+// initial; the hard plan-class budget for "/" is route-own, untouched)
+// and /artifact 229,990 -> 230,253 (provisional, never a plan-target
+// route). Both numbers reproduced identically across three consecutive
+// clean runs of this script before re-pinning.
+//
+// R13 pattern applied a seventh time, task R11 (B5-b, recorded preset
+// answers): the preset-click recorded-answer wiring (sendRecorded in
+// use-assistant-conversation.ts + the ask-recorded-answers lookup + the
+// widget's RECORDED microlabel CSS rule) lands in the shared-chunk/CSS
+// intersection every measured route pays for (+10 gzip bytes on "/", +3 on
+// /artifact). The 90,653-byte generated artifact
+// src/data/generated/ask-recorded-answers.json itself stays OUT of every
+// route's initial payload -- it rides the dynamically imported
+// AssistantWidget chunk and /ai/ask-portfolio's route-own chunk, and
+// /ai/ask-portfolio absorbs it inside its untouched hard target (measured
+// 199,156 vs 200,000). Route-own is untouched everywhere; every project
+// route absorbs the growth inside its existing initial ceiling. The two
+// zero-headroom PROVISIONAL initial pins tipped and are re-pinned at their
+// freshly measured values: "/" 183,513 -> 183,523 (R7 provisional initial;
+// the hard plan-class budget for "/" is route-own, untouched) and /artifact
+// 230,253 -> 230,256 (provisional, never a plan-target route). Both numbers
+// reproduced identically across three consecutive clean runs of this script
+// before re-pinning.
+//
+// R13 pattern applied an eighth time, task R13 (owner-final zh copy across
+// 42 strings): the CommandPalette empty-state and ask-button rewrites
+// (0-4/0-5) plus the site-metadata description (0-3) land in the
+// shared-chunk intersection every measured route pays for (+74 gzip bytes
+// on "/", +88 on /artifact). Route-own is untouched everywhere ("/" keeps
+// its hard 50,000 route-own target with wide headroom); every project
+// route absorbs the copy-length growth inside its existing initial
+// ceiling. The two zero-headroom PROVISIONAL initial pins tipped and are
+// re-pinned at their freshly measured values: "/" 183,523 -> 183,597 (R7
+// provisional initial; the hard plan-class budget for "/" is route-own,
+// untouched) and /artifact 230,256 -> 230,344 (provisional, never a
+// plan-target route). Both numbers reproduced identically across three
+// consecutive clean runs of this script before re-pinning.
+//
+// R13 pattern applied a ninth time, task R14 (authored preset answers):
+// the presets became authored prose (owner ruling), and the answers
+// artifact grew into real content weight (~80KB raw of bilingual prose).
+// It is content, not app code, so it moved OUT of every route's initial
+// payload entirely: src/lib/ask-preset-answers.ts now decides
+// prompt-vs-preset synchronously from the small routed bank and lazily
+// imports the answers as their own chunk on first hover/focus/click --
+// /ai/ask-portfolio's initial DROPPED 206,267 (over its hard 200,000
+// ratchet with the statically imported artifact) -> 187,791, comfortably
+// inside the untouched hard target. What remains in the shared
+// intersection is only the preset wiring (isPresetPrompt + the lazy-import
+// shim + prefetch handlers): +7 gzip bytes on "/", +13 on /artifact.
+// Route-own is untouched everywhere; every project route absorbs the
+// wiring inside its existing initial ceiling. The two zero-headroom
+// PROVISIONAL initial pins tipped and are re-pinned at their freshly
+// measured values: "/" 183,597 -> 183,604 (R7 provisional initial; the
+// hard plan-class budget for "/" is route-own, untouched) and /artifact
+// 230,344 -> 230,357 (provisional, never a plan-target route). Both
+// numbers reproduced identically across three consecutive clean runs of
+// this script before re-pinning.
+//
+// R13 pattern applied a tenth time, task R15 (final knowledge re-pin for
+// release): re-pinning the knowledge layer to site commit 346b8a8 (and
+// Voice-in-Security's rewritten head) regenerates the snapshot, preset
+// answers, and recorded example with new 40-character commit hashes in
+// their citation URLs. No code changed; the regenerated artifacts ride
+// their existing chunks (recorded example in /ai/ask-portfolio route-own,
+// answers in their lazy chunk), but the changed bytes shift content-hashed
+// build output, measuring +1 gzip byte on each zero-headroom route.
+// Route-own is untouched everywhere; every project route absorbs the
+// shift inside its existing initial ceiling. The two zero-headroom
+// PROVISIONAL initial pins tipped and are re-pinned at their freshly
+// measured values: "/" 183,604 -> 183,605 (R7 provisional initial; the
+// hard plan-class budget for "/" is route-own, untouched) and /artifact
+// 230,357 -> 230,358 (provisional, never a plan-target route). Both
+// numbers reproduced identically across three consecutive clean runs of
+// this script before re-pinning.
 const routes = [
-  { route: "/", family: "home", className: "archive", initialCeiling: 182_544, policy: "R7 provisional initial / target route-own" },
+  { route: "/", family: "home", className: "archive", initialCeiling: 183_605, policy: "R7 provisional initial / target route-own" },
   { route: "/ai/frontier-forge", family: "project", className: "instrument", policy: "target" },
   { route: "/ai/release-guardian", family: "project", className: "instrument", initialCeiling: 269_808, routeOwnCeiling: 93_028, policy: "provisional" },
   { route: "/ai/rag-quality-lab", family: "project", className: "report", initialCeiling: 268_128, routeOwnCeiling: 91_348, policy: "provisional" },
@@ -128,7 +233,7 @@ const routes = [
   { route: "/engineering/crossover-study", family: "project", className: "instrument", initialCeiling: 236_187, routeOwnCeiling: 59_407, policy: "provisional" },
   { route: "/analytics/credit-policy-desk", family: "project", className: "archive", initialCeiling: 278_037, routeOwnCeiling: 101_257, policy: "provisional" },
   { route: "/ai/ask-portfolio", family: "project", className: "report", policy: "target" },
-  { route: "/artifact", family: "artifact", className: "report", initialCeiling: 226_500, routeOwnCeiling: 93_293, policy: "provisional" },
+  { route: "/artifact", family: "artifact", className: "report", initialCeiling: 230_358, routeOwnCeiling: 93_293, policy: "provisional" },
 ];
 
 function sleep(milliseconds) {

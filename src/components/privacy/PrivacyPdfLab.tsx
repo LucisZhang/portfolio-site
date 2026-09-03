@@ -1,9 +1,9 @@
 "use client";
 
-import { Check, Columns2, Download, Eye, FileText, RotateCcw, ScanSearch, ShieldX, Trash2, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { PDFDocumentLoadingTask } from "pdfjs-dist";
 import type { Locale } from "@/lib/i18n";
+import { zhWrapText } from "@/lib/zh-wrap";
 import { privacySourceLabel } from "@/lib/privacy-localization";
 import { cancelPrivacyOcrWorker, withPrivacyOcrTimeout, withPrivacyOcrWorker } from "@/lib/privacy-ocr-worker";
 import { mapSensitiveOcrLine, scanSensitiveText } from "@/lib/privacy-redaction";
@@ -635,23 +635,39 @@ export default function PrivacyPdfLab({ locale, sampleTrigger }: { locale: Local
     clearOutput();
   }
 
+  // Task B4 (r3 galley alignment): decorative dot separator between the
+  // typographic command words -- same "·" grammar as PrivacyActionLine.
+  const dot = <span className="privacy-actionbar-dot" aria-hidden="true">·</span>;
+  const caption = locale === "en"
+    ? <><b>Fig. 2</b> — PDF specimen{fileName ? <> · <span className="privacy-fig-file">{fileName}</span></> : null}{pageCount ? <> · page {pageIndex + 1} of {pageCount}</> : null}</>
+    : <><b>图 2</b> — PDF {zhWrapText("样张")}{fileName ? <> · <span className="privacy-fig-file">{fileName}</span></> : null}{pageCount ? <> · 第 {pageIndex + 1} / {pageCount} 页</> : null}</>;
+
   return (
     <div className="privacy-pdf-workspace">
       <div className="privacy-actionbar">
         <input ref={inputRef} className="sr-only" type="file" accept="application/pdf" onChange={(event) => { const file = event.target.files?.[0]; if (file) { selectionSequence.current += 1; void loadFile(file); } }} />
-        <button type="button" onClick={() => inputRef.current?.click()} disabled={isLoading || isOcrRunning || isExporting}><FileText aria-hidden="true" />{copy.choose}</button>
-        <button type="button" aria-busy={loadingExample === "privacy-text-layer-example.pdf"} disabled={isLoading || isOcrRunning || isExporting} onClick={() => void loadExample("/case-studies/privacy-preflight/pdf-example-text-layer.pdf", "privacy-text-layer-example.pdf")}><FileText aria-hidden="true" />{loadingExample === "privacy-text-layer-example.pdf" ? copy.loading : copy.exampleText}</button>
-        <button type="button" aria-busy={loadingExample === "privacy-scanned-example.pdf"} disabled={isLoading || isOcrRunning || isExporting} onClick={() => void loadExample("/case-studies/privacy-preflight/pdf-example-scanned.pdf", "privacy-scanned-example.pdf")}><FileText aria-hidden="true" />{loadingExample === "privacy-scanned-example.pdf" ? copy.loading : copy.exampleScan}</button>
-        <button type="button" aria-busy={loadingExample === "privacy-multipage-example.pdf"} disabled={isLoading || isOcrRunning || isExporting} onClick={() => void loadExample("/case-studies/privacy-preflight/pdf-example-multipage.pdf", "privacy-multipage-example.pdf", "eng+chi_sim")}><FileText aria-hidden="true" />{loadingExample === "privacy-multipage-example.pdf" ? copy.loading : copy.exampleMulti}</button>
+        <button type="button" onClick={() => inputRef.current?.click()} disabled={isLoading || isOcrRunning || isExporting}>{copy.choose}</button>
+        {dot}
+        <button type="button" aria-busy={loadingExample === "privacy-text-layer-example.pdf"} disabled={isLoading || isOcrRunning || isExporting} onClick={() => void loadExample("/case-studies/privacy-preflight/pdf-example-text-layer.pdf", "privacy-text-layer-example.pdf")}>{loadingExample === "privacy-text-layer-example.pdf" ? copy.loading : copy.exampleText}</button>
+        {dot}
+        <button type="button" aria-busy={loadingExample === "privacy-scanned-example.pdf"} disabled={isLoading || isOcrRunning || isExporting} onClick={() => void loadExample("/case-studies/privacy-preflight/pdf-example-scanned.pdf", "privacy-scanned-example.pdf")}>{loadingExample === "privacy-scanned-example.pdf" ? copy.loading : copy.exampleScan}</button>
+        {dot}
+        <button type="button" aria-busy={loadingExample === "privacy-multipage-example.pdf"} disabled={isLoading || isOcrRunning || isExporting} onClick={() => void loadExample("/case-studies/privacy-preflight/pdf-example-multipage.pdf", "privacy-multipage-example.pdf", "eng+chi_sim")}>{loadingExample === "privacy-multipage-example.pdf" ? copy.loading : copy.exampleMulti}</button>
+        {dot}
         <span className="privacy-file-name">{fileName || copy.local}</span>
         <span className="privacy-example-status" role="status" aria-live="polite">{loadingExample ? copy.loading : fileName ? `${copy.loaded}: ${fileName}` : ""}</span>
+        <span className="privacy-lang"><span aria-hidden="true">Lang:</span><select value={ocrLanguage} onChange={(event) => setOcrLanguage(event.target.value as "eng" | "eng+chi_sim")} aria-label={locale === "en" ? "OCR language" : "OCR 语言"}><option value="eng">{copy.english}</option><option value="eng+chi_sim">{copy.bilingual}</option></select></span>
+      </div>
+      <div className="privacy-actionbar privacy-actionbar-ops">
+        <button type="button" className="privacy-scan-primary" onClick={() => void scanDocument()} disabled={!pageCount || isLoading || isOcrRunning || isExporting}>{copy.ocr}</button>
+        {dot}
         <strong className="privacy-page-counter">{copy.page} {pageCount ? `${pageIndex + 1} / ${pageCount}` : "-"}</strong>
-        <select value={ocrLanguage} onChange={(event) => setOcrLanguage(event.target.value as "eng" | "eng+chi_sim")} aria-label={locale === "en" ? "OCR language" : "OCR 语言"}><option value="eng">{copy.english}</option><option value="eng+chi_sim">{copy.bilingual}</option></select>
-        <button type="button" className="privacy-scan-primary" onClick={() => void scanDocument()} disabled={!pageCount || isLoading || isOcrRunning || isExporting}><ScanSearch aria-hidden="true" />{copy.ocr}</button>
-        <button type="button" onClick={() => void reset()} disabled={!pageCount && !fileName}><RotateCcw aria-hidden="true" />{copy.reset}</button>
+        {dot}
+        <button type="button" onClick={() => void reset()} disabled={!pageCount && !fileName}>{copy.reset}</button>
       </div>
       {error ? <p className="privacy-error" role="alert">{error}</p> : null}
-      <div className="privacy-pdf-grid">
+      <figure className="privacy-figure privacy-pdf-grid">
+        <figcaption className="privacy-fig-caption">{caption}</figcaption>
         <div className="privacy-pdf-canvas-wrap privacy-main-result-area" aria-busy={isLoading}>
           {pageCount && activeDocument ? (hasCurrentOutput && !showOriginal && output
             ? <PrivacyPdfResultPreview key={output.url} bytes={output.bytes} locale={locale} />
@@ -670,25 +686,28 @@ export default function PrivacyPdfLab({ locale, sampleTrigger }: { locale: Local
                 onRenderError={handlePdfRenderError}
               />
             ))}</div>)
-            : <button type="button" className="privacy-drop-target" onClick={() => inputRef.current?.click()}><FileText aria-hidden="true" /><strong>{copy.choose}</strong><span>{copy.local}</span></button>}
-          {pageCount && scanHintDocumentId === activeDocumentId && !allPagesScanned && !hasCurrentOutput ? <p ref={scanHintRef} className="privacy-scan-hint" role="status"><ScanSearch aria-hidden="true" />{copy.scanNext}</p> : null}
-          {hasCurrentOutput && output ? <div className="privacy-inplace-result-toolbar" data-testid="privacy-pdf-output"><button type="button" className="privacy-before-after-toggle" aria-pressed={showOriginal} onClick={() => setShowOriginal((current) => !current)}><Columns2 aria-hidden="true" />{copy.compare}</button><span role="status">{showOriginal ? copy.originalView : copy.redactedView}</span><a className="button-link primary" href={output.url} download={output.name}><Download aria-hidden="true" />{copy.download}</a></div> : null}
+            : <button type="button" className="privacy-drop-target" onClick={() => inputRef.current?.click()}><strong>{copy.choose}</strong><span>{copy.local}</span></button>}
+          {pageCount && scanHintDocumentId === activeDocumentId && !allPagesScanned && !hasCurrentOutput ? <p ref={scanHintRef} className="privacy-scan-hint" role="status">{copy.scanNext}</p> : null}
+          {hasCurrentOutput && output ? <div className="privacy-inplace-result-toolbar" data-testid="privacy-pdf-output"><button type="button" className="privacy-before-after-toggle" aria-pressed={showOriginal} onClick={() => setShowOriginal((current) => !current)}>{copy.compare}</button><span role="status">{showOriginal ? copy.originalView : copy.redactedView}</span><a className="button-link primary" href={output.url} download={output.name}>{copy.download}</a></div> : null}
         </div>
         <aside className="privacy-pdf-gate">
-          <ShieldX aria-hidden="true" />
-          <p className="eyebrow">{copy.gate}</p>
-          <h4>{copy.review}</h4>
-          <p>{copy.note}</p>
-          <div className="privacy-output-steps" aria-label={locale === "en" ? "Redaction progress" : "脱敏进度"}><span className={pageCount ? "done" : ""}>{copy.before}</span><span className={scannedPages.length ? "done" : ""}>{copy.detected}</span><span className={hasCurrentOutput ? "done" : ""}>{copy.redacted}</span></div>
+          <div><h4>{copy.review}</h4><p className="privacy-local-line">{copy.local}</p></div>
+          <div className="privacy-box-list"><h5>{copy.regions} <span>{currentRegions.length}</span></h5>{!currentRegions.length ? <p>{currentPageScanned ? copy.none : copy.scanNext}</p> : currentRegions.map((region, index) => <article className={region.accepted ? "" : "rejected"} key={region.id}><div><strong><span className="privacy-note-num">{index + 1}</span>{region.type}</strong><div><code>{privacySourceLabel(locale, region.source)}</code><button type="button" className="privacy-box-accept" aria-pressed={region.accepted} onClick={() => updateRegion(region.id, { accepted: !region.accepted })}>{region.accepted ? copy.accept : copy.reject}</button><button type="button" className="icon-only" title={copy.delete} aria-label={copy.delete} onClick={() => { setRegions((current) => current.filter((item) => item.id !== region.id)); clearOutput(); }}><span aria-hidden="true">×</span></button></div></div>{region.text ? <p><code>{region.text}</code>{region.reason}</p> : null}<div className="privacy-box-fields">{(["x", "y", "width", "height"] as const).map((field) => <label key={field}>{field} %<input type="number" min="0" max="100" step="0.1" value={Number((region[field] * 100).toFixed(1))} onChange={(event) => updateRegion(region.id, { [field]: Number(event.target.value) / 100 })} /></label>)}</div></article>)}</div>
+          <div className="privacy-output-steps" aria-label={locale === "en" ? "Redaction progress" : "脱敏进度"}><span className="privacy-state-word">{locale === "en" ? "State:" : "状态："}</span><span className={pageCount ? "done" : ""}>{copy.before}</span><span className={scannedPages.length ? "done" : ""}>{copy.detected}</span><span className={hasCurrentOutput ? "done" : ""}>{copy.redacted}</span></div>
           <p className="privacy-page-method"><strong>{copy.method}:</strong> {pageMethods[pageIndex] === "text-layer" ? copy.textLayer : pageMethods[pageIndex] === "ocr" ? copy.ocrMethod : copy.ocrRequired}</p>
           <div className="privacy-ocr-status" data-testid="privacy-pdf-scan-progress" aria-live="polite"><span>{ocrStatus || copy.scanNext}</span><progress max="100" value={ocrProgress} /></div>
-          <div className="privacy-box-list"><h5>{copy.regions} <span>{currentRegions.length}</span></h5>{!currentRegions.length ? <p>{currentPageScanned ? copy.none : copy.scanNext}</p> : currentRegions.map((region, index) => <article className={region.accepted ? "" : "rejected"} key={region.id}><div><strong>{region.type} {index + 1}</strong><div><code>{privacySourceLabel(locale, region.source)}</code><button type="button" className="privacy-box-accept" aria-pressed={region.accepted} onClick={() => updateRegion(region.id, { accepted: !region.accepted })}>{region.accepted ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}{region.accepted ? copy.accept : copy.reject}</button><button type="button" className="icon-only" title={copy.delete} onClick={() => { setRegions((current) => current.filter((item) => item.id !== region.id)); clearOutput(); }}><Trash2 aria-hidden="true" /></button></div></div>{region.text ? <p><code>{region.text}</code>{region.reason}</p> : null}<div className="privacy-box-fields">{(["x", "y", "width", "height"] as const).map((field) => <label key={field}>{field} %<input type="number" min="0" max="100" step="0.1" value={Number((region[field] * 100).toFixed(1))} onChange={(event) => updateRegion(region.id, { [field]: Number(event.target.value) / 100 })} /></label>)}</div></article>)}</div>
+          <p className="privacy-ocr-note">{copy.note}</p>
           <div className="privacy-pdf-explanation"><strong>{copy.gate}</strong><p>{copy.gateBody}</p>{!canExport ? <p>{copy.needReview}</p> : null}</div>
-          <button type="button" className="privacy-export-button" onClick={() => void exportPdf()} disabled={!canExport}><Eye aria-hidden="true" />{copy.confirm}</button>
+          <button type="button" className="privacy-export-button" onClick={() => void exportPdf()} disabled={!canExport}><span aria-hidden="true">◎</span>{copy.confirm}</button>
           {hasCurrentOutput && output ? <dl className="privacy-result-meta"><div><dt>{locale === "en" ? "File" : "文件"}</dt><dd>{output.name}</dd></div><div><dt>{locale === "en" ? "Type" : "类型"}</dt><dd>{output.type}</dd></div><div><dt>{locale === "en" ? "Size" : "大小"}</dt><dd>{(output.size / 1024).toFixed(1)} KB</dd></div></dl> : null}
-          {validation ? <div className={`privacy-validation ${validation.safe ? "pass" : "fail"}`}><div>{validation.safe ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}<strong>{validation.safe ? copy.verification : copy.unsafeStatus}</strong></div><p>{validation.safe ? copy.safe : copy.unsafe}</p><div className="privacy-pdf-checks">{validationChecks.map((key) => <span key={key}>{validation[key] ? <Check aria-hidden="true" /> : <X aria-hidden="true" />}{copy.checks[key]}</span>)}</div><code>SHA-256 {validation.outputHash}</code></div> : null}
+          {validation ? <div className={`privacy-validation ${validation.safe ? "pass" : "fail"}`}><div>{/* De-glyph pass (r3 fix): ✓/× glyphs → colored mono status WORDS per the
+              site convention (BoundaryMatrix, task F2). Overall verdict: unsafe
+              means the export is refused → BLOCKED; per-check rows below are
+              individual assertions → PASS/FAIL. English mono fabric words in
+              both locales. */}
+          <span className={`privacy-status-word ${validation.safe ? "is-pass" : "is-blocked"}`} aria-hidden="true">{validation.safe ? "PASS" : "BLOCKED"}</span><strong>{validation.safe ? copy.verification : copy.unsafeStatus}</strong></div><p>{validation.safe ? copy.safe : copy.unsafe}</p><div className="privacy-pdf-checks">{validationChecks.map((key) => <span key={key}><b className={`privacy-status-word ${validation[key] ? "is-pass" : "is-fail"}`} aria-hidden="true">{validation[key] ? "PASS" : "FAIL"}</b>{copy.checks[key]}</span>)}</div><code>SHA-256 {validation.outputHash}</code></div> : null}
         </aside>
-      </div>
+      </figure>
     </div>
   );
 }
