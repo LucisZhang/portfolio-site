@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type KeyboardEvent } from "react";
 import { InstrumentFrame } from "@/components/exhibition/InstrumentFrame";
 import ScrollRegion from "@/components/ScrollRegion";
 import { useI18n, type Locale } from "@/lib/i18n";
@@ -54,6 +54,25 @@ const defaultRunIndex = runs.findIndex((run) => run.label === "R1b BF16 + native
 
 type RequestTab = "curl" | "python" | "json";
 
+function moveTabFocus(
+  event: KeyboardEvent<HTMLButtonElement>,
+  index: number,
+  count: number,
+  onSelect: (next: number) => void,
+) {
+  let next = index;
+  if (event.key === "ArrowRight" || event.key === "ArrowDown") next = (index + 1) % count;
+  else if (event.key === "ArrowLeft" || event.key === "ArrowUp") next = (index - 1 + count) % count;
+  else if (event.key === "Home") next = 0;
+  else if (event.key === "End") next = count - 1;
+  else return;
+
+  event.preventDefault();
+  const tabs = event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+  onSelect(next);
+  tabs?.[next]?.focus();
+}
+
 function requestBody(run: ServingRun, locale: Locale) {
   return {
     endpoint: "/api/triage",
@@ -79,6 +98,8 @@ export function ForgeConsole({ variant }: { variant: "compact" | "full" }) {
   const [runIndex, setRunIndex] = useState(defaultRunIndex >= 0 ? defaultRunIndex : 0);
   const [tab, setTab] = useState<RequestTab>("curl");
   const run = runs[runIndex];
+  const runPanelId = `forge-run-panel-${variant}`;
+  const requestPanelId = `forge-request-panel-${variant}`;
 
   return (
     <InstrumentFrame variant={variant}>
@@ -91,14 +112,25 @@ export function ForgeConsole({ variant }: { variant: "compact" | "full" }) {
               role="tab"
               key={candidate.run_id}
               data-forge-chip={candidate.precision}
+              id={`forge-run-tab-${variant}-${index}`}
               aria-selected={index === runIndex}
+              aria-controls={runPanelId}
+              tabIndex={index === runIndex ? 0 : -1}
               onClick={() => setRunIndex(index)}
+              onKeyDown={(event) => moveTabFocus(event, index, runs.length, setRunIndex)}
             >
               {candidate.label}
             </button>
           ))}
         </div>
-        <div className="forge-console-readout" data-readout aria-live="polite">
+        <div
+          className="forge-console-readout"
+          id={runPanelId}
+          role="tabpanel"
+          aria-labelledby={`forge-run-tab-${variant}-${runIndex}`}
+          data-readout
+          aria-live="polite"
+        >
           <strong>{seconds(run.e2e_p50_s)}</strong>
           <span className="forge-console-readout-detail">
             {run.output_tokens_per_s.toFixed(1)} tok/s · {run.requests} reqs · {percent(run.task_success, 0)} success · {SERVING_HARDWARE_LABEL}
@@ -124,15 +156,27 @@ export function ForgeConsole({ variant }: { variant: "compact" | "full" }) {
           rows={2}
         />
         <div className="forge-console-tabs" role="tablist" aria-label={locale === "en" ? "Request body" : "请求体"}>
-          {(["curl", "python", "json"] as RequestTab[]).map((candidate) => (
-            <button type="button" role="tab" key={candidate} aria-selected={tab === candidate} onClick={() => setTab(candidate)}>
+          {(["curl", "python", "json"] as RequestTab[]).map((candidate, index, requestTabs) => (
+            <button
+              type="button"
+              role="tab"
+              key={candidate}
+              id={`forge-request-tab-${variant}-${candidate}`}
+              aria-selected={tab === candidate}
+              aria-controls={requestPanelId}
+              tabIndex={tab === candidate ? 0 : -1}
+              onClick={() => setTab(candidate)}
+              onKeyDown={(event) => moveTabFocus(event, index, requestTabs.length, (next) => setTab(requestTabs[next]))}
+            >
               {candidate === "curl" ? "cURL" : candidate === "python" ? "Python" : "JSON"}
             </button>
           ))}
         </div>
-        <ScrollRegion as="pre" className="forge-console-request" data-forge-request-tab={tab} label={{ en: "Request body code", zh: "请求体代码" }}>
-          <code>{requestSnippet(tab, run, locale)}</code>
-        </ScrollRegion>
+        <div id={requestPanelId} role="tabpanel" aria-labelledby={`forge-request-tab-${variant}-${tab}`} className="forge-console-request-panel">
+          <ScrollRegion as="pre" className="forge-console-request" data-forge-request-tab={tab} label={{ en: "Request body code", zh: "请求体代码" }}>
+            <code>{requestSnippet(tab, run, locale)}</code>
+          </ScrollRegion>
+        </div>
       </div>
     </InstrumentFrame>
   );

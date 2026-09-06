@@ -44,6 +44,10 @@ export function PolicyTerminal({ variant }: { variant: "compact" | "full" }) {
   const filled = fillCardTokens(copy, row);
   const slug = strategySlug(card.name);
   const escalatedTickets = Math.round((row.escalatePct / 100) * 1000);
+  const misrouteRange = [matrix.misrouteCosts[0], matrix.misrouteCosts.at(-1)!];
+  const thresholdRange = [matrix.thresholds[0], matrix.thresholds.at(-1)!];
+  const misrouteScaleId = `triage-misroute-scale-${variant}`;
+  const thresholdScaleId = `triage-threshold-scale-${variant}`;
 
   return (
     <InstrumentFrame variant={variant}>
@@ -54,8 +58,8 @@ export function PolicyTerminal({ variant }: { variant: "compact" | "full" }) {
 
           <div className="triage-slider-row">
             <label htmlFor={`triage-misroute-${variant}`}>
-              <span className="triage-slider-label">{locale === "en" ? "MISROUTE COST" : "误分流成本"}</span>
-              <span className="triage-slider-value" data-misroute-value>{grouped(row.misrouteCostCny, 2)}</span>
+              <span className="triage-slider-label">{locale === "en" ? "MISROUTE COST SENSITIVITY (USD)" : "误分流成本敏感度（USD）"}</span>
+              <span className="triage-slider-value" data-misroute-value>USD {grouped(row.misrouteCostUsd, 2)}</span>
             </label>
             <input
               id={`triage-misroute-${variant}`}
@@ -65,8 +69,15 @@ export function PolicyTerminal({ variant }: { variant: "compact" | "full" }) {
               max={matrix.misrouteCosts.length - 1}
               step={1}
               value={misrouteIndex}
+              aria-describedby={misrouteScaleId}
+              aria-valuetext={locale === "en"
+                ? `USD ${grouped(row.misrouteCostUsd, 2)} misroute-cost sensitivity; recorded range USD ${grouped(misrouteRange[0], 2)} to USD ${grouped(misrouteRange[1], 2)}`
+                : `误分流成本敏感度 USD ${grouped(row.misrouteCostUsd, 2)}；记录范围 USD ${grouped(misrouteRange[0], 2)} 至 USD ${grouped(misrouteRange[1], 2)}`}
               onChange={(event) => setMisrouteIndex(Number(event.target.value))}
             />
+            <span className="triage-slider-scale" id={misrouteScaleId}>
+              {locale === "en" ? "Recorded sensitivity range" : "记录敏感度范围"}: USD {grouped(misrouteRange[0], 2)} — USD {grouped(misrouteRange[1], 2)}
+            </span>
           </div>
 
           <div className="triage-slider-row">
@@ -82,8 +93,15 @@ export function PolicyTerminal({ variant }: { variant: "compact" | "full" }) {
               max={matrix.thresholds.length - 1}
               step={1}
               value={thresholdIndex}
+              aria-describedby={thresholdScaleId}
+              aria-valuetext={locale === "en"
+                ? `Confidence threshold ${row.threshold.toFixed(3)}; recorded range ${thresholdRange[0].toFixed(3)} to ${thresholdRange[1].toFixed(3)}`
+                : `置信度阈值 ${row.threshold.toFixed(3)}；记录范围 ${thresholdRange[0].toFixed(3)} 至 ${thresholdRange[1].toFixed(3)}`}
               onChange={(event) => setThresholdIndex(Number(event.target.value))}
             />
+            <span className="triage-slider-scale" id={thresholdScaleId}>
+              {locale === "en" ? "Recorded threshold range" : "记录阈值范围"}: {thresholdRange[0].toFixed(3)} — {thresholdRange[1].toFixed(3)}
+            </span>
           </div>
         </div>
 
@@ -93,7 +111,7 @@ export function PolicyTerminal({ variant }: { variant: "compact" | "full" }) {
             <SampleDrawerTrigger label={locale === "en" ? "threshold" : "阈值"} value={row.threshold.toFixed(3)} threshold={row.threshold} />
             <SampleDrawerTrigger label={locale === "en" ? "escalate" : "升级率"} value={percent(row.escalatePct)} threshold={row.threshold} />
             <SampleDrawerTrigger label="macro-F1" value={`${fmtMacroF1(row.macroF1)} [${fmtMacroF1(row.ci[0])}, ${fmtMacroF1(row.ci[1])}]`} threshold={row.threshold} />
-            <SampleDrawerTrigger label={locale === "en" ? "monthly cost" : "月成本"} value={grouped(row.monthlyCostCny)} threshold={row.threshold} />
+            <SampleDrawerTrigger label={locale === "en" ? "monthly cost (USD / 1k)" : "月成本（USD / 千条）"} value={`USD ${grouped(row.monthlyCostUsd)}`} threshold={row.threshold} />
           </div>
         </div>
 
@@ -157,8 +175,8 @@ export function PolicyTerminal({ variant }: { variant: "compact" | "full" }) {
                 Registered in docs/evidence/digits-triage.md. */}
             <p className="triage-disclosure" data-disclosure lang={locale === "zh" ? "zh" : undefined}>
               {locale === "en"
-                ? "Disclosure: the escalation/cost grid is built from real offline replay of 86,972 calibration-slice complaints, not simulation (dated 2026-08-12). Misroute-cost values are the recorded USD sensitivity figures, not converted CNY. Monthly cost is a per-1,000-complaint normalized projection, not a production invoice. Per-threshold macro-F1 and its confidence interval are computed on a 200-sample curated paired set, not the full 104,443-row TEST-IID sweep. Macro-F1 near 100% escalation reflects human-credit accounting, not router quality."
-                : "口径声明：升级率与成本网格来自 86,972 条校准切片真实工单的离线回放，不是模拟结果（数据截至 2026-08-12）。误分流成本是记录中的美元敏感度数值，没有换算成人民币。月成本是按每 1,000 条投诉归一化后的推算，不是真实账单。逐阈值的宏 F1 和置信区间只算在 200 条精选配对样本上，不是全量 104,443 条 TEST-IID 的扫描结果。升级率接近 100% 时宏 F1 趋近于 1，这是把人工判定记为正确的记账口径，不代表路由器本身判别力强。"}
+                ? "Disclosure: the escalation/cost grid is built from real offline replay of 86,972 calibration-slice complaints, not simulation (dated 2026-08-12). Misroute-cost sensitivity and normalized monthly-cost projections use the recorded USD basis; no currency conversion is applied. Monthly cost is normalized per 1,000 complaints and is not a production invoice. Per-threshold macro-F1 and its confidence interval are computed on a 200-sample curated paired set, not the full 104,443-row TEST-IID sweep. Macro-F1 near 100% escalation reflects human-credit accounting, not router quality."
+                : "口径声明：升级率与成本网格来自 86,972 条校准切片真实工单的离线回放，不是模拟结果（数据截至 2026-08-12）。误分流成本敏感度和归一化月成本推算均沿用记录中的 USD 口径，不做币种换算。月成本按每 1,000 条投诉归一化，不是真实账单。逐阈值的宏 F1 和置信区间只算在 200 条精选配对样本上，不是全量 104,443 条 TEST-IID 的扫描结果。升级率接近 100% 时宏 F1 趋近于 1，这是把人工判定记为正确的记账口径，不代表路由器本身判别力强。"}
             </p>
             <LocalInference />
           </div>

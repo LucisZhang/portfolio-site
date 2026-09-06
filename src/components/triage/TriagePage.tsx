@@ -47,8 +47,6 @@ export default function TriagePage({ project }: { project: Project }) {
         title={{ en: `${project.title.en} | ${siteIdentity.name}`, zh: `${project.title.zh} | ${siteIdentity.chineseName}` }}
         description={project.summary}
       />
-      <ProjectReportContents />
-
       <section id="hero" data-project-section="hero" className="exhibit triage-hero" data-bg="paper">
         <p className="exhibit-opening-row">
           <span className="exhibit-eyebrow">COST-ACCURACY CASCADE / OFFLINE REPLAY</span>
@@ -78,6 +76,7 @@ export default function TriagePage({ project }: { project: Project }) {
       <DriftChart />
       <SourceReceipts />
 
+      <ProjectReportContents />
       <ProjectReport project={project} />
     </div>
   );

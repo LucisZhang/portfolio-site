@@ -190,14 +190,18 @@
 }
 
 .forge-console-chips {
-  display: flex;
-  flex-wrap: wrap;
+  display: inline-flex;
+  align-self: flex-start;
+  max-width: 100%;
+  overflow-x: auto;
   gap: 1px;
   background: var(--hairline);
+  scrollbar-width: thin;
 }
 
 .forge-console-chips button {
-  flex: 1 1 auto;
+  flex: 0 0 auto;
+  min-width: 8rem;
   min-height: 44px;
   border: 0;
   background: var(--paper-bright);
@@ -286,13 +290,18 @@
 }
 
 .forge-console-tabs {
-  display: flex;
+  display: inline-flex;
+  align-self: flex-start;
+  max-width: 100%;
+  overflow-x: auto;
   gap: 1px;
   background: var(--hairline);
+  scrollbar-width: thin;
 }
 
 .forge-console-tabs button {
-  flex: 1 1 auto;
+  flex: 0 0 auto;
+  min-width: 5.5rem;
   min-height: 44px;
   border: 0;
   background: var(--paper-bright);
@@ -305,8 +314,20 @@
 }
 
 .forge-console-tabs button[aria-selected="true"] {
-  background: var(--ink);
-  color: var(--paper-bright);
+  box-shadow: inset 0 -3px 0 var(--accent);
+  color: var(--ink);
+}
+
+.forge-console-chips button:focus-visible,
+.forge-console-tabs button:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.forge-console-request-panel {
+  min-width: 0;
 }
 
 .forge-console-request {

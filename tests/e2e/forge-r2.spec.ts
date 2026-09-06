@@ -68,6 +68,50 @@ test("Frontier Forge request tabs show the same request body across cURL/Python/
   await expect(instrument.locator('[data-forge-request-tab="json"]')).toContainText("complaint_narrative");
 });
 
+test("Frontier Forge run and request tabs are compact, 44px, and keyboard navigable", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "The wide-screen geometry contract only needs one browser size.");
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  await page.goto(ROUTE, { waitUntil: "networkidle" });
+  const instrument = page.locator('[data-instrument][data-instrument-variant="full"]');
+  const instrumentBox = await instrument.boundingBox();
+  const runTabs = instrument.locator(".forge-console-chips");
+  const requestTabs = instrument.locator(".forge-console-tabs");
+  const [runBox, requestBox] = await Promise.all([runTabs.boundingBox(), requestTabs.boundingBox()]);
+  expect(instrumentBox).not.toBeNull();
+  expect(runBox).not.toBeNull();
+  expect(requestBox).not.toBeNull();
+  expect(runBox!.width).toBeLessThan(instrumentBox!.width * .6);
+  expect(requestBox!.width).toBeLessThan(instrumentBox!.width * .4);
+
+  for (const tabs of [runTabs, requestTabs]) {
+    await expect(tabs).toHaveAttribute("role", "tablist");
+    const buttons = tabs.getByRole("tab");
+    for (const button of await buttons.all()) {
+      const box = await button.boundingBox();
+      expect(box).not.toBeNull();
+      expect(box!.height).toBeGreaterThanOrEqual(44);
+      await expect(button).toHaveAttribute("aria-controls", /forge-.+-panel-full/);
+    }
+    await expect(tabs.locator('[role="tab"][aria-selected="true"]')).toHaveCount(1);
+  }
+
+  const runButtons = runTabs.getByRole("tab");
+  const selectedRunIndex = await runButtons.evaluateAll((buttons) => buttons.findIndex((button) => button.getAttribute("aria-selected") === "true"));
+  const nextRunIndex = (selectedRunIndex + 1) % await runButtons.count();
+  await runTabs.locator('[role="tab"][aria-selected="true"]').focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(runButtons.nth(nextRunIndex)).toBeFocused();
+  await expect(runButtons.nth(nextRunIndex)).toHaveAttribute("aria-selected", "true");
+  await expect(instrument.locator("[data-readout]")).toHaveAttribute("aria-labelledby", await runButtons.nth(nextRunIndex).getAttribute("id") ?? "");
+
+  const requestButtons = requestTabs.getByRole("tab");
+  await requestButtons.first().focus();
+  await page.keyboard.press("End");
+  await expect(requestButtons.last()).toBeFocused();
+  await expect(requestButtons.last()).toHaveAttribute("aria-selected", "true");
+  await expect(instrument.locator(".forge-console-request-panel")).toHaveAttribute("aria-labelledby", await requestButtons.last().getAttribute("id") ?? "");
+});
+
 test("Frontier Forge renders with no JavaScript: exhibits 01-05 have static server-rendered content", async ({ browser }) => {
   // (c) with JS disabled, exhibits 01-05 must show real static tables/values,
   // not an empty shell — this is what proves the content is server-rendered

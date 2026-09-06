@@ -182,39 +182,66 @@ function PdfViewer({ source }: { source: string }) {
   );
 }
 
-function JsonNode({ value, name, depth = 0, search }: { value: unknown; name?: string; depth?: number; search: string }) {
+const LARGE_JSON_BYTES = 512 * 1024;
+const JSON_CHILD_BATCH = 100;
+
+function JsonNode({ value, name, depth = 0, search, large }: { value: unknown; name?: string; depth?: number; search: string; large: boolean }) {
   const { locale } = useI18n();
   const complex = value !== null && typeof value === "object";
   const entries = complex ? Object.entries(value as Record<string, unknown>) : [];
+  const [expanded, setExpanded] = useState(depth === 0 || (!large && depth < 2));
+  const [visibleLimit, setVisibleLimit] = useState(JSON_CHILD_BATCH);
   const matches = !search || `${name || ""} ${complex ? "" : String(value)}`.toLowerCase().includes(search.toLowerCase());
   if (!complex) return matches ? <div className="json-leaf"><span>{name}</span><code>{JSON.stringify(value)}</code></div> : null;
   const childMatches = search && JSON.stringify(value).toLowerCase().includes(search.toLowerCase());
   if (search && !childMatches && !(name || "").toLowerCase().includes(search.toLowerCase())) return null;
+  const open = expanded || Boolean(search);
+  const visibleEntries = search ? entries : entries.slice(0, visibleLimit);
   return (
-    <details className="json-node" open={depth < 2 || Boolean(search)}>
+    <details
+      className="json-node"
+      open={open}
+      onToggle={(event) => { if (!search) setExpanded(event.currentTarget.open); }}
+    >
       <summary>
         <span>{name || (locale === "en" ? "root" : "根节点")}</span>
         <small>{Array.isArray(value) ? (locale === "en" ? `${entries.length} items` : `${entries.length} 项`) : (locale === "en" ? `${entries.length} keys` : `${entries.length} 个键`)}</small>
       </summary>
-      <div>{entries.map(([key, child]) => <JsonNode key={key} name={key} value={child} depth={depth + 1} search={search} />)}</div>
+      {open ? <div>
+        {visibleEntries.map(([key, child]) => <JsonNode key={key} name={key} value={child} depth={depth + 1} search={search} large={large} />)}
+        {!search && visibleLimit < entries.length ? (
+          <button
+            type="button"
+            className="json-show-more"
+            data-json-show-more
+            onClick={() => setVisibleLimit((current) => Math.min(current + JSON_CHILD_BATCH, entries.length))}
+          >
+            {locale === "en"
+              ? `Show ${Math.min(JSON_CHILD_BATCH, entries.length - visibleLimit)} more`
+              : `再显示 ${Math.min(JSON_CHILD_BATCH, entries.length - visibleLimit)} 项`}
+          </button>
+        ) : null}
+      </div> : null}
     </details>
   );
 }
 
-function JsonViewer({ text, source }: { text: string; source: string }) {
+function JsonViewer({ text, source, bytes }: { text: string; source: string; bytes: number }) {
   const { locale } = useI18n();
   const [search, setSearch] = useState("");
   const [copied, setCopied] = useState(false);
+  const large = bytes > LARGE_JSON_BYTES;
   const parsed = useMemo(() => { try { return { value: JSON.parse(text), error: "" }; } catch (reason) { return { value: null, error: String(reason) }; } }, [text]);
   if (parsed.error) return <RawFallback text={text} message={locale === "en" ? "This JSON file is not valid." : "该 JSON 文件格式无效。"} />;
   return (
-    <div className="artifact-structured-viewer">
+    <div className="artifact-structured-viewer" data-json-large={large ? "true" : "false"}>
       <div className="artifact-filterbar">
-        <label><Search aria-hidden="true" /><span className="sr-only">{locale === "en" ? "Search keys" : "搜索键"}</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={locale === "en" ? "Search keys or values" : "搜索键或值"} /></label>
+        <label><Search aria-hidden="true" /><span className="sr-only">{locale === "en" ? "Search keys" : "搜索键"}</span><input value={search} disabled={large} onChange={(event) => setSearch(event.target.value)} placeholder={large ? (locale === "en" ? "Download to search this large JSON" : "下载后搜索此大型 JSON") : (locale === "en" ? "Search keys or values" : "搜索键或值")} /></label>
         <button type="button" onClick={() => void navigator.clipboard.writeText(text).then(() => { setCopied(true); window.setTimeout(() => setCopied(false), 1500); })}><Clipboard aria-hidden="true" />{copied ? (locale === "en" ? "Copied" : "已复制") : (locale === "en" ? "Copy JSON" : "复制 JSON")}</button>
         <a href={source} download={downloadName(source)}><Download aria-hidden="true" />{locale === "en" ? "Download" : "下载"}</a>
       </div>
-      <div className="json-tree"><JsonNode value={parsed.value} search={search} /></div>
+      {large ? <p className="artifact-json-limit-note" data-artifact-json-limit>{locale === "en" ? "Large JSON: the tree loads 100 children at a time. Download the file for full-text search." : "大型 JSON：树形视图每次加载 100 个子项；全文搜索请下载文件。"}</p> : null}
+      <div className="json-tree"><JsonNode value={parsed.value} search={search} large={large} /></div>
     </div>
   );
 }
@@ -332,21 +359,38 @@ function RawFallback({ text, message }: { text: string; message: string }) {
   return <div><p className="artifact-error" role="alert">{message}</p><ArtifactText text={text} /></div>;
 }
 
+type ArtifactLoadError = {
+  kind: "http" | "network-or-redirect";
+  message: string;
+  status?: number;
+};
+
+class ArtifactHttpError extends Error {
+  status: number;
+
+  constructor(status: number) {
+    super(`HTTP ${status}`);
+    this.name = "ArtifactHttpError";
+    this.status = status;
+  }
+}
+
 export default function ArtifactViewer({ context }: { context: ArtifactContext }) {
   const { locale } = useI18n();
   const { source, from, kind, name, project, extension } = context;
   const [text, setText] = useState("");
   const [bytes, setBytes] = useState(0);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<ArtifactLoadError | null>(null);
   const [loading, setLoading] = useState(Boolean(source));
+  const [attempt, setAttempt] = useState(0);
   const provenance = source ? artifactProvenance(source) : null;
   const homeReturn = from.startsWith("/#") || from === "/";
   useEffect(() => {
     if (!source) return;
     let active = true;
     const controller = new AbortController();
-    void fetch(source, { redirect: "error", credentials: "omit", signal: controller.signal }).then(async (response) => {
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    void fetch(source, { redirect: "error", credentials: "same-origin", signal: controller.signal }).then(async (response) => {
+      if (!response.ok) throw new ArtifactHttpError(response.status);
       const buffer = await response.arrayBuffer();
       if (!active) return;
       setBytes(buffer.byteLength);
@@ -354,10 +398,12 @@ export default function ArtifactViewer({ context }: { context: ArtifactContext }
     }).catch((reason) => {
       if (!active) return;
       console.error("Artifact file could not be opened.", reason);
-      if (active) setError(true);
+      setError(reason instanceof ArtifactHttpError
+        ? { kind: "http", status: reason.status, message: reason.message }
+        : { kind: "network-or-redirect", message: reason instanceof Error ? reason.message : String(reason) });
     }).finally(() => { if (active) setLoading(false); });
     return () => { active = false; controller.abort(); };
-  }, [kind, source]);
+  }, [attempt, kind, source]);
 
   return (
     <div className="artifact-page">
@@ -368,13 +414,32 @@ export default function ArtifactViewer({ context }: { context: ArtifactContext }
         {source ? <div className="artifact-file-meta"><span>{loading ? (locale === "en" ? "Reading file…" : "正在读取文件……") : error ? "—" : formatBytes(bytes)}</span><code>{source}</code><a href={source} download={downloadName(source)}><Download aria-hidden="true" />{locale === "en" ? "Download original" : "下载原文件"}</a></div> : null}
       </header>
       {provenance ? <section className="artifact-provenance" aria-label={locale === "en" ? "Provenance context" : "来源说明"}><strong>{locale === "en" ? "Provenance context" : "来源说明"}</strong><p>{provenance[locale]}</p></section> : null}
-      <section className="artifact-viewer-shell" aria-live="polite">
+      <section
+        className="artifact-viewer-shell"
+        aria-live="polite"
+        data-state={loading ? "loading" : error ? "error" : "ready"}
+        data-error-kind={error?.kind}
+        data-error-message={error?.message}
+        data-error-status={error?.status}
+      >
         {loading ? <div className="artifact-loading"><FileText aria-hidden="true" />{locale === "en" ? "Loading project file..." : "正在加载项目文件……"}</div> : null}
         {!source ? <div className="artifact-error" role="alert"><FileText aria-hidden="true" /><div><strong>{locale === "en" ? "No valid project file was selected." : "未选择有效的项目文件。"}</strong></div></div> : null}
-        {error ? <div className="artifact-error" role="alert"><FileText aria-hidden="true" /><div><strong>{locale === "en" ? "This file could not be opened." : "无法打开该文件。"}</strong>{locale === "en" ? <span>{error}</span> : null}</div></div> : null}
+        {error && source ? <div className="artifact-error-state">
+          <div className="artifact-error" role="alert"><FileText aria-hidden="true" /><div><strong>{locale === "en" ? "This file could not be opened." : "无法打开该文件。"}</strong></div></div>
+          <div className="artifact-error-actions">
+            <button type="button" data-artifact-retry onClick={() => {
+              setLoading(true);
+              setError(null);
+              setText("");
+              setBytes(0);
+              setAttempt((current) => current + 1);
+            }}><RotateCcw aria-hidden="true" />{locale === "en" ? "Retry preview" : "重试预览"}</button>
+            <a href={source} download={downloadName(source)} data-artifact-open-direct><Download aria-hidden="true" />{locale === "en" ? "Download directly" : "直接下载"}</a>
+          </div>
+        </div> : null}
         {!loading && !error && source && kind === "image" ? <ImageViewer source={source} name={name} /> : null}
         {!loading && !error && source && kind === "pdf" ? <PdfViewer source={source} /> : null}
-        {!loading && !error && source && kind === "json" ? <JsonViewer text={text} source={source} /> : null}
+        {!loading && !error && source && kind === "json" ? <JsonViewer text={text} source={source} bytes={bytes} /> : null}
         {!loading && !error && source && kind === "csv" ? <CsvViewer text={text} source={source} /> : null}
         {!loading && !error && source && kind === "markdown" ? <MarkdownViewer text={text} source={source} /> : null}
         {!loading && !error && source && kind === "text" ? <ArtifactText text={text} /> : null}

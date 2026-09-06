@@ -1240,12 +1240,19 @@ svg { flex: none; }
 .artifact-file-meta > a:hover { background: var(--paper-alt); }
 .artifact-file-meta svg { width: 15px; }
 .artifact-viewer-shell { min-height: 520px; margin-top: 24px; border: var(--bd); background: var(--wh); }
+.artifact-viewer-shell[data-state="error"] { min-height: 0; }
 .artifact-loading { min-height: 520px; display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--mu); font-size: 12px; }
 .artifact-loading svg { width: 19px; }
 .artifact-error { min-height: 120px; display: flex; align-items: center; justify-content: center; gap: 12px; margin: 0; border-left: 0; border-top: 2px solid var(--danger); padding: 18px; color: var(--danger); font-size: 11px; }
 .artifact-error > svg { width: 20px; }
 .artifact-error strong, .artifact-error span, .artifact-error small { display: block; }
 .artifact-error span, .artifact-error small { margin-top: 4px; color: var(--mu); }
+.artifact-error-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; border-top: var(--bl); padding: 12px 18px 18px; }
+.artifact-error-actions > button,
+.artifact-error-actions > a { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: var(--bd); background: var(--wh); padding: 0 16px; cursor: pointer; font-size: 10px; font-weight: 700; }
+.artifact-error-actions > button:hover,
+.artifact-error-actions > a:hover { background: var(--paper-alt); }
+.artifact-error-actions svg { width: 15px; }
 .artifact-context { display: flex; align-items: center; gap: 8px; margin: 12px 0 0; color: var(--mu); font-size: 10px; }
 .artifact-context svg { width: 14px; }
 
@@ -1283,6 +1290,7 @@ svg { flex: none; }
 .artifact-filterbar > button:disabled { cursor: not-allowed; opacity: .4; }
 .artifact-filterbar svg { width: 14px; }
 .artifact-filterbar > span { margin-left: auto; color: var(--mu); font-size: 9px; }
+.artifact-json-limit-note { margin: 0; border-bottom: var(--bl); padding: 10px 12px; color: var(--mu); font-size: 9px; line-height: 1.5; }
 
 .json-tree { min-height: 560px; overflow: auto; padding: 18px; font-family: var(--mono); }
 .json-node { margin-left: 16px; border-left: var(--bl); padding-left: 10px; }
@@ -1292,6 +1300,8 @@ svg { flex: none; }
 .json-leaf { min-height: 28px; display: grid; grid-template-columns: minmax(120px, .45fr) minmax(0, 1fr); align-items: start; gap: 12px; margin-left: 16px; border-left: var(--bl); padding: 6px 10px; font-size: 9px; }
 .json-leaf span { color: var(--accent); }
 .json-leaf code { overflow-wrap: anywhere; white-space: pre-wrap; }
+.json-show-more { min-height: 44px; margin: 8px 0 8px 16px; border: var(--bl); background: var(--wh); padding: 0 14px; cursor: pointer; color: var(--bu); font-family: var(--mono); font-size: 9px; }
+.json-show-more:hover { background: var(--paper-alt); }
 
 .artifact-warning { margin: 0; border-bottom: 1px solid #d9c08c; padding: 9px 12px; color: var(--am); font-size: 9px; }
 .artifact-table-scroll { min-height: 500px; overflow: auto; }

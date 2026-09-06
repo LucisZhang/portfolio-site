@@ -25,6 +25,36 @@ test("public source receipt uses the Triage Router name and a repository-relativ
   await expect(receipts).not.toContainText("/Users/");
 });
 
+test("misroute and monthly costs use the recorded USD basis with accessible ranges", async ({ page }) => {
+  await page.goto(ROUTE, { waitUntil: "networkidle" });
+  const terminal = page.locator(SEL.exhibit("01")).locator("[data-triage-terminal]");
+  const misroute = terminal.locator("[data-misroute-slider]");
+  const threshold = terminal.locator("[data-threshold-slider]");
+
+  await expect(terminal.locator("[data-misroute-value]")).toContainText(/^USD /);
+  await expect(misroute).toHaveAttribute("aria-valuetext", /USD .*recorded range USD .* to USD/);
+  await expect(threshold).toHaveAttribute("aria-valuetext", /recorded range .* to/);
+  await expect(terminal.locator(`#${await misroute.getAttribute("aria-describedby")}`)).toContainText(/^Recorded sensitivity range: USD .* — USD/);
+  await expect(terminal.locator(`#${await threshold.getAttribute("aria-describedby")}`)).toContainText(/^Recorded threshold range: .* —/);
+  await expect(terminal.locator('[data-drawer] summary').last()).toContainText("monthly cost (USD / 1k)");
+  await expect(terminal).not.toContainText(/CNY|monthlyCostCny|misrouteCostCny/);
+
+  await misroute.fill(await misroute.getAttribute("max") ?? "0");
+  await expect(misroute).toHaveAttribute("aria-valuetext", /USD 24\.00 misroute-cost sensitivity/);
+  await expect(terminal.locator("[data-misroute-value]")).toHaveText("USD 24.00");
+  await threshold.fill("0");
+  await expect(terminal.locator("[data-strategy-card]")).toContainText("USD");
+});
+
+test("Triage report contents sit immediately before the report they navigate", async ({ page }) => {
+  await page.goto(ROUTE, { waitUntil: "networkidle" });
+  const placement = await page.locator("[data-report-contents]").evaluate((nav) => ({
+    previousExhibit: nav.previousElementSibling?.getAttribute("data-exhibit"),
+    nextSection: nav.nextElementSibling?.getAttribute("data-project-section"),
+  }));
+  expect(placement).toEqual({ previousExhibit: "05", nextSection: "how" });
+});
+
 test.describe("Triage Router first screen (zero heavy assets)", () => {
   // Task W2 (Option B, user ruling): the hero's right column no longer has
   // an interactive instrument -- it is now a naked frontier figure (see the

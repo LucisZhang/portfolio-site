@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import policiesJson from "../../../public/case-studies/triage-router/policies.compact.json";
 import strategyCardsJson from "../../../public/case-studies/triage-router/strategy-cards.json";
-import { buildPolicyMatrix, cardForThreshold, fillCardTokens, nearestIndex, type PolicyRow, type StrategyCardRange } from "./policyGrid";
+import { buildPolicyMatrix, cardForThreshold, fillCardTokens, nearestIndex, normalizeStrategyCards, type PolicyRowPayload, type StrategyCardRangePayload } from "./policyGrid";
 
 // Shared frontier-curve data + chart internals for the Triage Router page.
 // Both PolicyTerminal (the interactive "market terminal", exhibit 01's full
@@ -12,8 +12,8 @@ import { buildPolicyMatrix, cardForThreshold, fillCardTokens, nearestIndex, type
 // module is the single place that reshapes the grid, derives the default
 // operating point, and does the cost/macro-F1 -> SVG-coordinate math, so
 // neither caller re-derives or forks that logic.
-export const matrix = buildPolicyMatrix((policiesJson as { grid: PolicyRow[] }).grid);
-export const cards = (strategyCardsJson as { ranges: StrategyCardRange[] }).ranges;
+export const matrix = buildPolicyMatrix((policiesJson as { grid: PolicyRowPayload[] }).grid);
+export const cards = normalizeStrategyCards((strategyCardsJson as { ranges: StrategyCardRangePayload[] }).ranges);
 
 export { cardForThreshold, fillCardTokens };
 
@@ -34,7 +34,7 @@ export const CHART_PAD = 28;
 export function useFrontierGeometry(misrouteIndex: number) {
   return useMemo(() => {
     const rows = matrix.rows[misrouteIndex];
-    const costs = rows.map((row) => row.monthlyCostCny);
+    const costs = rows.map((row) => row.monthlyCostUsd);
     const ciLows = rows.map((row) => row.ci[0]);
     const ciHighs = rows.map((row) => row.ci[1]);
     const xMin = Math.min(...costs);
@@ -47,7 +47,7 @@ export function useFrontierGeometry(misrouteIndex: number) {
     const toY = (value: number) => CHART_HEIGHT - CHART_PAD - ((value - yMin) / ySpan) * (CHART_HEIGHT - CHART_PAD * 2);
     const points = rows.map((row) => ({
       row,
-      x: toX(row.monthlyCostCny),
+      x: toX(row.monthlyCostUsd),
       y: toY(row.macroF1),
       ciTopY: toY(row.ci[1]),
       ciBottomY: toY(row.ci[0]),

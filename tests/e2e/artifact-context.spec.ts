@@ -159,8 +159,73 @@ test("redirected artifacts fail closed before contacting the redirect target", a
   await page.route(`**${rag}`, (route) => route.fulfill({ status: 302, headers: { location: "https://evil.test/payload.json" }, body: "" }));
   await page.goto(url(rag, { lang: "zh" }));
   await expect(page.locator(".artifact-error[role=alert]")).toHaveText("无法打开该文件。");
+  await expect(page.locator(".artifact-viewer-shell")).toHaveAttribute("data-state", "error");
+  await expect(page.locator(".artifact-viewer-shell")).toHaveAttribute("data-error-kind", "network-or-redirect");
+  await expect(page.locator(".artifact-viewer-shell")).toHaveAttribute("data-error-message", /fetch|redirect/i);
+  await expect(page.locator("[data-artifact-retry]")).toBeVisible();
+  await expect(page.locator("[data-artifact-open-direct]")).toHaveAttribute("href", rag);
   expect(external).toEqual([]);
   await expect(page.locator(".json-tree")).toHaveCount(0);
+});
+
+test("same-origin artifact fetch carries preview authentication cookies", async ({ page, context }) => {
+  await context.addCookies([{ url: "http://127.0.0.1:4173", name: "preview-auth", value: "present" }]);
+  let cookieHeader = "";
+  await page.route(`**${rag}`, (route) => {
+    cookieHeader = route.request().headers().cookie ?? "";
+    return route.fulfill({ contentType: "application/json", body: '{"authenticated":true}' });
+  });
+  await page.goto(url(rag));
+  await expect(page.locator(".json-tree")).toContainText("authenticated");
+  expect(cookieHeader).toContain("preview-auth=present");
+});
+
+test("artifact error is compact and retry can recover the preview", async ({ page }) => {
+  let attempts = 0;
+  await page.route(`**${rag}`, (route) => {
+    attempts += 1;
+    return attempts === 1
+      ? route.fulfill({ status: 503, contentType: "text/plain", body: "unavailable" })
+      : route.fulfill({ contentType: "application/json", body: '{"recovered":true}' });
+  });
+  await page.goto(url(rag));
+  const shell = page.locator(".artifact-viewer-shell");
+  await expect(shell).toHaveAttribute("data-error-kind", "http");
+  await expect(shell).toHaveAttribute("data-error-status", "503");
+  const errorHeight = await shell.evaluate((element) => element.getBoundingClientRect().height);
+  expect(errorHeight).toBeLessThan(260);
+  await page.locator("[data-artifact-retry]").click();
+  await expect(shell).toHaveAttribute("data-state", "ready");
+  await expect(page.locator(".json-tree")).toContainText("recovered");
+  expect(attempts).toBe(2);
+});
+
+test("large JSON mounts children in batches while small JSON remains searchable", async ({ page }) => {
+  const large = JSON.stringify({
+    items: Array.from({ length: 5000 }, (_, index) => ({ id: index, note: `entry-${index}-${"x".repeat(120)}`, nested: { retained: true } })),
+  });
+  expect(Buffer.byteLength(large)).toBeGreaterThan(512 * 1024);
+  await page.route(`**${rag}`, (route) => route.fulfill({ contentType: "application/json", body: large }));
+  await page.goto(url(rag));
+  const structured = page.locator('[data-json-large="true"]');
+  await expect(structured).toBeVisible();
+  await expect(structured.locator("input")).toBeDisabled();
+  await expect(structured.locator("[data-artifact-json-limit]")).toContainText("100 children at a time");
+  await expect(structured.locator(".json-node")).toHaveCount(2);
+  await structured.locator(".json-node").nth(1).locator("summary").click();
+  await expect(structured.locator(".json-node")).toHaveCount(102);
+  await expect(structured.locator(".json-leaf")).toHaveCount(0);
+  await structured.locator("[data-json-show-more]").click();
+  await expect(structured.locator(".json-node")).toHaveCount(202);
+
+  await page.unroute(`**${rag}`);
+  await page.route(`**${rag}`, (route) => route.fulfill({ contentType: "application/json", body: '{"alpha":"needle","beta":"haystack"}' }));
+  await page.reload();
+  const search = page.getByPlaceholder("Search keys or values");
+  await expect(search).toBeEnabled();
+  await search.fill("needle");
+  await expect(page.locator(".json-tree")).toContainText("needle");
+  await expect(page.locator(".json-tree")).not.toContainText("haystack");
 });
 
 test("artifact global search retains its keyboard shortcut without a project rail", async ({ page }) => {

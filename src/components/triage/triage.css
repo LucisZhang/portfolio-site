@@ -276,6 +276,13 @@
   color: var(--ink);
 }
 
+.triage-slider-scale {
+  margin-top: -8px;
+  color: var(--muted);
+  font-size: .6rem;
+  line-height: 1.45;
+}
+
 /* Native range input, restyled to the hairline-track / vermilion-thumb
    grammar -- no rounded pill, no drop shadow.
 

@@ -20,7 +20,7 @@ const samples = samplesJson as { configs: { key: string; samples: CuratedSample[
 // threshold -- the two Claude tiers in samples.curated.json (haiku, sonnet)
 // carry `confidence: null` because those tiers were never calibrated the
 // same way (see task-3.0-report.md). Every number below opening this
-// drawer (threshold, escalatePct, macroF1, monthlyCostCny) is therefore
+// drawer (threshold, escalatePct, macroF1, monthlyCostUsd) is therefore
 // explained against these three real Tier A samples: which of them the
 // CURRENT threshold would stop at TF-IDF, and which it would escalate.
 const tierALogreg = samples.configs.find((config) => config.key === "tier_a_logreg")?.samples ?? [];
@@ -29,7 +29,7 @@ function truncate(text: string, max: number): string {
   return text.length > max ? `${text.slice(0, max).trim()}…` : text;
 }
 
-// A single number (threshold/escalatePct/macroF1/monthlyCostCny) that,
+// A single number (threshold/escalatePct/macroF1/monthlyCostUsd) that,
 // clicked, opens a <details> drawer -- spec §6.3: "every displayed number
 // opens a drawer with 3 real samples for that config". No box, no icon:
 // the drawer is a <details>/<summary> pair (native disclosure widget, works
