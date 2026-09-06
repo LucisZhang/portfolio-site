@@ -1,5 +1,27 @@
 import { expect, test } from "@playwright/test";
 import { SEL } from "./selectors";
+import { routableProjects } from "../../src/lib/projects";
+
+test("iPhone WebKit exposes every public project repository in both locales", async ({ page }) => {
+  test.setTimeout(90_000);
+  for (const project of routableProjects.filter((candidate) => !candidate.legacy)) {
+    for (const locale of ["en", "zh"] as const) {
+      await page.goto(`/${project.track}/${project.slug}?lang=${locale}`, { waitUntil: "domcontentloaded" });
+      const entry = page.locator("[data-project-repository]");
+      await expect(entry).toHaveCount(1);
+      await expect(entry).toBeInViewport();
+      if (project.repository.status !== "public") throw new Error(`${project.slug}: expected its approved repository`);
+      const link = entry.getByRole("link");
+      await expect(link).toContainText(project.repository.label[locale]);
+      await expect(link).toHaveAttribute("href", project.repository.href);
+      await expect(link).toHaveAttribute("target", "_blank");
+      await expect(link).toHaveAttribute("rel", "noopener noreferrer");
+      const box = await link.boundingBox();
+      expect(box?.height).toBeGreaterThanOrEqual(44);
+      expect(box!.x + box!.width).toBeLessThanOrEqual(page.viewportSize()!.width);
+    }
+  }
+});
 
 // Task 1.2: the homepage's Round-1 LucisOrbit entrance mark is removed
 // (no decorative animated emblem fits the exhibition grammar). The

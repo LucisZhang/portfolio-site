@@ -48,7 +48,7 @@
     "regionalTerms": "電商 貢獻毛利 獲利分析 商業智慧 資料分析 資料管線 品類管理 零售營運"
   },
   "credit-policy-desk": {
-    "aliases": "credit risk lab lending policy simulator loan approval 信贷风控实验室 借贷策略模拟 贷款审批",
+    "aliases": "Credit Policy Desk 分数不是策略 credit risk lab lending policy simulator loan approval 信贷风控实验室 借贷策略模拟 贷款审批",
     "domains": "finance fintech banking lending credit risk analytics risk management policy governance 金融 金融科技 银行 借贷 信贷 风险分析 风险管理 策略治理",
     "capabilities": "Lending Club credit score probability of default expected loss approval review decline threshold queue capacity calibration Brier drift PSI vintage backtest challenger swap set audit 评分 违约概率 预期损失 批准 复核 拒绝 阈值 队列容量 校准 漂移 批次 回测 挑战模型 换入换出 审计",
     "useCases": "turn model scores into lending policy test approval thresholds manage review capacity monitor credit drift record a policy decision 将模型评分转成信贷策略 测试审批阈值 管理复核容量 监控信贷漂移 记录策略决策",

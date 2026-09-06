@@ -1,10 +1,11 @@
-import { Fragment, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import {
   projectReference,
   type AssistantAnswerBlock,
   type AssistantAnswerSegment,
 } from "@/lib/assistant-project-references";
 import styles from "./AssistantWidget.module.css";
+import ProjectMentionText from "./ProjectMentionText";
 
 function Segment({ segment, locale }: { segment: AssistantAnswerSegment; locale: "en" | "zh" }) {
   let content: ReactNode;
@@ -13,7 +14,7 @@ function Segment({ segment, locale }: { segment: AssistantAnswerSegment; locale:
     if (!reference) return null;
     content = <a href={reference.href}>{reference.label}</a>;
   } else {
-    content = <Fragment>{segment.text}</Fragment>;
+    content = <ProjectMentionText text={segment.text} locale={locale} />;
   }
   return segment.strong ? <strong>{content}</strong> : content;
 }

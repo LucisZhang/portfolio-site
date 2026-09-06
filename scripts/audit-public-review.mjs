@@ -163,6 +163,9 @@ async function discoverSite(browser) {
         mailLinks.add(link.href);
         continue;
       }
+      // Telephone links are valid browser actions, but they are not HTTP
+      // resources and cannot be probed with APIRequestContext.
+      if (link.href.startsWith("tel:")) continue;
       const resolved = new URL(link.href, page.url());
       if (resolved.origin !== baseUrl.origin) {
         externalLinks.add(resolved.href);
@@ -176,7 +179,8 @@ async function discoverSite(browser) {
       }
       if (isArtifact(resolved.href)) {
         artifacts.add(resolved.href);
-        if (route !== "/artifact" && link.download === null && path.extname(resolved.pathname).toLowerCase() !== ".parquet") linkedArtifacts.add(resolved.href);
+        const isIntentionalDirectFile = path.extname(resolved.pathname).toLowerCase() === ".parquet";
+        if (route !== "/artifact" && link.download === null && !isIntentionalDirectFile) linkedArtifacts.add(resolved.href);
         continue;
       }
       const pathname = stablePathname(resolved.href);
@@ -207,40 +211,57 @@ async function runInteraction(page, route, locale, viewport, pdfFixture, report)
   const screenshot = (state) => capture(page, locale, viewport, route, state, report);
   try {
     if (route === "/engineering/exactly-once-drills") {
-      const replay = page.getByTestId("p1-failure-replay");
-      await replay.waitFor({ state: "visible" });
-      await replay.locator('input[type="range"]').fill("4");
+      const replay = page.locator('[data-log-entry][data-drill-id="ordering-miskey"]');
+      await page.emulateMedia({ reducedMotion: "no-preference" });
+      await replay.locator("summary").click();
+      await page.locator('[data-log-entry][data-drill-id="ordering-miskey"][data-replay-state="done"]')
+        .waitFor({ state: "attached", timeout: 20_000 });
+      if (await replay.locator('[data-pending="true"]').count()) {
+        throw new Error("Exactly-Once replay completed with pending transcript lines.");
+      }
       await screenshot("failure-recovery");
     } else if (route === "/ai/release-guardian") {
-      const replay = page.getByTestId("release-change-replay");
-      await replay.waitFor({ state: "visible" });
-      await replay.getByRole("tab").nth(1).click();
-      await replay.locator('input[type="range"]').fill("7");
-      await replay.locator(".release-approval-gate button").first().click();
+      const gate = page.locator('#gate[data-enhanced="true"]');
+      await gate.waitFor({ state: "visible" });
+      await gate.locator('[data-guardian-decide="block"]').click();
+      await gate.locator('[data-branch="block"][data-chosen="true"]').waitFor({ state: "visible" });
+      await gate.locator('[data-branch="approve"][data-ghost="true"]').waitFor({ state: "visible" });
       await screenshot("approval-audit");
     } else if (route === "/ai/rag-quality-lab") {
-      const lab = page.getByTestId("rag-drift-lab");
+      const lab = page.getByTestId("rag-diff-instrument");
       await lab.waitFor({ state: "visible" });
-      await lab.locator(".rag-scenario-bar button").nth(2).click();
-      await screenshot("contract-drift");
+      const baselineLines = await lab.getByTestId("rag-pane-baseline").locator(".rag-dtx").allTextContents();
+      await lab.getByTestId("rag-working-copy-editor").fill(baselineLines.map((line) => line === "\u00a0" ? "" : line).join("\n"));
+      await lab.locator('[data-testid="rag-verdict-word"][data-verdict="TIE"]').waitFor({ state: "visible" });
+      await screenshot("working-copy-tie");
     } else if (route === "/analytics/margin-control-tower") {
       const lab = page.getByTestId("margin-control-tower");
       await lab.waitFor({ state: "visible" });
-      await lab.locator('input[type="range"]').fill("8");
-      await lab.locator(".margin-week-bars button").last().click();
-      await screenshot("scenario");
+      await page.locator('[data-evidence="margin"] > details > summary').click();
+      const verify = page.locator(".margin-verify");
+      await verify.getByRole("button").click();
+      await page.locator('.margin-verify[data-verify-status="verified"]')
+        .waitFor({ state: "visible", timeout: 60_000 });
+      await verify.locator("code").waitFor({ state: "visible" });
+      await screenshot("receipt-verified");
     } else if (route === "/analytics/credit-policy-desk") {
       const lab = page.getByTestId("credit-policy-desk");
       await lab.waitFor({ state: "visible" });
-      const ranges = lab.locator('input[type="range"]');
-      await ranges.last().fill("360");
-      const record = lab.locator(".credit-publish-policy");
-      if (await record.isEnabled()) await record.click();
-      await screenshot("policy-decision");
+      await page.locator('[data-evidence="credit"] > details > summary').click();
+      const verify = page.locator(".credit-verify");
+      await verify.getByRole("button").click();
+      await page.locator('.credit-verify[data-verify-status="verified"]')
+        .waitFor({ state: "visible", timeout: 60_000 });
+      await verify.locator("code").waitFor({ state: "visible" });
+      await screenshot("receipt-verified");
     } else if (route === "/ai/privacy-preflight") {
       const lab = page.getByTestId("privacy-preflight-lab");
       await lab.waitFor({ state: "visible" });
-      await lab.getByRole("button", { name: locale === "en" ? "Load synthetic example" : "载入合成示例" }).click();
+      await lab.getByTestId("privacy-galley-doc").locator(".doc-strike").first().click();
+      await lab.locator('[data-testid="privacy-verdict"].fail').waitFor({ state: "visible" });
+      if (!(await lab.getByTestId("privacy-safe-output").textContent())?.includes("ada@example.com")) {
+        throw new Error("Privacy fail-closed review did not restore the kept source value.");
+      }
       await screenshot("text-review");
 
       if (viewport === "desktop" && locale === "en") {
@@ -248,6 +269,7 @@ async function runInteraction(page, route, locale, viewport, pdfFixture, report)
         await lab.locator('input[type="file"]').setInputFiles(imageFixture);
         const canvas = lab.locator(".privacy-canvas-wrap canvas");
         await canvas.waitFor({ state: "visible" });
+        await canvas.scrollIntoViewIfNeeded();
         const bounds = await canvas.boundingBox();
         if (bounds) {
           await page.mouse.move(bounds.x + bounds.width * 0.12, bounds.y + bounds.height * 0.18);
@@ -255,6 +277,7 @@ async function runInteraction(page, route, locale, viewport, pdfFixture, report)
           await page.mouse.move(bounds.x + bounds.width * 0.66, bounds.y + bounds.height * 0.4, { steps: 5 });
           await page.mouse.up();
         }
+        await lab.locator(".privacy-box-list article").first().waitFor({ state: "visible" });
         await lab.getByRole("button", { name: "Confirm review and show result" }).click();
         const imageOutput = lab.getByTestId("privacy-image-output");
         await imageOutput.waitFor({ state: "visible" });

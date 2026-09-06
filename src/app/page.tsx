@@ -1,3 +1,4 @@
+import { EvidenceScope } from "@/components/exhibition/EvidenceScope.server";
 import { ExhibitShell } from "@/components/exhibition/ExhibitShell";
 import { homeRail } from "@/components/home/homeRail";
 import HomeRailTools from "@/components/home/HomeRailTools";
@@ -20,7 +21,9 @@ export default async function Home({
     // no right-column content to fill the freed width): stays on
     // ExhibitShell's default `mode="fixed"`, exempt from auto-rail v3.
     <ExhibitShell rail={homeRail} railTools={<HomeRailTools />}>
-      <HomePage heroVariant={heroVariant(params.hero)} />
+      <EvidenceScope project="home">
+        <HomePage heroVariant={heroVariant(params.hero)} />
+      </EvidenceScope>
     </ExhibitShell>
   );
 }

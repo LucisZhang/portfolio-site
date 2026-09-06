@@ -19,6 +19,7 @@ import { eodReceiptsData, formattedEndToEndSeconds, formattedThroughput } from "
 import { loadGsap, type GsapModule } from "./gsapLoader";
 import { buildReplaySegments } from "./replayTimeWarp";
 import { useReducedMotion } from "./useReducedMotion";
+import { zhGroup, zhWrapDisplay } from "@/lib/zh-wrap";
 
 // Task F9: rebuild the Exactly-Once Drills first screen to the
 // user-approved concept A, "值班日志 / Duty Logbook" — retiring the fault
@@ -227,24 +228,24 @@ export function EodLog({ glossZh }: { glossZh: string }) {
 
   return (
     <section id="exhibit-01" data-project-section="hero" data-exhibit="01" data-bg="paper" className="exhibit eod-log-section" aria-labelledby="project-title">
-      <div className="eod-topstrip" data-eod-topstrip>
-        <span className="eod-topstrip-crumb"><b>ENGINEERING</b>&ensp;/&ensp;EXACTLY-ONCE DRILLS</span>
-        <span className="eod-topstrip-meta" data-eod-topstrip-meta>{locale === "en"
+      <p className="exhibit-opening-row">
+        <span className="exhibit-number" aria-hidden="true">01</span>
+        <span className="exhibit-eyebrow" data-eod-duty-meta>{locale === "en"
           ? `DUTY LOG · ${HEADER_DATE} · PHASE ${phaseRange()} · LOCAL LAB`
           : `值班日志 · DUTY LOG · ${HEADER_DATE} · 阶段 ${phaseRange()} · 本地实验室`}</span>
-      </div>
+      </p>
 
       <h1 id="project-title" className="exhibit-title eod-log-title">
         {locale === "en" ? (
           <>Ten failure classes hit the same pipeline. <em>Snapshot diff never leaves zero.</em></>
         ) : (
-          <>十类故障打进同一条流水线，<em>快照差异始终为零。</em></>
+          zhWrapDisplay(<>{zhGroup("十类故障打进", "同一条流水线，")}<em>{zhGroup("快照差异", "始终为零。")}</em></>)
         )}
       </h1>
       {/* Locale purity (task F5): zh-only gloss line, matching the same
           pattern every other exhibit hero uses (ForgePage/TriagePage/
           PrivacyPage) — must not render in en locale. */}
-      {locale === "zh" ? <p className="cn-gloss" lang="zh">{glossZh}</p> : null}
+      {locale === "zh" ? <p className="cn-gloss" lang="zh">{zhWrapDisplay(glossZh)}</p> : null}
       <p className="exhibit-intro eod-log-dek">
         {locale === "en"
           ? "A dual-path pipeline: MySQL through Kafka and Flink into Iceberg. Every line below is copied from the real run recorded on 2026-08-20 — it is a log, not a diagram. Open any entry to replay that recovery."

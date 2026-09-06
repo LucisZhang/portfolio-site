@@ -1,6 +1,8 @@
+import { EvidenceScope } from "@/components/exhibition/EvidenceScope.server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ExhibitShell } from "@/components/exhibition/ExhibitShell";
+import ProjectRepositoryEntry from "@/components/exhibition/ProjectRepositoryEntry";
 import ProjectRailTools from "@/components/exhibition/ProjectRailTools";
 import TriagePage from "@/components/triage/TriagePage";
 import { triageRail } from "@/components/triage/triageRail";
@@ -28,8 +30,10 @@ export default function TriageRouterRoute() {
     // Task W3 (RAIL-SCOPE.md verdict "尚可" -- auto-rail v3 adopted with the
     // hero-grid max-width cap in triage.css to keep the composition
     // steady across the retracted/pushed content-width swing.
-    <ExhibitShell rail={triageRail} railTools={<ProjectRailTools />} mode="auto">
-      <TriagePage project={project} />
+    <ExhibitShell repositoryEntry={<ProjectRepositoryEntry project={project} />} rail={triageRail} railTools={<ProjectRailTools />} mode="auto">
+      <EvidenceScope project="triage">
+        <TriagePage project={project} />
+      </EvidenceScope>
     </ExhibitShell>
   );
 }

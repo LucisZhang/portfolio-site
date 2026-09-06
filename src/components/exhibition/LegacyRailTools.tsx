@@ -5,6 +5,8 @@ import FooterContactLink from "@/components/FooterContactLink";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import LocaleLink from "@/components/LocaleLink";
 import { featuredProjects, tracks } from "@/lib/projects";
+import { LocalizedText } from "@/lib/i18n";
+import { navigationCopy } from "@/lib/navigation";
 
 // Re-homes the interactive utilities that used to live in the deleted
 // site-header (brand-mark home link, command palette / search trigger,
@@ -16,7 +18,7 @@ import { featuredProjects, tracks } from "@/lib/projects";
 export default function LegacyRailTools() {
   return (
     <>
-      <LocaleLink href="/" className="rail-home-link">Home</LocaleLink>
+      <LocaleLink href="/" className="rail-home-link"><LocalizedText text={navigationCopy.home} /></LocaleLink>
       <CommandPaletteLauncher tracks={tracks} projects={featuredProjects} />
       <LanguageSwitcher />
       <FooterContactLink />

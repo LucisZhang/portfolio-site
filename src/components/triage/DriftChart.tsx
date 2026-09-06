@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { useI18n } from "@/lib/i18n";
-import { zhWrapNode } from "@/lib/zh-wrap";
+import ScrollRegion from "@/components/ScrollRegion";
+import { zhWrapDisplay } from "@/lib/zh-wrap";
 import driftJson from "../../../public/case-studies/triage-router/drift.compact.json";
 import { macroF1 as fmtMacroF1 } from "./triageFormat";
 
@@ -73,7 +74,7 @@ export function DriftChart() {
         {locale === "en" ? (
           <>The model<br /><em>aged out.</em></>
         ) : (
-          zhWrapNode(<>模型，<em>在时间里过期了。</em></>)
+          zhWrapDisplay(<>模型，<br /><em>在时间里过期了。</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -136,7 +137,7 @@ export function DriftChart() {
             number. Task F1: wrapped in the shared triage-table-scroll
             pattern (see KnownFailures.tsx) -- 5 measured periods + CI
             subranges per cell overflow 390px without it. */}
-        <div className="triage-table-scroll">
+        <ScrollRegion className="triage-table-scroll" label={{ en: "Drift over time table", zh: "漂移趋势表" }}>
           <table className="triage-drift-table" data-drift-table>
             <thead>
               <tr>
@@ -164,7 +165,7 @@ export function DriftChart() {
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollRegion>
         {drift.meta.note ? (
           <p className="triage-drift-source-note">
             {locale === "en"

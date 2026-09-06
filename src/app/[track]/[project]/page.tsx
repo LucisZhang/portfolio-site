@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ExhibitShell } from "@/components/exhibition/ExhibitShell";
+import ProjectRepositoryEntry from "@/components/exhibition/ProjectRepositoryEntry";
 import LegacyRailTools from "@/components/exhibition/LegacyRailTools";
 import { legacyRail } from "@/components/exhibition/legacyRail";
 import ProjectPageView from "@/components/ProjectPageView";
@@ -103,7 +104,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ track:
   if (!project || STANDALONE_ROUTE_SLUGS.has(project.slug)) notFound();
 
   return (
-    <ExhibitShell rail={legacyRail} railTools={<LegacyRailTools />}>
+    <ExhibitShell repositoryEntry={<ProjectRepositoryEntry project={project} />} rail={legacyRail} railTools={<LegacyRailTools />}>
       <ProjectPageView project={project} />
     </ExhibitShell>
   );

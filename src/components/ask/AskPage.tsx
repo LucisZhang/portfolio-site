@@ -1,35 +1,40 @@
 "use client";
 
-import { type FormEvent, Fragment, useId, useState } from "react";
+import { EvidenceDisclosure } from "@/components/exhibition/EvidenceDisclosure";
+import { EvidenceFileLink } from "@/components/exhibition/EvidenceFileLink";
+import { type FormEvent, useId, useState } from "react";
 import { usePathname } from "next/navigation";
 import AssistantRichAnswer from "@/components/assistant/AssistantRichAnswer";
 import AssistantSourcesIndex from "@/components/assistant/AssistantSourcesIndex";
 import { Exhibit } from "@/components/exhibition/Exhibit";
-import { Finding } from "@/components/exhibition/Finding";
+import { ProjectReportContents, ProjectReportSection, ProjectReportFindings } from "@/components/report/ProjectReport";
 import LocaleDocumentMetadata from "@/components/LocaleDocumentMetadata";
-import LocaleLink from "@/components/LocaleLink";
 import { getRouteQuestions } from "@/lib/ask-question-bank";
 import { prefetchPresetAnswers } from "@/lib/ask-preset-answers";
 import type { AssistantCitation } from "@/lib/assistant-policy";
-import { localize, useI18n } from "@/lib/i18n";
-import { zhWrapText } from "@/lib/zh-wrap";
-import { getProject, type Project } from "@/lib/projects";
+import { useI18n } from "@/lib/i18n";
+import ProjectMentionText from "@/components/assistant/ProjectMentionText";
+import EvidenceMarker from "@/components/assistant/EvidenceMarker";
+import { zhWrapDisplay, zhWrapText } from "@/lib/zh-wrap";
+import type { Project } from "@/lib/projects";
+import { assistantProjectActions } from "@/lib/assistant-project-references";
 import { siteIdentity } from "@/lib/site-config";
 import { useAssistantConversation } from "@/lib/use-assistant-conversation";
 import recordedExample from "@/data/generated/ask-recorded-example.json";
 import "./ask.css";
 
-const MAX_INPUT_CHARACTERS = 2_500;
-
-// Task L5 [CLAUDE]: three real, already-cited project routes offered as the
-// honest static fallback (spec §6.7: "failure -> honest static route
-// suggestions, never fabricated answers") when a live question fails --
-// picked from the existing catalog rather than invented, one per track.
-const FALLBACK_ROUTES: Array<{ track: string; slug: string }> = [
-  { track: "ai", slug: "frontier-forge" },
-  { track: "engineering", slug: "crossover-study" },
-  { track: "analytics", slug: "credit-policy-desk" },
+const askBoundaries = [
+  {
+    "en": "Retrieval is keyword-ranked, not embeddings-based — it can miss a paraphrased question that doesn't share the source's wording.",
+    "zh": "检索是关键词排序，不是向量检索——如果提问的措辞和源文档差异较大，可能检索不到。"
+  },
+  {
+    "en": "The assistant only cites this site's own repositories and one verified private profile; it does not browse the web or verify claims about anyone else.",
+    "zh": "助手只引用本站自身的仓库和一份已核验的私有材料；不会联网搜索，也不核实与他人相关的说法。"
+  }
 ];
+
+const MAX_INPUT_CHARACTERS = 2_500;
 
 const copy = {
   en: {
@@ -57,21 +62,19 @@ const copy = {
     fallbackBody: "When a live answer fails or the rate limit is reached, the conversation says so directly instead of improvising — try again, or open one of these instead:",
     rateLimitIdle: "Rate limit is shown here once you ask — nothing is sent to the model until you do.",
     eyebrow02: "HOW IT ANSWERS",
-    title02: "Retrieval first. Generation only on top of it.",
+    title02: "Guard first. Grounded generation after retrieval.",
     how1Title: "Retrieval",
     how1Body: "A keyword-ranked (BM25-style) search over a knowledge snapshot built at build time from this repository, pinned to one commit, plus a separate verified private candidate profile. No embeddings, no vector database — the same source anyone can open on GitHub.",
     how2Title: "Guard",
-    how2Body: "A separate guard model classifies the question before any answer model runs. Off-topic, prompt-injection, and sensitive-input questions are refused locally — nothing reaches the answer model at all. Two real refusals, verbatim:",
+    how2Body: "A local policy screen first stops obvious off-topic, sensitive, or prompt-injection requests without sending them to a model. Questions that pass it go to a dedicated external AI guard for scope classification. Only an allowed question reaches retrieval and the answer model. Two policy refusals, verbatim:",
     how3Title: "Citation contract",
     how3Body: "Every sentence the model returns is checked against the retrieved chunks before it is shown. Public sources link straight to the pinned GitHub line range; the private profile is cited by label only, never by raw text. An answer that fails this check is not displayed.",
-    refusal1Kind: "OFF-TOPIC · REFUSED LOCALLY",
-    refusal2Kind: "PROMPT INJECTION · REFUSED LOCALLY",
-    refusalMeta: "recorded verbatim — no model reached",
+    refusal1Kind: "OFF-TOPIC · POLICY STOP",
+    refusal2Kind: "PROMPT INJECTION · POLICY STOP",
+    refusalMeta: "verbatim response · no retrieval or answer-model call",
     eyebrow03: "SOURCE / REPORT",
     title03a: "Every citation opens",
     title03b: "the exact commit.",
-    architectureTitle: "Architecture",
-    limitationsTitle: "Limitations",
   },
   zh: {
     eyebrow01: "对话仪器",
@@ -98,21 +101,19 @@ const copy = {
     fallbackBody: "当一次实时回答失败，或触发限流时，对话会直接说明，而不是编造答案——可以重试，或直接打开下面几个页面：",
     rateLimitIdle: "限流状态会在你提问之后显示；在此之前不会向模型发送任何内容。",
     eyebrow02: "如何作答",
-    title02: "先检索，再生成。",
+    title02: "先审查，再检索与生成。",
     how1Title: "检索",
     how1Body: "对构建时从本仓库生成、并锁定到某一次提交的知识快照做关键词排序检索（BM25 风格），另外接入一份已核验的私有候选人材料。没有向量库，用的就是任何人都能在 GitHub 上打开的同一份源码。",
     how2Title: "审查",
-    how2Body: "在任何回答模型运行之前，先有一个独立的审查模型对问题分类。偏离主题、提示词注入与敏感信息类问题会在本地被直接拒答——完全不会进入回答模型。以下是两个真实的原文拒答示例：",
+    how2Body: "本地策略筛查先拦下明显偏题、敏感信息和提示词注入，不把这些问题发送给任何模型。通过筛查的问题再交给独立的外部 AI 审查模型做范围分类；只有获准的问题才会进入检索和回答模型。以下是两条逐字返回的策略拒答：",
     how3Title: "引用契约",
     how3Body: "模型返回的每一句话在展示前都会对照检索到的片段核对。公开来源直接链接到锁定的 GitHub 行号区间；私有材料只标注来源标签，不展示原文。任何未通过核对的回答都不会展示。",
-    refusal1Kind: "偏离主题 · 本地拒答",
-    refusal2Kind: "提示词注入 · 本地拒答",
-    refusalMeta: "逐字记录——未调用任何模型",
+    refusal1Kind: "偏离主题 · 策略终止",
+    refusal2Kind: "提示词注入 · 策略终止",
+    refusalMeta: "逐字返回 · 未进入检索或回答模型",
     eyebrow03: "来源 / 报告",
     title03a: "每条引用，",
     title03b: "都能打开同一次提交。",
-    architectureTitle: "架构",
-    limitationsTitle: "局限",
   },
 } as const;
 
@@ -128,6 +129,24 @@ const guardExamples = {
 } as const;
 
 const askQuestionBankRoute = "/ai/ask-portfolio";
+
+function GuardRefusals({ locale, compact = false }: { locale: "en" | "zh"; compact?: boolean }) {
+  const labels = copy[locale];
+  return (
+    <div className={compact ? "ask-refusals ask-refusals-compact" : "ask-refusals"}>
+      {([
+        { kind: labels.refusal1Kind, number: "R1", text: guardExamples.off_topic[locale] },
+        { kind: labels.refusal2Kind, number: "R2", text: guardExamples.injection[locale] },
+      ] as const).map((refusal) => (
+        <div className="ask-refusal ask-guard-example" key={refusal.number}>
+          <p className="ask-refusal-kind"><span>{refusal.number}</span>{refusal.kind}</p>
+          <p className="ask-refusal-text">{locale === "zh" ? zhWrapText(refusal.text) : refusal.text}</p>
+          <p className="ask-refusal-meta">{labels.refusalMeta}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 // zh word order puts the noun before the count ("本分钟内还可提问 N 次"), unlike
 // en's "N requests left this minute" -- built as one localized sentence per
@@ -171,7 +190,6 @@ export default function AskPage({ project }: { project: Project }) {
         title={{ en: `${project.title.en} | ${siteIdentity.name}`, zh: `${project.title.zh} | ${siteIdentity.chineseName}` }}
         description={project.summary}
       />
-
       <Exhibit
         id="exhibit-01"
         num="01"
@@ -180,7 +198,7 @@ export default function AskPage({ project }: { project: Project }) {
         title={<>{labels.title01a} <span className="ask-accent">{labels.title01b}</span></>}
         intro={labels.lede01}
       >
-        {locale === "zh" ? <p className="cn-gloss" lang="zh">{project.glossZh}</p> : null}
+        {locale === "zh" ? <p className="cn-gloss" lang="zh">{zhWrapDisplay(project.glossZh)}</p> : null}
         <div className="ask-convo">
           <div className="ask-script">
             <div className="ask-turn ask-turn-you">
@@ -191,7 +209,7 @@ export default function AskPage({ project }: { project: Project }) {
             <div className="ask-turn ask-turn-folio">
               <span className="ask-who">{labels.recordedPortfolio}<small>{labels.recordedAnsweredLabel}</small></span>
               <div className="ask-say">
-                <p><em>{locale === "en" ? recordedExample.answer.en : recordedExample.answer.zh}</em><sup>1</sup></p>
+                <p><em><ProjectMentionText text={recordedExample.answer[locale]} locale={locale} /></em><EvidenceMarker refNumber={1} locale={locale} /></p>
                 <AssistantSourcesIndex
                   citations={[recordedExample.citation as AssistantCitation]}
                   locale={locale}
@@ -216,15 +234,14 @@ export default function AskPage({ project }: { project: Project }) {
                         preset (预置回答), never as retrieval output, with
                         superscripts into the B5-c navigation index below. */}
                     {message.presetSegments ? (
-                      <p>
-                        {message.presetSegments.map((segment, index) => (
-                          <Fragment key={segment.ref}>
-                            {index > 0 ? " " : null}
-                            <em>{locale === "zh" ? zhWrapText(segment.text) : segment.text}</em>
-                            <sup>{segment.ref}</sup>
-                          </Fragment>
+                      <div className="ask-preset-answer">
+                        {message.presetSegments.map((segment) => (
+                          <p className="ask-preset-segment" key={segment.ref}>
+                            <em><ProjectMentionText text={segment.text} locale={locale} /></em>
+                            <EvidenceMarker refNumber={segment.ref} locale={locale} />
+                          </p>
                         ))}
-                      </p>
+                      </div>
                     ) : message.blocks ? <AssistantRichAnswer blocks={message.blocks} locale={locale} /> : <p>{message.content}</p>}
                     {message.sources?.length ? (
                       <AssistantSourcesIndex citations={message.sources} locale={locale} />
@@ -237,15 +254,9 @@ export default function AskPage({ project }: { project: Project }) {
                         <p className="ask-fallback-title">{labels.fallbackTitle}</p>
                         <p>{labels.fallbackBody}</p>
                         <ul>
-                          {FALLBACK_ROUTES.map(({ track, slug }) => {
-                            const fallbackProject = getProject(track, slug);
-                            if (!fallbackProject) return null;
-                            return (
-                              <li key={slug}>
-                                <LocaleLink href={`/${track}/${slug}`}>{localize(fallbackProject.title, locale)}</LocaleLink>
-                              </li>
-                            );
-                          })}
+                          {assistantProjectActions(message.question ?? "", locale).map((reference) => (
+                            <li key={reference.id}><a href={reference.href}>{reference.label}</a></li>
+                          ))}
                         </ul>
                       </div>
                     ) : null}
@@ -310,29 +321,13 @@ export default function AskPage({ project }: { project: Project }) {
       <Exhibit id="exhibit-02" num="02" eyebrow={labels.eyebrow02} bg="paper-alt" title={labels.title02}>
         <div className="ask-how">
           <div className="ask-how-block">
-            <h3>{labels.how1Title}</h3>
-            <p>{labels.how1Body}</p>
-          </div>
-          <div className="ask-how-block">
             <h3>{labels.how2Title}</h3>
             <p>{labels.how2Body}</p>
-            {/* Task R9c (B5-a): the two recorded refusals are verbatim data, not
-                quotations to admire — re-set as ledger rows (mono record label,
-                roman serif text between hairlines) per
-                output/r3-align/mocks/b5-a-guard-refusals.html. No bar-quote
-                grammar, no italics; the refusal texts themselves are unchanged. */}
-            <div className="ask-refusals">
-              {([
-                { kind: labels.refusal1Kind, number: "R1", text: guardExamples.off_topic[locale] },
-                { kind: labels.refusal2Kind, number: "R2", text: guardExamples.injection[locale] },
-              ] as const).map((refusal) => (
-                <div className="ask-refusal" key={refusal.number}>
-                  <p className="ask-refusal-kind"><span>{refusal.number}</span>{refusal.kind}</p>
-                  <p className="ask-refusal-text">{locale === "zh" ? zhWrapText(refusal.text) : refusal.text}</p>
-                  <p className="ask-refusal-meta">{labels.refusalMeta}</p>
-                </div>
-              ))}
-            </div>
+            <GuardRefusals locale={locale} compact />
+          </div>
+          <div className="ask-how-block">
+            <h3>{labels.how1Title}</h3>
+            <p>{labels.how1Body}</p>
           </div>
           <div className="ask-how-block">
             <h3>{labels.how3Title}</h3>
@@ -343,49 +338,48 @@ export default function AskPage({ project }: { project: Project }) {
 
       <Exhibit id="exhibit-03" num="03" eyebrow={labels.eyebrow03} bg="ink" title={<>{labels.title03a}<br />{labels.title03b}</>}>
         <div className="ask-source">
+          <EvidenceDisclosure project="ask">
           <dl className="ask-receipts">
             <div>
-              <dt><code>src/lib/assistant-retrieval.ts</code></dt>
+              <dt><EvidenceFileLink source="src/lib/assistant-retrieval.ts" /></dt>
               <dd>{locale === "en" ? "Retrieval + citation ranking, no model call" : "检索与引用排序，未调用模型"}</dd>
             </div>
             <div>
-              <dt><code>src/data/assistant-knowledge.generated.json</code></dt>
-              <dd>{locale === "en" ? "Public knowledge snapshot, pinned to one commit" : "公开知识快照，锁定到某一次提交"}</dd>
+              <dt><EvidenceFileLink source="src/data/assistant-knowledge.generated.json" /></dt>
+              <dd>{locale === "en" ? "Knowledge snapshot built from pinned public sources" : "由锁定版本的公开来源构建的知识快照"}</dd>
             </div>
             <div>
-              <dt><code>scripts/generate-ask-recorded-example.mjs</code></dt>
+              <dt><EvidenceFileLink source="scripts/generate-ask-recorded-example.mjs" /></dt>
               <dd>{locale === "en" ? "Regenerates the recorded exchange above" : "重新生成上方的已记录对话"}</dd>
             </div>
             <div>
-              <dt><code>scripts/generate-ask-question-bank.mjs</code></dt>
+              <dt><EvidenceFileLink source="scripts/generate-ask-question-bank.mjs" /></dt>
               <dd>{locale === "en" ? "Builds the preset answers and checks every number in them against its committed source" : "生成预置回答，并逐个数字对照已提交的来源核验"}</dd>
             </div>
           </dl>
-
-          <div className="ask-report">
-            <h3>{labels.architectureTitle}</h3>
-            <ol className="ask-architecture">
-              <li>{locale === "en" ? "Retrieve: rank knowledge chunks against the question." : "检索：对问题排序检索知识片段。"}</li>
-              <li>{locale === "en" ? "Guard: classify scope before any generation." : "审查：在生成之前先做范围分类。"}</li>
-              <li>{locale === "en" ? "Generate: answer only from the retrieved chunks." : "生成：只基于检索到的片段作答。"}</li>
-              <li>{locale === "en" ? "Verify: reject any sentence the citations do not support." : "核对：拒绝任何引用支撑不了的句子。"}</li>
-              <li>{locale === "en" ? "Rate-limit: cap requests per visitor, disclosed above." : "限流：按访客限制请求数，状态展示在上方。"}</li>
-            </ol>
-
-            <h3>{labels.limitationsTitle}</h3>
-            <Finding kind="limitation">
-              {locale === "en"
-                ? "Retrieval is keyword-ranked, not embeddings-based — it can miss a paraphrased question that doesn't share the source's wording."
-                : "检索是关键词排序，不是向量检索——如果提问的措辞和源文档差异较大，可能检索不到。"}
-            </Finding>
-            <Finding kind="limitation">
-              {locale === "en"
-                ? "The assistant only cites this site's own repositories and one verified private profile; it does not browse the web or verify claims about anyone else."
-                : "助手只引用本站自身的仓库和一份已核验的私有材料；不会联网搜索，也不核实与他人相关的说法。"}
-            </Finding>
-          </div>
+          </EvidenceDisclosure>
         </div>
       </Exhibit>
+      <ProjectReportContents />
+      <ProjectReportSection concept="architecture">
+        <ol className="ask-architecture">
+          <li>{locale === "en" ? "Screen and guard: stop obvious policy violations locally, then use an external AI model to classify the remaining questions before retrieval or generation." : "筛查与审查：先在本地拦下明显违反策略的问题，再由外部 AI 模型分类其余问题，决定是否进入检索与生成。"}</li>
+          <li>{locale === "en" ? "Retrieve: only accepted questions enter ranked knowledge retrieval." : "检索：只有审查通过的问题才进入知识片段排序检索。"}</li>
+          <li>{locale === "en" ? "Generate: answer only from the retrieved chunks." : "生成：只基于检索到的片段作答。"}</li>
+          <li>{locale === "en" ? "Verify: reject any sentence the citations do not support." : "核对：拒绝任何引用支撑不了的句子。"}</li>
+          <li>{locale === "en" ? "Rate-limit: cap requests per visitor, disclosed above." : "限流：按访客限制请求数，状态展示在上方。"}</li>
+        </ol>
+      </ProjectReportSection>
+      <ProjectReportSection concept="results" title={locale === "en" ? "Recorded retrieval & refusals" : "已记录的检索与拒答"}>
+        <p>{locale === "en"
+          ? "RECORDED — this exchange is frozen at build/dev time from a real offline retrieval run over the committed knowledge snapshot (no model call, no network request)."
+          : "RECORDED——这段对话是构建/开发阶段冻结的一次真实离线检索结果，基于已提交的知识快照（未调用模型、未发出网络请求）。"}</p>
+        <p><a href="#exhibit-01">{locale === "en" ? "View the recorded exchange and its citation" : "查看已记录的对话及引用"}</a></p>
+        <GuardRefusals locale={locale} />
+      </ProjectReportSection>
+      <ProjectReportSection concept="limitations">
+        <ProjectReportFindings items={askBoundaries} kind="limitation" />
+      </ProjectReportSection>
     </div>
   );
 }

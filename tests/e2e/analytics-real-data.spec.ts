@@ -49,6 +49,7 @@ test.describe("analytics real-data evidence", () => {
       ["/analytics/credit-policy-desk", "credit", "https://zenodo.org/records/11295916"],
     ] as const) {
       await page.goto(route, { waitUntil: "networkidle" });
+      await page.locator(`[data-evidence=${project}] > details > summary`).click();
       const methods = page.getByTestId(`analytics-methods-${project}`);
       await expect(methods).toBeVisible();
       await expect(methods).toContainText("Methods / Results / Real-data analysis");

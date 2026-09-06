@@ -76,12 +76,6 @@ const PROSE_ALLOWLIST_SUBSTRINGS = [
   // -- a proper-noun citation, not translatable narrative prose, matching
   // the RouteLLM citation precedent above.
   "Brazilian E-Commerce Public Dataset by Olist",
-  // Task L4: the Credit Policy Desk hero assertion (CreditPolicyFrontier.tsx
-  // exhibit 01's <h1>, and projects.ts's pre-existing `summary` field) --
-  // the user-approved mock (output/design-legacy/legacy-6-credit-policy-desk.html)
-  // keeps this exact English sentence on the zh page too, same "kept
-  // sitewide-quota assertion" treatment as the Home hero's exempt line.
-  "A score is not a policy.",
   // Task L4: the Lending Club dataset's own official title (rendered
   // verbatim by AnalyticsMethods.tsx from methods-evidence.json's
   // dataset.name field on /analytics/credit-policy-desk) -- a proper-noun
@@ -218,16 +212,6 @@ const PROSE_ALLOWLIST_PATTERNS = [
   // same recorded fixture -- after the literal field-label "SUBJECT". Real
   // prose does not open a sentence on an all-caps field-label token.
   /^SUBJECT\s/,
-  // Task R9a: the circuit chain's top strip (CircuitNav.tsx) renders
-  // "← {prev} {GROUP} · {n} of {N} {next} →" as one flex line of mono
-  // navigation fabric -- project titles and the position label stay
-  // English in both locales per the sitewide UI-fabric convention (the
-  // same ruling as the rail footer's SEARCH/RESUME row and the colophon's
-  // mono labels). Long neighbor titles (e.g. "MARGIN CONTROL TOWER") can
-  // exceed the 4-word threshold once stripNumericSubstrings erases the
-  // position digits, so the line is exempted by its own anchor: real zh
-  // narrative prose never opens a line with a directional arrow glyph.
-  /^←\s/,
 ];
 // Removes the numeric substring itself (digit run + comma/dot/colon/percent/
 // dollar/times/sign punctuation, plus one immediately-trailing letter for

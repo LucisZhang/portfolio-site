@@ -139,6 +139,7 @@ test.describe("Credit Policy Desk exhibit 04 (click-gated DuckDB receipts)", () 
     expect(heavyRuntimeRequests).toEqual([]);
     expect(parquetRequests).toBe(0);
 
+    await page.locator("[data-evidence=credit] > details > summary").click();
     const verify = page.locator(".credit-verify");
     await expect(verify).toHaveAttribute("data-verify-status", "idle");
     await verify.getByRole("button").click();
@@ -160,7 +161,8 @@ test("Credit Policy Desk renders with no JavaScript: exhibits 01-04 show real st
   await expect(page.locator(SEL.exhibit("02")).locator(".credit-threshold-table-inner tbody tr")).toHaveCount(3);
   await expect(page.locator(SEL.exhibit("03")).locator(".exhibit-finding")).toHaveCount(2);
   await expect(page.locator(SEL.exhibit("04")).locator(".credit-receipts-dl > div")).toHaveCount(5);
-  // The verify button is present but inert without JS -- must not vanish.
+  // Native disclosure remains operable without JS; the verify action is still present.
+  await page.locator("[data-evidence=credit] > details > summary").click();
   await expect(page.locator(".credit-verify-button")).toBeVisible();
 
   await context.close();
@@ -189,6 +191,9 @@ test("en Credit Policy Desk renders no Chinese (CJK) text anywhere on the page",
 test("zh Credit Policy Desk carries independently-written zh copy with no long English run", async ({ page }) => {
   await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "zh"));
   await page.goto(ROUTE, { waitUntil: "networkidle" });
+
+  await expect(page.locator(SEL.exhibit("01")).locator(".exhibit-title")).toHaveText("分数不是策略。");
+  await expect(page).toHaveTitle("分数不是策略。 | 章向国");
 
   const gloss = page.locator(SEL.cnGloss).first();
   await expect(gloss).toHaveCount(1);

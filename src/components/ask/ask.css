@@ -25,6 +25,10 @@
   border-top: 1px solid var(--hairline);
 }
 
+:lang(zh) .ask-turn {
+  grid-template-columns: 108px minmax(0, 1fr);
+}
+
 .ask-script > .ask-turn:first-child {
   border-top: 0;
 }
@@ -67,14 +71,24 @@
   font-size: 15px;
   line-height: 1.7;
   margin: 0;
+  max-width: 66ch;
 }
 
-.ask-turn-folio .ask-say sup {
+.ask-turn-folio .ask-say .assistant-evidence-marker {
+  display: inline-block;
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 9px;
   color: var(--accent);
   font-weight: 600;
-  margin-left: 2px;
+  margin-left: 6px;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  vertical-align: 2px;
+}
+
+.ask-preset-answer {
+  display: grid;
+  gap: 9px;
 }
 
 .ask-recorded-note {
@@ -114,6 +128,15 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px 16px;
+}
+
+.ask-turn-folio .ask-say p a.assistant-project-link {
+  color: inherit;
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 42%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 .ask-fallback a {
@@ -286,6 +309,30 @@
   margin-top: 12px;
 }
 
+.ask-refusals-compact {
+  margin-top: 10px;
+}
+
+.ask-refusals-compact .ask-refusal {
+  padding: 8px 0 9px;
+}
+
+.ask-refusals-compact .ask-refusal > .ask-refusal-kind {
+  font-size: 8.5px;
+  letter-spacing: .08em;
+}
+
+.ask-refusals-compact .ask-refusal > .ask-refusal-text {
+  margin-top: 4px;
+  font-size: 13px;
+  line-height: 1.48;
+}
+
+.ask-refusals-compact .ask-refusal > .ask-refusal-meta {
+  margin-top: 4px;
+  font-size: 8.5px;
+}
+
 .ask-refusal {
   border-top: 1px solid var(--hairline);
   padding: 10px 0 12px;
@@ -370,17 +417,7 @@
 .ask-receipts dd {
   margin: 0;
   font-size: 12.5px;
-  color: var(--muted);
-}
-
-
-.ask-report h3 {
-  margin: 20px 0 8px;
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  color: inherit;
 }
 
 .ask-architecture {
@@ -408,6 +445,10 @@
   .ask-turn {
     grid-template-columns: 1fr;
     gap: 6px;
+  }
+
+  :lang(zh) .ask-turn {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .ask-turn-next .ask-say {

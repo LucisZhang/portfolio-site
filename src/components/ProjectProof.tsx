@@ -23,7 +23,7 @@ function AnalyticsMigrationProof() {
   const { locale, dict } = useI18n();
   return (
     <ProjectProofSection title={dict.evidence} className="tinted-section">
-      <div className="analytics-migration"><p className="eyebrow">{locale === "en" ? "Legacy route migration" : "旧路由迁移"}</p><h3>{locale === "en" ? "Analytics Tandem has been split into two operable case studies" : "原 Analytics Tandem 已拆分为两个可独立运行的案例研究"}</h3><p>{locale === "en" ? "This compatibility page preserves the old URL. Choose the rebuilt decision workflow that matches your review." : "此兼容页面保留旧 URL。请选择符合评审方向的重建决策流程。"}</p><div><LocaleLink href="/analytics/margin-control-tower"><strong>Margin Control Tower</strong><span>{locale === "en" ? "Analytics engineering, governed margin diagnosis, scenario verification" : "分析工程、治理约束下的毛利诊断、情景验证"}</span></LocaleLink><LocaleLink href="/analytics/credit-policy-desk"><strong>Credit Policy Desk</strong><span>{locale === "en" ? "Risk calibration, expected loss, policy thresholds, monitoring" : "风险校准、预期损失、策略阈值、监控"}</span></LocaleLink></div></div>
+      <div className="analytics-migration"><p className="eyebrow">{locale === "en" ? "Legacy route migration" : "旧路由迁移"}</p><h3>{locale === "en" ? "Analytics Tandem has been split into two operable case studies" : "原 Analytics Tandem 已拆分为两个可独立运行的案例研究"}</h3><p>{locale === "en" ? "This compatibility page preserves the old URL. Choose the rebuilt decision workflow that matches your review." : "此兼容页面保留旧 URL。请选择符合评审方向的重建决策流程。"}</p><div><LocaleLink href="/analytics/margin-control-tower"><strong>Margin Control Tower</strong><span>{locale === "en" ? "Analytics engineering, governed margin diagnosis, scenario verification" : "分析工程、治理约束下的毛利诊断、情景验证"}</span></LocaleLink><LocaleLink href="/analytics/credit-policy-desk"><strong>{locale === "en" ? "Credit Policy Desk" : "分数不是策略。"}</strong><span>{locale === "en" ? "Risk calibration, expected loss, policy thresholds, monitoring" : "风险校准、预期损失、策略阈值、监控"}</span></LocaleLink></div></div>
       <div className="analytics-pair">
         <article><p>{locale === "en" ? "Business intelligence" : "商业智能"}</p><h3>{locale === "en" ? "E-commerce funnel, RFM, and segmentation" : "电商漏斗、RFM 与客户分群"}</h3><span>{locale === "en" ? "A public Tableau surface for inspecting customer movement and segment views. No funnel or segment figures are quoted here." : "通过公开 Tableau 界面检查客户流转与分群视图；本页不引用漏斗或分群数字。"}</span></article>
         <article><p>{locale === "en" ? "Model interaction" : "模型交互"}</p><h3>{locale === "en" ? "Bilingual risk exploration" : "双语风险探索"}</h3><span>{locale === "en" ? "A Streamlit demo for model switching, synthetic inputs, and a predict_proba-driven approve-or-block interaction. No validation metric is claimed." : "Streamlit 演示支持模型切换、合成输入，以及由 predict_proba 驱动的批准或拦截交互；不声明验证指标。"}</span></article>
@@ -69,6 +69,7 @@ function Limitations({ project }: { project: Project }) {
 
 function ProjectLinks({ project }: { project: Project }) {
   const { dict } = useI18n();
+  if (!project.links.length) return null;
   return (
     <ProjectProofSection title={dict.links} sectionId="links" className="project-links-section">
       <div className="link-list">

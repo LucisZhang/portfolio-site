@@ -1,7 +1,8 @@
 "use client";
 
 import { useI18n } from "@/lib/i18n";
-import { zhWrapNode } from "@/lib/zh-wrap";
+import ScrollRegion from "@/components/ScrollRegion";
+import { zhGroup, zhWrapDisplay } from "@/lib/zh-wrap";
 import { DISCLOSED_LGD_ASSUMPTION, policyContract, policyFrontierReport } from "./creditData";
 
 function pct(value: number, digits = 0) {
@@ -35,14 +36,14 @@ export function CreditDecisionBoundary() {
         {locale === "en" ? (
           <>One threshold decides<br /><em>who gets a loan.</em></>
         ) : (
-          zhWrapNode(<>一道阈值，<br /><em>决定谁能拿到贷款。</em></>)
+          zhWrapDisplay(<>一道阈值，<br /><em>{zhGroup("决定谁能", "拿到贷款。")}</em></>)
         )}
       </h2>
       <p className="exhibit-intro">
         {locale === "en" ? (
           <>Every scored application falls into exactly one of three bands — approve, manual review, or decline — by comparing its calibrated PD against two published thresholds. Approved exposure is judged on expected loss (<code>{policyContract.policy.expected_loss}</code>), where LGD is a disclosed {pct(DISCLOSED_LGD_ASSUMPTION)} assumption, not a modeled output.</>
         ) : (
-          <>每一笔已评分申请，都会通过将其校准 PD 与两个已发布阈值比较，落入批准、人工复核、拒绝三个区间之一。已批准敞口按预期损失（<code>{policyContract.policy.expected_loss}</code>）评判，其中 LGD 为明确披露的 {pct(DISCLOSED_LGD_ASSUMPTION)} 假设，并非模型输出。</>
+          <>每一笔已评分申请，都会通过将其校准 PD 与两个已发布阈值比较，落入批准、人工复核、拒绝三个区间之一。已批准敞口按预期损失<span className="zh-inline-atomic" data-zh-raw>（<code>{policyContract.policy.expected_loss}</code>）</span>评判，其中 LGD 为明确披露的 {pct(DISCLOSED_LGD_ASSUMPTION)} 假设，并非模型输出。</>
         )}
       </p>
 
@@ -63,7 +64,7 @@ export function CreditDecisionBoundary() {
 
       <div className="credit-threshold-table">
         <h3 className="credit-threshold-title">{locale === "en" ? "Same 624 backtest rows, three approve-thresholds" : "同样的 624 条回测记录，三个不同的批准阈值"}</h3>
-        <div className="credit-table-scroll">
+        <ScrollRegion className="credit-table-scroll" label={{ en: "Approve-threshold comparison table", zh: "批准阈值对比表" }}>
           <table className="credit-threshold-table-inner">
             <thead>
               <tr>
@@ -84,7 +85,7 @@ export function CreditDecisionBoundary() {
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollRegion>
         <p className="credit-threshold-note">
           {locale === "en"
             ? "Tightening the approve threshold trades approval share for a lower default rate among the applications that remain — the frontier in exhibit 01 is this exact same trade, drawn continuously instead of at three points."

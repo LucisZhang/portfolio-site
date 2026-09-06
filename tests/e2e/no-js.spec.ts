@@ -20,10 +20,10 @@ test("with JavaScript disabled the whole seven-exhibit homepage renders in the i
 
   // Hero (exhibit 00): title and all 4 stat tiles. Without JavaScript the
   // client-only locale store never hydrates past its en snapshot (see
-  // src/lib/i18n.ts's getServerLocaleSnapshot), so the zh-locale-only hero
-  // narrative (task F5, locale purity) correctly does not render here.
+  // src/lib/i18n.ts's getServerLocaleSnapshot), so the stable zh narrative
+  // node stays outside layout and the accessibility tree.
   await expect(page.locator(SEL.homeHeroTitle)).toBeVisible();
-  await expect(page.locator(SEL.homeHeroZh)).toHaveCount(0);
+  await expect(page.locator(SEL.homeHeroZh)).toBeHidden();
   const heroCells = page.locator(".exhibit-stat-grid").first().locator(".exhibit-stat-cell");
   await expect(heroCells).toHaveCount(homeStats.heroTiles.length);
   // Two GitHub links exist on the homepage — the hero contact link

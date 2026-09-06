@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { gunzipSync } from "node:zlib";
 import publicKnowledge from "../data/assistant-knowledge.generated.json" with { type: "json" };
+import { PROJECT_IDENTITIES, mentionedProjectIds, resolveProjectIdentity, type ProjectIdentityId } from "./project-identities";
 
 export type AssistantLocale = "en" | "zh";
 
@@ -16,6 +17,7 @@ export interface AssistantKnowledgeChunk {
   kind: "public-github" | "private-profile";
   repository?: string;
   project?: Record<AssistantLocale, string>;
+  projectId?: ProjectIdentityId;
   aliases: string[];
   content: string;
   citation: AssistantCitation;
@@ -86,7 +88,7 @@ function expandedQuery(value: string) {
   const expansions: string[] = [];
   const rules: Array<[RegExp, string]> = [
     [/(?:hire|hiring|candidate|recruiter|strength|why him|role fit|job fit|position)/u, "candidate profile skills experience strengths role fit applied AI data engineering analytics Release Guardian RAG Quality Lab Streaming Reliability Lab Privacy Preflight Margin Control Tower Credit Policy Lab"],
-    [/(?:候选人|招聘|录用|优势|亮点|岗位|职位|匹配|胜任)/u, "候选人 个人背景 技能 经历 优势 岗位匹配 AI 应用 数据工程 数据分析 Release Guardian RAG Quality Lab Exactly-Once Drills Triage Router Crossover Study Privacy Preflight Margin Control Tower Credit Policy Desk"],
+    [/(?:候选人|招聘|录用|优势|亮点|岗位|职位|匹配|胜任)/u, "候选人 个人背景 技能 经历 优势 岗位匹配 AI 应用 数据工程 数据分析 Release Guardian RAG Quality Lab Exactly-Once Drills Triage Router Crossover Study Privacy Preflight Margin Control Tower Credit Policy Desk 分数不是策略"],
     [/(?:background|education|school|university|major|graduate)/u, "candidate education Beijing Institute of Technology data science graduation"],
     [/(?:背景|教育|学校|大学|专业|毕业)/u, "候选人 教育 北京理工大学 数据科学与大数据技术 2027届"],
     [/(?:working style|work style|collaborat|communicat|leadership)/u, "working style ownership evidence automation communication collaboration"],
@@ -101,7 +103,8 @@ function expandedQuery(value: string) {
     [/(?:注入故障|管道.*故障|管道.*对账)/u, "故障注入 对账 源端 快照 事件 ID 零差异 恢复"],
   ];
   for (const [pattern, expansion] of rules) if (pattern.test(normalized)) expansions.push(expansion);
-  return `${value} ${expansions.join(" ")}`;
+  const namedProjects = mentionedProjectIds(value).map((id) => PROJECT_IDENTITIES[id].label.en);
+  return `${value} ${namedProjects.join(" ")} ${expansions.join(" ")}`;
 }
 
 function assertPrivatePayload(value: unknown): PrivateKnowledgePayload {
@@ -143,6 +146,7 @@ function publicChunks(): AssistantKnowledgeChunk[] {
     kind: "public-github" as const,
     repository: chunk.repository,
     project: chunk.project,
+    projectId: resolveProjectIdentity(chunk.project.en)?.id,
     aliases: chunk.aliases,
     content: chunk.content,
     citation: {
@@ -244,14 +248,23 @@ export function retrieveAssistantKnowledge(
     })
   ));
   const currentSitePriority = currentSiteMatches.slice(0, 2);
+  // A named identity wins over fuzzy topic overlap. Keep the committed chunk
+  // and pinned citation unchanged; take evidence for each named project before
+  // filling the bounded remainder with the existing relevance ranking.
+  const namedPriority = mentionedProjectIds(question).flatMap((id) => {
+    const matches = ranked.filter(({ chunk }) => chunk.projectId === id);
+    const site = matches.filter(({ chunk }) => chunk.repository === "LucisZhang/portfolio-site");
+    return (site.length ? site : matches).slice(0, 2);
+  });
   const ordered = candidateQuestion && privatePayload
     ? [
+        ...namedPriority,
         ...ranked.filter(({ chunk }) => chunk.kind === "private-profile").slice(0, 4),
         ...currentSitePriority,
         ...ranked.filter(({ chunk }) => chunk.kind === "public-github").slice(0, 6),
         ...ranked,
       ]
-    : [...currentSitePriority, ...ranked];
+    : [...namedPriority, ...currentSitePriority, ...ranked];
   const seenChunks = new Set<string>();
   for (const { chunk } of ordered) {
     if (seenChunks.has(chunk.id)) continue;

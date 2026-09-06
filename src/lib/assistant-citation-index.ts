@@ -14,7 +14,7 @@
 //   rather than surfacing a raw internal ref;
 // - private profile chunk -> label only (existing rule, unchanged).
 import type { AssistantCitation } from "@/lib/assistant-policy";
-import { getProject, isTrackId } from "@/lib/projects";
+import { resolveProjectIdentity } from "./project-identities";
 
 export type CitationIndexEntryKind = "github" | "site" | "private";
 
@@ -38,13 +38,13 @@ const GITHUB_BLOB_URL =
 const PATH_DUMP_LABEL_EN = /^(.+?) · .+ · lines \d+-\d+$/u;
 const PATH_DUMP_LABEL_ZH = /^(.+?) · .+ · 第 \d+-\d+ 行$/u;
 
-const BADGE_GITHUB = { en: "GITHUB · PINNED COMMIT", zh: "GITHUB · 锁定提交" } as const;
-const BADGE_SITE = { en: "THIS SITE", zh: "本站页面" } as const;
-const BADGE_PRIVATE = { en: "PRIVATE · CITED BY LABEL ONLY", zh: "私有材料 · 仅标注来源" } as const;
+const BADGE_GITHUB = { en: "EVIDENCE FILE", zh: "证据文件" } as const;
+const BADGE_SITE = { en: "PROJECT ENTRY", zh: "项目入口" } as const;
+const BADGE_PRIVATE = { en: "PRIVATE SOURCE", zh: "私有材料" } as const;
 
 const HOME_ENTRY = {
   href: "/",
-  title: { en: "Browse the full project index on the home page", zh: "回到首页浏览全部项目" },
+  title: { en: "Browse the full project index", zh: "浏览完整项目索引" },
   route: { en: "/ · project index", zh: "/ · 项目索引" },
 };
 
@@ -83,21 +83,27 @@ function decodePath(encoded: string): string {
   }
 }
 
+function zhCitationLabel(project: string, descriptor: string) {
+  return /[。！？]$/u.test(project)
+    ? `查看“${project}”：${descriptor}`
+    : `查看${project}：${descriptor}`;
+}
+
 function siteEntry(sourceId: string): Pick<CitationIndexEntry, "href" | "title" | "route"> {
   const routeKey = PORTFOLIO_SITE_SOURCE.exec(sourceId)?.[1] ?? "home";
   if (routeKey !== "home") {
     const separator = routeKey.indexOf("-");
     const track = separator > 0 ? routeKey.slice(0, separator) : "";
     const slug = separator > 0 ? routeKey.slice(separator + 1) : "";
-    if (isTrackId(track) && slug) {
-      const project = getProject(track, slug);
+    if (track && slug) {
+      const project = resolveProjectIdentity(`/${track}/${slug}`);
       if (project) {
-        const href = `/${track}/${slug}`;
+        const href = project.href;
         return {
           href,
           title: {
-            en: `Open the ${project.title.en} project page`,
-            zh: `打开「${project.title.zh}」项目页`,
+            en: `Explore ${project.label.en}`,
+            zh: `查看「${project.label.zh}」`,
           },
           route: { en: `${href} · project page`, zh: `${href} · 项目页` },
         };
@@ -135,7 +141,7 @@ function githubEntry(citation: AssistantCitation): Pick<CitationIndexEntry, "hre
     href: url,
     title: {
       en: `See ${descriptor.en} in ${projectEn}`,
-      zh: `查看${projectZh}：${descriptor.zh}`,
+      zh: zhCitationLabel(projectZh, descriptor.zh),
     },
     route: { en: routeLine, zh: routeLine },
   };

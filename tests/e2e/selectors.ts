@@ -35,6 +35,20 @@ export const SEL = {
   colophonItemAttr: '[data-colophon-item]',
   colophonCurrent: '[data-colophon-current="true"]',
 
+  // --- Task D06: family taxonomy + in-page category crumb ---
+  // The crumb's family segment (slot "crumb") and the bottom TRACK row
+  // (slot "track") are same-document links to #index-<family id>. Both
+  // carry data-circuit-group-link, so page-wide locators hit Playwright's
+  // strict mode -- scope them under circuitTop / circuitBottom, or use the
+  // slot form. NOTE: [data-colophon-current] (the item) and
+  // [data-colophon-group-current] (the family block) are distinct attribute
+  // names and never match each other.
+  circuitGroupLink: '[data-circuit-group-link]',
+  circuitGroupLinkSlot: (slot: 'crumb' | 'track') => `[data-circuit-group-link="${slot}"]`,
+  colophonGroup: (id: string) => `[data-colophon-group="${id}"]`,
+  colophonGroupAttr: '[data-colophon-group]',
+  colophonGroupCurrent: '[data-colophon-group-current="true"]',
+
   // --- Dynamic (parameterized) structural selectors ---
   optionWithValue: (value: string) => `option[value="${value}"]`,
   creditVintageButton: (vintage: string) => `.credit-vintages button[title^="${vintage}:"]`,

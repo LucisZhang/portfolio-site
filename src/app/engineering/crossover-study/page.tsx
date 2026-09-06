@@ -1,8 +1,10 @@
+import { EvidenceScope } from "@/components/exhibition/EvidenceScope.server";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ExhibitShell } from "@/components/exhibition/ExhibitShell";
+import ProjectRepositoryEntry from "@/components/exhibition/ProjectRepositoryEntry";
 import ProjectRailTools from "@/components/exhibition/ProjectRailTools";
 import CrossoverPage from "@/components/crossover/CrossoverPage";
 import { crossoverRail } from "@/components/crossover/crossoverRail";
@@ -44,8 +46,10 @@ export default async function CrossoverStudyRoute() {
   if (!project) notFound();
   const icebergSnapshotId = await readIcebergSnapshotId();
   return (
-    <ExhibitShell rail={crossoverRail} railTools={<ProjectRailTools />} mode="auto">
-      <CrossoverPage project={project} icebergSnapshotId={icebergSnapshotId} />
+    <ExhibitShell repositoryEntry={<ProjectRepositoryEntry project={project} />} rail={crossoverRail} railTools={<ProjectRailTools />} mode="auto">
+      <EvidenceScope project="crossover">
+        <CrossoverPage project={project} icebergSnapshotId={icebergSnapshotId} />
+      </EvidenceScope>
     </ExhibitShell>
   );
 }

@@ -2,13 +2,10 @@
 
 import { Exhibit } from "@/components/exhibition/Exhibit";
 import LocaleLink from "@/components/LocaleLink";
-import { localize, useI18n } from "@/lib/i18n";
-import { homepageProjects, type ProjectId } from "@/lib/projects";
+import { localize, useI18n, type Locale } from "@/lib/i18n";
+import type { Project, ProjectId } from "@/lib/projects";
 import AskPortfolioInline from "./AskPortfolioInline";
-
-function project(slug: ProjectId) {
-  return homepageProjects.find((candidate) => candidate.slug === slug);
-}
+import { zhGroup, zhWrapDisplay } from "@/lib/zh-wrap";
 
 // Task F10 (box-grammar ruling): the row used to carry a decorative
 // pure-CSS "micro-instrument" beside it (a 13-square dot grid, a 5-bar
@@ -26,7 +23,10 @@ const ROWS: { slug: ProjectId }[] = [
   { slug: "privacy-preflight" },
 ];
 
-export default function AgentSystemsExhibit() {
+export default function AgentSystemsExhibit({ projects, questions }: {
+  projects: Pick<Project, "slug" | "track" | "title" | "glossZh" | "metrics">[];
+  questions: Record<Locale, string[]>;
+}) {
   const { locale } = useI18n();
 
   return (
@@ -39,13 +39,13 @@ export default function AgentSystemsExhibit() {
         locale === "en" ? (
           <>Agents that act.<br /><em>Systems built to be second-guessed.</em></>
         ) : (
-          <>会动手的 Agent，<em>也留了能追问它的地方。</em></>
+          <>会动手的 Agent，<br /><em>{zhGroup("也留了能追问", "它的地方。")}</em></>
         )
       }
     >
       <ol className="home-agent-rows">
         {ROWS.map(({ slug }) => {
-          const row = project(slug);
+          const row = projects.find((candidate) => candidate.slug === slug);
           if (!row) return null;
           return (
             <li className="home-agent-row" key={slug}>
@@ -55,7 +55,7 @@ export default function AgentSystemsExhibit() {
                   {/* Locale purity (task F5): the gloss line is zh-only,
                       not a second English narrative — must not render in
                       en locale. */}
-                  {locale === "zh" ? <span className="cn-gloss">{row.glossZh}</span> : null}
+                  {locale === "zh" ? <span className="cn-gloss">{zhWrapDisplay(row.glossZh)}</span> : null}
                 </span>
                 <span className="project-summary">{localize(row.metrics, locale)}</span>
               </LocaleLink>
@@ -63,7 +63,7 @@ export default function AgentSystemsExhibit() {
           );
         })}
       </ol>
-      <AskPortfolioInline variant="chips" />
+      <AskPortfolioInline variant="chips" questions={questions} />
     </Exhibit>
   );
 }

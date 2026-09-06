@@ -189,6 +189,7 @@ test("RAG Quality Lab renders with no JavaScript: the diff, stats, and C3 honest
   // The editor is present but inert without JS -- must not vanish.
   await expect(exhibit01.getByTestId("rag-working-copy-editor")).toBeVisible();
   await expect(page.locator(SEL.exhibit("02")).getByTestId("rag-verified-claims")).toBeVisible();
+  await page.locator("[data-evidence=rag] > details > summary").click();
   await expect(page.locator(SEL.exhibit("03")).getByTestId("rag-receipts-list")).toBeVisible();
 
   await context.close();

@@ -1,4 +1,4 @@
-import type { RailSpec } from "@/components/exhibition/ExhibitShell";
+import { navigationCopy, projectRailFooter, type RailSpec } from "@/lib/navigation";
 import { getProject } from "@/lib/projects";
 
 // Privacy Preflight project-page rail (spec §2.1 "项目页" state, §6.0
@@ -14,12 +14,12 @@ export const privacyRail: RailSpec = {
   wordmark: { lines: ["Privacy", "Preflight"] },
   copy: privacyPreflight ? { en: "Detect, redact, and verify sensitive content locally.", zh: privacyPreflight.glossZh } : undefined,
   nav: [
-    { id: "exhibit-01", num: "01", label: "Workbench" },
-    { id: "exhibit-02", num: "02", label: "Detect, review, destroy" },
-    { id: "exhibit-03", num: "03", label: "OCR benchmark" },
-    { id: "exhibit-04", num: "04", label: "Fail-closed export" },
-    { id: "exhibit-05", num: "05", label: "Boundary" },
-    { id: "exhibit-06", num: "06", label: "Source & receipts" },
+    { id: "exhibit-01", num: "01", label: { en: "Workbench", zh: "工作台" } },
+    { id: "exhibit-02", num: "02", label: { en: "Detect, review, destroy", zh: "检测、复核与销毁" } },
+    { id: "exhibit-03", num: "03", label: { en: "OCR benchmark", zh: "OCR 基准" } },
+    { id: "exhibit-04", num: "04", label: { en: "Fail-closed export", zh: "校验通过后导出" } },
+    { id: "exhibit-05", num: "05", label: { en: "Boundary", zh: "适用边界" } },
+    { id: "exhibit-06", num: "06", label: navigationCopy.sourceReceipts },
   ],
-  footer: [{ label: "← ALL WORK", href: "/" }],
+  footer: projectRailFooter,
 };

@@ -45,9 +45,10 @@
    the exact hero line this task exists to fix -- scripts/lib/zh-glyph-
    corpus.mjs's extractRequiredCodepoints() now scans every non-ASCII
    character sharing a string/JSX-text segment with a CJK character, which
-   is what produced the extra codepoints below. No `preload`, so en-locale
-   visitors trigger zero request for it (asserted in
-   tests/e2e/home-r2.spec.ts). */
+   is what produced the extra codepoints below. This full subset is never
+   preloaded; the homepage instead conditionally preloads the 5KB critical
+   cut declared below. En-locale visitors trigger zero request for either
+   Chinese font (asserted in tests/e2e/home-r2.spec.ts). */
 @font-face {
   font-family: "Display Serif ZH";
   src: url(/fonts/display-serif-zh.woff2) format("woff2");
@@ -55,6 +56,19 @@
   font-style: normal;
   font-display: swap;
   unicode-range: U+4E00-9FFF, U+3000-303F, U+FF00-FFEF, U+A7, U+B7, U+D7, U+F3, U+3C3, U+2013-2014, U+201C-201D, U+2026, U+2190, U+2192, U+2194, U+2212, U+221E, U+2248, U+2264-2265, U+2318, U+2500, U+2502, U+2514, U+251C, U+25BC;
+}
+
+/* The homepage's above-the-fold Chinese narrative uses a 21-codepoint
+   derivative of the same Noto Serif SC face. It preserves the approved
+   pairing while keeping the 253KB site-wide subset off the critical path;
+   the parser-time locale bootstrap preloads this 5KB cut only for zh. */
+@font-face {
+  font-family: "Display Serif ZH Home";
+  src: url(/fonts/display-serif-zh-home.woff2) format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+3002, U+4E5F, U+4F1A, U+505A, U+54EA, U+5728, U+5931, U+5B83, U+6211, U+628A, U+6548, U+6574, U+6761, U+695A, U+6E05, U+8BB2, U+8DEF, U+901A, U+91CC, U+94FE, U+FF0C;
 }
 
 :root {
@@ -74,6 +88,7 @@
   --radius: 0;
   --display-serif: "Display Serif", "Iowan Old Style", Baskerville, Georgia, serif;
   --display-serif-zh: "Display Serif ZH", "Songti SC", "Noto Serif CJK SC", SimSun, serif;
+  --display-serif-zh-home: "Display Serif ZH Home", "Songti SC", "Noto Serif CJK SC", SimSun, serif;
   /* Round-2 semantic layer (spec 2.2): hue carries meaning, never a filled
      background. --accent-on-ink / --accent-display-on-ink / --ok-on-ink are
      contrast-safe restatements of --accent / --accent-hover / --ok for text
@@ -135,26 +150,30 @@ h1, h2, h3 { font-family: var(--display-serif); }
    stay at or above 28px. Smaller Chinese headings remain on the sans stack. */
 :lang(zh) h1 { font-family: var(--display-serif-zh); }
 :lang(zh) :is(h2, h3) { font-family: var(--font-geist-sans); }
-/* Task R8 (checklist A2): phrase-aware zh line breaking.
-   - .zh-seg spans are emitted by src/lib/zh-wrap.tsx around each
-     Intl.Segmenter zh phrase in display-type text (titles, hero/gloss
-     lines, findings, stat labels, eyebrows); inline-block makes each
-     phrase an unbreakable unit, so lines break only BETWEEN phrases —
-     never mid-word (the owner's 同一个词拆成两行 complaint).
+/* Task R8 (checklist A2) + Task D05: phrase-aware zh line breaking.
+   - <zh-run> holds one original/coalesced text run. Its inline box becomes a
+     single flex/grid item when necessary, matching the anonymous text item it
+     replaces instead of making every word participate in the container gap.
+   - <zh-seg> elements inside it mark each zh word unit (lexicon +
+     Intl.Segmenter + grammatical attachment). Inline + white-space:nowrap
+     prevents a break within the unit while keeping name-from-content exact in
+     Chromium and WebKit; breaks between adjacent units remain available.
+     These are unregistered custom elements, not spans, so existing `.foo
+     span` descendant selectors cannot restyle them.
+   - <zh-phrase> elements are emitted for display copy only (exhibit titles,
+     hero line, cn-gloss): one inline-block per clause or authored phrase.
+     Shrink-to-fit makes the group atomic while it fits and lets it wrap
+     internally at word units only when a whole line cannot hold it, so
+     headings break at complete phrases first.
    - line-break: strict tightens kinsoku for all remaining zh body prose
-     (small kana/hyphen classes; no effect on Latin text, and en pages
-     never match :lang(zh)).
+     (no effect on Latin text, and en pages never match :lang(zh)).
    - text-wrap: pretty on zh prose blocks avoids orphan short last lines;
-     .exhibit-title deliberately KEEPS its existing text-wrap: balance
-     (balance suits 2-3-line display assertions and works with
-     inline-block segments; pretty is the paragraph-shaped counterpart). */
-/* !important is load-bearing: several label containers style ALL descendant
-   spans (e.g. .forge-hero-metric span / .classification-row span, both
-   display:block|flex at specificity 0,1,1), which would otherwise flatten
-   nested phrase segments into one-chunk-per-line stacks (caught on the
-   forge hero metric band, 390w). A phrase segment must never be anything
-   but an inline unbreakable unit. */
-.zh-seg { display: inline-block !important; }
+     .exhibit-title deliberately KEEPS its existing text-wrap: balance.
+   The .zh-seg / .zh-phrase class names stay on the elements as test hooks. */
+zh-run { display: inline; min-width: 0; }
+zh-seg { display: inline; white-space: nowrap; }
+zh-phrase { display: inline-block; white-space: normal; max-width: 100%; }
+.zh-inline-atomic { display: inline-block; max-width: 100%; white-space: nowrap; }
 :lang(zh) { line-break: strict; }
 :lang(zh) :is(.exhibit-intro, .exhibit-finding-body, .cn-gloss, .home-hero-zh) { text-wrap: pretty; }
 a { color: inherit; text-decoration: none; }
@@ -186,6 +205,10 @@ svg { flex: none; }
    existing treatment. */
 .artifact-markdown a, .evidence-link a { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, var(--accent) 55%, transparent); }
 .artifact-markdown a:is(:hover, :focus-visible), .evidence-link a:is(:hover, :focus-visible) { color: var(--accent); text-decoration-color: var(--accent-hover); }
+/* ScrollRegion (F-05): horizontal-overflow scrollers join the tab order only
+   while they really overflow (WebKit never adds them itself); the focus ring
+   follows the site's standard accent outline. */
+[data-scroll-region]:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 /* Numeric surfaces align in columns. font-variant-numeric inherits, so one
    declaration on the proof shell reaches every readout in every figure —
    including the proportional-font ones that used to miss out. Prose sections
@@ -255,7 +278,9 @@ svg { flex: none; }
 .home-hero-line[data-hero-line="0"] { animation-delay: 120ms; }
 .home-hero-line[data-hero-line="1"] { animation-delay: 200ms; }
 @keyframes home-hero-hairline-draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-@keyframes home-hero-line-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+/* Keep the headline readable on its first paint. An opacity-zero entrance
+   delayed the largest text paint until the animation became visible. */
+@keyframes home-hero-line-rise { from { transform: translateY(14px); } to { transform: none; } }
 @media (prefers-reduced-motion: reduce) {
   .home-hero-hairline, .home-hero-line { animation: none; }
 }
@@ -1194,24 +1219,40 @@ svg { flex: none; }
 .notes-grid li { position: relative; border-bottom: var(--bl); padding: 15px 0 15px 20px; overflow-wrap: anywhere; color: var(--mu); font-size: 12px; line-height: 1.65; }
 .notes-grid li::before { content: ""; position: absolute; top: 22px; left: 2px; width: 5px; height: 5px; background: var(--ink); }
 
+.artifact-document { max-width: 1440px; margin-inline: auto; padding-inline: clamp(16px, 4vw, 64px); }
+.artifact-site-tools { min-height: 72px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; padding-block: 12px; border-bottom: var(--bd); }
+.artifact-tools-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.artifact-tools-actions > a { display: inline-flex; align-items: center; min-height: 44px; font-size: 12px; }
+.artifact-site-tools > a { display: inline-flex; align-items: center; min-height: 44px; font-size: 12px; }
 .artifact-page { padding-block: 34px 72px; }
+.artifact-page .back-link { flex-wrap: wrap; min-height: 44px; }
+.artifact-provenance { margin-top: 20px; max-width: 85ch; font-size: 12px; line-height: 1.7; }
+.artifact-provenance strong { font-weight: 600; }
+.artifact-provenance p { margin: 4px 0 0; color: var(--mu); }
 .artifact-page > .back-link { margin-bottom: 28px; }
 .artifact-page-header { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .65fr); align-items: end; gap: 48px; border-bottom: var(--bd); padding-bottom: 28px; }
 .artifact-page-header h1 { margin: 8px 0; overflow-wrap: anywhere; font-size: clamp(2.4rem, 5vw, 4.2rem); line-height: 1.05; }
 .artifact-page-header p { margin: 0; color: var(--mu); font-size: 12px; }
 .artifact-file-meta { min-width: 0; display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 8px 14px; }
 .artifact-file-meta > span { color: var(--mu); font-family: var(--mono); font-size: 10px; }
-.artifact-file-meta > code { min-width: 0; overflow: hidden; color: var(--mu); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+.artifact-file-meta > code { min-width: 0; color: var(--mu); font-size: 10px; overflow-wrap: anywhere; }
 .artifact-file-meta > a { grid-column: 1 / -1; min-height: 38px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: var(--bd); background: var(--wh); font-size: 10px; font-weight: 700; }
 .artifact-file-meta > a:hover { background: var(--paper-alt); }
 .artifact-file-meta svg { width: 15px; }
 .artifact-viewer-shell { min-height: 520px; margin-top: 24px; border: var(--bd); background: var(--wh); }
+.artifact-viewer-shell[data-state="error"] { min-height: 0; }
 .artifact-loading { min-height: 520px; display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--mu); font-size: 12px; }
 .artifact-loading svg { width: 19px; }
 .artifact-error { min-height: 120px; display: flex; align-items: center; justify-content: center; gap: 12px; margin: 0; border-left: 0; border-top: 2px solid var(--danger); padding: 18px; color: var(--danger); font-size: 11px; }
 .artifact-error > svg { width: 20px; }
 .artifact-error strong, .artifact-error span, .artifact-error small { display: block; }
 .artifact-error span, .artifact-error small { margin-top: 4px; color: var(--mu); }
+.artifact-error-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; border-top: var(--bl); padding: 12px 18px 18px; }
+.artifact-error-actions > button,
+.artifact-error-actions > a { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: var(--bd); background: var(--wh); padding: 0 16px; cursor: pointer; font-size: 10px; font-weight: 700; }
+.artifact-error-actions > button:hover,
+.artifact-error-actions > a:hover { background: var(--paper-alt); }
+.artifact-error-actions svg { width: 15px; }
 .artifact-context { display: flex; align-items: center; gap: 8px; margin: 12px 0 0; color: var(--mu); font-size: 10px; }
 .artifact-context svg { width: 14px; }
 
@@ -1221,6 +1262,7 @@ svg { flex: none; }
 .artifact-panzoom-stage:active { cursor: grabbing; }
 .artifact-panzoom-stage > div { transform-origin: center; }
 .artifact-image-viewer img { display: block; max-width: min(1000px, 90vw); max-height: 76vh; object-fit: contain; user-select: none; }
+.artifact-image-viewer img[src$=".svg" i] { width: min(1000px, 80vw); height: auto; }
 .artifact-zoom-controls { position: absolute; z-index: 4; top: 12px; right: 12px; display: flex; align-items: center; border: var(--bd); background: var(--wh); }
 .artifact-zoom-controls button { width: 38px; height: 38px; display: grid; place-items: center; border: 0; border-right: var(--bl); background: transparent; cursor: pointer; }
 .artifact-zoom-controls button:last-child { border-right: 0; }
@@ -1248,6 +1290,7 @@ svg { flex: none; }
 .artifact-filterbar > button:disabled { cursor: not-allowed; opacity: .4; }
 .artifact-filterbar svg { width: 14px; }
 .artifact-filterbar > span { margin-left: auto; color: var(--mu); font-size: 9px; }
+.artifact-json-limit-note { margin: 0; border-bottom: var(--bl); padding: 10px 12px; color: var(--mu); font-size: 9px; line-height: 1.5; }
 
 .json-tree { min-height: 560px; overflow: auto; padding: 18px; font-family: var(--mono); }
 .json-node { margin-left: 16px; border-left: var(--bl); padding-left: 10px; }
@@ -1257,6 +1300,8 @@ svg { flex: none; }
 .json-leaf { min-height: 28px; display: grid; grid-template-columns: minmax(120px, .45fr) minmax(0, 1fr); align-items: start; gap: 12px; margin-left: 16px; border-left: var(--bl); padding: 6px 10px; font-size: 9px; }
 .json-leaf span { color: var(--accent); }
 .json-leaf code { overflow-wrap: anywhere; white-space: pre-wrap; }
+.json-show-more { min-height: 44px; margin: 8px 0 8px 16px; border: var(--bl); background: var(--wh); padding: 0 14px; cursor: pointer; color: var(--bu); font-family: var(--mono); font-size: 9px; }
+.json-show-more:hover { background: var(--paper-alt); }
 
 .artifact-warning { margin: 0; border-bottom: 1px solid #d9c08c; padding: 9px 12px; color: var(--am); font-size: 9px; }
 .artifact-table-scroll { min-height: 500px; overflow: auto; }
@@ -1272,14 +1317,17 @@ svg { flex: none; }
 .artifact-pagination svg { width: 13px; }
 .artifact-pagination span { min-width: 60px; font-family: var(--mono); font-size: 9px; text-align: center; }
 
-.artifact-markdown-layout { display: grid; grid-template-columns: 230px minmax(0, 1fr); }
-.artifact-markdown-layout > aside { position: sticky; top: 0; align-self: start; max-height: 80vh; display: grid; gap: 7px; overflow: auto; border-right: var(--bd); padding: 22px 16px; }
-.artifact-markdown-layout > aside strong { margin-bottom: 5px; font-size: 11px; }
-.artifact-markdown-layout > aside a { color: var(--mu); font-size: 9px; line-height: 1.4; }
-.artifact-markdown-layout > aside a.level-2 { padding-left: 9px; }
-.artifact-markdown-layout > aside a.level-3 { padding-left: 18px; }
-.artifact-markdown-layout > aside a:last-child { display: flex; align-items: center; gap: 6px; margin-top: 14px; border-top: var(--bl); padding-top: 12px; color: var(--ink); font-weight: 700; }
-.artifact-markdown-layout > aside svg { width: 13px; }
+.artifact-markdown-layout { display: grid; grid-template-columns: minmax(0, 1fr); }
+.artifact-markdown-layout[data-has-sections="true"] { grid-template-columns: 230px minmax(0, 1fr); }
+.artifact-section-index { position: sticky; top: 16px; align-self: start; max-height: 80vh; overflow: auto; border-right: var(--bd); padding: 22px 16px; }
+.artifact-section-index strong { display: block; margin-bottom: 8px; font-size: 12px; }
+.artifact-section-index ol { list-style: none; margin: 0; padding: 0; }
+.artifact-section-index a { display: block; padding-block: 8px; color: var(--mu); font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+.artifact-section-index .level-2 { padding-left: 8px; }
+.artifact-section-index :is(.level-3, .level-4, .level-5, .level-6) { padding-left: 16px; }
+.artifact-page :is(h1, h2, h3, h4, h5, h6, span[id]) { scroll-margin-top: 24px; }
+.artifact-raw-source span[id]:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+.artifact-markdown-layout > .artifact-raw-source { margin: 0; min-width: 0; max-height: none; }
 .artifact-markdown { max-width: 850px; min-height: 620px; padding: 32px 42px 64px; }
 .artifact-markdown h1 { margin: 0 0 28px; font-size: clamp(2.4rem, 5vw, 4.2rem); line-height: 1.05; font-weight: 400; letter-spacing: -.02em; }
 .artifact-markdown h2 { margin: 38px 0 14px; border-bottom: var(--bl); padding-bottom: 8px; font-size: 20px; font-weight: 450; letter-spacing: -.015em; }
@@ -1288,6 +1336,7 @@ svg { flex: none; }
 .artifact-markdown pre, .artifact-raw-source { max-width: 100%; overflow: auto; background: var(--ink-invert); padding: 18px; color: var(--ink-invert-fg); font-family: var(--mono); font-size: 10px; line-height: 1.6; }
 .artifact-markdown code:not(pre code) { border: var(--bl); background: var(--pa); padding: 2px 4px; font-size: 10px; }
 .artifact-markdown table { display: block; max-width: 100%; overflow: auto; border-collapse: collapse; font-size: 10px; }
+.artifact-markdown img { max-width: 100%; height: auto; }
 .artifact-markdown th, .artifact-markdown td { border: var(--bl); padding: 8px; text-align: left; }
 
 .artifact-mermaid-viewer .artifact-panzoom { min-height: 640px; }
@@ -1376,8 +1425,9 @@ svg { flex: none; }
   .privacy-image-grid, .privacy-pdf-grid { grid-template-columns: 1fr; }
   .privacy-canvas-wrap, .privacy-pdf-canvas-wrap { min-height: 480px; border-right: 0; border-bottom: var(--bl); }
   .artifact-page-header { grid-template-columns: 1fr; gap: 24px; }
-  .artifact-markdown-layout { grid-template-columns: 1fr; }
-  .artifact-markdown-layout > aside { position: static; max-height: none; border-right: 0; border-bottom: var(--bd); }
+  .artifact-markdown-layout[data-has-sections] { grid-template-columns: minmax(0, 1fr); }
+  .artifact-section-index { position: static; max-height: 280px; border-right: 0; border-bottom: var(--bd); }
+  .artifact-section-index a { min-height: 44px; display: flex; align-items: center; }
 }
 
 @media (max-width: 640px) {

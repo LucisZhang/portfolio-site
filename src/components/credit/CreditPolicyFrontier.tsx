@@ -1,9 +1,10 @@
 "use client";
 
 import { useMemo } from "react";
+import ScrollRegion from "@/components/ScrollRegion";
 import { StatGrid } from "@/components/exhibition/StatGrid";
 import { useI18n } from "@/lib/i18n";
-import { zhWrapText } from "@/lib/zh-wrap";
+import { zhWrapDisplay, zhWrapText } from "@/lib/zh-wrap";
 import { CREDIT_BACKTEST_FULL_ROW_COUNT } from "@/lib/credit-backtest-identity";
 import { getProject } from "@/lib/projects";
 import { activePolicyPoint, backtestReport, policyFrontierReport } from "./creditData";
@@ -82,14 +83,10 @@ export function CreditPolicyFrontier() {
         <span className="exhibit-number" aria-hidden="true">01</span>
         <span className="exhibit-eyebrow">CREDIT-BACKTEST-PARQUET-V1 / CALIBRATED PD → POLICY / EVALUATED {backtestReport.evaluated_at}</span>
       </p>
-      {/* Kept sitewide-quota assertion (spec's "A score is not a policy."):
-          the user-approved mock keeps this exact English sentence on the
-          zh page too, same exemption as the Home hero's assertion line
-          (scripts/check-localization.mjs's PROSE_ALLOWLIST_SUBSTRINGS). */}
       <h1 id="exhibit-01-title" className="exhibit-title">
-        A score is not <em>a policy.</em>
+        {locale === "en" ? <>A score is not <em>a policy.</em></> : zhWrapDisplay(creditProject?.title.zh ?? "")}
       </h1>
-      {locale === "zh" && creditProject ? <p className="cn-gloss" lang="zh">{zhWrapText(creditProject.glossZh)}</p> : null}
+      {locale === "zh" && creditProject ? <p className="cn-gloss" lang="zh">{zhWrapDisplay(creditProject.glossZh)}</p> : null}
       <p className="exhibit-intro">
         {locale === "en"
           ? "The same calibrated score column supports any portfolio you like — the decision lives in the threshold below it. The figure recomputes approval share against realized defaults from the published backtest rows; no model runs here, and the scores are offline and frozen."
@@ -148,7 +145,7 @@ export function CreditPolicyFrontier() {
             data-detection-table precedent) -- read straight from the
             build-time-imported policyFrontierReport, so it renders with
             zero client JavaScript. */}
-        <div className="credit-table-scroll">
+        <ScrollRegion className="credit-table-scroll" label={{ en: "Policy frontier reference table", zh: "政策前沿参考表" }}>
           <table className="credit-frontier-table" data-frontier-table>
             <thead>
               <tr>
@@ -172,7 +169,7 @@ export function CreditPolicyFrontier() {
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollRegion>
       </div>
 
       <div className="credit-frontier-foot">

@@ -103,11 +103,154 @@ test.describe("homepage seven exhibits", () => {
     await expect(page.locator(SEL.homeHeroTitle)).toContainText("I build the whole path.");
   });
 
-  test("hero contact links carry no icons, per the no-icon binding rule", async ({ page }) => {
+  // Task D-01: contact controls are the one sanctioned exception to the
+  // no-icon rule -- each carries exactly one local, aria-hidden glyph
+  // (src/components/ContactIcon.tsx), and the text label stays the only
+  // accessible name.
+  test("hero contact links each carry one local, aria-hidden contact glyph", async ({ page }) => {
     await page.goto("/", { waitUntil: "networkidle" });
     const links = page.locator(SEL.homeHeroContactLink);
     await expect(links).toHaveCount(5); // GitHub, LinkedIn, Email, Phone, WeChat
-    expect(await links.evaluateAll((nodes) => nodes.every((node) => node.querySelectorAll("svg").length === 0))).toBe(true);
+    expect(await links.evaluateAll((nodes) => nodes.map((node) => ({
+      icons: node.querySelectorAll(":scope > svg.contact-icon[data-contact-icon]").length,
+      hidden: node.querySelector("svg")?.getAttribute("aria-hidden"),
+      external: Array.from(node.querySelectorAll("svg *")).some((el) => (el.getAttribute("href") ?? el.getAttribute("xlink:href") ?? "").length > 0),
+    })))).toEqual(Array(5).fill({ icons: 1, hidden: "true", external: false }));
+    expect(await links.evaluateAll((nodes) => nodes.map((node) => node.getAttribute("data-contact-icon") ?? node.querySelector("svg")?.getAttribute("data-contact-icon")))).toEqual(["github", "linkedin", "email", "phone", "wechat"]);
+    for (const name of ["GitHub", "LinkedIn", "Email", "Phone"]) {
+      await expect(page.locator(SEL.homeHero).getByRole("link", { name, exact: true })).toHaveCount(1);
+    }
+    await expect(page.locator(SEL.homeHero).getByRole("button", { name: "WeChat", exact: true })).toHaveCount(1);
+  });
+
+  // Task D-01 protected baseline: the WeChat <button> and the four <a>
+  // controls sit on one line with equal heights, their labels share one
+  // top edge (same baseline), and every glyph is vertically centred on
+  // its own label. Tolerance is 1px for subpixel layout.
+  test("hero contact glyphs and labels share one baseline across links and the WeChat button", async ({ page }) => {
+    await page.goto("/", { waitUntil: "networkidle" });
+    const boxes = await page.locator(SEL.homeHeroContactLink).evaluateAll((nodes) => nodes.map((node) => {
+      const control = node.getBoundingClientRect();
+      const icon = node.querySelector("svg")!.getBoundingClientRect();
+      const label = node.querySelector("span")!.getBoundingClientRect();
+      return { top: control.top, height: control.height, labelTop: label.top, iconMid: icon.top + icon.height / 2, labelMid: label.top + label.height / 2, iconW: icon.width, iconH: icon.height };
+    }));
+    expect(boxes).toHaveLength(5);
+    const rows = new Set(boxes.map((b) => Math.round(b.top)));
+    for (const b of boxes) {
+      expect(Math.abs(b.iconMid - b.labelMid)).toBeLessThanOrEqual(1.5);
+      expect(Math.abs(b.iconW - b.iconH)).toBeLessThanOrEqual(0.5);
+      expect(b.iconW).toBeGreaterThanOrEqual(12);
+      expect(b.iconW).toBeLessThanOrEqual(20);
+    }
+    // Controls on the same wrapped row share height and label top.
+    for (const rowTop of rows) {
+      const row = boxes.filter((b) => Math.round(b.top) === rowTop);
+      for (const b of row) {
+        expect(Math.abs(b.height - row[0].height)).toBeLessThanOrEqual(1);
+        expect(Math.abs(b.labelTop - row[0].labelTop)).toBeLessThanOrEqual(1);
+      }
+    }
+  });
+
+  // Task D-01 protected baseline: exhibit 06's Source/receipts contact row
+  // keeps its 20px inline gap and one shared top edge after the glyphs land.
+  test("receipts contact links keep their 20px spacing and shared top edge", async ({ page }) => {
+    await page.goto("/", { waitUntil: "networkidle" });
+    const links = page.locator(".home-receipts-contact a");
+    await expect(links).toHaveCount(2);
+    expect(await links.evaluateAll((nodes) => nodes.map((node) => node.querySelectorAll(":scope > svg.contact-icon").length))).toEqual([1, 1]);
+    const boxes = await links.evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect()).map((r) => ({ top: r.top, left: r.left, right: r.right, height: r.height })));
+    for (let i = 1; i < boxes.length; i += 1) {
+      if (Math.round(boxes[i].top) !== Math.round(boxes[0].top)) continue; // wrapped onto a new row (narrow viewports)
+      expect(boxes[i].left - boxes[i - 1].right).toBeCloseTo(20, 0);
+      expect(Math.abs(boxes[i].height - boxes[0].height)).toBeLessThanOrEqual(1);
+    }
+  });
+
+  // Task D-01: keyboard focus on the Ask Portfolio controls paints the
+  // deliberate accent frame (2px solid, square) rather than the browser's
+  // blue `auto` ring; on the ink exhibit the frame uses --accent-on-ink.
+  test("Ask Portfolio controls show the accent focus frame on keyboard focus", async ({ page }) => {
+    await page.goto("/", { waitUntil: "networkidle" });
+    const accent = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--accent").trim());
+    const accentOnInk = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--accent-on-ink").trim());
+    const toRgb = (hex: string) => `rgb(${parseInt(hex.slice(1, 3), 16)}, ${parseInt(hex.slice(3, 5), 16)}, ${parseInt(hex.slice(5, 7), 16)})`;
+    const outlineOf = (locator: ReturnType<typeof page.locator>) => locator.evaluate((node) => {
+      const cs = getComputedStyle(node);
+      return { style: cs.outlineStyle, width: cs.outlineWidth, color: cs.outlineColor, focusVisible: node.matches(":focus-visible") };
+    });
+
+    const input02 = page.locator(SEL.exhibit("02")).locator(SEL.homeAskInput);
+    await input02.focus();
+    await expect(input02).toBeFocused();
+    expect(await outlineOf(input02)).toEqual({ style: "solid", width: "2px", color: toRgb(accent), focusVisible: true });
+    await expect(page.locator(SEL.exhibit("02")).locator(".home-ask-row")).toHaveCSS("border-bottom-color", toRgb(accent));
+
+    // Tab onward: the submit button, then the first preset chip -- both
+    // reached by keyboard so :focus-visible must match.
+    await page.keyboard.press("Tab");
+    const submit02 = page.locator(SEL.exhibit("02")).locator(".home-ask-row button");
+    await expect(submit02).toBeFocused();
+    expect(await outlineOf(submit02)).toEqual({ style: "solid", width: "2px", color: toRgb(accent), focusVisible: true });
+    await page.keyboard.press("Tab");
+    const chip = page.locator(SEL.exhibit("02")).locator(SEL.homeAskPresetButton).first();
+    await expect(chip).toBeFocused();
+    expect(await outlineOf(chip)).toEqual({ style: "solid", width: "2px", color: toRgb(accent), focusVisible: true });
+
+    const input06 = page.locator(SEL.exhibit("06")).locator(SEL.homeAskInput);
+    await input06.focus();
+    expect(await outlineOf(input06)).toEqual({ style: "solid", width: "2px", color: toRgb(accentOnInk), focusVisible: true });
+
+    // Pointer focus never removes indication for keyboard users: the
+    // input keeps an outline whenever it is focused (text inputs are always
+    // :focus-visible), which is the WCAG 2.4.7 floor this test protects.
+    await input02.click();
+    expect((await outlineOf(input02)).style).toBe("solid");
+  });
+
+  // Task D-01: one screen-height model for rail and content on the fixed-
+  // rail breakpoint (>= 980px). Each exhibit is at least one viewport tall
+  // (long ones grow), the hero fills the first screen without exposing a
+  // strip of exhibit 01's ink, and every rail anchor lands its exhibit
+  // flush with the viewport top with no previous-exhibit strip above it.
+  test("desktop exhibits follow the rail's screen-height rhythm", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name === "mobile", "The fixed-rail model only exists at >= 980px.");
+    if (testInfo.project.name === "desktop") await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.goto("/", { waitUntil: "networkidle" });
+    const vh = await page.evaluate(() => window.innerHeight);
+    const rail = await page.locator(".exhibit-rail-fixed").evaluate((node) => node.getBoundingClientRect().height);
+    expect(Math.abs(rail - vh)).toBeLessThanOrEqual(1);
+
+    const heights = await page.locator("[data-exhibit]").evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().height));
+    expect(heights).toHaveLength(7);
+    for (const h of heights) expect(h).toBeGreaterThanOrEqual(vh - 1);
+
+    // First paint: the hero owns the whole first screen (the pixel row at
+    // the bottom edge of the viewport is still exhibit 00, not 01).
+    const bottomOwner = await page.evaluate(() => document.elementFromPoint(window.innerWidth - 40, window.innerHeight - 2)?.closest("[data-exhibit]")?.getAttribute("data-exhibit"));
+    expect(bottomOwner).toBe("00");
+
+    for (const num of ["01", "02", "03", "04", "05", "06"]) {
+      await page.locator(`.exhibit-rail-fixed .exhibit-rail-nav a[href="#exhibit-${num}"]`).click();
+      await expect.poll(async () => page.locator(SEL.exhibit(num)).evaluate((node) => Math.round(node.getBoundingClientRect().top)), { timeout: 5_000 }).toBeLessThanOrEqual(1);
+      const top = await page.locator(SEL.exhibit(num)).evaluate((node) => node.getBoundingClientRect().top);
+      // Never negative by more than a pixel either: the anchor is flush,
+      // not scrolled past. (The last exhibit can sit short of the top only
+      // if the document has run out of scroll room, which min-height rules out.)
+      expect(top).toBeGreaterThanOrEqual(-1);
+      expect(top).toBeLessThanOrEqual(1);
+    }
+  });
+
+  test("ultrawide desktop caps forced exhibit height without changing content flow", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop", "The ultrawide review contract needs one desktop browser.");
+    await page.setViewportSize({ width: 1920, height: 1080 });
+    await page.goto("/", { waitUntil: "networkidle" });
+    const minimums = await page.locator("[data-exhibit]").evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).minHeight));
+    expect(minimums).toEqual(Array(7).fill("900px"));
+    const shortSections = await page.locator('[data-exhibit="03"], [data-exhibit="05"]').evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().height));
+    for (const height of shortSections) expect(height).toBeLessThan(1080);
   });
 
   test("exhibit 01 claim-chain expands via native <details> to reveal a sha256: receipt", async ({ page }) => {
@@ -225,10 +368,11 @@ test.describe("homepage seven exhibits", () => {
     await expect(dl).toContainText(`sha256:${homeReceipts.releaseJson.sha256}`);
     await expect(dl).toContainText(`sha256:${homeReceipts.eodManifest.sha256}`);
     await expect(dl).toContainText(`sha256:${homeReceipts.privacyManifest.sha256}`);
-    await expect(dl).toContainText(homeReceipts.buildDate);
+    await expect(dl).toContainText(homeReceipts.contentUpdatedAt);
+    await expect(dl).toContainText("Content reviewed");
     const exhibit06 = page.locator(SEL.exhibit("06"));
     await expect(exhibit06.locator(SEL.homeAskInput)).toHaveCount(1);
-    await expect(exhibit06).toContainText(homeReceipts.buildDate);
+    await expect(exhibit06).toContainText(homeReceipts.contentUpdatedAt);
   });
 
   test("language switch preserves the current exhibit hash", async ({ page }) => {
@@ -237,46 +381,58 @@ test.describe("homepage seven exhibits", () => {
     await expect(page).toHaveURL(/\?lang=zh#exhibit-04$/);
   });
 
-  // Spec §2.1's fourth rail tool (RESUME) is absent from the public
-  // repository — the approved resume PDFs are owner-private and are served
-  // only from the deployment host — so the single-mount assertion anchors
-  // on the ASK control instead, which is likewise unique to HomeRailTools.
-  test("homepage rail footer tools (search / ask / language) render exactly once", async ({ page }) => {
+  test("homepage rail footer tools render exactly once and localize in place", async ({ page }) => {
     await page.goto("/", { waitUntil: "networkidle" });
     await expect(page.locator(SEL.homeRailTools)).toHaveCount(1);
     await expect(page.locator(SEL.homeRailTools).getByRole("button", { name: "ASK", exact: true })).toHaveCount(1);
     await expect(page.locator(SEL.homeRailTools).getByRole("button", { name: "ASK", exact: true })).toBeVisible();
     await expect(page.locator(SEL.homeRailTools).getByRole("link", { name: "RESUME", exact: true })).toHaveCount(0);
+    await page.locator(SEL.homeRailTools).getByRole("button", { name: "中", exact: true }).click();
+    await expect(page.locator(SEL.homeRailTools).getByRole("button", { name: "提问", exact: true })).toBeVisible();
+    await expect(page.locator(SEL.homeRailTools).getByRole("link", { name: "简历", exact: true })).toHaveCount(0);
+    await expect(page.locator(".exhibit-rail-fixed .exhibit-rail-label")).toHaveText([
+      "首页介绍", "Frontier Forge", "智能体系统", "系统技术栈", "负结果", "其他项目与归档", "源码与记录",
+    ]);
   });
 
   // Task F5 (locale purity, user's binding rule): "英文版网站只能有英文" — the
-  // en locale must render zero Chinese text anywhere on the page, including
-  // the hero's zh narrative paragraph and the rail's zh positioning line,
-  // both of which used to render unconditionally alongside the English copy.
-  test("en locale renders no Chinese (CJK) text anywhere on the page", async ({ page }) => {
+  // The en locale exposes no Chinese text visually or in the accessibility
+  // tree. The hero narrative has a stable server node whose display follows
+  // the root language before first paint.
+  test("en locale exposes no Chinese (CJK) text", async ({ page }) => {
     await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "en"));
     await page.goto("/", { waitUntil: "networkidle" });
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
-    await expect(page.locator(SEL.homeHeroZh)).toHaveCount(0);
+    await expect(page.locator(SEL.homeHeroZh)).toBeHidden();
     await expect(page.locator(".exhibit-rail-copy-zh")).toHaveCount(0);
     const bodyText = await bodyTextExcludingLanguageSwitcher(page);
     expect(containsCJK(bodyText)).toBe(false);
+    expect(await page.locator(SEL.homeHero).ariaSnapshot()).not.toContain("我把整条链路做通");
   });
 
-  // Task F4: no <link rel="preload"> for the self-hosted zh serif (its
-  // @font-face unicode-range is lazy by design -- see globals.css) means
-  // the browser should never even ask for display-serif-zh.woff2 on an
-  // en-locale page, since nothing on it lays out CJK text. This guards
-  // against that font accidentally taxing en visitors (e.g. via a stray
-  // preload, or zh text leaking into an element the CJK scan above misses).
+  // The parser-time bootstrap may preload the self-hosted zh serif for a
+  // Chinese first paint, but English must retain the original zero-byte
+  // contract. This guards against the conditional preload accidentally
+  // taxing en visitors (or zh text leaking into an element above).
   test("en locale makes zero network request for the self-hosted zh serif font", async ({ page }) => {
     const requests: string[] = [];
     page.on("request", (request) => requests.push(request.url()));
     await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "en"));
     await page.goto("/", { waitUntil: "networkidle" });
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
+    await expect(page.locator('link[rel="preload"][href="/fonts/display-serif-zh-home.woff2"]')).toHaveCount(0);
     const zhFontRequests = requests.filter((url) => url.includes("display-serif-zh"));
     expect(zhFontRequests).toEqual([]);
+  });
+
+  test("zh locale discovers the self-hosted serif from the parser-time preload", async ({ page }) => {
+    const requests: string[] = [];
+    page.on("request", (request) => requests.push(request.url()));
+    await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "zh"));
+    await page.goto("/", { waitUntil: "networkidle" });
+    await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
+    await expect(page.locator('link[rel="preload"][href="/fonts/display-serif-zh-home.woff2"]')).toHaveCount(1);
+    expect(requests.filter((url) => url.includes("display-serif-zh-home"))).toHaveLength(1);
   });
 
   // The zh locale is allowed (expected) to lead with Chinese: the approved
@@ -290,8 +446,9 @@ test.describe("homepage seven exhibits", () => {
 
     const heroZh = page.locator(SEL.homeHeroZh);
     await expect(heroZh).toHaveCount(1);
-    await expect(heroZh).toHaveText("训练、上线、跑挂了再修——这条链路我一个人从头走到尾，出问题也不含糊。");
+    await expect(heroZh).toHaveText("我把整条链路做通，也把它会在哪里失效讲清楚。");
     expect(longestLatinWordRun(await heroZh.innerText())).toBeLessThanOrEqual(8);
+    expect((await page.locator(SEL.homeHero).ariaSnapshot()).replaceAll(" ", "")).toContain("我把整条链路做通");
 
     const railZh = page.locator(".exhibit-rail-copy-zh");
     await expect(railZh).toHaveCount(1);
@@ -299,6 +456,14 @@ test.describe("homepage seven exhibits", () => {
     await expect(railZh).toHaveText("AI Agent 与大模型应用系统，端到端留痕。");
     expect(longestLatinWordRun(await railZh.innerText())).toBeLessThanOrEqual(8);
     await expect(page.locator(".exhibit-rail-copy-en")).toHaveCount(0);
+  });
+
+  test("all English hero variants share the approved Chinese headline", async ({ page }) => {
+    await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "zh"));
+    for (const variant of ["a", "b", "c"]) {
+      await page.goto(`/?hero=${variant}`, { waitUntil: "networkidle" });
+      await expect(page.locator(SEL.homeHeroZh)).toHaveText("我把整条链路做通，也把它会在哪里失效讲清楚。");
+    }
   });
 
   // Task F11 (audit3 zh de-anglicization, home items): spot-checks on the

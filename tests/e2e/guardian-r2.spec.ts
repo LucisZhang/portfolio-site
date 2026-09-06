@@ -140,6 +140,7 @@ test("Release Guardian renders with no JavaScript: both recorded branches are fu
 
   // Exhibit 02's full 13-node trace is also server-rendered static markup.
   await expect(page.locator(SEL.exhibit("02")).locator(".guardian-node-table [role=\"row\"]")).toHaveCount(allNodes.length + 1);
+  await expect(page.locator(SEL.exhibit("04")).getByRole("table", { name: "Release gate metrics" })).toBeVisible();
 
   await context.close();
 });
@@ -163,6 +164,7 @@ test("en Release Guardian renders no Chinese (CJK) text anywhere on the page", a
   await page.goto(ROUTE, { waitUntil: "networkidle" });
   await expect(page.locator(".exhibit-rail-copy-zh")).toHaveCount(0);
   await expect(page.locator(".exhibit-rail-copy-en")).toHaveCount(1);
+  await expect(page.locator(SEL.exhibit("04")).getByRole("table", { name: "Release gate metrics" })).toBeVisible();
   const bodyText = await bodyTextExcludingLanguageSwitcher(page);
   expect(containsCJK(bodyText)).toBe(false);
 });
@@ -179,6 +181,7 @@ test("zh Release Guardian renders an independently-written zh headline with no l
   const intro = page.locator(SEL.exhibit("04")).locator(".exhibit-intro");
   expect(containsCJK(await intro.innerText())).toBe(true);
   expect(longestLatinWordRun(await intro.innerText())).toBeLessThanOrEqual(8);
+  await expect(page.locator(SEL.exhibit("04")).getByRole("table", { name: "发布门禁指标" })).toBeVisible();
 
   await expect(page.locator(".exhibit-rail-copy-en")).toHaveCount(0);
 });

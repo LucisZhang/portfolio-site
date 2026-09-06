@@ -11,29 +11,6 @@
   color: var(--ink);
 }
 
-/* ---------- Top strip ---------- */
-
-.eod-topstrip {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 16px;
-  flex-wrap: wrap;
-  padding-bottom: 12px;
-  margin-bottom: clamp(20px, 3vw, 32px);
-  border-bottom: 1px solid var(--hairline);
-  font-family: var(--mono);
-  font-size: .68rem;
-  letter-spacing: .12em;
-  color: var(--muted);
-  text-transform: uppercase;
-}
-
-.eod-topstrip-crumb b {
-  color: var(--ink);
-  font-weight: 500;
-}
-
 /* ---------- Hero copy ---------- */
 
 .eod-log-title {
@@ -531,6 +508,35 @@
   border: 0;
 }
 
+/* D-04: the small-file rewrite figure is the exhibit's primary surface. OptionalMedia's
+   `wide` layout drops the two-column split; this block lets the figure take the whole
+   content column at its natural 940x520 aspect (no 420px cap, no letterboxing), caps it
+   only on very wide screens so the SVG text never balloons past ~1.25x, and lifts the
+   caption to reading size beneath it. Mobile keeps the single-column stack. */
+#exhibit-04 .media-grid--wide {
+  margin-top: 36px;
+}
+
+#exhibit-04 .media-grid--wide figure {
+  max-width: 1180px;
+}
+
+#exhibit-04 .media-grid--wide img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: none;
+  aspect-ratio: 940 / 520;
+  object-fit: contain;
+}
+
+#exhibit-04 .media-grid--wide figcaption {
+  margin-top: 14px;
+  max-width: 68ch;
+  font-size: .85rem;
+  line-height: 1.55;
+}
+
 /* ---------- Receipts (exhibit 05) ---------- */
 
 .eod-receipts-dl {
@@ -566,52 +572,4 @@
   align-items: center;
   min-height: 44px;
   color: var(--accent-on-ink);
-}
-
-/* ---------- Report layer (Architecture / Results / Limitations) ---------- */
-
-.eod-report-section {
-  border-bottom: 1px solid var(--hairline);
-  padding: clamp(40px, 5vw, 72px) clamp(34px, 7vw, 110px);
-}
-
-.eod-report-section h2 {
-  margin: 0 0 20px;
-  font-family: var(--display-serif);
-  font-size: clamp(1.6rem, 2.4vw, 2.2rem);
-  font-weight: 400;
-}
-
-:lang(zh) .eod-report-section h2 {
-  font-family: var(--display-serif-zh);
-}
-
-.eod-architecture-flow {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  max-width: 720px;
-}
-
-.eod-architecture-flow li {
-  display: flex;
-  gap: 14px;
-  border-top: 1px solid var(--hairline);
-  padding-top: 12px;
-}
-
-.eod-architecture-flow li > span {
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: .68rem;
-}
-
-.eod-architecture-flow li p {
-  margin: 4px 0 0;
-  color: var(--muted);
-  font-size: .88rem;
-  line-height: 1.55;
 }

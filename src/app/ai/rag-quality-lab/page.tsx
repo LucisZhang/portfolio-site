@@ -1,6 +1,8 @@
+import { EvidenceScope } from "@/components/exhibition/EvidenceScope.server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ExhibitShell } from "@/components/exhibition/ExhibitShell";
+import ProjectRepositoryEntry from "@/components/exhibition/ProjectRepositoryEntry";
 import ProjectRailTools from "@/components/exhibition/ProjectRailTools";
 import RagPage from "@/components/ragdiff/RagPage";
 import { ragRail } from "@/components/ragdiff/ragRail";
@@ -24,8 +26,10 @@ export default function RagQualityLabRoute() {
   const project = getProject("ai", "rag-quality-lab");
   if (!project) notFound();
   return (
-    <ExhibitShell rail={ragRail} railTools={<ProjectRailTools />} mode="auto">
-      <RagPage project={project} />
+    <ExhibitShell repositoryEntry={<ProjectRepositoryEntry project={project} />} rail={ragRail} railTools={<ProjectRailTools />} mode="auto">
+      <EvidenceScope project="rag">
+        <RagPage project={project} />
+      </EvidenceScope>
     </ExhibitShell>
   );
 }

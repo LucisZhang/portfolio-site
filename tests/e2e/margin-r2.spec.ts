@@ -96,6 +96,7 @@ test.describe("Margin Control Tower exhibit 04 (click-gated DuckDB receipts)", (
     expect(heavyRuntimeRequests).toEqual([]);
     expect(parquetRequests).toBe(0);
 
+    await page.locator("[data-evidence=margin] > details > summary").click();
     const verify = page.locator(".margin-verify");
     await expect(verify).toHaveAttribute("data-verify-status", "idle");
     await verify.getByRole("button").click();
@@ -116,7 +117,8 @@ test("Margin Control Tower renders with no JavaScript: exhibits 01-04 show real 
   await expect(page.locator(SEL.exhibit("02")).locator(".margin-registry-table tbody tr")).toHaveCount(4);
   await expect(page.locator(SEL.exhibit("03")).locator(".exhibit-finding")).toHaveCount(2);
   await expect(page.locator(SEL.exhibit("04")).locator(".margin-receipts-dl > div")).toHaveCount(4);
-  // The verify button is present but inert without JS -- must not vanish.
+  // Native disclosure remains operable without JS; the verify action is still present.
+  await page.locator("[data-evidence=margin] > details > summary").click();
   await expect(page.locator(".margin-verify-button")).toBeVisible();
 
   await context.close();

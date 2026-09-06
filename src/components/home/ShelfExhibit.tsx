@@ -3,13 +3,15 @@
 import { Exhibit } from "@/components/exhibition/Exhibit";
 import LocaleLink from "@/components/LocaleLink";
 import { localize, useI18n } from "@/lib/i18n";
-import { homepageProjects } from "@/lib/projects";
+import type { Project } from "@/lib/projects";
+import { zhGroup, zhWrapDisplay } from "@/lib/zh-wrap";
 
-const secondary = homepageProjects.filter((project) => project.tier === "secondary");
-const archive = homepageProjects.filter((project) => project.tier === "archive");
-
-export default function ShelfExhibit() {
+export default function ShelfExhibit({ projects }: {
+  projects: Pick<Project, "slug" | "track" | "tier" | "title" | "glossZh" | "metrics">[];
+}) {
   const { locale } = useI18n();
+  const secondary = projects.filter((project) => project.tier === "secondary");
+  const archive = projects.filter((project) => project.tier === "archive");
 
   return (
     <Exhibit
@@ -21,7 +23,7 @@ export default function ShelfExhibit() {
         locale === "en" ? (
           <>Not every project needs the front room.</>
         ) : (
-          <>不是每个项目都要摆在正厅。</>
+          <>{zhGroup("不是每个项目", "都要摆在正厅。")}</>
         )
       }
     >
@@ -42,7 +44,7 @@ export default function ShelfExhibit() {
               <strong>{localize(project.title, locale)}</strong>
               {/* Locale purity (task F5): the gloss line is zh-only, not a
                   second English narrative — must not render in en locale. */}
-              {locale === "zh" ? <span className="cn-gloss">{project.glossZh}</span> : null}
+              {locale === "zh" ? <span className="cn-gloss">{zhWrapDisplay(project.glossZh)}</span> : null}
             </span>
             <span className="home-shelf-metric">{localize(project.metrics, locale)}</span>
           </LocaleLink>

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import test from "node:test";
+import { resolveProjectIdentity } from "../../src/lib/project-identities.ts";
 import {
   citationsForChunkIds,
   retrieveAssistantKnowledge,
@@ -75,7 +76,7 @@ test("committed generated artifacts match a fresh derivation from the authored b
   assert.deepEqual(presetAnswers.answers, derivedAnswers, "ask-preset-answers.json is stale — run npm run generate:ask-question-bank");
   const derivedBank = Object.fromEntries(Object.entries(sourceBank).map(([route, entry]) => [
     route,
-    { questions: entry.questions.map(({ id, q_en, q_zh }) => ({ q_en, q_zh, id })) },
+    { aliases: [...(resolveProjectIdentity(route)?.routeAliases ?? [])], questions: entry.questions.map(({ id, q_en, q_zh }) => ({ q_en, q_zh, id })) },
   ]));
   assert.deepEqual(questionBank, derivedBank, "ask-question-bank.json is stale — run npm run generate:ask-question-bank");
 });
@@ -136,6 +137,10 @@ for (const route of expectedRoutes) {
         for (const citation of record.citations) {
           if (citation.sourceId.startsWith("portfolio-site:")) {
             assert.match(citation.sourceId, /^portfolio-site:[a-z0-9-]+:/u);
+          } else if (citation.sourceId.startsWith("portfolio-evidence:")) {
+            assert.ok(citation.url.startsWith(
+              `https://github.com/${manifest.siteRepository.owner}/${manifest.siteRepository.repo}/blob/${manifest.siteRepository.commit}/`,
+            ), `${question.id} ${locale} carries unpinned portfolio evidence: ${citation.url}`);
           } else {
             const repository = manifest.repositories.find((entry) => citation.url.startsWith(
               `https://github.com/${entry.owner}/${entry.repo}/blob/${entry.commit}/`,

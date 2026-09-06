@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "snapshotId": "public-github-portfolio-20260903-r3-v1",
+  "snapshotId": "public-github-portfolio-20260906-r4-v1",
   "repositories": [
     {
       "owner": "LucisZhang",
@@ -88,8 +88,8 @@
       "owner": "LucisZhang",
       "repo": "credit-policy-desk",
       "commit": "bbad7e0dbf997d7fb64caad5ed3c8bf09e74658e",
-      "label": { "en": "Credit Policy Desk", "zh": "Credit Policy Desk" },
-      "aliases": ["Credit Policy Desk", "Credit Policy Lab (historical name)", "信贷策略实验室（历史名称）", "credit", "信贷", "PD", "LGD", "EAD", "Brier", "PSI", "backtest", "回测"],
+      "label": { "en": "Credit Policy Desk", "zh": "分数不是策略。" },
+      "aliases": ["Credit Policy Desk", "分数不是策略。", "Credit Policy Lab (historical name)", "信贷策略实验室（历史名称）", "credit", "信贷", "PD", "LGD", "EAD", "Brier", "PSI", "backtest", "回测"],
       "files": [
         "README.md",
         "public/case-studies/credit-policy-lab/README.md",
@@ -121,7 +121,7 @@
   "siteRepository": {
     "owner": "LucisZhang",
     "repo": "portfolio-site",
-    "commit": "346b8a81cbf9a238081ef179eb622ea8f0614466"
+    "commit": "b7a57776c9b9315ed328cbaa65e8be1e5c6d8a1d"
   },
   "siteSources": [
     {
@@ -133,7 +133,7 @@
         "README.zh-CN.md",
         "package.json",
         { "path": "src/lib/site-config.ts", "lineStart": 1, "lineEnd": 37 },
-        { "path": "src/lib/site-config.ts", "lineStart": 60, "lineEnd": 69 },
+        { "path": "src/lib/site-config.ts", "lineStart": 56, "lineEnd": 65 },
         { "path": "src/lib/i18n.ts", "lineStart": 64, "lineEnd": 156 },
         "src/lib/home-stats.ts",
         "src/lib/projects.ts",
@@ -320,8 +320,8 @@
     },
     {
       "route": "/analytics/credit-policy-desk",
-      "label": { "en": "Credit Policy Desk", "zh": "Credit Policy Desk" },
-      "aliases": ["/analytics/credit-policy-desk", "Credit Policy Desk", "credit policy", "信贷策略", "approval review decline", "批准 复核 拒绝", "thresholds", "阈值", "granted loans", "已授信样本", "backtest", "回测"],
+      "label": { "en": "Credit Policy Desk", "zh": "分数不是策略。" },
+      "aliases": ["/analytics/credit-policy-desk", "Credit Policy Desk", "分数不是策略。", "credit policy", "信贷策略", "approval review decline", "批准 复核 拒绝", "thresholds", "阈值", "granted loans", "已授信样本", "backtest", "回测"],
       "files": [
         { "path": "src/lib/projects.ts", "projectSlug": "credit-policy-desk" },
         "src/components/credit/CreditPolicyFrontier.tsx",

@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 import { SEL } from "./selectors";
 import { bodyTextExcludingLanguageSwitcher, containsCJK, longestLatinWordRun } from "./localePurity";
 import { assertNoHorizontalOverflow, assertTouchTarget } from "./mobileAudit";
+import { frontierProjectDetail } from "../../src/lib/frontier-project-detail";
 
 const ROUTE = "/ai/frontier-forge";
 const HEAVY_ASSET_PATTERN = /\.(onnx|wasm|gguf)(\?|$)/i;
@@ -39,7 +40,8 @@ for (const locale of ["en", "zh"] as const) {
     // The free-input box sits after the chips and is disabled + labeled.
     const input = instrument.locator("[data-forge-input]");
     await expect(input).toBeDisabled();
-    await expect(input).toHaveAttribute("aria-label", "LIVE LAYER OFFLINE");
+    await expect(input).toHaveAttribute("aria-label", locale === "en" ? "LIVE LAYER OFFLINE" : "在线服务未启用");
+    await expect(input).toHaveAttribute("placeholder", locale === "en" ? "LIVE LAYER OFFLINE" : "在线服务未启用");
   });
 }
 
@@ -66,6 +68,50 @@ test("Frontier Forge request tabs show the same request body across cURL/Python/
   await expect(instrument.locator('[data-forge-request-tab="json"]')).toContainText("complaint_narrative");
 });
 
+test("Frontier Forge run and request tabs are compact, 44px, and keyboard navigable", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "The wide-screen geometry contract only needs one browser size.");
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  await page.goto(ROUTE, { waitUntil: "networkidle" });
+  const instrument = page.locator('[data-instrument][data-instrument-variant="full"]');
+  const instrumentBox = await instrument.boundingBox();
+  const runTabs = instrument.locator(".forge-console-chips");
+  const requestTabs = instrument.locator(".forge-console-tabs");
+  const [runBox, requestBox] = await Promise.all([runTabs.boundingBox(), requestTabs.boundingBox()]);
+  expect(instrumentBox).not.toBeNull();
+  expect(runBox).not.toBeNull();
+  expect(requestBox).not.toBeNull();
+  expect(runBox!.width).toBeLessThan(instrumentBox!.width * .6);
+  expect(requestBox!.width).toBeLessThan(instrumentBox!.width * .4);
+
+  for (const tabs of [runTabs, requestTabs]) {
+    await expect(tabs).toHaveAttribute("role", "tablist");
+    const buttons = tabs.getByRole("tab");
+    for (const button of await buttons.all()) {
+      const box = await button.boundingBox();
+      expect(box).not.toBeNull();
+      expect(box!.height).toBeGreaterThanOrEqual(44);
+      await expect(button).toHaveAttribute("aria-controls", /forge-.+-panel-full/);
+    }
+    await expect(tabs.locator('[role="tab"][aria-selected="true"]')).toHaveCount(1);
+  }
+
+  const runButtons = runTabs.getByRole("tab");
+  const selectedRunIndex = await runButtons.evaluateAll((buttons) => buttons.findIndex((button) => button.getAttribute("aria-selected") === "true"));
+  const nextRunIndex = (selectedRunIndex + 1) % await runButtons.count();
+  await runTabs.locator('[role="tab"][aria-selected="true"]').focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(runButtons.nth(nextRunIndex)).toBeFocused();
+  await expect(runButtons.nth(nextRunIndex)).toHaveAttribute("aria-selected", "true");
+  await expect(instrument.locator("[data-readout]")).toHaveAttribute("aria-labelledby", await runButtons.nth(nextRunIndex).getAttribute("id") ?? "");
+
+  const requestButtons = requestTabs.getByRole("tab");
+  await requestButtons.first().focus();
+  await page.keyboard.press("End");
+  await expect(requestButtons.last()).toBeFocused();
+  await expect(requestButtons.last()).toHaveAttribute("aria-selected", "true");
+  await expect(instrument.locator(".forge-console-request-panel")).toHaveAttribute("aria-labelledby", await requestButtons.last().getAttribute("id") ?? "");
+});
+
 test("Frontier Forge renders with no JavaScript: exhibits 01-05 have static server-rendered content", async ({ browser }) => {
   // (c) with JS disabled, exhibits 01-05 must show real static tables/values,
   // not an empty shell — this is what proves the content is server-rendered
@@ -76,6 +122,7 @@ test("Frontier Forge renders with no JavaScript: exhibits 01-05 have static serv
 
   // 01: instrument readout has a real value.
   await expect(page.locator(SEL.exhibit("01")).locator("[data-readout] strong")).toHaveText(/^\d+\.\d+s$/);
+  await expect(page.locator(SEL.exhibit("01")).locator("[data-forge-input]")).toHaveAttribute("aria-label", "LIVE LAYER OFFLINE");
   // 02: evidence claim table has rows.
   await expect(page.getByTestId("forge-evidence-explorer").locator(SEL.tbodyTr)).toHaveCount(10);
   // 03: training ladder has all seven rungs.
@@ -170,6 +217,22 @@ for (const locale of ["en", "zh"] as const) {
     const noCount = await matrix.locator('[data-capability="no"]').count();
     expect(noCount).toBeGreaterThanOrEqual(yesCount);
     await expect(page.locator(SEL.exhibit("06")).locator(".forge-not-recorded")).toContainText(locale === "en" ? "NOT RECORDED" : "未记录");
+    // Task D-02: exhibit 06 stays on model suitability — its former
+    // LIMITATION block (a verbatim copy of boundaries[0]) now lives only in
+    // the Limitations section, which lists every boundary exactly once.
+    await expect(page.locator(SEL.exhibit("06")).locator('[data-finding="limitation"]')).toHaveCount(0);
+    const limitationItems = page.locator('[data-project-section="limitations"] [data-limitations] li');
+    await expect(limitationItems).toHaveCount(frontierProjectDetail.boundaries.length);
+    for (const [index, boundary] of frontierProjectDetail.boundaries.entries()) {
+      await expect(limitationItems.nth(index)).toContainText(boundary[locale]);
+    }
+    // Task D-02 de-box: the hero metric band is a ruled typographic row, not
+    // a framed checkerboard.
+    const heroBand = await page.locator("#hero .forge-hero-metrics").evaluate((band) => {
+      const style = getComputedStyle(band);
+      return { left: style.borderLeftWidth, right: style.borderRightWidth, bottom: style.borderBottomWidth, top: style.borderTopWidth };
+    });
+    expect(heroBand).toEqual({ left: "0px", right: "0px", bottom: "0px", top: "1px" });
 
     // Report layer: Architecture -> Results & negatives -> Limitations.
     expect(await page.locator('[data-project-section="how"], [data-project-section="results"], [data-project-section="limitations"]').evaluateAll(

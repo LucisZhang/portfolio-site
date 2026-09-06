@@ -1,13 +1,17 @@
 "use client";
 
 import { Exhibit } from "@/components/exhibition/Exhibit";
-import { localize, useI18n } from "@/lib/i18n";
+import { localize, useI18n, type LocalizedString } from "@/lib/i18n";
 import { homeStats, leadingCount, localizeStatText } from "@/lib/home-stats";
-import { tracks } from "@/lib/projects";
+import type { Project } from "@/lib/projects";
+import { Fragment } from "react";
+import LocaleLink from "@/components/LocaleLink";
+import { zhGroup } from "@/lib/zh-wrap";
 
-const engineeringTrack = tracks.find((track) => track.id === "engineering");
-
-export default function StackExhibit() {
+export default function StackExhibit({ projects, thesis }: {
+  projects: Pick<Project, "slug" | "track" | "title">[];
+  thesis?: LocalizedString;
+}) {
   const { locale } = useI18n();
   const streamLayer = homeStats.stackDepth.find((layer) => layer.layer === "Stream");
   // The ten-cell checkerboard's cell count comes from the Stream layer's own
@@ -25,16 +29,25 @@ export default function StackExhibit() {
         locale === "en" ? (
           <>The agents sit on a stack.<br /><em>The stack has its own receipts.</em></>
         ) : (
-          <>Agent 之下是一整套系统，<em>系统自己的账也对得上。</em></>
+          <>{zhGroup("Agent 之下", "是一整套系统，")}<br /><em>{zhGroup("系统自己的账", "也对得上。")}</em></>
         )
       }
-      intro={engineeringTrack ? localize(engineeringTrack.thesis, locale) : undefined}
+      intro={thesis ? localize(thesis, locale) : undefined}
     >
       <div className="home-stack-grid">
         {homeStats.stackDepth.map((layer) => (
           <div className="home-stack-layer" key={layer.layer}>
             <p className="home-stack-layer-name">{layer.layer}</p>
-            <p className="home-stack-layer-projects">{layer.projects.join(" · ")}</p>
+            <p className="home-stack-layer-projects">{layer.projects.map((name, index) => {
+              // Names are emitted by generate-home-data from the identity map.
+              const project = projects.find((entry) => entry.title.en === name || entry.title.zh === name);
+              return <Fragment key={name}>
+                {index > 0 ? " · " : null}
+                {project
+                  ? <LocaleLink href={`/${project.track}/${project.slug}`}>{project.title[locale]}</LocaleLink>
+                  : name}
+              </Fragment>;
+            })}</p>
             <p className="home-stack-layer-metric">{localizeStatText(layer.metric, locale)}</p>
           </div>
         ))}

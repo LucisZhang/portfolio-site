@@ -1,15 +1,22 @@
 "use client";
 
+import { artifactLocale } from "./artifact-locale.mjs";
+import { jsx } from "@/lib/zh-jsx/jsx-runtime";
+import { usePathname, useSearchParams } from "next/navigation";
+
 import {
+  Suspense,
   createContext,
   createElement,
   useCallback,
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useSyncExternalStore,
   type ReactNode,
 } from "react";
+import { navigationCopy } from "./navigation";
 
 export type Locale = "en" | "zh";
 export type LocalizedString = Record<Locale, string>;
@@ -68,7 +75,7 @@ const en: Dictionary = {
   navAnalytics: "Analytics",
   navAi: "AI applications",
   targetRoles: "Open to: AI agent & LLM application engineering · backend & distributed systems · data engineering & analytics",
-  paletteOpen: "Search",
+  paletteOpen: navigationCopy.search.en,
   paletteClose: "Close search",
   palettePlaceholder: "Search projects, systems, or tools",
   paletteEmpty: "No matches found.",
@@ -83,7 +90,7 @@ const en: Dictionary = {
   boundaries: "What this does not prove",
   backHome: "All projects",
   backToTrack: "Back to discipline",
-  language: "Language",
+  language: navigationCopy.language.en,
   externalLink: "Opens external site",
   noPublicLink: "Source code isn't public yet.",
   mediaEvidence: "Recorded views",
@@ -115,7 +122,7 @@ const zh: Dictionary = {
   navAnalytics: "数据分析",
   navAi: "AI 应用",
   targetRoles: "校招方向：AI Agent 与大模型应用工程 / 后端与分布式系统 / 数据工程与分析",
-  paletteOpen: "搜索",
+  paletteOpen: navigationCopy.search.zh,
   paletteClose: "关闭搜索",
   palettePlaceholder: "搜索项目、系统或工具",
   paletteEmpty: "未找到匹配项。",
@@ -130,7 +137,7 @@ const zh: Dictionary = {
   boundaries: "这项结果不能说明什么",
   backHome: "全部项目",
   backToTrack: "返回方向",
-  language: "语言",
+  language: navigationCopy.language.zh,
   externalLink: "打开外部网站",
   noPublicLink: "源代码尚未公开。",
   mediaEvidence: "已记录影像",
@@ -170,7 +177,9 @@ const I18nContext = createContext<I18nContextValue>({
 });
 
 function detectLocale(): Locale {
-  const requested = new URL(window.location.href).searchParams.get("lang");
+  const query = new URL(window.location.href).searchParams;
+  if (window.location.pathname === "/artifact" && query.has("lang")) return artifactLocale(query, "en");
+  const requested = query.get("lang");
   if (requested === "en" || requested === "zh") return requested;
   const stored = window.localStorage.getItem("portfolio-locale");
   if (stored === "en" || stored === "zh") return stored;
@@ -194,14 +203,57 @@ function subscribeLocale(listener: () => void) {
   return () => localeListeners.delete(listener);
 }
 
+function replaceLocaleUrl(url: URL) {
+  const href = `${url.pathname}${url.search}${url.hash}`;
+  if (href === window.location.pathname + window.location.search + window.location.hash) return;
+  // Next restores its router state. Echoing its private flags would bypass
+  // query subscribers; keep the rest of the entry's state and its position.
+  const state = { ...window.history.state };
+  delete state.__NA;
+  delete state._N;
+  window.history.replaceState(state, "", href);
+}
+
 function setStoredLocale(next: Locale) {
   currentLocale = next;
   window.localStorage.setItem("portfolio-locale", next);
   const url = new URL(window.location.href);
-  if (next === "zh") url.searchParams.set("lang", "zh");
+  if (url.pathname === "/artifact" || next === "zh") url.searchParams.set("lang", next);
   else url.searchParams.delete("lang");
-  window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+  replaceLocaleUrl(url);
   localeListeners.forEach((listener) => listener());
+}
+
+function LocaleUrlSync() {
+  const pathname = usePathname();
+  const query = useSearchParams().toString();
+  const canonicalUrl = useRef("");
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    // A query added by our own cleanup is not a new explicit user choice.
+    if (url.href === canonicalUrl.current) return;
+    const next = detectLocale();
+    const requested = url.searchParams.get("lang");
+    // Save an explicit choice before English's canonical URL drops it. Keep
+    // the viewer's stricter, single-value language contract.
+    if ((requested === "en" || requested === "zh") &&
+      (url.pathname !== "/artifact" || url.searchParams.getAll("lang").length === 1)) {
+      window.localStorage.setItem("portfolio-locale", next);
+    }
+    // The root provider survives client navigation. Read the live URL instead
+    // of letting its cached locale (or the hydration snapshot) rewrite it.
+    if (currentLocale !== next) {
+      currentLocale = next;
+      localeListeners.forEach((listener) => listener());
+    }
+    if (url.pathname === "/artifact" || next === "zh") url.searchParams.set("lang", next);
+    else url.searchParams.delete("lang");
+    canonicalUrl.current = url.href;
+    replaceLocaleUrl(url);
+  }, [pathname, query]);
+
+  return null;
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
@@ -209,16 +261,15 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     document.documentElement.lang = locale === "zh" ? "zh-CN" : "en";
-    const url = new URL(window.location.href);
-    if (locale === "zh") url.searchParams.set("lang", "zh");
-    else url.searchParams.delete("lang");
-    window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
   }, [locale]);
 
   const setLocale = useCallback((next: Locale) => setStoredLocale(next), []);
   const value = useMemo(() => ({ locale, setLocale, dict: dictionaries[locale] }), [locale, setLocale]);
 
-  return createElement(I18nContext.Provider, { value }, children);
+  return createElement(I18nContext.Provider, { value },
+    createElement(Suspense, { fallback: null }, createElement(LocaleUrlSync)),
+    children,
+  );
 }
 
 export function useI18n() {
@@ -232,17 +283,15 @@ export function localize(text: LocalizedString, locale: Locale) {
 export function localeHref(href: string, locale: Locale) {
   if (/^(?:[a-z]+:|#)/i.test(href)) return href;
   const url = new URL(href, "https://portfolio.local");
-  if (locale === "zh") url.searchParams.set("lang", "zh");
+  if (url.pathname === "/artifact" || locale === "zh") url.searchParams.set("lang", locale);
   else url.searchParams.delete("lang");
   return `${url.pathname}${url.search}${url.hash}`;
 }
 
 export function LocalizedText({ text, className }: { text: LocalizedString; className?: string }) {
   const { locale } = useI18n();
-  // Task R8 deliberately does NOT wrap this path: i18n.ts sits in the
-  // layout-level chunk every route pays for, and adding zh-wrap here grew
-  // /artifact's initial budget (+634 gzip B) for the benefit of a single
-  // remaining legacy slug (analytics-tandem — see [track]/[project]/
-  // page.tsx). Phrase wrapping rides in the exhibition components instead.
-  return createElement("span", { className }, text[locale]);
+  // Task D05: created through the zh JSX runtime (src/lib/zh-jsx), which the
+  // layout chunk already carries for every route, so this legacy path gets
+  // the same word-tier line breaking as JSX-authored copy at no extra weight.
+  return jsx("span", { className, children: text[locale] });
 }

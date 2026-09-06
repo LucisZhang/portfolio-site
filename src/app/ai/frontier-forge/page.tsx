@@ -1,6 +1,8 @@
+import { EvidenceScope } from "@/components/exhibition/EvidenceScope.server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ExhibitShell } from "@/components/exhibition/ExhibitShell";
+import ProjectRepositoryEntry from "@/components/exhibition/ProjectRepositoryEntry";
 import ProjectRailTools from "@/components/exhibition/ProjectRailTools";
 import ForgePage from "@/components/forge/ForgePage";
 import { forgeRail } from "@/components/forge/forgeRail";
@@ -43,8 +45,10 @@ export default function FrontierForgeRoute() {
     // Task W3 (RAIL-SCOPE.md verdict "充实" against the reference-demo
     // layout this page conforms to as of the vermilion-mapped first-screen
     // rebuild): auto-rail v3, entry-open/push/retract-on-content-intent.
-    <ExhibitShell rail={forgeRail} railTools={<ProjectRailTools />} mode="auto">
-      <ForgePage project={project} />
+    <ExhibitShell repositoryEntry={<ProjectRepositoryEntry project={project} />} rail={forgeRail} railTools={<ProjectRailTools />} mode="auto">
+      <EvidenceScope project="forge">
+        <ForgePage project={project} />
+      </EvidenceScope>
     </ExhibitShell>
   );
 }

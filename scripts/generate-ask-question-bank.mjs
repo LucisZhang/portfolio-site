@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { resolveProjectIdentity } from "../src/lib/project-identities.ts";
 import {
   buildAuthoredAnswers,
   verifyAuthoredBank,
@@ -31,11 +32,12 @@ const answersOutputUrl = new URL("../src/data/generated/ask-preset-answers.json"
 const reviewDocUrl = new URL("../output/r3-align/b5b-authored-answers.md", import.meta.url);
 
 function questionBankProjection(bank) {
-  // The routed question bank (UI preset chips) keeps its pre-R14 shape:
-  // route -> { questions: [{id, q_en, q_zh}] }.
+  // Ship just route aliases beside the preset chips. Full name matching stays
+  // in the assistant chunk, outside the homepage's initial payload.
   const projection = {};
   for (const [route, entry] of Object.entries(bank)) {
     projection[route] = {
+      aliases: [...(resolveProjectIdentity(route)?.routeAliases ?? [])],
       questions: entry.questions.map(({ id, q_en, q_zh }) => ({ q_en, q_zh, id })),
     };
   }
@@ -117,9 +119,11 @@ if (process.argv.includes("--check")) {
 } else {
   await writeFile(outputUrl, serialized, "utf8");
   await writeFile(answersOutputUrl, answersSerialized, "utf8");
-  await mkdir(new URL(".", reviewDocUrl), { recursive: true });
-  await writeFile(reviewDocUrl, reviewDoc(bank, answers), "utf8");
+  if (!process.argv.includes("--skip-review")) {
+    await mkdir(new URL(".", reviewDocUrl), { recursive: true });
+    await writeFile(reviewDocUrl, reviewDoc(bank, answers), "utf8");
+  }
   console.log(`Wrote ${outputUrl.pathname}: ${Object.keys(bank).length} routes, ${Object.keys(bank).length * 3} questions`);
   console.log(`Wrote ${answersOutputUrl.pathname}: ${Object.keys(answers).length} presets × 2 locales, grounding gate green`);
-  console.log(`Wrote ${reviewDocUrl.pathname} (owner review artifact, gitignored)`);
+  if (!process.argv.includes("--skip-review")) console.log(`Wrote ${reviewDocUrl.pathname} (owner review artifact, gitignored)`);
 }

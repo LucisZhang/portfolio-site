@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Exhibit } from "@/components/exhibition/Exhibit";
+import ScrollRegion from "@/components/ScrollRegion";
 import { useI18n } from "@/lib/i18n";
 import manifestJson from "../../../public/case-studies/frontier-forge/manifest.json";
 import releaseJson from "../../../public/case-studies/frontier-forge/release.json";
@@ -124,7 +125,7 @@ export function OverloadReplay() {
         ? "Fixed-seed Poisson arrivals, same-box NVIDIA A10, every cell ran at least 120 seconds; each cell's queue was verified saturated."
         : "固定 seed 的 Poisson 到达序列，同机 A10，每个 cell 至少持续 120 秒，且已验证队列在每格都达到饱和。"}
     >
-      <div className="forge-overload-summary">
+      <ScrollRegion className="forge-overload-summary" label={{ en: "Overload summary table", zh: "过载摘要表" }}>
         <table>
           <thead>
             <tr>
@@ -156,7 +157,7 @@ export function OverloadReplay() {
             ? `At the highest recorded load (${highestLoad.multiplier}×, ${highestLoad.offered_qps} QPS): bare vLLM logged ${highestLoad.bare_vllm_http_status_counts.transport_error} transport errors while the gateway returned ${highestLoad.gateway_http_status_counts["429"]} bounded HTTP 429 rejects and zero upstream 5xx.`
             : `在记录到的最高负载下（${highestLoad.multiplier} 倍，${highestLoad.offered_qps} QPS）：裸 vLLM 记录到 ${highestLoad.bare_vllm_http_status_counts.transport_error} 次传输错误，网关则返回 ${highestLoad.gateway_http_status_counts["429"]} 次有界 HTTP 429 拒绝，上游零 5xx。`}
         </p>
-      </div>
+      </ScrollRegion>
 
       {!loadRequested ? (
         <button type="button" className="forge-overload-load-button" data-forge-load-replay onClick={() => setLoadRequested(true)}>

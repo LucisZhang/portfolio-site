@@ -85,7 +85,6 @@ export const RAG_CHECKPOINT_COMMIT = ragRegistry.evidence_checkpoint.commit;
 export const RAG_CHECKPOINT_VISIBILITY = ragRegistry.evidence_checkpoint.visibility;
 export const RAG_VERIFICATION_DATE = ragRegistry.evidence_checkpoint.verification_date;
 export const RAG_BASELINE_COMMIT = ragRegistry.public_repository.baseline_commit;
-export const RAG_REPOSITORY_URL = ragRegistry.public_repository.url;
 
 export const ragVerifiedClaims = ragRegistry.claims.filter((claim) => claim.status === "verified");
 export const ragBlockedClaim = ragRegistry.claims.find((claim) => claim.status === "blocked_no_results") ?? null;
