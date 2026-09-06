@@ -224,7 +224,7 @@ export default function CircuitNav({ slot, repositoryEntry }: { slot: "top" | "b
                         >
                           <span className="circuit-colophon-num">{candidate.number}</span>
                           <LocaleLink href={candidate.href} aria-current={isHere ? "page" : undefined}>
-                            {candidate.project.title[locale]}
+                            {candidate.navigationLabel[locale]}
                           </LocaleLink>
                           {isHere ? <span className="circuit-colophon-tag">{navigationCopy.thisPage[locale]}</span> : null}
                           <span className="circuit-colophon-desc">

@@ -50,7 +50,8 @@ test("renders the conversation instrument with the recorded example and the veri
   // a config-file path dump.
   expect(recordedExample.citation.sourceId.startsWith("portfolio-site:")).toBe(true);
   const recordedIndex = exhibit01.getByTestId("ask-go-index");
-  await expect(recordedIndex).toContainText("Evidence to inspect", { ignoreCase: true });
+  await expect(recordedIndex).toContainText("References and destinations", { ignoreCase: true });
+  await expect(recordedIndex).toContainText("PROJECT ENTRY");
   await expect(recordedIndex.getByRole("link", { name: "Browse the full project index" })).toHaveAttribute("href", "/");
   await expect(recordedIndex.locator(`a[href="${recordedExample.citation.url}"]`)).toHaveCount(0);
   await expect(recordedIndex).not.toContainText("site-config.ts");
@@ -193,7 +194,7 @@ test("submitting a typed question produces a live answer whose references index 
   await expect(page.locator(".ask-ratelimit")).toContainText("42 left today");
 });
 
-test("guard explanation and report both render the two verbatim refusals without false no-model claims", async ({ page }) => {
+test("layered policy explanation and report both render the two verbatim refusals", async ({ page }) => {
   // Task R9c (B5-a): the two recorded refusals are data, not quotations --
   // no border-left bar, no italics, and the recorded texts stay verbatim.
   await page.goto(ROUTE, { waitUntil: "networkidle" });
@@ -205,15 +206,14 @@ test("guard explanation and report both render the two verbatim refusals without
   await expect(page.locator(".ask-guard-example")).toHaveCount(4);
   await expect(results.locator("blockquote")).toHaveCount(0);
 
-  await expect(exhibit02).toContainText("external AI model");
-  await expect(exhibit02).toContainText("does not enter retrieval or the answer model");
-  await expect(exhibit02).not.toContainText("refused locally");
-  await expect(exhibit02).not.toContainText("no model reached");
-  await expect(refusals.nth(0)).toContainText("OFF-TOPIC · STOPPED BY GUARD");
+  await expect(exhibit02).toContainText("external AI guard");
+  await expect(exhibit02).toContainText("local policy screen");
+  await expect(exhibit02).toContainText("Only an allowed question reaches retrieval and the answer model");
+  await expect(refusals.nth(0)).toContainText("OFF-TOPIC · POLICY STOP");
   await expect(refusals.nth(0)).toContainText("I focus on Xiangguo Zhang's background, projects, skills, working style, and role fit. Ask me about any of those.");
-  await expect(refusals.nth(1)).toContainText("PROMPT INJECTION · STOPPED BY GUARD");
+  await expect(refusals.nth(1)).toContainText("PROMPT INJECTION · POLICY STOP");
   await expect(refusals.nth(1)).toContainText("I cannot change or reveal my internal instructions or knowledge files. I can still explain Xiangguo Zhang's work and candidacy.");
-  await expect(refusals.nth(0)).toContainText("retrieval and answer model skipped");
+  await expect(refusals.nth(0)).toContainText("no retrieval or answer-model call");
 
   for (const index of [0, 1]) {
     const styles = await refusals.nth(index).locator(".ask-refusal-text").evaluate((element) => {

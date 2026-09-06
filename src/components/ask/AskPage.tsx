@@ -66,12 +66,12 @@ const copy = {
     how1Title: "Retrieval",
     how1Body: "A keyword-ranked (BM25-style) search over a knowledge snapshot built at build time from this repository, pinned to one commit, plus a separate verified private candidate profile. No embeddings, no vector database — the same source anyone can open on GitHub.",
     how2Title: "Guard",
-    how2Body: "A dedicated guard sends the question to an external AI model for scope classification before retrieval or answer generation. If the guard rejects it, the question stops there: it does not enter retrieval or the answer model. Two returned refusals, verbatim:",
+    how2Body: "A local policy screen first stops obvious off-topic, sensitive, or prompt-injection requests without sending them to a model. Questions that pass it go to a dedicated external AI guard for scope classification. Only an allowed question reaches retrieval and the answer model. Two policy refusals, verbatim:",
     how3Title: "Citation contract",
     how3Body: "Every sentence the model returns is checked against the retrieved chunks before it is shown. Public sources link straight to the pinned GitHub line range; the private profile is cited by label only, never by raw text. An answer that fails this check is not displayed.",
-    refusal1Kind: "OFF-TOPIC · STOPPED BY GUARD",
-    refusal2Kind: "PROMPT INJECTION · STOPPED BY GUARD",
-    refusalMeta: "verbatim response · retrieval and answer model skipped",
+    refusal1Kind: "OFF-TOPIC · POLICY STOP",
+    refusal2Kind: "PROMPT INJECTION · POLICY STOP",
+    refusalMeta: "verbatim response · no retrieval or answer-model call",
     eyebrow03: "SOURCE / REPORT",
     title03a: "Every citation opens",
     title03b: "the exact commit.",
@@ -105,12 +105,12 @@ const copy = {
     how1Title: "检索",
     how1Body: "对构建时从本仓库生成、并锁定到某一次提交的知识快照做关键词排序检索（BM25 风格），另外接入一份已核验的私有候选人材料。没有向量库，用的就是任何人都能在 GitHub 上打开的同一份源码。",
     how2Title: "审查",
-    how2Body: "独立审查会先把问题发送给外部 AI 模型做范围分类，再决定是否检索和生成。如果审查拒绝，问题就停在这里：不会进入检索，也不会进入回答模型。以下是两个逐字返回的拒答示例：",
+    how2Body: "本地策略筛查先拦下明显偏题、敏感信息和提示词注入，不把这些问题发送给任何模型。通过筛查的问题再交给独立的外部 AI 审查模型做范围分类；只有获准的问题才会进入检索和回答模型。以下是两条逐字返回的策略拒答：",
     how3Title: "引用契约",
     how3Body: "模型返回的每一句话在展示前都会对照检索到的片段核对。公开来源直接链接到锁定的 GitHub 行号区间；私有材料只标注来源标签，不展示原文。任何未通过核对的回答都不会展示。",
-    refusal1Kind: "偏离主题 · 审查终止",
-    refusal2Kind: "提示词注入 · 审查终止",
-    refusalMeta: "逐字返回 · 未进入检索与回答模型",
+    refusal1Kind: "偏离主题 · 策略终止",
+    refusal2Kind: "提示词注入 · 策略终止",
+    refusalMeta: "逐字返回 · 未进入检索或回答模型",
     eyebrow03: "来源 / 报告",
     title03a: "每条引用，",
     title03b: "都能打开同一次提交。",
@@ -363,7 +363,7 @@ export default function AskPage({ project }: { project: Project }) {
       <ProjectReportContents />
       <ProjectReportSection concept="architecture">
         <ol className="ask-architecture">
-          <li>{locale === "en" ? "Guard: use an external AI model to classify scope before retrieval or generation." : "审查：先由外部 AI 模型分类问题范围，再决定是否检索与生成。"}</li>
+          <li>{locale === "en" ? "Screen and guard: stop obvious policy violations locally, then use an external AI model to classify the remaining questions before retrieval or generation." : "筛查与审查：先在本地拦下明显违反策略的问题，再由外部 AI 模型分类其余问题，决定是否进入检索与生成。"}</li>
           <li>{locale === "en" ? "Retrieve: only accepted questions enter ranked knowledge retrieval." : "检索：只有审查通过的问题才进入知识片段排序检索。"}</li>
           <li>{locale === "en" ? "Generate: answer only from the retrieved chunks." : "生成：只基于检索到的片段作答。"}</li>
           <li>{locale === "en" ? "Verify: reject any sentence the citations do not support." : "核对：拒绝任何引用支撑不了的句子。"}</li>

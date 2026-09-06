@@ -31,6 +31,8 @@ export interface Project {
   routeEnabled?: boolean;
   tier: ProjectTier;
   title: LocalizedString;
+  /** Stable product name for navigation when the editorial title is a headline. */
+  navigationLabel?: LocalizedString;
   glossZh: string;
   eyebrow: LocalizedString;
   summary: LocalizedString;
@@ -689,6 +691,7 @@ const projectCatalog: Project[] = [
     track: "analytics",
     tier: "archive",
     title: { en: "Credit Policy Desk", zh: "分数不是策略。" },
+    navigationLabel: { en: "Credit Policy Desk", zh: "Credit Policy Desk" },
     glossZh: "信贷策略模拟工作台",
     eyebrow: { en: "Risk analytics / policy governance", zh: "风险分析 / 策略治理" },
     summary: { en: "A score is not a policy. This desk walks the rest of the way: expected loss, thresholds, review capacity, and a recorded human decision.", zh: "分数不等于策略。这个工作台继续往下走：算预期损失、定阈值，把复核容量算进去，最后由人拍板并留档。" },

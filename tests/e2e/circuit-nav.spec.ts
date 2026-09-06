@@ -143,7 +143,9 @@ async function assertCircuitPage(page: Page, index: number, locale: Locale) {
   await expect(colophon.locator(".circuit-colophon-foot a")).toHaveText(locale === "zh"
     ? ["← 首页", "联系章向国"] : ["← HOME", "Contact Xiangguo"]);
   for (const other of CIRCUIT) {
-    await expect(colophon.locator(SEL.colophonItem(other.slug)).locator(`a[href="${localized(other.route, locale)}"]`)).toHaveCount(1);
+    const projectLink = colophon.locator(SEL.colophonItem(other.slug)).locator(`a[href="${localized(other.route, locale)}"]`);
+    await expect(projectLink).toHaveCount(1);
+    await expect(projectLink).toHaveText(other.title[locale]);
   }
 }
 

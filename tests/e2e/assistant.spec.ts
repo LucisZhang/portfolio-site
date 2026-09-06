@@ -396,7 +396,8 @@ test("409×658 drawer keeps its compact intro, answer controls, and evidence des
   await expect(widget.getByText("Your question is sent only to a zero-data-retention external AI service.", { exact: false })).toBeVisible();
 
   const evidence = widget.getByTestId("ask-go-index");
-  await expect(evidence).toContainText("Evidence to inspect");
+  await expect(evidence).toContainText("References and destinations");
+  await expect(evidence).toContainText("EVIDENCE FILE");
   await expect(evidence.locator("a")).toHaveCount(4);
   await expect(evidence).not.toContainText("project page");
   await expect(evidence).not.toContainText("github.com/");

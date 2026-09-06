@@ -25,6 +25,10 @@
   border-top: 1px solid var(--hairline);
 }
 
+:lang(zh) .ask-turn {
+  grid-template-columns: 108px minmax(0, 1fr);
+}
+
 .ask-script > .ask-turn:first-child {
   border-top: 0;
 }
@@ -441,6 +445,10 @@
   .ask-turn {
     grid-template-columns: 1fr;
     gap: 6px;
+  }
+
+  :lang(zh) .ask-turn {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .ask-turn-next .ask-say {

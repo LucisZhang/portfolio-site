@@ -12,7 +12,7 @@ import { zhWrapText } from "@/lib/zh-wrap";
 import LocaleLink from "@/components/LocaleLink";
 import "./assistant-sources.css";
 
-const HEADING = { en: "Evidence to inspect", zh: "可核对证据" } as const;
+const HEADING = { en: "References and destinations", zh: "引用与入口" } as const;
 
 export default function AssistantSourcesIndex({
   citations,
@@ -33,7 +33,10 @@ export default function AssistantSourcesIndex({
           const title = (
             <>
               <span className="ask-go-n">{entry.refs.join(" ")}</span>
-              {locale === "zh" ? zhWrapText(entry.title.zh) : entry.title.en}
+              <span className="ask-go-copy">
+                <small className="ask-go-kind">{entry.badge[locale]}</small>
+                <span>{locale === "zh" ? zhWrapText(entry.title.zh) : entry.title.en}</span>
+              </span>
             </>
           );
           return (

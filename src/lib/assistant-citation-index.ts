@@ -38,9 +38,9 @@ const GITHUB_BLOB_URL =
 const PATH_DUMP_LABEL_EN = /^(.+?) · .+ · lines \d+-\d+$/u;
 const PATH_DUMP_LABEL_ZH = /^(.+?) · .+ · 第 \d+-\d+ 行$/u;
 
-const BADGE_GITHUB = { en: "GITHUB · PINNED COMMIT", zh: "GITHUB · 锁定提交" } as const;
-const BADGE_SITE = { en: "THIS SITE", zh: "本站页面" } as const;
-const BADGE_PRIVATE = { en: "PRIVATE · CITED BY LABEL ONLY", zh: "私有材料 · 仅标注来源" } as const;
+const BADGE_GITHUB = { en: "EVIDENCE FILE", zh: "证据文件" } as const;
+const BADGE_SITE = { en: "PROJECT ENTRY", zh: "项目入口" } as const;
+const BADGE_PRIVATE = { en: "PRIVATE SOURCE", zh: "私有材料" } as const;
 
 const HOME_ENTRY = {
   href: "/",

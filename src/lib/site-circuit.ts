@@ -28,7 +28,6 @@
 import { routableProjects, type Project, type ProjectId } from "./projects";
 import type { Locale, LocalizedString } from "./i18n";
 import { navigationCopy, navigationNumber, navigationPosition } from "./navigation";
-import { projectIdentityNavigationLabel, resolveProjectIdentity } from "./project-identities";
 
 export type CircuitGroupId = "build-run" | "guard-verify" | "measure-decide";
 
@@ -185,14 +184,13 @@ function buildStops(): CircuitStop[] {
   return circuitOrder.map((slug, index) => {
     const project = routableProjects.find((candidate) => candidate.slug === slug);
     const group = familyOf.get(slug);
-    const identity = resolveProjectIdentity(slug);
-    if (!project || !group || !identity) {
+    if (!project || !group) {
       throw new Error(`site-circuit: ${slug} has no routable project`);
     }
     return {
       slug,
       project,
-      navigationLabel: projectIdentityNavigationLabel(identity.id),
+      navigationLabel: project.navigationLabel ?? project.title,
       href: `/${project.track}/${project.slug}`,
       number: navigationNumber(index + 1),
       indexInGroup: group.members.indexOf(slug) + 1,
