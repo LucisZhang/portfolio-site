@@ -40,13 +40,12 @@ export default function MarginPage({ project }: { project: Project }) {
         title={{ en: `${project.title.en} | ${siteIdentity.name}`, zh: `${project.title.zh} | ${siteIdentity.chineseName}` }}
         description={project.summary}
       />
-      <ProjectReportContents />
-
       <MarginDetectionFigure />
       <MarginDecisionBoundary />
       <MarginNegativeResults />
       <SourceReceipts />
 
+      <ProjectReportContents />
       <ProjectReport project={project} />
     </div>
   );

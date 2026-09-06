@@ -40,13 +40,12 @@ export default function CreditPage({ project }: { project: Project }) {
         title={{ en: `${project.title.en} | ${siteIdentity.name}`, zh: `${project.title.zh} | ${siteIdentity.chineseName}` }}
         description={project.summary}
       />
-      <ProjectReportContents />
-
       <CreditPolicyFrontier />
       <CreditDecisionBoundary />
       <CreditNegativeResults />
       <SourceReceipts />
 
+      <ProjectReportContents />
       <ProjectReport project={project} />
     </div>
   );

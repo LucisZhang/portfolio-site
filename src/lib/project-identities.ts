@@ -72,6 +72,17 @@ export type ProjectIdentityId = keyof typeof PROJECT_IDENTITIES;
 export const PROJECT_IDENTITY_IDS = Object.keys(PROJECT_IDENTITIES) as ProjectIdentityId[];
 export type ProjectIdentity = (typeof PROJECT_IDENTITIES)[ProjectIdentityId] & { id: ProjectIdentityId };
 
+// Navigation uses stable project identities independently of editorial page
+// headlines. Credit Policy Desk's Chinese page title is a sentence, so its
+// navigation name is pinned here as the product name.
+const PROJECT_NAVIGATION_LABELS: Partial<Record<ProjectIdentityId, { en: string; zh: string }>> = {
+  "credit-policy-desk": { en: "Credit Policy Desk", zh: "Credit Policy Desk" },
+};
+
+export function projectIdentityNavigationLabel(id: ProjectIdentityId): { en: string; zh: string } {
+  return PROJECT_NAVIGATION_LABELS[id] ?? PROJECT_IDENTITIES[id].label;
+}
+
 export function projectIdentityNames(id: ProjectIdentityId): string[] {
   const entry = PROJECT_IDENTITIES[id];
   return [...new Set([id, entry.label.en, entry.label.zh, ...entry.aliases])];

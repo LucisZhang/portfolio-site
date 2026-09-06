@@ -38,8 +38,6 @@ export default function PrivacyPage({ project }: { project: Project }) {
         title={{ en: `${project.title.en} | ${siteIdentity.name}`, zh: `${project.title.zh} | ${siteIdentity.chineseName}` }}
         description={project.summary}
       />
-      <ProjectReportContents />
-
       <section id="hero" data-project-section="hero" className="exhibit privacy-hero" data-bg="paper">
         <p className="exhibit-opening-row">
           <span className="exhibit-eyebrow">SYNTHETIC SANDBOX / LOCAL-ONLY / DETERMINISTIC VERIFIER</span>
@@ -77,6 +75,7 @@ export default function PrivacyPage({ project }: { project: Project }) {
       <DetectReviewDestroy project={project} />
       <OcrBenchmarkExhibit />
       <FailClosedExhibit />
+      <ProjectReportContents />
       <ProjectReport project={project} sections={["architecture", "results"]} />
       <BoundaryExhibit project={project} />
       <SourceReceipts />

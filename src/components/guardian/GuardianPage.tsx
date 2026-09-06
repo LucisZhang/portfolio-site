@@ -61,14 +61,13 @@ export default function GuardianPage({
         title={{ en: `${project.title.en} | ${siteIdentity.name}`, zh: `${project.title.zh} | ${siteIdentity.chineseName}` }}
         description={project.summary}
       />
-      <ProjectReportContents />
-
       <GuardianDossier />
       <RecordedTrace />
       <ApprovalGateNarrative project={project} />
       <RecordedOutcomes live={evaluationLive} stub={evaluationStub} />
       <MethodNotes />
 
+      <ProjectReportContents />
       <ProjectReport project={project} />
     </div>
   );

@@ -6,6 +6,15 @@ import { frontierProjectDetail } from "../../src/lib/frontier-project-detail";
 const projects = routableProjects.filter((project) => !project.legacy);
 const concepts = ["architecture", "results", "limitations"] as const;
 const labels = { en: ["Architecture", "Results", "Limitations"], zh: ["架构", "结果", "局限与边界"] };
+const attachedReadingReports = new Set([
+  "frontier-forge",
+  "release-guardian",
+  "exactly-once-drills",
+  "rag-quality-lab",
+  "privacy-preflight",
+  "margin-control-tower",
+  "credit-policy-desk",
+]);
 
 test("report inventory covers every standalone static project and keeps the compatibility route", async ({ request }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "Build inventory is viewport-independent.");
@@ -34,6 +43,7 @@ for (const project of projects) {
       await expect(page.locator("html")).toHaveAttribute("lang", locale === "en" ? "en" : "zh-CN");
       const nav = page.locator("[data-report-contents]");
       await expect(nav).toHaveCount(1);
+      await expect(nav.locator("p")).toHaveText(locale === "en" ? "Project report" : "项目报告");
       await expect(nav.getByRole("link")).toHaveText(labels[locale]);
       const sections = page.locator("[data-report-section]");
       expect(await sections.evaluateAll((nodes) => nodes.map((node) => node.getAttribute("data-report-section")))).toEqual(concepts);
@@ -95,6 +105,19 @@ for (const project of projects) {
       }
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
       expect(overflow).toBeLessThanOrEqual(1);
+
+      // Standard reading reports attach their compact directory directly to
+      // the first report section, after the page's primary exhibits.
+      if (attachedReadingReports.has(project.slug)) {
+        const navBox = await nav.evaluate((node) => {
+          const rect = node.getBoundingClientRect();
+          return { top: rect.top + window.scrollY, bottom: rect.bottom + window.scrollY };
+        });
+        const firstReportTop = await sections.first().evaluate((node) => node.getBoundingClientRect().top + window.scrollY);
+        expect(Math.abs(firstReportTop - navBox.bottom)).toBeLessThanOrEqual(1);
+        const firstExhibitTop = await page.locator("[data-exhibit]").first().evaluate((node) => node.getBoundingClientRect().top + window.scrollY);
+        expect(navBox.top).toBeGreaterThan(firstExhibitTop);
+      }
     });
   }
 }

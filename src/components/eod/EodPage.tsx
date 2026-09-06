@@ -48,8 +48,6 @@ export default function EodPage({ project }: { project: Project }) {
         title={{ en: `${project.title.en} | ${siteIdentity.name}`, zh: `${project.title.zh} | ${siteIdentity.chineseName}` }}
         description={project.summary}
       />
-      <ProjectReportContents />
-
       {/* Task F9: the hero and the old exhibit-01 fault chessboard merge
           into one first screen, the Duty Logbook (EodLog.tsx) — see
           output/design-align-r2/concept-a-logbook.html for the approved
@@ -61,6 +59,7 @@ export default function EodPage({ project }: { project: Project }) {
       <CheckpointPressure />
       <SourceReceipts />
 
+      <ProjectReportContents />
       <ProjectReport project={project} />
     </div>
   );

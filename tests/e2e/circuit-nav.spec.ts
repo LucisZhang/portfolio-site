@@ -50,6 +50,14 @@ async function assertCircuitPage(page: Page, index: number, locale: Locale) {
   await expect(top).toContainText(stop.pos[locale]);
   await expect(top.locator(SEL.circuitPrev)).toHaveAttribute("href", localized(prev.route, locale));
   await expect(top.locator(SEL.circuitNext)).toHaveAttribute("href", localized(next.route, locale));
+  await expect(top.locator(SEL.circuitPrev).locator(".circuit-step-context")).toHaveText(
+    `← ${locale === "zh" ? "上一项" : "PREV"} · ${prev.group.label[locale]}`,
+  );
+  await expect(top.locator(SEL.circuitPrev).locator(".circuit-step-title")).toHaveText(prev.title[locale]);
+  await expect(top.locator(SEL.circuitNext).locator(".circuit-step-context")).toHaveText(
+    `${locale === "zh" ? "下一项" : "NEXT"} · ${next.group.label[locale]} →`,
+  );
+  await expect(top.locator(SEL.circuitNext).locator(".circuit-step-title")).toHaveText(next.title[locale]);
 
   // Bottom block: NEXT feature entry + PREV row, same circular order.
   await expect(bottom).toHaveCount(1);

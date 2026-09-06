@@ -29,12 +29,11 @@ export default function RagPage({ project }: { project: Project }) {
         title={{ en: `${project.title.en} | ${siteIdentity.name}`, zh: `${project.title.zh} | ${siteIdentity.chineseName}` }}
         description={project.summary}
       />
-      <ProjectReportContents />
-
       <RagDiffLab />
       <RagEvidenceClaims repository={project.repository} />
       <RagSourceReceipts repository={project.repository} />
 
+      <ProjectReportContents />
       <ProjectReport project={project} />
     </div>
   );

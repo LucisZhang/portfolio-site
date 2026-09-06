@@ -36,8 +36,8 @@ export default function ReceiptsExhibit() {
         <dd><code>sha256:{homeReceipts.eodManifest.sha256}</code></dd>
         <dt><EvidenceFileLink source={homeReceipts.privacyManifest.source}>{locale === "en" ? "Privacy manifest" : "隐私预检清单"}</EvidenceFileLink></dt>
         <dd><code>sha256:{homeReceipts.privacyManifest.sha256}</code></dd>
-        <dt>{locale === "en" ? "Build date" : "构建日期"}</dt>
-        <dd>{homeReceipts.buildDate}</dd>
+        <dt>{locale === "en" ? "Content reviewed" : "内容核对日期"}</dt>
+        <dd>{homeReceipts.contentUpdatedAt}</dd>
         <dt>{locale === "en" ? "Gate status" : "检查状态"}</dt>
         <dd>{homeReceipts.gateStatus}</dd>
       </dl>
@@ -48,7 +48,7 @@ export default function ReceiptsExhibit() {
         <a href={`mailto:${siteIdentity.profiles.email}`}><ContactIcon kind="email" /><span>{locale === "en" ? "Email" : "邮箱"}</span></a>
       </div>
       <p className="home-receipts-updated">
-        {locale === "en" ? "Last updated" : "最近更新"} {homeReceipts.buildDate}
+        {locale === "en" ? "Content reviewed" : "内容核对"} {homeReceipts.contentUpdatedAt}
       </p>
     </Exhibit>
   );

@@ -243,6 +243,16 @@ test.describe("homepage seven exhibits", () => {
     }
   });
 
+  test("ultrawide desktop caps forced exhibit height without changing content flow", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop", "The ultrawide review contract needs one desktop browser.");
+    await page.setViewportSize({ width: 1920, height: 1080 });
+    await page.goto("/", { waitUntil: "networkidle" });
+    const minimums = await page.locator("[data-exhibit]").evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).minHeight));
+    expect(minimums).toEqual(Array(7).fill("900px"));
+    const shortSections = await page.locator('[data-exhibit="03"], [data-exhibit="05"]').evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().height));
+    for (const height of shortSections) expect(height).toBeLessThan(1080);
+  });
+
   test("exhibit 01 claim-chain expands via native <details> to reveal a sha256: receipt", async ({ page }) => {
     await page.goto("/", { waitUntil: "networkidle" });
     const rows = page.locator(SEL.homeClaimRow);
@@ -358,10 +368,11 @@ test.describe("homepage seven exhibits", () => {
     await expect(dl).toContainText(`sha256:${homeReceipts.releaseJson.sha256}`);
     await expect(dl).toContainText(`sha256:${homeReceipts.eodManifest.sha256}`);
     await expect(dl).toContainText(`sha256:${homeReceipts.privacyManifest.sha256}`);
-    await expect(dl).toContainText(homeReceipts.buildDate);
+    await expect(dl).toContainText(homeReceipts.contentUpdatedAt);
+    await expect(dl).toContainText("Content reviewed");
     const exhibit06 = page.locator(SEL.exhibit("06"));
     await expect(exhibit06.locator(SEL.homeAskInput)).toHaveCount(1);
-    await expect(exhibit06).toContainText(homeReceipts.buildDate);
+    await expect(exhibit06).toContainText(homeReceipts.contentUpdatedAt);
   });
 
   test("language switch preserves the current exhibit hash", async ({ page }) => {

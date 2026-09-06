@@ -11,6 +11,6 @@
     "sha256": "cfa56cd3ba453227863bb997c937bfcb41cd6e01e339cf806ac00689eac3aebe",
     "source": "public/case-studies/privacy-preflight/manifest.json"
   },
-  "buildDate": "2026-08-28",
+  "contentUpdatedAt": "2026-09-06",
   "gateStatus": "R2 source verification passed: 38 verified, 16 skipped, 54 total."
 }

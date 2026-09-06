@@ -33,6 +33,21 @@
   }
 }
 
+/* A 1920×1080 review viewport has enough width to read these exhibits
+   without stretching every short section to a full 1080px canvas. Keep the
+   established one-screen rhythm through ordinary desktop widths, then cap
+   only the forced minimum; content-heavy sections can still grow naturally.
+   Mobile and the authored Chinese line breaks remain untouched. */
+@media (min-width: 1600px) and (min-height: 900px) {
+  .home-exhibits .exhibit {
+    min-height: min(var(--exhibit-screen, 100vh), 900px);
+  }
+
+  .home-hero {
+    min-height: min(94vh, 900px);
+  }
+}
+
 .home-hero-title {
   max-width: 16ch;
   /* Sized off vh, not vw (task 1.2 bugfix): a width-driven clamp has no

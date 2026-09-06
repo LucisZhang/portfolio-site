@@ -28,6 +28,7 @@
 import { routableProjects, type Project, type ProjectId } from "./projects";
 import type { Locale, LocalizedString } from "./i18n";
 import { navigationCopy, navigationNumber, navigationPosition } from "./navigation";
+import { projectIdentityNavigationLabel, resolveProjectIdentity } from "./project-identities";
 
 export type CircuitGroupId = "build-run" | "guard-verify" | "measure-decide";
 
@@ -128,6 +129,8 @@ const circuitBlurbEn: Record<string, string> = {
 export interface CircuitStop {
   slug: ProjectId;
   project: Project;
+  /** Stable navigation name; intentionally separate from editorial headlines. */
+  navigationLabel: LocalizedString;
   href: string;
   /** Zero-padded global index in the circuit, "01".."10" (mock numbering). */
   number: string;
@@ -182,12 +185,14 @@ function buildStops(): CircuitStop[] {
   return circuitOrder.map((slug, index) => {
     const project = routableProjects.find((candidate) => candidate.slug === slug);
     const group = familyOf.get(slug);
-    if (!project || !group) {
+    const identity = resolveProjectIdentity(slug);
+    if (!project || !group || !identity) {
       throw new Error(`site-circuit: ${slug} has no routable project`);
     }
     return {
       slug,
       project,
+      navigationLabel: projectIdentityNavigationLabel(identity.id),
       href: `/${project.track}/${project.slug}`,
       number: navigationNumber(index + 1),
       indexInGroup: group.members.indexOf(slug) + 1,

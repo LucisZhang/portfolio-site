@@ -27,6 +27,7 @@
     "generate:ask-question-bank": "node --import ./tests/assistant/register-loader.mjs scripts/generate-ask-question-bank.mjs",
     "generate:ask-recorded-example": "node --import ./tests/assistant/register-loader.mjs scripts/generate-ask-recorded-example.mjs",
     "generate:home-data": "node scripts/generate-home-data.mjs",
+    "verify:home-receipts": "node --test tests/home-receipts.test.mjs",
     "generate:home-thumbnails": "node scripts/generate-home-thumbnails.mjs",
     "generate:forge-receipts": "node scripts/generate-forge-receipts.mjs",
     "generate:eod-receipts": "node scripts/generate-eod-receipts.mjs",

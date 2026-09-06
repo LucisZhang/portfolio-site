@@ -123,17 +123,19 @@ export default function CircuitNav({ slot, repositoryEntry }: { slot: "top" | "b
             /
           </span>
           <span className="circuit-cur" aria-current="page">
-            {stop.project.title[locale]}
+            {stop.navigationLabel[locale]}
           </span>
         </div>
         {repositoryEntry}
         <div className="circuit-steps">
           <LocaleLink href={prev.href} data-circuit-prev rel="prev">
-            ← {prev.project.title[locale]}
+            <span className="circuit-step-context">{`← ${navigationCopy.previous[locale]} · ${prev.group.label[locale]}`}</span>
+            <span className="circuit-step-title">{prev.navigationLabel[locale]}</span>
           </LocaleLink>
           <span className="circuit-pos">{circuitPosition(stop, locale)}</span>
           <LocaleLink href={next.href} data-circuit-next rel="next">
-            {next.project.title[locale]} →
+            <span className="circuit-step-context">{`${navigationCopy.next[locale]} · ${next.group.label[locale]} →`}</span>
+            <span className="circuit-step-title">{next.navigationLabel[locale]}</span>
           </LocaleLink>
         </div>
       </nav>
@@ -147,7 +149,7 @@ export default function CircuitNav({ slot, repositoryEntry }: { slot: "top" | "b
         <div className="circuit-next-block">
           <p className="circuit-next-kicker">{`${navigationCopy.next[locale]} — ${circuitPosition(next, locale)}`}</p>
           <LocaleLink className="circuit-next-title" href={next.href} data-circuit-next rel="next">
-            {next.project.title[locale]}
+            {next.navigationLabel[locale]}
           </LocaleLink>
           <p className="circuit-next-desc">
             <StopBlurb stop={next} />
@@ -157,7 +159,7 @@ export default function CircuitNav({ slot, repositoryEntry }: { slot: "top" | "b
           <span>
             <span className="circuit-k">{navigationCopy.previous[locale]}</span>
             <LocaleLink href={prev.href} data-circuit-prev rel="prev">
-              {prev.project.title[locale]}
+              {prev.navigationLabel[locale]}
             </LocaleLink>
           </span>
           <span>

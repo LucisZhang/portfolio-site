@@ -24,11 +24,14 @@ export function ProjectReportContents() {
   const { locale } = useI18n();
   return (
     <nav className={styles.contents} aria-label={locale === "en" ? "Project report" : "项目报告"} data-report-contents>
-      <ol>
-        {REPORT_CONCEPTS.map((concept) => (
-          <li key={concept}><a href={`#${reportAnchor(concept)}`}>{labels[concept][locale]}</a></li>
-        ))}
-      </ol>
+      <div className={styles.contentsInner}>
+        <p className={styles.contentsLabel}>{locale === "en" ? "Project report" : "项目报告"}</p>
+        <ol>
+          {REPORT_CONCEPTS.map((concept) => (
+            <li key={concept}><a href={`#${reportAnchor(concept)}`}>{labels[concept][locale]}</a></li>
+          ))}
+        </ol>
+      </div>
     </nav>
   );
 }

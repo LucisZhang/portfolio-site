@@ -65,6 +65,12 @@ test("every stop carries its family and position readout in both locales", () =>
   }
 });
 
+test("navigation names stay project identities rather than editorial headlines", () => {
+  const credit = circuitStops.find((stop) => stop.slug === "credit-policy-desk");
+  assert.deepEqual(credit.navigationLabel, { en: "Credit Policy Desk", zh: "Credit Policy Desk" });
+  assert.notEqual(credit.navigationLabel.zh, credit.project.title.zh);
+});
+
 test("the taxonomy holds three families with the expected labels, glosses, and members", () => {
   assert.deepEqual(circuitGroups.map((group) => group.id), ["build-run", "guard-verify", "measure-decide"]);
   assert.deepEqual(circuitGroups.map((group) => group.label.en), ["BUILD & RUN", "GUARD & VERIFY", "MEASURE & DECIDE"]);

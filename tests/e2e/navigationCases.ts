@@ -85,7 +85,7 @@ export const PROJECT_NAVIGATION = [
     },
   },
   {
-    slug: "credit-policy-desk", route: "/analytics/credit-policy-desk", title: { en: "Credit Policy Desk", zh: "分数不是策略。" },
+    slug: "credit-policy-desk", route: "/analytics/credit-policy-desk", title: { en: "Credit Policy Desk", zh: "Credit Policy Desk" },
     pos: { en: "MEASURE & DECIDE · 04 / 04", zh: "度量与决策 · 04 / 04" },
     group: { id: "measure-decide", anchor: "#index-measure-decide", label: { en: "MEASURE & DECIDE", zh: "度量与决策" } },
     nav: {
