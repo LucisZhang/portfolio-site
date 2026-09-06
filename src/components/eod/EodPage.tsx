@@ -1,10 +1,14 @@
 "use client";
 
+import { EvidenceDisclosure } from "@/components/exhibition/EvidenceDisclosure";
+import { EvidenceFileLink } from "@/components/exhibition/EvidenceFileLink";
+
 import { Finding } from "@/components/exhibition/Finding";
+import { ProjectReport, ProjectReportContents } from "@/components/report/ProjectReport";
 import LocaleDocumentMetadata from "@/components/LocaleDocumentMetadata";
 import OptionalMedia from "@/components/OptionalMedia";
 import { useI18n } from "@/lib/i18n";
-import { zhWrapNode, zhWrapText } from "@/lib/zh-wrap";
+import { zhGroup, zhWrapDisplay, zhWrapText } from "@/lib/zh-wrap";
 import type { Project } from "@/lib/projects";
 import { siteIdentity } from "@/lib/site-config";
 import brokerParityJson from "../../../public/case-studies/exactly-once-drills/results/broker_parity.json";
@@ -37,7 +41,6 @@ const checkpointMetrics = checkpointMetricsJson as {
 // public/case-studies/exactly-once-drills/* or the generated receipts file
 // at import time — see docs/evidence/digits-eod.md.
 export default function EodPage({ project }: { project: Project }) {
-  const { locale } = useI18n();
 
   return (
     <div className="eod-page">
@@ -45,6 +48,7 @@ export default function EodPage({ project }: { project: Project }) {
         title={{ en: `${project.title.en} | ${siteIdentity.name}`, zh: `${project.title.zh} | ${siteIdentity.chineseName}` }}
         description={project.summary}
       />
+      <ProjectReportContents />
 
       {/* Task F9: the hero and the old exhibit-01 fault chessboard merge
           into one first screen, the Duty Logbook (EodLog.tsx) — see
@@ -57,40 +61,7 @@ export default function EodPage({ project }: { project: Project }) {
       <CheckpointPressure />
       <SourceReceipts />
 
-      <section data-project-section="how" className="eod-report-section">
-        <h2>{locale === "en" ? "Architecture" : "架构"}</h2>
-        <p>{locale === "en" ? project.role?.en : project.role?.zh}</p>
-        <ol className="eod-architecture-flow">
-          {project.architecture.map((step, index) => (
-            <li key={step.label.en}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <div>
-                <strong>{locale === "en" ? step.label.en : step.label.zh}</strong>
-                <p>{locale === "en" ? step.detail.en : step.detail.zh}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section data-project-section="results" className="eod-report-section">
-        <h2>{locale === "en" ? "Results & negatives" : "结果与负结果"}</h2>
-        <p className="project-outcome">{locale === "en" ? project.outcome?.en : project.outcome?.zh}</p>
-        {project.fieldNotes?.map((note) => (
-          <Finding kind="negative" key={note.en}>
-            {locale === "en" ? note.en : note.zh}
-          </Finding>
-        ))}
-      </section>
-
-      <section data-project-section="limitations" className="eod-report-section">
-        <h2>{locale === "en" ? "Limitations" : "局限与边界"}</h2>
-        {project.boundaries.map((boundary) => (
-          <Finding kind="limitation" key={boundary.en}>
-            {locale === "en" ? boundary.en : boundary.zh}
-          </Finding>
-        ))}
-      </section>
+      <ProjectReport project={project} />
     </div>
   );
 }
@@ -107,14 +78,14 @@ function VerificationProposition() {
         {locale === "en" ? (
           <>Exactly-once ends<br /><em>at reconciliation.</em></>
         ) : (
-          zhWrapNode(<>Exactly-once 的终点，<em>是对账。</em></>)
+          zhWrapDisplay(<>Exactly-once 的终点，<br /><em>是对账。</em></>)
         )}
       </h2>
       <div className="exhibit-body">
         <p className="eod-proposition" data-eod-proposition>
           ∀ drill ∈ {eodReceiptsData.drillCount} faults: iceberg_snapshot(path_A) ≡ iceberg_snapshot(path_B)
         </p>
-        <div className="eod-pass-table" role="table" aria-label="Per-drill verification verdict" data-eod-pass-table>
+        <div className="eod-pass-table" role="table" aria-label={locale === "en" ? "Per-drill verification verdict" : "逐项演练验证结论"} data-eod-pass-table>
           <div className="eod-pass-row eod-pass-head" role="row">
             <span role="columnheader">drill</span>
             <span role="columnheader">diff</span>
@@ -155,7 +126,7 @@ function DualPathParity() {
         {locale === "en" ? (
           <>Two delivery paths<br /><em>must land on the same state.</em></>
         ) : (
-          zhWrapNode(<>两条投递路径，<em>必须落到同一个状态。</em></>)
+          zhWrapDisplay(<>两条投递路径，<br /><em>{zhGroup("必须落到", "同一个状态。")}</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -196,7 +167,7 @@ function CheckpointPressure() {
         {locale === "en" ? (
           <>Recovery has<br /><em>ten different failure shapes.</em></>
         ) : (
-          zhWrapNode(<>十种故障，<em>十种不同的恢复形状。</em></>)
+          zhWrapDisplay(<>十种故障，<br /><em>{zhGroup("十种不同的", "恢复形状。")}</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -217,12 +188,18 @@ function CheckpointPressure() {
             <small>{locale === "en" ? "captured in the run record" : "已写入运行记录"}</small>
           </div>
         </div>
+        {/* D-04: the maintenance figure is the exhibit's primary surface, so it spans the
+            full content column at its natural 940x520 aspect instead of a half-width grid cell. */}
         <OptionalMedia
+          layout="wide"
           candidates={[
             {
               src: { en: "/case-studies/exactly-once-drills/media/phase-2.2-small-file-rewrite.svg", zh: "/case-studies/exactly-once-drills/media/phase-2.2-small-file-rewrite-zh.svg" },
               alt: { en: "Historical Iceberg small-file rewrite evidence", zh: "历史 Iceberg 小文件重写证据" },
               caption: { en: "The maintenance view shows how Iceberg data files were compacted while preserving table state.", zh: "维护视图展示 Iceberg 数据文件如何在保持表状态的同时完成合并压缩。" },
+              width: 940,
+              height: 520,
+              lazy: true,
             },
           ]}
         />
@@ -243,16 +220,17 @@ function SourceReceipts() {
         {locale === "en" ? (
           <>Every drill opens<br /><em>the same raw file.</em></>
         ) : (
-          zhWrapNode(<>每场演练，<em>都能打开同一份原始记录。</em></>)
+          zhWrapDisplay(<>每场演练，<br /><em>{zhGroup("都能打开同一份", "原始记录。")}</em></>)
         )}
       </h2>
       <div className="exhibit-body">
+        <EvidenceDisclosure project="eod">
         <dl className="eod-receipts-dl">
-          <dt>index.summary.json</dt>
+          <dt><EvidenceFileLink source="public/case-studies/exactly-once-drills/index.summary.json">index.summary.json</EvidenceFileLink></dt>
           <dd><code>sha256:{eodReceiptsData.summary.sha256}</code></dd>
-          <dt>broker_slo.json</dt>
+          <dt><EvidenceFileLink source="public/case-studies/exactly-once-drills/results/broker_slo.json">broker_slo.json</EvidenceFileLink></dt>
           <dd><code>sha256:{eodReceiptsData.brokerSlo.sha256}</code></dd>
-          <dt>{locale === "en" ? "Result manifest" : "结果清单"}</dt>
+          <dt><EvidenceFileLink source="public/case-studies/exactly-once-drills/results/manifest.json">{locale === "en" ? "Result manifest" : "结果清单"}</EvidenceFileLink></dt>
           <dd><code>sha256:{eodReceiptsData.manifest.sha256}</code></dd>
           <dt>{locale === "en" ? "Generated" : "生成时间"}</dt>
           <dd>{eodReceiptsData.generatedAt}</dd>
@@ -267,11 +245,7 @@ function SourceReceipts() {
             ? "This page proves that these ten fault classes recover with zero snapshot diff. It does not prove that no other fault class exists, or that every possible failure in a MySQL → Kafka → Flink → Iceberg pipeline has been drilled."
             : "这页证明的是：这十类故障能够零差异恢复。它不能证明不存在其他故障类别，也不能证明 MySQL → Kafka → Flink → Iceberg 这条链路上所有可能的失败都已经被演练过。"}
         </Finding>
-        <p className="eod-repo-link">
-          <a href="https://github.com/LucisZhang/exactly-once-drills" target="_blank" rel="noreferrer noopener">
-            {locale === "en" ? "GitHub repository" : "GitHub 仓库"}
-          </a>
-        </p>
+        </EvidenceDisclosure>
       </div>
     </section>
   );

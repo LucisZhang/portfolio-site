@@ -1,4 +1,4 @@
-import type { RailSpec } from "@/components/exhibition/ExhibitShell";
+import { navigationCopy, projectRailFooter, type RailSpec } from "@/lib/navigation";
 import { getProject } from "@/lib/projects";
 
 // Exactly-Once Drills project-page rail (spec §2.1 "项目页" state, §6.0
@@ -12,11 +12,11 @@ export const eodRail: RailSpec = {
   wordmark: { lines: ["Exactly-Once", "Drills"] },
   copy: eodProject ? { en: "Fault-recovery verification for message-queue and stream-processing pipelines.", zh: eodProject.glossZh } : undefined,
   nav: [
-    { id: "exhibit-01", num: "01", label: "Duty logbook" },
-    { id: "exhibit-02", num: "02", label: "Verification proposition" },
-    { id: "exhibit-03", num: "03", label: "Dual-path parity" },
-    { id: "exhibit-04", num: "04", label: "Checkpoint pressure" },
-    { id: "exhibit-05", num: "05", label: "Source & receipts" },
+    { id: "exhibit-01", num: "01", label: { en: "Duty logbook", zh: "值班日志" } },
+    { id: "exhibit-02", num: "02", label: { en: "Verification proposition", zh: "验证命题" } },
+    { id: "exhibit-03", num: "03", label: { en: "Dual-path parity", zh: "双路径对照" } },
+    { id: "exhibit-04", num: "04", label: { en: "Checkpoint pressure", zh: "检查点压力" } },
+    { id: "exhibit-05", num: "05", label: navigationCopy.sourceReceipts },
   ],
-  footer: [{ label: "← ALL WORK", href: "/" }],
+  footer: projectRailFooter,
 };

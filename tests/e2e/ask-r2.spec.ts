@@ -192,15 +192,17 @@ test("submitting a typed question produces a live answer whose references index 
   await expect(page.locator(".ask-ratelimit")).toContainText("42 left today");
 });
 
-test("exhibit 02 guard refusals render as ledger records: verbatim text, no bar-quote styling", async ({ page }) => {
+test("report results render guard refusals as ledger records: verbatim text, no bar-quote styling", async ({ page }) => {
   // Task R9c (B5-a): the two recorded refusals are data, not quotations --
   // no border-left bar, no italics, and the recorded texts stay verbatim.
   await page.goto(ROUTE, { waitUntil: "networkidle" });
   const exhibit02 = page.locator(SEL.exhibit("02"));
-  const refusals = exhibit02.locator(".ask-refusal");
+  const results = page.locator('[data-report-section="results"]');
+  const refusals = results.locator(".ask-refusal");
+  await expect(exhibit02.locator(".ask-refusal")).toHaveCount(0);
   await expect(refusals).toHaveCount(2);
   await expect(page.locator(".ask-guard-example")).toHaveCount(0);
-  await expect(page.locator('#exhibit-02 blockquote')).toHaveCount(0);
+  await expect(results.locator("blockquote")).toHaveCount(0);
 
   await expect(refusals.nth(0)).toContainText("OFF-TOPIC · REFUSED LOCALLY");
   await expect(refusals.nth(0)).toContainText("I focus on Xiangguo Zhang's background, projects, skills, working style, and role fit. Ask me about any of those.");

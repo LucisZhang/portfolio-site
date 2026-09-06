@@ -17,30 +17,27 @@ import {
   RotateCcw,
   Search,
 } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Papa from "papaparse";
-import ArtifactLink from "@/components/ArtifactLink";
 import LocaleDocumentMetadata from "@/components/LocaleDocumentMetadata";
 import LocaleLink from "@/components/LocaleLink";
-import { useI18n, type Locale, type LocalizedString } from "@/lib/i18n";
+import { useI18n, type LocalizedString } from "@/lib/i18n";
 import { loadPdfJs, PDFJS_WORKER_URL } from "@/lib/load-pdfjs";
+import { artifactContentHref, type ArtifactContext } from "@/lib/artifacts";
+import { artifactProvenance } from "@/lib/artifact-provenance";
+import { hasUsefulSections, sectionId, sectionSlug, type ArtifactSection } from "@/lib/artifact-sections";
+import { ArtifactSections, ArtifactText } from "./ArtifactSections";
 
-type ArtifactKind = "image" | "pdf" | "json" | "csv" | "markdown" | "mermaid";
-
-const KIND_BY_EXTENSION: Record<string, ArtifactKind> = {
-  png: "image", jpg: "image", jpeg: "image", svg: "image", pdf: "pdf", json: "json", csv: "csv", md: "markdown", mmd: "mermaid",
-};
-
-const PROJECT_LABEL_BY_DIRECTORY: Record<string, LocalizedString> = {
-  "analytics-tandem": { en: "Analytics Tandem", zh: "分析双项目" },
-  "credit-policy-desk": { en: "Credit Policy Desk", zh: "Credit Policy Desk" },
-  "margin-control-tower": { en: "Margin Control Tower", zh: "Margin Control Tower" },
-  "exactly-once-drills": { en: "Exactly-Once Drills", zh: "Exactly-Once Drills" },
-  "privacy-preflight": { en: "Privacy Preflight", zh: "Privacy Preflight" },
-  "rag-quality-lab": { en: "RAG Quality Lab", zh: "RAG Quality Lab" },
-  "release-guardian": { en: "Release Guardian", zh: "Release Guardian" },
+type MarkdownHostProps = { node?: unknown; children?: ReactNode; className?: string; id?: string; style?: CSSProperties };
+const markdownHost = (Tag: "p" | "li" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "td" | "th" | "blockquote" | "strong" | "em" | "del") =>
+  function MarkdownHost({ children, className, id, style }: MarkdownHostProps) {
+    return <Tag className={className} id={id} style={style}>{children}</Tag>;
+  };
+const markdownHostTags = {
+  p: markdownHost("p"), li: markdownHost("li"), h1: markdownHost("h1"), h2: markdownHost("h2"), h3: markdownHost("h3"), h4: markdownHost("h4"), h5: markdownHost("h5"), h6: markdownHost("h6"),
+  td: markdownHost("td"), th: markdownHost("th"), blockquote: markdownHost("blockquote"), strong: markdownHost("strong"), em: markdownHost("em"), del: markdownHost("del"),
 };
 
 const artifactMetadata = {
@@ -50,21 +47,6 @@ const artifactMetadata = {
     zh: "查看器仅增加说明与操作控件，原文件内容保持不变并可直接下载。",
   },
 } satisfies { title: LocalizedString; description: LocalizedString };
-
-function fileName(source: string) {
-  return decodeURIComponent(source.split("/").pop() || source);
-}
-
-function fileKind(source: string): ArtifactKind {
-  const extension = source.split(".").pop()?.toLowerCase() || "";
-  return KIND_BY_EXTENSION[extension] || "markdown";
-}
-
-function friendlyProject(source: string, locale: Locale) {
-  const slug = source.split("/")[2] || "project";
-  if (locale === "zh") return PROJECT_LABEL_BY_DIRECTORY[slug]?.zh ?? "项目";
-  return slug.split("-").map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(" ");
-}
 
 function formatBytes(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
@@ -266,26 +248,49 @@ function CsvViewer({ text, source }: { text: string; source: string }) {
   );
 }
 
-function slugify(value: string) {
-  return value.toLowerCase().trim().replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-|-$/g, "");
-}
-
 function MarkdownViewer({ text, source }: { text: string; source: string }) {
   const { locale } = useI18n();
   const articleRef = useRef<HTMLElement>(null);
-  const [toc, setToc] = useState<{ id: string; label: string; level: number }[]>([]);
+  const [toc, setToc] = useState<ArtifactSection[]>([]);
+  const [showSource, setShowSource] = useState(false);
   useEffect(() => {
-    const headings = [...(articleRef.current?.querySelectorAll("h1, h2, h3") || [])] as HTMLHeadingElement[];
+    const headings = [...(articleRef.current?.querySelectorAll("h1, h2, h3, h4, h5, h6") || [])] as HTMLHeadingElement[];
     setToc(headings.map((heading, index) => {
-      const id = `${slugify(heading.textContent || "section")}-${index + 1}`;
+      const id = sectionId(heading.textContent || "section", index);
       heading.id = id;
+      heading.tabIndex = -1;
       return { id, label: heading.textContent || id, level: Number(heading.tagName.slice(1)) };
     }));
-  }, [text]);
+  }, [text, showSource]);
+  const showSections = hasUsefulSections(text, toc);
   return (
-    <div className="artifact-markdown-layout">
-      <aside><strong>{locale === "en" ? "On this page" : "目录"}</strong>{toc.map((item) => <a key={item.id} href={`#${item.id}`} className={`level-${item.level}`}>{item.label}</a>)}<a href={source} download={downloadName(source)}><Download aria-hidden="true" />{locale === "en" ? "Download source" : "下载原文"}</a></aside>
-      <article className="artifact-markdown" ref={articleRef}><ReactMarkdown remarkPlugins={[remarkGfm]} components={{ a: ({ href, children }) => href?.startsWith("/case-studies/") ? <ArtifactLink href={href}>{children}</ArtifactLink> : <a href={href} target={href?.startsWith("http") ? "_blank" : undefined} rel={href?.startsWith("http") ? "noreferrer" : undefined}>{children}</a> }}>{text}</ReactMarkdown></article>
+    <div>
+      <div className="artifact-filterbar">
+        <button type="button" aria-pressed={showSource} onClick={() => setShowSource((current) => !current)}><FileCode2 aria-hidden="true" />{showSource ? (locale === "en" ? "Read document" : "阅读文档") : (locale === "en" ? "View source" : "查看源码")}</button>
+        <a href={source} download={downloadName(source)}><Download aria-hidden="true" />{locale === "en" ? "Download source" : "下载原文"}</a>
+      </div>
+      {showSource ? <ArtifactText text={text} /> : <div className="artifact-markdown-layout" data-has-sections={showSections}>
+        {showSections ? <ArtifactSections sections={toc} /> : null}
+        <article className="artifact-markdown" ref={articleRef}><ReactMarkdown remarkPlugins={[remarkGfm]} components={{
+          // Task D05: react-markdown builds its elements with React's own
+          // runtime, so text-bearing tags are re-emitted here to pass through
+          // the zh JSX runtime (word-tier line breaking; see src/lib/zh-jsx).
+          ...markdownHostTags,
+          a: ({ href, children }) => {
+            const target = href ? artifactContentHref(href, source) : undefined;
+            if (!target) return <span>{children}</span>;
+            if (target.startsWith("/artifact?")) return <LocaleLink href={target}>{children}</LocaleLink>;
+            const section = target.startsWith("#") ? toc.find((item) => `#${sectionSlug(item.label)}` === target) : undefined;
+            return <a href={section ? `#${section.id}` : target} target={target.startsWith("http") ? "_blank" : undefined} rel={target.startsWith("http") ? "noreferrer noopener" : undefined}>{children}</a>;
+          },
+          img: ({ src, alt }) => {
+            const target = typeof src === "string" ? artifactContentHref(src, source) : undefined;
+            const image = target?.startsWith("/artifact?") ? new URLSearchParams(target.split("?")[1]).get("src") : null;
+            // eslint-disable-next-line @next/next/no-img-element
+            return image && /\.(png|jpe?g|svg)$/i.test(image) ? <img src={image} alt={alt ?? ""} loading="lazy" /> : <span>{alt}</span>;
+          },
+        }}>{text}</ReactMarkdown></article>
+      </div>}
     </div>
   );
 }
@@ -318,47 +323,51 @@ function MermaidViewer({ text, source }: { text: string; source: string }) {
   return (
     <div className="artifact-mermaid-viewer">
       <div className="artifact-filterbar"><button type="button" onClick={() => setShowSource((current) => !current)}><FileCode2 aria-hidden="true" />{showSource ? (locale === "en" ? "Hide source" : "隐藏源码") : (locale === "en" ? "View source" : "查看源码")}</button><button type="button" disabled={!svg} onClick={downloadSvg}><Download aria-hidden="true" />{locale === "en" ? "Download SVG" : "下载 SVG"}</button><a href={source} download={downloadName(source)}><Download aria-hidden="true" />{locale === "en" ? "Download .mmd" : "下载 .mmd"}</a></div>
-      {showSource ? <pre className="artifact-raw-source"><code>{text}</code></pre> : <PanZoomSurface>{svg ? <div className="artifact-mermaid-svg" dangerouslySetInnerHTML={{ __html: svg }} /> : <p>{locale === "en" ? "Rendering architecture..." : "正在渲染架构图……"}</p>}</PanZoomSurface>}
+      {showSource ? <ArtifactText text={text} /> : <PanZoomSurface>{svg ? <div className="artifact-mermaid-svg" dangerouslySetInnerHTML={{ __html: svg }} /> : <p>{locale === "en" ? "Rendering architecture..." : "正在渲染架构图……"}</p>}</PanZoomSurface>}
     </div>
   );
 }
 
 function RawFallback({ text, message }: { text: string; message: string }) {
-  return <div><p className="artifact-error" role="alert">{message}</p><pre className="artifact-raw-source"><code>{text}</code></pre></div>;
+  return <div><p className="artifact-error" role="alert">{message}</p><ArtifactText text={text} /></div>;
 }
 
-export default function ArtifactViewer({ source, from }: { source: string | null; from: string }) {
+export default function ArtifactViewer({ context }: { context: ArtifactContext }) {
   const { locale } = useI18n();
+  const { source, from, kind, name, project, extension } = context;
   const [text, setText] = useState("");
   const [bytes, setBytes] = useState(0);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(Boolean(source));
-  const kind = source ? fileKind(source) : null;
-  const name = source ? fileName(source) : "";
+  const provenance = source ? artifactProvenance(source) : null;
+  const homeReturn = from.startsWith("/#") || from === "/";
   useEffect(() => {
     if (!source) return;
     let active = true;
-    void fetch(source).then(async (response) => {
+    const controller = new AbortController();
+    void fetch(source, { redirect: "error", credentials: "omit", signal: controller.signal }).then(async (response) => {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const buffer = await response.arrayBuffer();
       if (!active) return;
       setBytes(buffer.byteLength);
       if (kind !== "image" && kind !== "pdf") setText(new TextDecoder().decode(buffer));
     }).catch((reason) => {
+      if (!active) return;
       console.error("Artifact file could not be opened.", reason);
       if (active) setError(true);
     }).finally(() => { if (active) setLoading(false); });
-    return () => { active = false; };
+    return () => { active = false; controller.abort(); };
   }, [kind, source]);
 
   return (
     <div className="artifact-page">
       <LocaleDocumentMetadata title={artifactMetadata.title} description={artifactMetadata.description} />
-      <LocaleLink href={from} className="back-link"><ArrowLeft aria-hidden="true" />{locale === "en" ? "Back to project" : "返回项目"}</LocaleLink>
+      <LocaleLink href={from} className="back-link"><ArrowLeft aria-hidden="true" />{homeReturn ? (locale === "en" ? "Back to all projects" : "返回全部项目") : (locale === "en" ? "Back to project" : "返回项目")}{!homeReturn && project ? <span> · {project.title[locale]}</span> : null}</LocaleLink>
       <header className="artifact-page-header">
-        <div><p className="eyebrow">{locale === "en" ? "Project file" : "项目文件"}</p><h1>{name || (locale === "en" ? "File unavailable" : "文件不可用")}</h1><p>{source ? `${friendlyProject(source, locale)} / ${kind?.toUpperCase()}` : ""}</p></div>
-        {source ? <div className="artifact-file-meta"><span>{formatBytes(bytes)}</span><code>{source}</code><a href={source} download={downloadName(source)}><Download aria-hidden="true" />{locale === "en" ? "Download original" : "下载原文件"}</a></div> : null}
+        <div><p className="eyebrow">{locale === "en" ? "Project file" : "项目文件"}</p><h1>{name || (locale === "en" ? "File unavailable" : "文件不可用")}</h1><p>{project ? <><LocaleLink href={project.route}>{project.title[locale]}</LocaleLink> / {extension.toUpperCase()}{kind === "image" ? (locale === "en" ? " image" : " 图像") : kind === "text" ? (locale === "en" ? " plain text" : " 纯文本") : kind === "markdown" ? " · Markdown" : kind === "mermaid" ? " · Mermaid" : ""}</> : ""}</p></div>
+        {source ? <div className="artifact-file-meta"><span>{loading ? (locale === "en" ? "Reading file…" : "正在读取文件……") : error ? "—" : formatBytes(bytes)}</span><code>{source}</code><a href={source} download={downloadName(source)}><Download aria-hidden="true" />{locale === "en" ? "Download original" : "下载原文件"}</a></div> : null}
       </header>
+      {provenance ? <section className="artifact-provenance" aria-label={locale === "en" ? "Provenance context" : "来源说明"}><strong>{locale === "en" ? "Provenance context" : "来源说明"}</strong><p>{provenance[locale]}</p></section> : null}
       <section className="artifact-viewer-shell" aria-live="polite">
         {loading ? <div className="artifact-loading"><FileText aria-hidden="true" />{locale === "en" ? "Loading project file..." : "正在加载项目文件……"}</div> : null}
         {!source ? <div className="artifact-error" role="alert"><FileText aria-hidden="true" /><div><strong>{locale === "en" ? "No valid project file was selected." : "未选择有效的项目文件。"}</strong></div></div> : null}
@@ -368,6 +377,7 @@ export default function ArtifactViewer({ source, from }: { source: string | null
         {!loading && !error && source && kind === "json" ? <JsonViewer text={text} source={source} /> : null}
         {!loading && !error && source && kind === "csv" ? <CsvViewer text={text} source={source} /> : null}
         {!loading && !error && source && kind === "markdown" ? <MarkdownViewer text={text} source={source} /> : null}
+        {!loading && !error && source && kind === "text" ? <ArtifactText text={text} /> : null}
         {!loading && !error && source && kind === "mermaid" ? <MermaidViewer text={text} source={source} /> : null}
       </section>
       <p className="artifact-context"><Expand aria-hidden="true" />{locale === "en" ? "This viewer adds context and controls; the original file remains available unchanged." : "查看器仅增加说明与操作控件，原文件内容保持不变并可直接下载。"}</p>

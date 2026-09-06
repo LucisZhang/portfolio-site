@@ -4,10 +4,9 @@
    globals.css because they are shared with the reused Privacy*Lab
    components; only the new exhibit/hero scaffolding this page introduces
    lives here, mirroring src/components/forge/forge.css /
-   src/components/triage/triage.css (same hero-grid/report-section/
-   architecture-flow rules, this page's own prefix -- each rebuilt project
-   page keeps a self-contained stylesheet rather than sharing another
-   page's classes). */
+   src/components/triage/triage.css. Report typography and the reading
+   column live in report/ProjectReport.module.css; this file retains
+   the privacy instruments and their architecture flow. */
 
 .privacy-hero-grid {
   display: grid;
@@ -43,22 +42,6 @@
   .privacy-hero-grid {
     grid-template-columns: 1fr;
   }
-}
-
-.privacy-report-section {
-  border-bottom: 1px solid var(--hairline);
-  padding: clamp(40px, 5vw, 72px) clamp(34px, 7vw, 110px);
-}
-
-.privacy-report-section h2 {
-  margin: 0 0 20px;
-  font-family: var(--display-serif);
-  font-size: clamp(1.6rem, 2.4vw, 2.2rem);
-  font-weight: 400;
-}
-
-:lang(zh) .privacy-report-section h2 {
-  font-family: var(--display-serif-zh);
 }
 
 .privacy-architecture-flow {
@@ -349,4 +332,3 @@
   .privacy-lab .privacy-canvas-wrap, .privacy-lab .privacy-pdf-canvas-wrap { border-bottom: 0; }
   .privacy-lab .privacy-inplace-result-toolbar { padding: 2px 14px; }
 }
-

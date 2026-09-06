@@ -40,7 +40,7 @@
 .richAnswer strong { font-weight: 750; }
 .richAnswer ul { display: grid; gap: 6px; margin: 0; padding-left: 18px; }
 .richAnswer li { overflow-wrap: anywhere; font-size: 11px; line-height: 1.55; }
-.richAnswer a { color: var(--accent); font-weight: 700; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+.assistantMessage p a, .richAnswer a { color: var(--accent); font-weight: 700; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
 /* Task R14: microlabel over an AUTHORED preset answer (预置回答) -- quiet
    text tag, no new box grammar. */
 .presetTag { margin: 0 0 4px !important; color: var(--muted); font-size: 8px; letter-spacing: .04em; text-transform: uppercase; }

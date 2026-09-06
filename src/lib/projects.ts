@@ -1,18 +1,9 @@
 import type { LocalizedString } from "./i18n";
+import type { ProjectIdentityId } from "./project-identities";
+import type { ProjectRepository } from "./project-repositories";
 
 export type TrackId = "analytics" | "engineering" | "ai";
-export type ProjectId =
-  | "frontier-forge"
-  | "release-guardian"
-  | "exactly-once-drills"
-  | "rag-quality-lab"
-  | "triage-router"
-  | "privacy-preflight"
-  | "margin-control-tower"
-  | "crossover-study"
-  | "ask-portfolio"
-  | "credit-policy-desk"
-  | "analytics-tandem";
+export type ProjectId = Exclude<ProjectIdentityId, "Voice-in-Security">;
 
 export type ProjectTier = "flagship" | "core" | "secondary" | "archive";
 
@@ -53,6 +44,7 @@ export interface Project {
   fieldNotes?: LocalizedString[];
   provenance: LocalizedString[];
   boundaries: LocalizedString[];
+  repository: ProjectRepository;
   links: ProjectLink[];
   legacy?: boolean;
 }
@@ -88,6 +80,9 @@ export const tracks: Track[] = [
   },
 ];
 
+const repositoryLabel: LocalizedString = { en: "GitHub repository", zh: "GitHub 仓库" };
+export const repositoryNewTabLabel: LocalizedString = { en: "Opens in a new tab", zh: "在新标签页打开" };
+
 const projectCatalog: Project[] = [
   {
     slug: "frontier-forge",
@@ -113,10 +108,10 @@ const projectCatalog: Project[] = [
     architecture: [],
     provenance: [],
     boundaries: [],
+    repository: { status: "public", label: repositoryLabel, href: "https://github.com/LucisZhang/frontier-forge" },
     links: [
       { label: { en: "Evidence Explorer", zh: "证据浏览器" }, href: "#evidence-explorer" },
       { label: { en: "Technical report", zh: "技术报告" }, href: "https://github.com/LucisZhang/frontier-forge#results" },
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/frontier-forge" },
     ],
   },
   {
@@ -197,9 +192,8 @@ const projectCatalog: Project[] = [
         zh: "私有源码未提供链接；页面仅展示已通过记录中的发布检查的脱敏文件。",
       },
     ],
-    links: [
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/release-guardian" },
-    ],
+    repository: { status: "public", label: repositoryLabel, href: "https://github.com/LucisZhang/release-guardian" },
+    links: [],
   },
   {
     slug: "exactly-once-drills",
@@ -271,9 +265,8 @@ const projectCatalog: Project[] = [
         zh: "一次已捕获运行不能证明通用硬件兼容性或一键复现；历史面板仅证明其捕获的那次运行。",
       },
     ],
-    links: [
-      { label: { en: "GitHub repository", zh: "公开源码仓库" }, href: "https://github.com/LucisZhang/exactly-once-drills" },
-    ],
+    repository: { status: "public", label: repositoryLabel, href: "https://github.com/LucisZhang/exactly-once-drills" },
+    links: [],
   },
   {
     slug: "rag-quality-lab",
@@ -349,9 +342,8 @@ const projectCatalog: Project[] = [
       },
       { en: "The lab is a single-machine evaluation workbench, not a released package or a production serving system.", zh: "该实验室是单机评估工作台，并非已发布的软件包或生产服务系统。" },
     ],
-    links: [
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/rag-quality-lab" },
-    ],
+    repository: { status: "public", label: repositoryLabel, href: "https://github.com/LucisZhang/rag-quality-lab" },
+    links: [],
   },
   {
     slug: "triage-router",
@@ -441,9 +433,8 @@ const projectCatalog: Project[] = [
         zh: "结果只适用于这个任务、这份语料和测量当时的价目表；路由省下的钱由公开披露的成本模型算得，不是普适结论。",
       },
     ],
-    links: [
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/triage-router" },
-    ],
+    repository: { status: "public", label: repositoryLabel, href: "https://github.com/LucisZhang/triage-router" },
+    links: [],
   },
   {
     slug: "privacy-preflight",
@@ -518,9 +509,8 @@ const projectCatalog: Project[] = [
         zh: "外部模型始终是可选项，默认只接收脱敏后的内容。一旦启用外部服务，这套流程就不再称作离线流程。",
       },
     ],
-    links: [
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/privacy-preflight-web" },
-    ],
+    repository: { status: "public", label: repositoryLabel, href: "https://github.com/LucisZhang/privacy-preflight" },
+    links: [],
   },
   {
     slug: "margin-control-tower",
@@ -573,9 +563,8 @@ const projectCatalog: Project[] = [
       { en: "Detection precision and recall evaluate six deterministic perturbations on observed Mondays after the real totals are reindexed to a complete Monday calendar; 11 weeks with no derived cells are zero-filled. No manually labeled real anomaly is claimed, and neither calendar-completion rows nor perturbations enter the Parquet artifact.", zh: "检测的精确率与召回率评估方式如下：先将真实周总额重建为完整的星期一日历，对 11 个无衍生单元的周补零，再在有观测的星期一上施加 6 个确定性扰动。不声称存在人工标注的真实异常，日历补全行与扰动均不进入 Parquet 产物。" },
       { en: "The associational elasticity coefficient is fit on the analysis window; the later eight-week holdout evaluates MAPE only. Reference price, return deductions, and 60% COGS are disclosed proxies; no causal lift, audited company margin, forecast, or production decision is claimed.", zh: "相关性弹性系数在分析期窗口内拟合；后续 8 周留出期仅用于评估 MAPE。参考价、退货扣减与 60% COGS 均为已披露的代理变量；不声称因果提升、经审计的公司毛利、预测结果或生产决策依据。" },
     ],
-    links: [
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/margin-control-tower" },
-    ],
+    repository: { status: "public", label: repositoryLabel, href: "https://github.com/LucisZhang/margin-control-tower" },
+    links: [],
   },
   {
     slug: "crossover-study",
@@ -661,8 +650,8 @@ const projectCatalog: Project[] = [
         zh: "仅为单机批式评估：没有服务系统、在线指标或 A/B 测试。本页不分发原始评论、逐用户数组或 MiniLM 权重。",
       },
     ],
+    repository: { status: "public", label: repositoryLabel, href: "https://github.com/LucisZhang/crossover-study" },
     links: [
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/crossover-study" },
       { label: { en: "Full demo source", zh: "完整版 demo 源码" }, href: "https://github.com/LucisZhang/crossover-study/tree/main/demo" },
     ],
   },
@@ -687,13 +676,19 @@ const projectCatalog: Project[] = [
     architecture: [],
     provenance: [],
     boundaries: [],
+    // Ask Portfolio is implemented in this site's published repository (PUBLICATION.md).
+    repository: {
+      status: "public",
+      label: { en: "GitHub repository · portfolio-site", zh: "GitHub 仓库 · portfolio-site" },
+      href: "https://github.com/LucisZhang/portfolio-site",
+    },
     links: [],
   },
   {
     slug: "credit-policy-desk",
     track: "analytics",
     tier: "archive",
-    title: { en: "Credit Policy Desk", zh: "Credit Policy Desk" },
+    title: { en: "Credit Policy Desk", zh: "分数不是策略。" },
     glossZh: "信贷策略模拟工作台",
     eyebrow: { en: "Risk analytics / policy governance", zh: "风险分析 / 策略治理" },
     summary: { en: "A score is not a policy. This desk walks the rest of the way: expected loss, thresholds, review capacity, and a recorded human decision.", zh: "分数不等于策略。这个工作台继续往下走：算预期损失、定阈值，把复核容量算进去，最后由人拍板并留档。" },
@@ -740,9 +735,8 @@ const projectCatalog: Project[] = [
       { en: "LGD is a disclosed 45% assumption; legacy browser fields absent upstream use explicit unavailable sentinels, and home-ownership slices are descriptive only.", zh: "LGD 是明确披露的 45% 假设；上游缺失的旧版浏览器字段使用明确的不可用哨兵，住房状态切片仅作描述。" },
       { en: "This granted-loan-only archive does not represent rejected applicants or identify acceptance-population policy effects; it is an offline historical backtest, not causal impact, live or production decisioning, regulatory validation, or real-world fairness evidence.", zh: "该档案仅含已授信贷款，不代表被拒申请人，也不能识别完整受理人群的策略效果；它是离线历史回测，不构成因果影响、在线或生产决策、监管验证或真实世界公平性证据。" },
     ],
-    links: [
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/credit-policy-desk" },
-    ],
+    repository: { status: "public", label: repositoryLabel, href: "https://github.com/LucisZhang/credit-policy-desk" },
+    links: [],
   },
   {
     slug: "analytics-tandem",
@@ -796,12 +790,12 @@ const projectCatalog: Project[] = [
         zh: "模型交互是使用合成输入的演示，不代表生产风险审批或已验证的预测性能。",
       },
     ],
-    links: [
-      {
-        label: { en: "GitHub repository", zh: "GitHub 仓库" },
-        pending: { en: "The legacy Risk-Control-Portfolio repository is private; its rebuilt successor is Credit Policy Desk.", zh: "旧的 Risk-Control-Portfolio 仓库已转为私有；重建后的继任项目是 Credit Policy Desk。" },
-      },
-    ],
+    repository: {
+      status: "private",
+      label: { en: "Legacy repository · private", zh: "旧版仓库 · 私有" },
+      reason: { en: "The legacy Risk-Control-Portfolio repository is private; its rebuilt successor is Credit Policy Desk.", zh: "旧的 Risk-Control-Portfolio 仓库已转为私有；重建后的继任项目是“分数不是策略。”。" },
+    },
+    links: [],
     legacy: true,
   },
 ];

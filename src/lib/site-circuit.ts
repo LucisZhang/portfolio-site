@@ -1,81 +1,116 @@
-// Task R9a (checklist A3, owner decision: directions b AND c combined): the
-// single fixed circuit over all 10 standalone project pages, defined once
-// here and consumed by CircuitNav.tsx (the shell's prev/next chain + the
-// page-bottom colophon index).
+// The single fixed circuit over all 10 standalone project pages, defined
+// once here and consumed by CircuitNav.tsx (the shell's prev/next chain and
+// the page-bottom colophon index of work).
 //
-// OWNER REFINEMENT (binding): the grouping below mirrors the site's
-// marketing positioning line (site-config.ts directionLine) — "AI agent &
-// LLM application engineering · backend & distributed systems · data
-// engineering & analytics" — NOT the legacy track-label trio ("AI
-// applications / Data engineering / Data analytics"). Assignments follow
-// what each project actually is; privacy-preflight sits in the AI group
-// because its substance is an LLM-adjacent application-engineering
-// workbench (browser-local detection/redaction with an optional external
-// model boundary), not a pipeline or an analytics artifact — and the
-// approved A3-c mock shows it inside the AI column (04). This grouping is
-// for the index/chain ONLY: routes, tracks, and URLs are untouched, so
-// each stop's href still comes from the project's existing track segment.
+// Task D06 (site revamp R2): the circuit is grouped into three families
+// named after what the work does --
+//   BUILD & RUN      stand a system up and keep it up under load/failure
+//   GUARD & VERIFY   gates that fail closed before something ships or leaves
+//   MEASURE & DECIDE measurement that ends in a threshold, a policy, or a no
+// -- and the families are what the crumb, the prev/next chain and the
+// page-bottom index of work all speak in.
 //
-// Ordering = the approved mock's index order, flattened into one circular
-// circuit: AI (6) -> ENGINEERING (2) -> ANALYTICS (2), wrapping at the
-// ends (credit-policy-desk -> frontier-forge). Prev/next therefore stays
-// within-group everywhere except the three group boundaries, per the task
-// ruling (the A3-b mock's sample frame showed a within-group wrap for
-// Frontier Forge's prev; the task text's single-circuit rule wins and is
-// reported as a documented deviation).
+// The grouping governs the index and the chain ONLY. Routes, tracks and
+// URLs are untouched, so every stop's href still comes from the project's
+// own track segment and /engineering/crossover-study legitimately shows a
+// MEASURE & DECIDE crumb.
+//
+// One invariant carries the whole design: `circuitOrder` is exactly the
+// families of `circuitGroups`, in display order, laid end to end
+// (`assertTaxonomy` throws otherwise). Four things the reader sees are
+// derived from that single list and therefore cannot disagree with each
+// other: the family label in the crumb, the in-family position beside it
+// ("GUARD & VERIFY . 02 / 04"), the prev/next chain, and the index's global
+// numbers 01..10, which run monotonically down each family's column and
+// cross a family boundary only at the seams and the wrap. The list is
+// written out explicitly rather than computed so that changing the browsing
+// order of the site is a deliberate, reviewable edit in one place.
 import { routableProjects, type Project, type ProjectId } from "./projects";
+import type { Locale, LocalizedString } from "./i18n";
+import { navigationCopy, navigationNumber, navigationPosition } from "./navigation";
 
-export type CircuitGroupId = "ai" | "systems" | "data";
+export type CircuitGroupId = "build-run" | "guard-verify" | "measure-decide";
 
 export interface CircuitGroup {
   id: CircuitGroupId;
-  // Mono UI-fabric handle (approved mock's "AI — 6 / ENGINEERING — 2 /
-  // ANALYTICS — 2" column headers): English in both locales per the
-  // locale-purity rule for mono fabric labels.
-  label: string;
-  // The directionLine segment this group mirrors (report/aria context —
-  // not rendered in the mono fabric, which keeps the mock's short handle).
-  positioning: { en: string; zh: string };
-  // Home-section anchor for the crumb's group link and the bottom block's
-  // TRACK row — the same targets next.config.ts's 308s use for the retired
-  // /ai, /engineering, /analytics routes, linked directly (no redirect hop).
-  homeAnchor: string;
+  label: LocalizedString;
+  // One muted line under the colophon heading, stating what the family
+  // claims. An editorial label needs it: the line has to add the claim, not
+  // restate the label back at the reader.
+  gloss: LocalizedString;
+  // Members in circuit order. `circuitOrder` is asserted below to be
+  // exactly these lists concatenated in display order, so `members.length`
+  // is both the family size shown beside the colophon heading and the
+  // denominator in the crumb's "GUARD & VERIFY . 02 / 04".
   members: ProjectId[];
 }
 
 export const circuitGroups: CircuitGroup[] = [
   {
-    id: "ai",
-    label: "AI",
-    positioning: { en: "AI agent & LLM application engineering", zh: "AI Agent 与大模型应用工程" },
-    homeAnchor: "/#agent-systems",
-    members: [
-      "frontier-forge",
-      "release-guardian",
-      "triage-router",
-      "privacy-preflight",
-      "rag-quality-lab",
-      "ask-portfolio",
-    ],
+    id: "build-run",
+    label: { en: "BUILD & RUN", zh: "构建与运行" },
+    gloss: {
+      en: "From standing it up to keeping it running under load and failure.",
+      zh: "从搭起来，到在负载与故障下继续跑。",
+    },
+    members: ["frontier-forge", "exactly-once-drills"],
   },
   {
-    id: "systems",
-    label: "ENGINEERING",
-    positioning: { en: "backend & distributed systems", zh: "后端与分布式系统" },
-    homeAnchor: "/#systems",
-    members: ["exactly-once-drills", "crossover-study"],
+    id: "guard-verify",
+    label: { en: "GUARD & VERIFY", zh: "把关与验证" },
+    gloss: {
+      en: "When it should be stopped, fail rather than let it through.",
+      zh: "该拦下时，宁可失败，也不放行。",
+    },
+    members: ["release-guardian", "privacy-preflight", "rag-quality-lab", "ask-portfolio"],
   },
   {
-    id: "data",
-    label: "ANALYTICS",
-    positioning: { en: "data engineering & analytics", zh: "数据工程与分析" },
-    homeAnchor: "/#archive",
-    members: ["margin-control-tower", "credit-policy-desk"],
+    id: "measure-decide",
+    label: { en: "MEASURE & DECIDE", zh: "度量与决策" },
+    gloss: {
+      en: "Use the results to set thresholds and policies, and to say when to refuse.",
+      zh: "用结果定阈值、定策略，也明确什么时候该否决。",
+    },
+    members: ["triage-router", "crossover-study", "margin-control-tower", "credit-policy-desk"],
   },
 ];
 
-// One-line index descriptions (approved A3-c mock copy, verbatim). zh side
-// reuses each project's existing glossZh (already in every route's shared
+// The circular browsing chain, and the source every stop is built from.
+// It is the concatenation of the families above in display order --
+// `assertTaxonomy` throws otherwise -- and tests/site-circuit.test.mjs
+// pins the exact slugs independently of `circuitGroups`, so a regrouping
+// cannot move the site's browsing order without failing a gate.
+export const circuitOrder: ProjectId[] = [
+  "frontier-forge",
+  "exactly-once-drills",
+  "release-guardian",
+  "privacy-preflight",
+  "rag-quality-lab",
+  "ask-portfolio",
+  "triage-router",
+  "crossover-study",
+  "margin-control-tower",
+  "credit-policy-desk",
+];
+
+/** The colophon element id a group's crumb/TRACK link jumps to. Derived,
+ *  never hand-written, so the link and the landing target cannot drift. */
+export function circuitIndexAnchor(id: CircuitGroupId): string {
+  return `index-${id}`;
+}
+
+/** Bottom TRACK row label: the family, plus the fact that the destination
+ *  is the index further down THIS page. The crumb and the TRACK row carry
+ *  the same href, so they have to read as the same offer in both locales.
+ *  The zh side leads with the qualifier because that is where zh puts it. */
+export function circuitGroupIndexLabel(group: CircuitGroup, locale: Locale): string {
+  return locale === "zh"
+    ? `${navigationCopy.groupIndex.zh}${group.label.zh} →`
+    : `${navigationCopy.groupIndex.en} ${group.label.en} →`;
+}
+
+// One-line index descriptions for the bottom index. The zh side reuses each
+// project's existing glossZh (already in every route's shared
 // chunk via projects.ts), so the circuit adds no new zh source strings.
 const circuitBlurbEn: Record<string, string> = {
   "frontier-forge": "SFT fine-tuning to a running vLLM release",
@@ -96,33 +131,77 @@ export interface CircuitStop {
   href: string;
   /** Zero-padded global index in the circuit, "01".."10" (mock numbering). */
   number: string;
-  /** 1-based position within the stop's group ("AI · 1 of 6"). */
+  /** 1-based position within the stop's group, formatted at the UI boundary. */
   indexInGroup: number;
   group: CircuitGroup;
   blurb: { en: string; zh: string };
 }
 
-function buildStops(): CircuitStop[] {
-  const stops: CircuitStop[] = [];
+// Build-time invariants. These run once at module load (server and client
+// alike) and throw rather than degrade: a project silently missing from the
+// taxonomy would drop it out of the index of work on all 10 pages, and a
+// project in two families would make "you are here" ambiguous.
+function assertTaxonomy(): Map<ProjectId, CircuitGroup> {
+  const familyOf = new Map<ProjectId, CircuitGroup>();
   for (const group of circuitGroups) {
-    group.members.forEach((slug, memberIndex) => {
-      const project = routableProjects.find((candidate) => candidate.slug === slug);
-      if (!project) return;
-      stops.push({
-        slug,
-        project,
-        href: `/${project.track}/${project.slug}`,
-        number: String(stops.length + 1).padStart(2, "0"),
-        indexInGroup: memberIndex + 1,
-        group,
-        blurb: { en: circuitBlurbEn[slug] ?? "", zh: project.glossZh },
-      });
-    });
+    for (const slug of group.members) {
+      const existing = familyOf.get(slug);
+      if (existing) {
+        throw new Error(`site-circuit: ${slug} is in both "${existing.id}" and "${group.id}"; every project belongs to exactly one group`);
+      }
+      familyOf.set(slug, group);
+    }
   }
-  return stops;
+  // Group members must be real routable projects (catches a rename or a
+  // typo), but not every routable project is a circuit stop: the archive
+  // tier's compatibility route (analytics-tandem) is off the circuit and
+  // CircuitNav renders nothing there. tests/site-circuit.test.mjs names
+  // that one exclusion explicitly, so a genuinely new project that nobody
+  // assigned to a family fails a gate instead of quietly disappearing from
+  // the index of work on all ten pages.
+  for (const slug of familyOf.keys()) {
+    if (!routableProjects.some((project) => project.slug === slug)) {
+      throw new Error(`site-circuit: group member ${slug} is not a routable project`);
+    }
+  }
+  // The invariant of this file: the circuit is the families, in display
+  // order, laid end to end. Everything the page promises -- "02 / 04" under
+  // a family label, a NEXT that stays inside the family until the family
+  // ends, an index column whose global numbers climb from top to bottom --
+  // is this one equality. Comparing the whole flattened list rather than
+  // group by group also catches a reordering of `circuitGroups` itself.
+  const flattened = circuitGroups.flatMap((group) => group.members);
+  if (flattened.join(",") !== circuitOrder.join(",")) {
+    throw new Error(`site-circuit: circuitOrder must be the families concatenated in display order (expected ${flattened.join(", ")}, got ${circuitOrder.join(", ")})`);
+  }
+  return familyOf;
+}
+
+function buildStops(): CircuitStop[] {
+  const familyOf = assertTaxonomy();
+  return circuitOrder.map((slug, index) => {
+    const project = routableProjects.find((candidate) => candidate.slug === slug);
+    const group = familyOf.get(slug);
+    if (!project || !group) {
+      throw new Error(`site-circuit: ${slug} has no routable project`);
+    }
+    return {
+      slug,
+      project,
+      href: `/${project.track}/${project.slug}`,
+      number: navigationNumber(index + 1),
+      indexInGroup: group.members.indexOf(slug) + 1,
+      group,
+      blurb: { en: circuitBlurbEn[slug] ?? "", zh: project.glossZh },
+    };
+  });
 }
 
 export const circuitStops: CircuitStop[] = buildStops();
+
+export function circuitPosition(stop: CircuitStop, locale: Locale): string {
+  return `${stop.group.label[locale]} · ${navigationPosition(stop.indexInGroup, stop.group.members.length)}`;
+}
 
 export interface CircuitEntry {
   stop: CircuitStop;

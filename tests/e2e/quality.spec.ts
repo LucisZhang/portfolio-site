@@ -69,7 +69,10 @@ test("representative workflows remain keyboard-operable with reduced motion", as
   // "View verification SQL" panel, same pattern as the exactly-once-drills
   // Duty Logbook entry above).
   await page.goto("/analytics/credit-policy-desk", { waitUntil: "networkidle" });
-  const verifySqlSummary = page.locator(SEL.exhibit("04")).locator("summary");
+  const receiptSummary = page.locator("[data-evidence=credit] > details > summary");
+  await receiptSummary.focus();
+  await receiptSummary.press("Enter");
+  const verifySqlSummary = page.locator(SEL.exhibit("04")).locator(".credit-verify-sql > summary");
   await verifySqlSummary.focus();
   await page.keyboard.press("Enter");
   await expect(page.locator(SEL.exhibit("04")).locator(".credit-verify-sql")).toHaveAttribute("open", "");
@@ -90,8 +93,9 @@ test("representative workflows remain keyboard-operable with reduced motion", as
 // Task 1.2: the pre-rebuild homepage rendered contact controls as icon+text
 // buttons inside `.identity-links` under a decorative LucisOrbit mark. The
 // rebuilt hero (spec §2.1's no-icon rule) renders the same phone/WeChat/
-// GitHub/LinkedIn/email functionality as plain text links with no <svg>
-// children (home-r2.spec.ts asserts the icon-free structure directly);
+// GitHub/LinkedIn/email functionality as text links; task D-01 later added
+// one local aria-hidden glyph per control as the rule's single sanctioned
+// exception (home-r2.spec.ts asserts that structure directly);
 // this test keeps the deeper behavioral coverage — locale-conditional
 // LinkedIn, the phone dialog, and the WeChat QR variants — against the new
 // markup. The orbit's own position/animation assertions have no
@@ -105,9 +109,11 @@ test("homepage contacts and WeChat QR variants follow locale", async ({ page }, 
   // scopes to the hero's, matching what this test otherwise exercises.
   await expect(page.locator(SEL.homeHero).getByRole("link", { name: /GitHub/ })).toHaveAttribute("target", "_blank");
   await expect(page.getByRole("link", { name: /LinkedIn/ })).toHaveAttribute("rel", /noopener/);
-  expect(await page.locator(SEL.homeHeroContactLink).evaluateAll((controls) => (
-    controls.map((control) => control.querySelectorAll(":scope > svg").length)
-  ))).toEqual([0, 0, 0, 0, 0]);
+  // Task D-01: contact glyphs are the sanctioned exception to the no-icon
+  // rule -- exactly one aria-hidden <svg> per control, label still the name.
+  expect(await page.locator(".home-hero-contact a:visible, .home-hero-contact button:visible").evaluateAll((controls) => (
+    controls.map((control) => control.querySelectorAll(":scope > svg[aria-hidden='true']").length)
+  ))).toEqual([1, 1, 1, 1, 1]);
   const phone = page.getByRole("link", { name: "Phone", exact: true });
   await expect(phone).toHaveAttribute("href", "tel:+8615990784046");
   await expect(page.locator(SEL.homeHero)).not.toContainText("+86 15990784046");
@@ -124,9 +130,9 @@ test("homepage contacts and WeChat QR variants follow locale", async ({ page }, 
   await expect(page.getByRole("link", { name: "电话", exact: true })).toBeVisible();
   // Two "邮箱" links exist now (hero contact + exhibit 06 receipts).
   await expect(page.locator(SEL.homeHero).getByRole("link", { name: "邮箱", exact: true })).toBeVisible();
-  expect(await page.locator(SEL.homeHeroContactLink).evaluateAll((controls) => (
-    controls.map((control) => control.querySelectorAll(":scope > svg").length)
-  ))).toEqual([0, 0, 0, 0]);
+  expect(await page.locator(".home-hero-contact a:visible, .home-hero-contact button:visible").evaluateAll((controls) => (
+    controls.map((control) => control.querySelectorAll(":scope > svg[aria-hidden='true']").length)
+  ))).toEqual([1, 1, 1, 1]);
   await page.getByRole("button", { name: "微信", exact: true }).click();
   await expect(page.getByAltText("Lucis 的微信二维码")).toHaveAttribute("src", /wechat-zh\.jpg/);
 });
@@ -150,20 +156,28 @@ test("the hero's independent Chinese narrative renders only in zh locale", async
   // display serif even under the zh locale toggle (spec §2.3's explicit
   // asymmetry) rather than switching to the CJK serif :lang(zh) rule.
   await expect(page.locator(SEL.homeHeroTitle)).toHaveAttribute("lang", "en");
-  // Task F5 (locale purity, user's binding rule): the zh narrative is no
-  // longer always-on — it must not render in en locale. See home-r2.spec.ts
-  // for the full en/zh coverage; this is a targeted regression check next
-  // to the assertion above that used to claim the opposite.
+  // Task F5 (locale purity): the stable narrative node remains outside the
+  // English layout and accessibility tree.
   await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "en"));
   await page.goto("/", { waitUntil: "networkidle" });
-  await expect(page.locator(SEL.homeHeroZh)).toHaveCount(0);
+  await expect(page.locator(SEL.homeHeroZh)).toBeHidden();
 });
 
 test("pass indicators use ok while small hover text keeps accessible accent contrast", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "Shared semantic colors are exercised once.");
   await page.goto("/ai/release-guardian", { waitUntil: "networkidle" });
   await expect(page.locator(SEL.metricTableSvg).first()).toHaveCSS("color", "rgb(47, 107, 82)");
+  // F-02: the standardized evidence layer keeps file links inside a native
+  // <details> receipt ("Files, hashes and methods") that is closed by
+  // default but needs no JavaScript and stays keyboard-operable — the
+  // summary is the discoverable entry point, not the link itself. Open the
+  // disclosure the way a reader does, then hold the same accent-contrast
+  // assertions against the now-visible link (same selector, same colors —
+  // nothing about the contract is weakened, only the reveal step the new
+  // disclosure semantics require).
+  await page.locator(".evidence-details > summary").click();
   const evidenceLink = page.locator(SEL.evidenceLinkA).first();
+  await expect(evidenceLink).toBeVisible();
   await expect(evidenceLink).toHaveCSS("color", "rgb(157, 43, 38)");
   await evidenceLink.hover();
   await expect(evidenceLink).toHaveCSS("color", "rgb(157, 43, 38)");
@@ -349,7 +363,7 @@ test("artifact viewer preserves the shareable Chinese locale and project return 
   await page.goto("/artifact?src=/case-studies/exactly-once-drills/README.md&from=/engineering/exactly-once-drills&lang=zh", { waitUntil: "networkidle" });
   await expect(page.locator(SEL.html)).toHaveAttribute("lang", "zh-CN");
   await expect(page.getByRole("link", { name: "返回项目" })).toHaveAttribute("href", /engineering\/exactly-once-drills\?lang=zh$/);
-  await expect(page.locator(SEL.artifactPageHeaderDivFirstChildPNotEyebrow)).toHaveText("Exactly-Once Drills / MARKDOWN");
+  await expect(page.locator(SEL.artifactPageHeaderDivFirstChildPNotEyebrow)).toHaveText("Exactly-Once Drills / MD · Markdown");
   await expect(page.locator(SEL.artifactPageHeader)).not.toContainText("P1 Reliability Lab");
   await page.reload({ waitUntil: "networkidle" });
   await expect(page.locator(SEL.html)).toHaveAttribute("lang", "zh-CN");
@@ -371,21 +385,22 @@ test("Chinese artifact controls localize tree summaries while preserving source 
 test("Chinese artifact errors expose only controlled localized messages", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "desktop", "Diagnostic presentation is shared across viewports.");
 
-  await page.goto("/artifact?src=/case-studies/rag-quality-lab/missing.json&lang=zh", { waitUntil: "domcontentloaded" });
+  await page.route("**/case-studies/rag-quality-lab/claim-registry.json", (route) => route.fulfill({ status: 404, body: "missing" }));
+  await page.goto("/artifact?src=/case-studies/rag-quality-lab/claim-registry.json&lang=zh", { waitUntil: "domcontentloaded" });
   await expect(page.locator(SEL.artifactError)).toHaveText("无法打开该文件。");
   await expect(page.locator(SEL.artifactError)).not.toContainText("HTTP 404");
 
-  await page.route("**/case-studies/rag-quality-lab/broken.pdf", async (route) => {
+  await page.route("**/case-studies/privacy-preflight/pdf-synthetic-redacted.pdf", async (route) => {
     await route.fulfill({ status: 200, contentType: "application/pdf", body: "not a PDF" });
   });
-  await page.goto("/artifact?src=/case-studies/rag-quality-lab/broken.pdf&lang=zh", { waitUntil: "domcontentloaded" });
+  await page.goto("/artifact?src=/case-studies/privacy-preflight/pdf-synthetic-redacted.pdf&lang=zh", { waitUntil: "domcontentloaded" });
   await expect(page.locator(SEL.artifactError)).toHaveText("PDF 预览加载失败，请下载原文件。", { timeout: 20_000 });
   await expect(page.locator(SEL.artifactErrorSmall)).toHaveCount(0);
 
-  await page.route("**/case-studies/rag-quality-lab/broken.mmd", async (route) => {
+  await page.route("**/case-studies/release-guardian/architecture.mmd", async (route) => {
     await route.fulfill({ status: 200, contentType: "text/plain", body: "not a Mermaid diagram" });
   });
-  await page.goto("/artifact?src=/case-studies/rag-quality-lab/broken.mmd&lang=zh", { waitUntil: "domcontentloaded" });
+  await page.goto("/artifact?src=/case-studies/release-guardian/architecture.mmd&lang=zh", { waitUntil: "domcontentloaded" });
   await expect(page.locator(SEL.artifactError)).toHaveText("架构图渲染失败，仍可查看下方 Mermaid 源码。", { timeout: 20_000 });
   await expect(page.locator(SEL.artifactErrorSmall)).toHaveCount(0);
 });

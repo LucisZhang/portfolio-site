@@ -3,6 +3,7 @@
 import { Exhibit } from "@/components/exhibition/Exhibit";
 import { useI18n } from "@/lib/i18n";
 import { homeStats, isMissing, localizeStatText } from "@/lib/home-stats";
+import { zhGroup } from "@/lib/zh-wrap";
 
 export default function NegativeRunsExhibit() {
   const { locale } = useI18n();
@@ -17,7 +18,7 @@ export default function NegativeRunsExhibit() {
         locale === "en" ? (
           <>Five runs.<br /><em>All of them stayed on the page.</em></>
         ) : (
-          <>五次没跑成的实验，<em>一次也没从页面上删掉。</em></>
+          <>五次没跑成的实验，<br /><em>{zhGroup("一次也没", "从页面上删掉。")}</em></>
         )
       }
     >

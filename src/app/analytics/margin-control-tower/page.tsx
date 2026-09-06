@@ -1,6 +1,8 @@
+import { EvidenceScope } from "@/components/exhibition/EvidenceScope.server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ExhibitShell } from "@/components/exhibition/ExhibitShell";
+import ProjectRepositoryEntry from "@/components/exhibition/ProjectRepositoryEntry";
 import ProjectRailTools from "@/components/exhibition/ProjectRailTools";
 import MarginPage from "@/components/margin/MarginPage";
 import { marginRail } from "@/components/margin/marginRail";
@@ -20,8 +22,10 @@ export default function MarginControlTowerRoute() {
   const project = getProject("analytics", "margin-control-tower");
   if (!project) notFound();
   return (
-    <ExhibitShell rail={marginRail} railTools={<ProjectRailTools />} mode="auto">
-      <MarginPage project={project} />
+    <ExhibitShell repositoryEntry={<ProjectRepositoryEntry project={project} />} rail={marginRail} railTools={<ProjectRailTools />} mode="auto">
+      <EvidenceScope project="margin">
+        <MarginPage project={project} />
+      </EvidenceScope>
     </ExhibitShell>
   );
 }

@@ -230,8 +230,8 @@ test("payload uses locale-specific model, ZDR routing, structured citations, and
   assert.equal("maxItems" in payload.response_format.json_schema.schema.properties.blocks.items.properties.segments, false);
   assert.deepEqual(segmentSchemas[0].properties.text, { type: "string" });
   assert.deepEqual(payload.response_format.json_schema.schema.properties.blocks.items.properties.segments.items.anyOf[1].properties.projectId.enum, [
-    "release-guardian", "streaming-reliability-lab", "rag-quality-lab", "privacy-preflight",
-    "margin-control-tower", "credit-policy-desk", "Voice-in-Security",
+    "frontier-forge", "release-guardian", "exactly-once-drills", "rag-quality-lab", "triage-router", "privacy-preflight",
+    "margin-control-tower", "crossover-study", "ask-portfolio", "credit-policy-desk", "analytics-tandem", "Voice-in-Security",
   ]);
   assert.deepEqual(payload.response_format.json_schema.schema.properties.citation_ids.items.enum, chunks.map((chunk) => chunk.id));
   assert.equal(payload.messages.length, 4);

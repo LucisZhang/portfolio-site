@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { InstrumentFrame } from "@/components/exhibition/InstrumentFrame";
 import { useI18n } from "@/lib/i18n";
 import {
@@ -16,9 +16,26 @@ import { LocalInference } from "./LocalInference";
 import { SampleDrawerTrigger } from "./SampleDrawer";
 import { commaInt, grouped, macroF1 as fmtMacroF1, percent, strategySlug } from "./triageFormat";
 
+// Task D-03: the instrument's four reading steps. English mono UI fabric
+// with an independent zh line each -- same bilingual ternary convention as
+// the slider labels below.
+const STEP_LABELS = {
+  control: { en: "CONTROL", zh: "控制" },
+  reading: { en: "CURRENT READING", zh: "当前读数" },
+  interpretation: { en: "INTERPRETATION", zh: "解读" },
+  detail: { en: "DETAIL", zh: "明细" },
+} as const;
+
+function StepLabel({ step, locale }: { step: keyof typeof STEP_LABELS; locale: string }) {
+  return <p className="triage-step-label">{locale === "en" ? STEP_LABELS[step].en : STEP_LABELS[step].zh}</p>;
+}
+
 export function PolicyTerminal({ variant }: { variant: "compact" | "full" }) {
   const { locale } = useI18n();
   const [misrouteIndex, setMisrouteIndex] = useState(DEFAULT_MISROUTE_INDEX);
+  const [copiedSyntax, setCopiedSyntax] = useState(false);
+  const copiedTimer = useRef<number | undefined>(undefined);
+  useEffect(() => () => window.clearTimeout(copiedTimer.current), []);
   const [thresholdIndex, setThresholdIndex] = useState(DEFAULT_THRESHOLD_INDEX);
 
   const row = matrix.rows[misrouteIndex][thresholdIndex];
@@ -30,77 +47,89 @@ export function PolicyTerminal({ variant }: { variant: "compact" | "full" }) {
 
   return (
     <InstrumentFrame variant={variant}>
-      <div className="triage-terminal" data-triage-terminal>
-        <FrontierChart misrouteIndex={misrouteIndex} thresholdIndex={thresholdIndex} />
+      <div className="triage-terminal" data-triage-terminal data-variant={variant}>
+        <div className="triage-step triage-step-control" data-step="control">
+          <StepLabel step="control" locale={locale} />
+          <FrontierChart misrouteIndex={misrouteIndex} thresholdIndex={thresholdIndex} />
 
-        <div className="triage-slider-row">
-          <label htmlFor={`triage-misroute-${variant}`}>
-            <span className="triage-slider-label">{locale === "en" ? "MISROUTE COST" : "误分流成本"}</span>
-            <span className="triage-slider-value" data-misroute-value>{grouped(row.misrouteCostCny, 2)}</span>
-          </label>
-          <input
-            id={`triage-misroute-${variant}`}
-            type="range"
-            data-misroute-slider
-            min={0}
-            max={matrix.misrouteCosts.length - 1}
-            step={1}
-            value={misrouteIndex}
-            onChange={(event) => setMisrouteIndex(Number(event.target.value))}
-          />
+          <div className="triage-slider-row">
+            <label htmlFor={`triage-misroute-${variant}`}>
+              <span className="triage-slider-label">{locale === "en" ? "MISROUTE COST" : "误分流成本"}</span>
+              <span className="triage-slider-value" data-misroute-value>{grouped(row.misrouteCostCny, 2)}</span>
+            </label>
+            <input
+              id={`triage-misroute-${variant}`}
+              type="range"
+              data-misroute-slider
+              min={0}
+              max={matrix.misrouteCosts.length - 1}
+              step={1}
+              value={misrouteIndex}
+              onChange={(event) => setMisrouteIndex(Number(event.target.value))}
+            />
+          </div>
+
+          <div className="triage-slider-row">
+            <label htmlFor={`triage-threshold-${variant}`}>
+              <span className="triage-slider-label">{locale === "en" ? "CONFIDENCE THRESHOLD" : "置信度阈值"}</span>
+              <span className="triage-slider-value" data-threshold-value>{row.threshold.toFixed(3)}</span>
+            </label>
+            <input
+              id={`triage-threshold-${variant}`}
+              type="range"
+              data-threshold-slider
+              min={0}
+              max={matrix.thresholds.length - 1}
+              step={1}
+              value={thresholdIndex}
+              onChange={(event) => setThresholdIndex(Number(event.target.value))}
+            />
+          </div>
         </div>
 
-        <div className="triage-slider-row">
-          <label htmlFor={`triage-threshold-${variant}`}>
-            <span className="triage-slider-label">{locale === "en" ? "CONFIDENCE THRESHOLD" : "置信度阈值"}</span>
-            <span className="triage-slider-value" data-threshold-value>{row.threshold.toFixed(3)}</span>
-          </label>
-          <input
-            id={`triage-threshold-${variant}`}
-            type="range"
-            data-threshold-slider
-            min={0}
-            max={matrix.thresholds.length - 1}
-            step={1}
-            value={thresholdIndex}
-            onChange={(event) => setThresholdIndex(Number(event.target.value))}
-          />
+        <div className="triage-step triage-step-reading" data-step="reading">
+          <StepLabel step="reading" locale={locale} />
+          <div className="triage-readout-row" data-readout-row>
+            <SampleDrawerTrigger label={locale === "en" ? "threshold" : "阈值"} value={row.threshold.toFixed(3)} threshold={row.threshold} />
+            <SampleDrawerTrigger label={locale === "en" ? "escalate" : "升级率"} value={percent(row.escalatePct)} threshold={row.threshold} />
+            <SampleDrawerTrigger label="macro-F1" value={`${fmtMacroF1(row.macroF1)} [${fmtMacroF1(row.ci[0])}, ${fmtMacroF1(row.ci[1])}]`} threshold={row.threshold} />
+            <SampleDrawerTrigger label={locale === "en" ? "monthly cost" : "月成本"} value={grouped(row.monthlyCostCny)} threshold={row.threshold} />
+          </div>
         </div>
 
-        <p className="triage-strategy-card" data-strategy-card data-strategy-name={slug}>{filled}</p>
+        <div className="triage-step triage-step-interpretation" data-step="interpretation">
+          <StepLabel step="interpretation" locale={locale} />
+          <p className="triage-strategy-card" data-strategy-card data-strategy-name={slug}>{filled}</p>
 
-        <div className="triage-readout-row" data-readout-row>
-          <SampleDrawerTrigger label={locale === "en" ? "threshold" : "阈值"} value={row.threshold.toFixed(3)} threshold={row.threshold} />
-          <SampleDrawerTrigger label={locale === "en" ? "escalate" : "升级率"} value={percent(row.escalatePct)} threshold={row.threshold} />
-          <SampleDrawerTrigger label="macro-F1" value={`${fmtMacroF1(row.macroF1)} [${fmtMacroF1(row.ci[0])}, ${fmtMacroF1(row.ci[1])}]`} threshold={row.threshold} />
-          <SampleDrawerTrigger label={locale === "en" ? "monthly cost" : "月成本"} value={grouped(row.monthlyCostCny)} threshold={row.threshold} />
+          <p className="triage-headcount-line">
+            {locale === "en"
+              ? `≈ ${commaInt(escalatedTickets)} of every 1,000 complaints/month reach a human reviewer at this setting.`
+              : `按此设置，每月每 1,000 条工单约有 ${commaInt(escalatedTickets)} 条会转到人工复核。`}
+          </p>
+
+          <p className="triage-syntax-line">
+            <code data-syntax-line>{`triage:${slug}`}</code>
+            <button
+              type="button"
+              data-copy-syntax
+              onClick={() => {
+                navigator.clipboard?.writeText(`triage:${slug}`).catch(() => {});
+                // Task D05: the label is React-owned (the zh JSX runtime wraps
+                // "复制" in word units), so it flips through state rather than
+                // an imperative textContent write that would orphan those nodes.
+                setCopiedSyntax(true);
+                window.clearTimeout(copiedTimer.current);
+                copiedTimer.current = window.setTimeout(() => setCopiedSyntax(false), 1200);
+              }}
+            >
+              {copiedSyntax ? (locale === "en" ? "COPIED" : "已复制") : (locale === "en" ? "COPY" : "复制")}
+            </button>
+          </p>
         </div>
-
-        <p className="triage-syntax-line">
-          <code data-syntax-line>{`triage:${slug}`}</code>
-          <button
-            type="button"
-            data-copy-syntax
-            onClick={(event) => {
-              navigator.clipboard?.writeText(`triage:${slug}`).catch(() => {});
-              const target = event.currentTarget;
-              const original = target.textContent;
-              target.textContent = locale === "en" ? "COPIED" : "已复制";
-              window.setTimeout(() => { target.textContent = original; }, 1200);
-            }}
-          >
-            {locale === "en" ? "COPY" : "复制"}
-          </button>
-        </p>
-
-        <p className="triage-headcount-line">
-          {locale === "en"
-            ? `≈ ${commaInt(escalatedTickets)} of every 1,000 complaints/month reach a human reviewer at this setting.`
-            : `按此设置，每月每 1,000 条工单约有 ${commaInt(escalatedTickets)} 条会转到人工复核。`}
-        </p>
 
         {variant === "full" ? (
-          <>
+          <div className="triage-step triage-step-detail" data-step="detail">
+            <StepLabel step="detail" locale={locale} />
             <p className="triage-academic-anchor" data-academic-anchor>
               cascade threshold, cf. RouteLLM (Ong et al., 2024)
             </p>
@@ -132,7 +161,7 @@ export function PolicyTerminal({ variant }: { variant: "compact" | "full" }) {
                 : "口径声明：升级率与成本网格来自 86,972 条校准切片真实工单的离线回放，不是模拟结果（数据截至 2026-08-12）。误分流成本是记录中的美元敏感度数值，没有换算成人民币。月成本是按每 1,000 条投诉归一化后的推算，不是真实账单。逐阈值的宏 F1 和置信区间只算在 200 条精选配对样本上，不是全量 104,443 条 TEST-IID 的扫描结果。升级率接近 100% 时宏 F1 趋近于 1，这是把人工判定记为正确的记账口径，不代表路由器本身判别力强。"}
             </p>
             <LocalInference />
-          </>
+          </div>
         ) : null}
       </div>
     </InstrumentFrame>

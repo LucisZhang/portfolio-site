@@ -255,7 +255,7 @@ test("Privacy Preflight report layer follows Architecture -> Results & negatives
     (nodes) => nodes.map((node) => node.getAttribute("data-project-section")),
   );
   expect(sections).toEqual(["how", "results", "limitations"]);
-  await expect(page.locator(SEL.linkListAHrefGithubComNotHref).or(page.locator('a[href="https://github.com/LucisZhang/privacy-preflight-web"]'))).toBeVisible();
+  await expect(page.locator(SEL.linkListAHrefGithubComNotHref).or(page.locator('a[href="https://github.com/LucisZhang/privacy-preflight"]'))).toBeVisible();
 });
 
 // Task F1 (comprehensive mobile adaptation pass, spec §2.5).

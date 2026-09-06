@@ -44,6 +44,9 @@ export function SampleDrawerTrigger({ label, value, threshold }: { label: string
       <summary data-drawer-summary>
         <span className="triage-drawer-label">{label}</span>
         <span className="triage-drawer-value">{value}</span>
+        {/* Task D-03: the disclosure is a word, not an icon -- says what
+            opens (the 3 real Tier A samples), in each locale. */}
+        <span className="triage-drawer-hint" aria-hidden="true">{locale === "en" ? "3 samples" : "3 条样本"}</span>
       </summary>
       <div className="triage-drawer-body" id={id} data-drawer-body>
         <p className="triage-drawer-caption">

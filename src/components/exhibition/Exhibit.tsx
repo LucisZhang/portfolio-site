@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { zhWrapNode, zhWrapText } from "@/lib/zh-wrap";
+import { zhWrapDisplay, zhWrapText } from "@/lib/zh-wrap";
 
 export type ExhibitBackground = "paper" | "ink" | "white" | "paper-alt";
 
@@ -35,7 +35,7 @@ export function Exhibit({
         <span className="exhibit-eyebrow">{zhWrapText(eyebrow)}</span>
       </p>
       <h2 id={titleId} className="exhibit-title">
-        {zhWrapNode(title)}
+        {zhWrapDisplay(title)}
       </h2>
       {intro ? <p className="exhibit-intro">{intro}</p> : null}
       <div className="exhibit-body">{children}</div>

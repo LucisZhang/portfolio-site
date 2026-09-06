@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { InstrumentFrame } from "@/components/exhibition/InstrumentFrame";
+import ScrollRegion from "@/components/ScrollRegion";
 import { useI18n, type Locale } from "@/lib/i18n";
 import releaseJson from "../../../public/case-studies/frontier-forge/release.json";
 import { LiveSlot } from "./LiveSlot";
@@ -118,8 +119,8 @@ export function ForgeConsole({ variant }: { variant: "compact" | "full" }) {
           id={`forge-console-input-${variant}`}
           data-forge-input
           disabled
-          aria-label="LIVE LAYER OFFLINE"
-          placeholder="LIVE LAYER OFFLINE"
+          aria-label={locale === "en" ? "LIVE LAYER OFFLINE" : "在线服务未启用"}
+          placeholder={locale === "en" ? "LIVE LAYER OFFLINE" : "在线服务未启用"}
           rows={2}
         />
         <div className="forge-console-tabs" role="tablist" aria-label={locale === "en" ? "Request body" : "请求体"}>
@@ -129,9 +130,9 @@ export function ForgeConsole({ variant }: { variant: "compact" | "full" }) {
             </button>
           ))}
         </div>
-        <pre className="forge-console-request" data-forge-request-tab={tab}>
+        <ScrollRegion as="pre" className="forge-console-request" data-forge-request-tab={tab} label={{ en: "Request body code", zh: "请求体代码" }}>
           <code>{requestSnippet(tab, run, locale)}</code>
-        </pre>
+        </ScrollRegion>
       </div>
     </InstrumentFrame>
   );

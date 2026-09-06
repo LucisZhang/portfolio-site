@@ -1,6 +1,7 @@
 "use client";
 
 import exhibitsJson from "../../../public/case-studies/crossover-study/exhibits.json";
+import ScrollRegion from "@/components/ScrollRegion";
 import { useI18n } from "@/lib/i18n";
 import styles from "./CrossoverExhibit.module.css";
 
@@ -52,7 +53,7 @@ function LineChart({ title, segments, series, markerAt }: { title: string; segme
   const ticks = [0, 0.25, 0.5, 0.75, 1].map((ratio) => ratio * maximum);
 
   return (
-    <div className="crossover-chart-scroll">
+    <ScrollRegion className="crossover-chart-scroll" label={{ en: "Results chart", zh: "结果图表" }}>
       <svg className="crossover-line-chart" viewBox={`0 0 ${chart.width} ${chart.height}`} role="img" aria-label={title}>
         <title>{title}</title>
         {ticks.map((tick) => <g className="crossover-gridline" key={tick}>
@@ -77,7 +78,7 @@ function LineChart({ title, segments, series, markerAt }: { title: string; segme
         })}
         {segments.map((segment, index) => <text className="crossover-axis-label" textAnchor="middle" x={x(index)} y={chart.height - 18} key={segment}>{segment}</text>)}
       </svg>
-    </div>
+    </ScrollRegion>
   );
 }
 

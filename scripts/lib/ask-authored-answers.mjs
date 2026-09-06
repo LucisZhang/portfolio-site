@@ -26,6 +26,7 @@
 // same verification against the committed artifacts).
 
 import { readFileSync } from "node:fs";
+import { mentionedProjectIds, normalizeProjectAlias, resolveProjectIdentity } from "../../src/lib/project-identities.ts";
 
 export const MIN_CITATIONS = 2;
 export const MAX_CITATIONS = 4;
@@ -53,6 +54,12 @@ function labelForSite(manifest, route) {
   return source?.label ?? { en: "Xiangguo Zhang portfolio", zh: "章向国作品集" };
 }
 
+function zhCitationLabel(project, descriptor) {
+  return /[。！？]$/u.test(project)
+    ? `查看“${project}”：${descriptor}`
+    : `查看${project}：${descriptor}`;
+}
+
 // Human "what you'll find" descriptors for pinned external files — the
 // SAME vocabulary src/lib/assistant-citation-index.ts's fileDescriptor()
 // renders, so the navigation index shows these labels verbatim (they are
@@ -78,6 +85,9 @@ function fileDescriptor(filePath) {
  */
 export function expandCitation(spec, manifest) {
   if (spec.site) {
+    if (spec.site !== "/" && !resolveProjectIdentity(spec.site)) {
+      throw new Error(`citation names an unknown project route: ${spec.site}`);
+    }
     const routeKey = routeKeyOf(spec.site);
     const label = labelForSite(manifest, spec.site);
     const site = manifest.siteRepository;
@@ -103,7 +113,7 @@ export function expandCitation(spec, manifest) {
     kind: "public-github",
     label: {
       en: `See ${descriptor.en} in ${repository.label.en}`,
-      zh: `查看${repository.label.zh}：${descriptor.zh}`,
+      zh: zhCitationLabel(repository.label.zh, descriptor.zh),
     },
     url: `https://github.com/${repository.owner}/${repository.repo}/blob/${repository.commit}/${spec.file}`,
   };
@@ -120,6 +130,7 @@ function validateSegments(segments, locale, citationCount, id, errors) {
     if (typeof segment.text !== "string" || segment.text.trim().length < 20) {
       errors.push(`${id} ${locale}: segment text too short`);
     }
+    if (/(?:https?:\/\/|www\.)/iu.test(segment.text)) errors.push(`${id} ${locale}: raw URL in answer text`);
     if (!Number.isInteger(segment.ref) || segment.ref < 1 || segment.ref > citationCount) {
       errors.push(`${id} ${locale}: segment ref ${segment.ref} out of citation range`);
       continue;
@@ -161,7 +172,10 @@ export function verifyAuthoredBank(bank, manifest, repositoryRoot) {
   };
 
   const ids = new Set();
+  const prompts = new Set();
   for (const route of actualRoutes) {
+    const identity = resolveProjectIdentity(route);
+    if (route !== "/" && !identity) errors.push(`unknown project route: ${route}`);
     const entry = bank[route];
     if (!entry || !Array.isArray(entry.questions) || entry.questions.length !== 3) {
       errors.push(`${route} must contain exactly three questions`);
@@ -179,6 +193,19 @@ export function verifyAuthoredBank(bank, manifest, repositoryRoot) {
         || typeof question.q_zh !== "string" || question.q_zh.length < 8 || question.q_zh.length > 90
         || !/[A-Za-z]/u.test(question.q_en) || !/\p{Script=Han}/u.test(question.q_zh)) {
         errors.push(`${route} ${id}: invalid question text`);
+      }
+      for (const locale of ["en", "zh"]) {
+        const text = question[`q_${locale}`];
+        if (typeof text !== "string") continue;
+        const key = `${locale}:${normalizeProjectAlias(text)}`;
+        if (prompts.has(key)) errors.push(`${id} ${locale}: duplicate preset prompt`);
+        prompts.add(key);
+        if (identity) {
+          const mentioned = mentionedProjectIds(text);
+          if (mentioned.length !== 1 || mentioned[0] !== identity.id) {
+            errors.push(`${id} ${locale}: preset must name its own project (${identity.id})`);
+          }
+        }
       }
       const answer = question.answer;
       if (!answer || !Array.isArray(answer.citations) || !Array.isArray(answer.en) || !Array.isArray(answer.zh) || !Array.isArray(answer.grounding)) {

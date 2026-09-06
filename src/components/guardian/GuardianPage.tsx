@@ -1,12 +1,15 @@
 "use client";
 
+import { EvidenceDisclosure } from "@/components/exhibition/EvidenceDisclosure";
+import { EvidenceFileLink } from "@/components/exhibition/EvidenceFileLink";
 import { Check, CircleAlert, ShieldCheck } from "lucide-react";
 import { type ReactNode, useState, useSyncExternalStore } from "react";
 import ArtifactLink from "@/components/ArtifactLink";
-import { Finding } from "@/components/exhibition/Finding";
+import ScrollRegion from "@/components/ScrollRegion";
+import { ProjectReport, ProjectReportContents } from "@/components/report/ProjectReport";
 import LocaleDocumentMetadata from "@/components/LocaleDocumentMetadata";
 import { useI18n } from "@/lib/i18n";
-import { zhWrapNode } from "@/lib/zh-wrap";
+import { zhGroup, zhWrapDisplay, zhWrapNode } from "@/lib/zh-wrap";
 import type { Project } from "@/lib/projects";
 import { siteIdentity } from "@/lib/site-config";
 import "./guardian.css";
@@ -58,6 +61,7 @@ export default function GuardianPage({
         title={{ en: `${project.title.en} | ${siteIdentity.name}`, zh: `${project.title.zh} | ${siteIdentity.chineseName}` }}
         description={project.summary}
       />
+      <ProjectReportContents />
 
       <GuardianDossier />
       <RecordedTrace />
@@ -65,47 +69,16 @@ export default function GuardianPage({
       <RecordedOutcomes live={evaluationLive} stub={evaluationStub} />
       <MethodNotes />
 
-      <section data-project-section="how" className="guardian-report-section">
-        <h2><LocaleText en="Architecture" zh="架构" /></h2>
-        <p><LocaleText en={project.role.en} zh={project.role.zh} /></p>
-        <ol className="guardian-architecture-flow">
-          {project.architecture.map((step, index) => (
-            <li key={step.label.en}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <div>
-                <strong><LocaleText en={step.label.en} zh={step.label.zh} /></strong>
-                <p><LocaleText en={step.detail.en} zh={step.detail.zh} /></p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section data-project-section="results" className="guardian-report-section">
-        <h2><LocaleText en="Results & negatives" zh="结果与负结果" /></h2>
-        <p className="project-outcome"><LocaleText en={project.outcome.en} zh={project.outcome.zh} /></p>
-        {project.fieldNotes?.map((note) => (
-          <Finding kind="negative" key={note.en}>
-            <LocaleText en={note.en} zh={note.zh} />
-          </Finding>
-        ))}
-      </section>
-
-      <section data-project-section="limitations" className="guardian-report-section">
-        <h2><LocaleText en="Limitations" zh="局限与边界" /></h2>
-        {project.boundaries.map((boundary) => (
-          <Finding kind="limitation" key={boundary.en}>
-            <LocaleText en={boundary.en} zh={boundary.zh} />
-          </Finding>
-        ))}
-      </section>
+      <ProjectReport project={project} />
     </div>
   );
 }
 
 function LocaleText({ en, zh }: { en: ReactNode; zh: ReactNode }) {
   const { locale } = useI18n();
-  return <>{locale === "en" ? en : zh}</>;
+  // A component-returned Fragment never passes through a host element's jsx()
+  // call, so the zh word tier is applied at this text exit explicitly.
+  return <>{zhWrapNode(locale === "en" ? en : zh)}</>;
 }
 
 function fmtMs(ms: number): string {
@@ -177,7 +150,7 @@ function GuardianDossier() {
             {locale === "en" ? (
               <>One column dropped from <span className="guardian-vermilion">payments.</span> The memo writes itself; the signature doesn&rsquo;t.</>
             ) : (
-              <>从 payments 表删掉<span className="guardian-vermilion">一列。</span>报告可以自动生成，签字不能。</>
+              zhWrapDisplay(<>从 payments 表删掉<span className="guardian-vermilion">一列。</span>报告可以自动生成，签字不能。</>)
             )}
           </h1>
 
@@ -313,7 +286,7 @@ function RecordedTrace() {
       <h2 id="exhibit-02-title" className="exhibit-title">
         <LocaleText
           en={<>Four tools query the blast radius.<br /><em>None of them ask the model.</em></>}
-          zh={zhWrapNode(<>四路工具查询影响范围，<em>没有一路问过模型。</em></>)}
+          zh={zhWrapDisplay(<>{zhGroup("四路工具", "查询影响范围，")}<br /><em>{zhGroup("没有一路", "问过模型。")}</em></>)}
         />
       </h2>
       <p className="exhibit-intro">
@@ -359,7 +332,7 @@ function ApprovalGateNarrative({ project }: { project: Project }) {
       <h2 id="exhibit-03-title" className="exhibit-title">
         <LocaleText
           en={<>Approval survives<br /><em>the process that asked for it.</em></>}
-          zh={zhWrapNode(<>审批能够挺过<em>提出请求的那个进程本身。</em></>)}
+          zh={zhWrapDisplay(<>审批能够挺过<br /><em>{zhGroup("提出请求的", "那个进程本身。")}</em></>)}
         />
       </h2>
       <p className="exhibit-intro">
@@ -388,6 +361,7 @@ function ApprovalGateNarrative({ project }: { project: Project }) {
 
 // --- Exhibit 04: recorded outcomes / eval disclosure ---
 function RecordedOutcomes({ live, stub }: { live: GuardianEvalRow[]; stub: GuardianEvalRow[] }) {
+  const { locale } = useI18n();
   const liveFirst = live[0];
   const stubFirst = stub[0];
   return (
@@ -401,17 +375,17 @@ function RecordedOutcomes({ live, stub }: { live: GuardianEvalRow[]; stub: Guard
       <h2 id="exhibit-04-title" className="exhibit-title">
         <LocaleText
           en={<>Aggregate pass<br /><em>does not erase {liveFirst.strictFlaggedScenarios} strict failures.</em></>}
-          zh={zhWrapNode(<>聚合门禁全过，<em>但 {liveFirst.strictFlaggedScenarios} 项严格残差依旧摆在那里。</em></>)}
+          zh={zhWrapDisplay(<>聚合门禁全过，<br /><em>{zhGroup(`但 ${liveFirst.strictFlaggedScenarios} 项严格残差`, "依旧摆在那里。")}</em></>)}
         />
       </h2>
       <p className="exhibit-intro">
         <LocaleText
           en={<>All eight gates below pass on the funded live run — {liveFirst.graphRuns} graph runs across {liveFirst.strictTotalScenarios} scenarios × 3 trials, measured {liveFirst.runDate}. The stricter, scenario-by-scenario view still flags {liveFirst.strictFlaggedScenarios} of {liveFirst.strictTotalScenarios} as failing at least one criterion in at least one trial. The deterministic stub row (<code>llm_mode: stub</code>, zero API calls) runs the identical harness and flags {stubFirst.strictFlaggedScenarios} of {stubFirst.strictTotalScenarios} — recorded here for comparison, never as a live result.</>}
-          zh={<>下表八项门禁在付费在线运行中全部通过——{liveFirst.strictTotalScenarios} 个场景 × 3 次试验，共 {liveFirst.graphRuns} 次图运行，测于 {liveFirst.runDate}。逐场景的严格视角依旧标记出 {liveFirst.strictTotalScenarios} 个场景中的 {liveFirst.strictFlaggedScenarios} 个，只要三次试验中任意一次有任意一项标准未过即计入。确定性 stub 行（<code>llm_mode: stub</code>，零 API 调用）跑的是同一套评测框架，标记出 {stubFirst.strictTotalScenarios} 个场景中的 {stubFirst.strictFlaggedScenarios} 个——仅作对照记录，绝非在线结果。</>}
+          zh={<>下表八项门禁在付费在线运行中全部通过——{liveFirst.strictTotalScenarios} 个场景 × 3 次试验，共 {liveFirst.graphRuns} 次图运行，测于 {liveFirst.runDate}。逐场景的严格视角依旧标记出 {liveFirst.strictTotalScenarios} 个场景中的 {liveFirst.strictFlaggedScenarios} 个，只要三次试验中任意一次有任意一项标准未过即计入。确定性 stub 行<span className="zh-inline-atomic" data-zh-raw>（<code>llm_mode: stub</code>，零 API 调用）</span>跑的是同一套评测框架，标记出 {stubFirst.strictTotalScenarios} 个场景中的 {stubFirst.strictFlaggedScenarios} 个——仅作对照记录，绝非在线结果。</>}
         />
       </p>
       <div className="exhibit-body">
-        <div className="metric-table" role="table" aria-label="Release gate metrics">
+        <div className="metric-table" role="table" aria-label={locale === "en" ? "Release gate metrics" : "发布门禁指标"}>
           <div className="guardian-metric-head" role="row">
             <span role="columnheader">METRIC</span>
             <span role="columnheader">LIVE</span>
@@ -457,13 +431,14 @@ function MethodNotes() {
       <h2 id="exhibit-05-title" className="exhibit-title">
         <LocaleText
           en={<>Run it yourself.<br /><em>Data never leaves your machine.</em></>}
-          zh={zhWrapNode(<>自己跑一遍，<em>数据不出你自己的机器。</em></>)}
+          zh={zhWrapDisplay(<>自己跑一遍，<br /><em>{zhGroup("数据不出", "你自己的机器。")}</em></>)}
         />
       </h2>
+      <EvidenceDisclosure project="guardian">
       <div className="exhibit-body guardian-install">
         <div className="guardian-install-block">
           <span className="guardian-flab">ONE COMMAND / FULL STACK</span>
-          <pre className="guardian-command" tabIndex={0}><code>docker compose -f docker-compose.full.yml up</code></pre>
+          <ScrollRegion as="pre" className="guardian-command" label={{ en: "Docker full-stack install command", zh: "Docker 全栈安装命令" }}><code>docker compose -f docker-compose.full.yml up</code></ScrollRegion>
           <p className="guardian-install-note">
             <LocaleText
               en="Builds the agent, gateway, approval, and frontend images, starts all six services, and deterministically seeds the mock world. Open localhost:3000 once services report healthy."
@@ -473,7 +448,7 @@ function MethodNotes() {
         </div>
         <div className="guardian-install-block" data-pending="true">
           <span className="guardian-flab">MCP SERVER — PACKAGING IN PROGRESS</span>
-          <pre className="guardian-command guardian-command-pending" tabIndex={0}><code>claude mcp add --transport http release-guardian https://mcp.xiangguozhang.com/mcp</code></pre>
+          <ScrollRegion as="pre" className="guardian-command guardian-command-pending" label={{ en: "MCP server install command", zh: "MCP 服务器安装命令" }}><code>claude mcp add --transport http release-guardian https://mcp.xiangguozhang.com/mcp</code></ScrollRegion>
           <p className="guardian-install-note">
             <LocaleText
               en="The command above is real and will work once the read-only MCP server (assess_change / get_run / list_scenarios) is deployed. It is not connected yet — this page will not print a fake success echo."
@@ -484,8 +459,8 @@ function MethodNotes() {
       </div>
       <div className="exhibit-body guardian-receipts">
         <dl className="guardian-receipts-dl">
-          <div><dt><code>public/case-studies/release-guardian/recorded-stub-runs.json</code></dt><dd><code>sha256:e435951a17bd6017207cd739bce512c625a39dd0cdee7e55fea0a60efe392a69</code></dd></div>
-          <div><dt><code>public/case-studies/release-guardian/manifest.json</code></dt><dd><code>sha256:f37967289db4816cfd5f23bdad7ca281b979f52420c4bf65b34b0383a6796eb8</code></dd></div>
+          <div><dt><EvidenceFileLink source="public/case-studies/release-guardian/recorded-stub-runs.json" /></dt><dd><code>sha256:e435951a17bd6017207cd739bce512c625a39dd0cdee7e55fea0a60efe392a69</code></dd></div>
+          <div><dt><EvidenceFileLink source="public/case-studies/release-guardian/manifest.json" /></dt><dd><code>sha256:f37967289db4816cfd5f23bdad7ca281b979f52420c4bf65b34b0383a6796eb8</code></dd></div>
         </dl>
         <p>
           <LocaleText
@@ -495,12 +470,8 @@ function MethodNotes() {
         </p>
         <p className="evidence-link"><ArtifactLink href="/case-studies/release-guardian/data/findings.csv"><LocaleText en="View all 13 sanitized findings" zh="查看全部 13 项脱敏审查记录" /></ArtifactLink></p>
         <p className="evidence-link"><ArtifactLink href="/case-studies/release-guardian/architecture.mmd"><LocaleText en="View the sanitized architecture diagram" zh="查看脱敏系统架构图" /></ArtifactLink></p>
-        <p className="guardian-repo-link">
-          <a href="https://github.com/LucisZhang/release-guardian" target="_blank" rel="noreferrer noopener">
-            <LocaleText en="GitHub repository" zh="GitHub 仓库" />
-          </a>
-        </p>
       </div>
+      </EvidenceDisclosure>
     </section>
   );
 }

@@ -1,5 +1,6 @@
 {
   "/": {
+    "aliases": [],
     "questions": [
       {
         "q_en": "Who is Xiangguo Zhang, and what kind of work does he do?",
@@ -19,6 +20,7 @@
     ]
   },
   "/ai/frontier-forge": {
+    "aliases": [],
     "questions": [
       {
         "q_en": "How does Frontier Forge connect training, serving, and the gateway?",
@@ -38,6 +40,7 @@
     ]
   },
   "/ai/release-guardian": {
+    "aliases": [],
     "questions": [
       {
         "q_en": "What does Release Guardian do before a release?",
@@ -57,6 +60,7 @@
     ]
   },
   "/ai/rag-quality-lab": {
+    "aliases": [],
     "questions": [
       {
         "q_en": "What kind of problem does RAG Quality Lab catch?",
@@ -76,6 +80,7 @@
     ]
   },
   "/ai/triage-router": {
+    "aliases": [],
     "questions": [
       {
         "q_en": "What does Triage Router route?",
@@ -95,6 +100,10 @@
     ]
   },
   "/ai/privacy-preflight": {
+    "aliases": [
+      "/ai/privacy-preflight-mac",
+      "/ai/privacy-preflight-web"
+    ],
     "questions": [
       {
         "q_en": "What can Privacy Preflight redact?",
@@ -114,6 +123,10 @@
     ]
   },
   "/engineering/exactly-once-drills": {
+    "aliases": [
+      "/engineering/p1-reliability-lab",
+      "/engineering/streaming-reliability-lab"
+    ],
     "questions": [
       {
         "q_en": "Why does Exactly-Once Drills inject failures and reconcile the pipeline afterward?",
@@ -133,6 +146,7 @@
     ]
   },
   "/engineering/crossover-study": {
+    "aliases": [],
     "questions": [
       {
         "q_en": "What question does Crossover Study investigate?",
@@ -152,6 +166,7 @@
     ]
   },
   "/analytics/margin-control-tower": {
+    "aliases": [],
     "questions": [
       {
         "q_en": "What decision does Margin Control Tower help someone make?",
@@ -171,25 +186,29 @@
     ]
   },
   "/analytics/credit-policy-desk": {
+    "aliases": [
+      "/analytics/credit-policy-lab"
+    ],
     "questions": [
       {
         "q_en": "How does Credit Policy Desk turn a score into a policy decision?",
-        "q_zh": "Credit Policy Desk 为什么说一个分数还不是策略？",
+        "q_zh": "“分数不是策略。”如何把模型分数变成信贷策略决策？",
         "id": "credit-overview"
       },
       {
         "q_en": "How does Credit Policy Desk choose approval and review thresholds?",
-        "q_zh": "Credit Policy Desk 的批准、复核、拒绝三段阈值怎么定？",
+        "q_zh": "“分数不是策略。”如何确定批准、复核、拒绝三段阈值？",
         "id": "credit-thresholds"
       },
       {
         "q_en": "What does granted-loan-only data limit in Credit Policy Desk?",
-        "q_zh": "Credit Policy Desk 只有已授信样本，会带来什么限制？",
+        "q_zh": "“分数不是策略。”只有已授信样本时，会受到什么限制？",
         "id": "credit-boundaries"
       }
     ]
   },
   "/analytics/analytics-tandem": {
+    "aliases": [],
     "questions": [
       {
         "q_en": "What is the Analytics Tandem page?",

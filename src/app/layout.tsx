@@ -39,10 +39,20 @@ export const metadata: Metadata = {
   description: siteMetadata.description.en,
 };
 
+// The homepage locale is available to the browser before React is. This
+// blocking head snippet sets the root language before the first body paint;
+// when that locale is Chinese it also discovers the 5KB hero-only serif
+// before CSS would otherwise request the 253KB site-wide subset. English
+// creates no Chinese-font preload and retains its zero-request contract.
+// LanguageProvider remains the owner of persistence, URL canonicalization,
+// and later language switches. Artifact Viewer keeps its stricter resolver.
+const HOME_LOCALE_BOOTSTRAP = `(()=>{if(location.pathname!=="/")return;const p=new URLSearchParams(location.search);let l=p.get("lang");if(l!=="en"&&l!=="zh"){try{l=localStorage.getItem("portfolio-locale")}catch{}if(l!=="en"&&l!=="zh")l=navigator.language.toLowerCase().startsWith("zh")?"zh":"en"}document.documentElement.lang=l==="zh"?"zh-CN":"en";if(l==="zh"){const f=document.createElement("link");f.rel="preload";f.as="font";f.type="font/woff2";f.href="/fonts/display-serif-zh-home.woff2";f.crossOrigin="anonymous";document.head.appendChild(f)}})()`;
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${plexSans.variable} ${plexMono.variable}`}>
+    <html lang="en" className={`${plexSans.variable} ${plexMono.variable}`} suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: HOME_LOCALE_BOOTSTRAP }} />
         {/* Self-hosted display serif hero preload (spec 2.3): every route
             currently shares this one shell, so the preload lives here for
             now. Once pages are rebuilt per-route, narrow this to only the

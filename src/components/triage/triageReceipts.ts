@@ -15,7 +15,7 @@ export const TRIAGE_RECEIPTS = {
   knownFailures: { path: "public/case-studies/triage-router/known-failures.json", sha256: "fdcadaafa15e885890984cbab4b5320b46eadf6a3f374f2dcb7d76bf70e35218" },
   curatedSamples: { path: "public/case-studies/triage-router/samples.curated.json", sha256: "3c6771b65f44c567082857acd4db08a30004be2c4dc562974bef7a80cb386e4b" },
   pythonInt8Parity: { path: "public/case-studies/triage-router/python_int8_curated.json", sha256: "484b21fab582af7a8b00c98abd89ecb575a5b1330dc7af791bde333b59953486" },
-  tierB2Model: { path: "public/models/triage-tier-b2/model.int8.onnx (gitignored -- not committed)", sha256: "da931ec8310cf1280747e22fc6ebfd30fd5f92e312ede6544042e1190764bb4a" },
+  tierB2Model: { path: "public/models/triage-tier-b2/model.int8.onnx", sha256: "da931ec8310cf1280747e22fc6ebfd30fd5f92e312ede6544042e1190764bb4a" },
 } as const;
 
-export const TRIAGE_REPRODUCE_COMMAND = "cd /Users/hsiangkuochang/nlp-eval-lab && .venv/bin/python scripts/export_site_payloads.py --out /Users/hsiangkuochang/portfolio-site/public/case-studies/triage-router";
+export const TRIAGE_REPRODUCE_COMMAND = "python scripts/export_site_payloads.py --out public/case-studies/triage-router";

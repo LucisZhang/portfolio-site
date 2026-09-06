@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { navigationPosition } from "@/lib/navigation";
 
 // The only client island inside the exhibition shell (spec §2.1). It reads
 // the DOM directly instead of taking props, so any page can drop a single
@@ -8,7 +9,7 @@ import { useEffect } from "react";
 // props from every caller. With JavaScript disabled this component never
 // mounts and the rail rendered by ExhibitShell stays a plain anchor list —
 // no behavior here is load-bearing for navigation, only for the
-// aria-current highlight and the mobile "N OF total" readout.
+// aria-current highlight and the padded position readouts.
 export default function RailSpy() {
   useEffect(() => {
     const rail = document.querySelector<HTMLElement>("[data-exhibition-rail]");
@@ -25,7 +26,7 @@ export default function RailSpy() {
       anchorsById.set(exhibit.id, anchors);
     });
 
-    const currentLabels = Array.from(rail.querySelectorAll<HTMLElement>("[data-rail-current]"));
+    const currentLabels = Array.from(rail.closest(".exhibit-shell")!.querySelectorAll<HTMLElement>("[data-rail-current]"));
 
     const setCurrent = (id: string, num: string) => {
       anchorsById.forEach((anchors, exhibitId) => {
@@ -36,7 +37,7 @@ export default function RailSpy() {
       });
       currentLabels.forEach((label) => {
         const total = label.getAttribute("data-rail-total");
-        label.textContent = total ? `${num} OF ${total}` : num;
+        label.textContent = total ? navigationPosition(num, total) : num;
       });
     };
 

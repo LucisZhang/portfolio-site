@@ -1,11 +1,13 @@
 "use client";
 
-import { Finding } from "@/components/exhibition/Finding";
+import { EvidenceDisclosure } from "@/components/exhibition/EvidenceDisclosure";
+import { EvidenceFileLink } from "@/components/exhibition/EvidenceFileLink";
 import { InstrumentFrame } from "@/components/exhibition/InstrumentFrame";
 import { StatGrid } from "@/components/exhibition/StatGrid";
+import { ProjectReport, ProjectReportContents, ProjectReportSection, ProjectReportFindings } from "@/components/report/ProjectReport";
 import LocaleDocumentMetadata from "@/components/LocaleDocumentMetadata";
 import { useI18n } from "@/lib/i18n";
-import { zhWrapNode, zhWrapText } from "@/lib/zh-wrap";
+import { zhGroup, zhWrapDisplay, zhWrapText } from "@/lib/zh-wrap";
 import type { Project } from "@/lib/projects";
 import { siteIdentity } from "@/lib/site-config";
 import ocrBenchmark from "../../../public/case-studies/privacy-preflight/ocr-fixture-benchmark.json";
@@ -36,6 +38,7 @@ export default function PrivacyPage({ project }: { project: Project }) {
         title={{ en: `${project.title.en} | ${siteIdentity.name}`, zh: `${project.title.zh} | ${siteIdentity.chineseName}` }}
         description={project.summary}
       />
+      <ProjectReportContents />
 
       <section id="hero" data-project-section="hero" className="exhibit privacy-hero" data-bg="paper">
         <p className="exhibit-opening-row">
@@ -47,10 +50,10 @@ export default function PrivacyPage({ project }: { project: Project }) {
               {locale === "en" ? (
                 <>A black box over text<br /><em>is not redaction.</em></>
               ) : (
-                zhWrapNode(<>文字上盖个黑块，<em>不叫脱敏。</em></>)
+                zhWrapDisplay(<>{zhGroup("文字上", "盖个黑块，")}<br /><em>不叫脱敏。</em></>)
               )}
             </h1>
-            {locale === "zh" ? <p className="cn-gloss" lang="zh">{zhWrapText(project.glossZh)}</p> : null}
+            {locale === "zh" ? <p className="cn-gloss" lang="zh">{zhWrapDisplay(project.glossZh)}</p> : null}
             <p className="exhibit-intro">
               {locale === "en" ? project.summary.en : project.summary.zh}
             </p>
@@ -74,43 +77,9 @@ export default function PrivacyPage({ project }: { project: Project }) {
       <DetectReviewDestroy project={project} />
       <OcrBenchmarkExhibit />
       <FailClosedExhibit />
+      <ProjectReport project={project} sections={["architecture", "results"]} />
       <BoundaryExhibit project={project} />
       <SourceReceipts />
-
-      <section data-project-section="how" className="privacy-report-section">
-        <h2>{locale === "en" ? "Architecture" : "架构"}</h2>
-        <p>{locale === "en" ? project.role?.en : project.role?.zh}</p>
-        <ol className="privacy-architecture-flow">
-          {project.architecture.map((step, index) => (
-            <li key={step.label.en}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <div>
-                <strong>{locale === "en" ? step.label.en : step.label.zh}</strong>
-                <p>{locale === "en" ? step.detail.en : step.detail.zh}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section data-project-section="results" className="privacy-report-section">
-        <h2>{locale === "en" ? "Results & negatives" : "结果与负结果"}</h2>
-        <p className="project-outcome">{locale === "en" ? project.outcome?.en : project.outcome?.zh}</p>
-        {project.fieldNotes?.map((note) => (
-          <Finding kind="negative" key={note.en}>
-            {locale === "en" ? note.en : note.zh}
-          </Finding>
-        ))}
-      </section>
-
-      <section data-project-section="limitations" className="privacy-report-section">
-        <h2>{locale === "en" ? "Limitations" : "局限与边界"}</h2>
-        {project.boundaries.map((boundary) => (
-          <Finding kind="limitation" key={boundary.en}>
-            {locale === "en" ? boundary.en : boundary.zh}
-          </Finding>
-        ))}
-      </section>
     </div>
   );
 }
@@ -137,7 +106,7 @@ function FullInstrument() {
         {locale === "en" ? (
           <>The document is <em>the interface.</em></>
         ) : (
-          zhWrapNode(<>文档本身，<em>就是界面。</em></>)
+          zhWrapDisplay(<>文档本身，<em>就是界面。</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -162,7 +131,7 @@ function DetectReviewDestroy({ project }: { project: Project }) {
         {locale === "en" ? (
           <>Detection proposes.<br /><em>The reviewer decides.</em></>
         ) : (
-          zhWrapNode(<>检测只是提议，<em>拍板的是复核者。</em></>)
+          zhWrapDisplay(<>检测只是提议，<br /><em>拍板的是复核者。</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -185,7 +154,7 @@ function OcrBenchmarkExhibit() {
         {locale === "en" ? (
           <>Perfect recall still produced<br /><em>two wrong boxes.</em></>
         ) : (
-          zhWrapNode(<>召回率满分，<em>还是多框了两处。</em></>)
+          zhWrapDisplay(<>召回率满分，<br /><em>还是多框了两处。</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -211,7 +180,7 @@ function FailClosedExhibit() {
         {locale === "en" ? (
           <>Export is earned<br /><em>by a second read.</em></>
         ) : (
-          zhWrapNode(<>导出资格，<em>要靠第二遍复核才能拿到。</em></>)
+          zhWrapDisplay(<>导出资格，<br /><em>{zhGroup("要靠第二遍复核", "才能拿到。")}</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -221,33 +190,17 @@ function FailClosedExhibit() {
   );
 }
 
-// Exhibit 05 (spec §6.4: "Local does not mean infallible.") -- reuses
-// project.boundaries verbatim (same content the report layer's
-// Limitations section renders again below; spec §6.0's "one source
-// rendered twice" pattern, same as Frontier Forge's exhibit 03/report).
+// The original exhibit-05 deep link now opens the single limitations report.
 function BoundaryExhibit({ project }: { project: Project }) {
   const { locale } = useI18n();
   return (
-    <section id="exhibit-05" className="exhibit" data-exhibit="05" data-bg="paper" aria-labelledby="exhibit-05-title">
-      <p className="exhibit-opening-row">
-        <span className="exhibit-number" aria-hidden="true">05</span>
-        <span className="exhibit-eyebrow">BOUNDARY</span>
-      </p>
-      <h2 id="exhibit-05-title" className="exhibit-title">
-        {locale === "en" ? (
-          <>Local does not mean<br /><em>infallible.</em></>
-        ) : (
-          zhWrapNode(<>本地运行，<em>不等于万无一失。</em></>)
-        )}
-      </h2>
-      <div className="exhibit-body">
-        {project.boundaries.map((boundary) => (
-          <Finding kind="limitation" key={boundary.en}>
-            {locale === "en" ? boundary.en : boundary.zh}
-          </Finding>
-        ))}
-      </div>
-    </section>
+    <ProjectReportSection
+      concept="limitations"
+      exhibit={{ id: "exhibit-05", num: "05" }}
+      title={locale === "en" ? <>Local does not mean <em>infallible.</em></> : zhWrapDisplay(<>本地运行，<em>不等于万无一失。</em></>)}
+    >
+      <ProjectReportFindings items={project.boundaries} kind="limitation" />
+    </ProjectReportSection>
   );
 }
 
@@ -263,16 +216,17 @@ function SourceReceipts() {
         {locale === "en" ? (
           <>Every number opens<br /><em>the same file.</em></>
         ) : (
-          zhWrapNode(<>每个数字，<em>都能点开同一份文件。</em></>)
+          zhWrapDisplay(<>每个数字，<br /><em>{zhGroup("都能点开", "同一份文件。")}</em></>)
         )}
       </h2>
       <div className="exhibit-body">
+        <EvidenceDisclosure project="privacy">
         <dl className="privacy-receipts-dl">
-          <dt>{locale === "en" ? "OCR fixture benchmark" : "OCR 夹具基准"}</dt>
+          <dt><EvidenceFileLink source={PRIVACY_RECEIPTS.ocrFixtureBenchmark.path}>{locale === "en" ? "OCR fixture benchmark" : "OCR 夹具基准"}</EvidenceFileLink></dt>
           <dd><code>sha256:{PRIVACY_RECEIPTS.ocrFixtureBenchmark.sha256}</code></dd>
-          <dt>{locale === "en" ? "Worker test results" : "Worker 测试结果"}</dt>
+          <dt><EvidenceFileLink source={PRIVACY_RECEIPTS.workerTests.path}>{locale === "en" ? "Worker test results" : "Worker 测试结果"}</EvidenceFileLink></dt>
           <dd><code>sha256:{PRIVACY_RECEIPTS.workerTests.sha256}</code></dd>
-          <dt>{locale === "en" ? "Browser end-to-end results" : "浏览器端到端结果"}</dt>
+          <dt><EvidenceFileLink source={PRIVACY_RECEIPTS.browserE2e.path}>{locale === "en" ? "Browser end-to-end results" : "浏览器端到端结果"}</EvidenceFileLink></dt>
           <dd><code>sha256:{PRIVACY_RECEIPTS.browserE2e.sha256}</code></dd>
           <dt>{locale === "en" ? "Reproduce a hash" : "复现一个哈希值"}</dt>
           <dd><code>{PRIVACY_REPRODUCE_COMMAND}</code></dd>
@@ -282,11 +236,7 @@ function SourceReceipts() {
             ? "Exhibit 03's OCR figures and this page's hero stats are read directly from ocr-fixture-benchmark.json and worker-tests-goal-candidate.json at build time; exhibit 04's fail-closed demonstration calls the same validateRedaction/applyRedactions functions the real workbench uses, against a fixed crafted input."
             : "展区 03 的 OCR 数字与本页首屏统计均在构建期直接读取 ocr-fixture-benchmark.json 与 worker-tests-goal-candidate.json；展区 04 的 fail-closed 演示调用的是与真实工作台相同的 validateRedaction / applyRedactions 函数，作用于一份固定的构造输入。"}
         </p>
-        <p className="privacy-repo-link">
-          <a href="https://github.com/LucisZhang/privacy-preflight-web" target="_blank" rel="noreferrer noopener">
-            {locale === "en" ? "GitHub repository" : "GitHub 仓库"}
-          </a>
-        </p>
+        </EvidenceDisclosure>
       </div>
     </section>
   );

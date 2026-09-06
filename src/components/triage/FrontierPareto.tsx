@@ -2,7 +2,8 @@
 
 import { useMemo } from "react";
 import { useI18n } from "@/lib/i18n";
-import { zhWrapNode } from "@/lib/zh-wrap";
+import ScrollRegion from "@/components/ScrollRegion";
+import { zhWrapDisplay } from "@/lib/zh-wrap";
 import frontierJson from "../../../public/case-studies/triage-router/frontier.compact.json";
 import { macroF1 as fmtMacroF1, shortHash } from "./triageFormat";
 
@@ -64,7 +65,7 @@ export function FrontierPareto() {
         {locale === "en" ? (
           <>Accuracy and cost<br /><em>share the same axis.</em></>
         ) : (
-          zhWrapNode(<>准确率和成本，<em>共用同一根轴。</em></>)
+          zhWrapDisplay(<>准确率和成本，<br /><em>共用同一根轴。</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -79,7 +80,7 @@ export function FrontierPareto() {
         </svg>
         {/* Task F1: same triage-table-scroll pattern as exhibits 02/04 --
             the macro-F1 + CI-range cell alone runs past a 390px viewport. */}
-        <div className="triage-table-scroll">
+        <ScrollRegion className="triage-table-scroll" label={{ en: "Frontier pareto table", zh: "策略前沿表" }}>
           <table className="triage-pareto-table" data-pareto-table>
             <thead>
               <tr>
@@ -100,7 +101,7 @@ export function FrontierPareto() {
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollRegion>
       </div>
     </section>
   );

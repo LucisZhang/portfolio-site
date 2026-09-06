@@ -1,6 +1,8 @@
+import { EvidenceScope } from "@/components/exhibition/EvidenceScope.server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ExhibitShell } from "@/components/exhibition/ExhibitShell";
+import ProjectRepositoryEntry from "@/components/exhibition/ProjectRepositoryEntry";
 import ProjectRailTools from "@/components/exhibition/ProjectRailTools";
 import GuardianPage from "@/components/guardian/GuardianPage";
 import { guardianRail } from "@/components/guardian/guardianRail";
@@ -28,8 +30,10 @@ export default function ReleaseGuardianRoute() {
   if (!project) notFound();
   const { live, stub } = readGuardianEvaluationLedgers();
   return (
-    <ExhibitShell rail={guardianRail} railTools={<ProjectRailTools />} mode="auto">
-      <GuardianPage project={project} evaluationLive={live} evaluationStub={stub} />
+    <ExhibitShell repositoryEntry={<ProjectRepositoryEntry project={project} />} rail={guardianRail} railTools={<ProjectRailTools />} mode="auto">
+      <EvidenceScope project="guardian">
+        <GuardianPage project={project} evaluationLive={live} evaluationStub={stub} />
+      </EvidenceScope>
     </ExhibitShell>
   );
 }

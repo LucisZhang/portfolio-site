@@ -16,6 +16,21 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_RESUME_AVAILABLE: String(existsSync(join(process.cwd(), "public", "resume.pdf"))),
   },
+  // Next's webpack filesystem cache does not currently track tsconfig.json on this path. The
+  // Chinese lineation layer is selected through jsxImportSource, so a branch switch that changes
+  // that compiler option must invalidate every cached module instead of leaving one page with a
+  // mixture of React's default JSX runtime and the phrase-aware runtime.
+  webpack(config) {
+    if (config.cache && typeof config.cache === "object" && config.cache.type === "filesystem") {
+      const dependencyKey = "portfolio-tsconfig";
+      const prior = config.cache.buildDependencies?.[dependencyKey] ?? [];
+      config.cache.buildDependencies = {
+        ...config.cache.buildDependencies,
+        [dependencyKey]: Array.from(new Set([...prior, join(process.cwd(), "tsconfig.json")])),
+      };
+    }
+    return config;
+  },
   async redirects() {
     return [
       {

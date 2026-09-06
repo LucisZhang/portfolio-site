@@ -14,6 +14,17 @@ const ROUTE = "/ai/triage-router";
 const TOTAL_MODEL_BYTES = "81766655";
 const HEAVY_ASSET_PATTERN = /model\.int8\.onnx|ort-wasm-simd-threaded\.(wasm|mjs)/i;
 
+test("public source receipt uses the Triage Router name and a repository-relative command", async ({ page }) => {
+  await page.goto(ROUTE, { waitUntil: "networkidle" });
+  const receipts = page.locator(SEL.exhibit("05"));
+  await expect(receipts).toContainText("Triage Router's export_site_payloads.py");
+  await expect(receipts.locator(".triage-reproduce-command code")).toHaveText(
+    "python scripts/export_site_payloads.py --out public/case-studies/triage-router",
+  );
+  await expect(receipts).not.toContainText("nlp-eval-lab");
+  await expect(receipts).not.toContainText("/Users/");
+});
+
 test.describe("Triage Router first screen (zero heavy assets)", () => {
   // Task W2 (Option B, user ruling): the hero's right column no longer has
   // an interactive instrument -- it is now a naked frontier figure (see the
@@ -476,4 +487,86 @@ test.describe("Triage Router auto-rail v3 (task W3)", () => {
     const heroGridWidth = await page.locator(".triage-hero-grid").evaluate((el) => el.getBoundingClientRect().width);
     expect(heroGridWidth).toBeLessThanOrEqual(1180.5);
   });
+
+  // Task D-03: the content column re-centers in whatever canvas the rail
+  // leaves behind. Measured against <main>'s own box (which is what the
+  // rail pushes), the exhibit-01 body must sit with equal left/right
+  // gutters in BOTH rail states, never overflow, and keep the 1180px cap.
+  // 1440x1000 and 1024x768 are the two rail widths (260px / 208px); the
+  // mobile project's own overflow test covers the no-rail 390 state.
+  for (const viewport of [{ width: 1440, height: 1000 }, { width: 1024, height: 768 }]) {
+    test(`content column stays centered in <main> with the rail open and retracted at ${viewport.width}x${viewport.height}`, async ({ page }, testInfo) => {
+      test.skip(testInfo.project.name !== "desktop", "The viewport is set explicitly below; one browser project is enough.");
+      await page.setViewportSize(viewport);
+      await page.goto(ROUTE, { waitUntil: "networkidle" });
+      const shell = page.locator(".exhibit-shell");
+      await expect(shell).toHaveAttribute("data-rail-mode", "auto");
+      await expect(shell).not.toHaveClass(/rail-collapsed/);
+
+      const open = await measureTriageColumn(page);
+      expect(open.overflow, "rail open: no horizontal overflow").toBe(false);
+      expect(Math.abs(open.leftGutter - open.rightGutter), "rail open: symmetric gutters").toBeLessThanOrEqual(1);
+      expect(open.heroWidth).toBeLessThanOrEqual(1180.5);
+      expect(Math.abs(open.circuitContentLeft - open.columnLeft), "rail open: circuit strip sits on the column's left edge").toBeLessThanOrEqual(1);
+
+      await page.mouse.wheel(0, 40);
+      await expect(shell).toHaveClass(/rail-collapsed/);
+      await expect.poll(async () => (await measureTriageColumn(page)).mainLeft, { message: "main's push margin has finished animating to 0" }).toBe(0);
+
+      const collapsed = await measureTriageColumn(page);
+      expect(collapsed.overflow, "rail retracted: no horizontal overflow").toBe(false);
+      expect(Math.abs(collapsed.leftGutter - collapsed.rightGutter), "rail retracted: symmetric gutters").toBeLessThanOrEqual(1);
+      expect(collapsed.heroWidth).toBeLessThanOrEqual(1180.5);
+      expect(Math.abs(collapsed.circuitContentLeft - collapsed.columnLeft), "rail retracted: circuit strip sits on the column's left edge").toBeLessThanOrEqual(1);
+      // The column followed the canvas: its left edge moved toward the
+      // viewport's left as the rail left, and its gutter did not shrink
+      // (at 1440 it grows from the 7vw gutter to the centering gutter).
+      expect(collapsed.columnLeft).toBeLessThan(open.columnLeft);
+      expect(collapsed.leftGutter).toBeGreaterThanOrEqual(open.leftGutter - 0.5);
+    });
+  }
+});
+
+async function measureTriageColumn(page: import("@playwright/test").Page) {
+  return page.evaluate(() => {
+    const main = document.querySelector(".exhibit-shell > main")!.getBoundingClientRect();
+    const column = document.querySelector("#exhibit-01 > .exhibit-body")!.getBoundingClientRect();
+    const hero = document.querySelector(".triage-hero-grid")!.getBoundingClientRect();
+    const circuit = document.querySelector(".exhibit-shell > main > .circuit-top")!;
+    const circuitLeft = circuit.getBoundingClientRect().left + parseFloat(getComputedStyle(circuit).paddingLeft);
+    return {
+      mainLeft: main.left,
+      columnLeft: column.left,
+      circuitContentLeft: circuitLeft,
+      leftGutter: column.left - main.left,
+      rightGutter: main.right - column.right,
+      heroWidth: hero.width,
+      overflow: document.documentElement.scrollWidth > window.innerWidth,
+    };
+  });
+}
+
+// Task D-03: exhibit 01 reads in four labelled steps, in DOM order (so the
+// single-column mobile form and the two-column desktop form share one
+// reading order), and the CURRENT READING ledger has no per-cell fill --
+// the former paper-bright cells were the "coarse row of bordered cells".
+test("exhibit 01 reads control -> current reading -> interpretation -> detail, as a hairline ledger with no filled cells", async ({ page }) => {
+  await page.goto(ROUTE, { waitUntil: "networkidle" });
+  const terminal = page.locator(SEL.exhibit("01")).locator("[data-triage-terminal]");
+  const steps = await terminal.locator(":scope > [data-step]").evaluateAll((els) => els.map((el) => el.getAttribute("data-step")));
+  expect(steps).toEqual(["control", "reading", "interpretation", "detail"]);
+
+  await expect(terminal.locator('[data-step="control"] input[type=range]')).toHaveCount(2);
+  await expect(terminal.locator('[data-step="control"] [data-frontier-chart]')).toHaveCount(1);
+  await expect(terminal.locator('[data-step="reading"] [data-drawer]')).toHaveCount(4);
+  await expect(terminal.locator('[data-step="reading"] [data-drawer] > summary[data-drawer-summary]')).toHaveCount(4);
+  await expect(terminal.locator('[data-step="interpretation"] [data-strategy-card]')).toHaveCount(1);
+  await expect(terminal.locator('[data-step="interpretation"] [data-copy-syntax]')).toHaveCount(1);
+  await expect(terminal.locator('[data-step="detail"] [data-disclosure]')).toHaveCount(1);
+  await expect(terminal.locator('[data-step="detail"] [data-run-model]')).toHaveCount(1);
+
+  const fills = await terminal.locator("[data-drawer]").evaluateAll((els) => els.map((el) => getComputedStyle(el).backgroundColor));
+  for (const fill of fills) expect(fill, "readout rows carry no fill").toBe("rgba(0, 0, 0, 0)");
+  const rules = await terminal.locator("[data-drawer]").evaluateAll((els) => els.map((el) => getComputedStyle(el).borderTopWidth));
+  for (const rule of rules) expect(rule, "readout rows are hairline-ruled").toBe("1px");
 });

@@ -2,11 +2,11 @@
 
 import ArtifactLink from "@/components/ArtifactLink";
 import { useI18n } from "@/lib/i18n";
-import { zhWrapNode } from "@/lib/zh-wrap";
+import type { Project } from "@/lib/projects";
+import { zhGroup, zhWrapDisplay } from "@/lib/zh-wrap";
 import {
   RAG_BASELINE_COMMIT,
   RAG_CHECKPOINT_COMMIT,
-  RAG_REPOSITORY_URL,
   ragBlockedClaim,
   ragDependencyPreflight,
   ragVerifiedClaims,
@@ -46,8 +46,9 @@ function localizedBoundary(claim: { id: string; boundary: string }, locale: "en"
 // data-honesty constraint (and tests/e2e/rag-r2.spec.ts's literal
 // assertion) forbids regardless of framing. The closing note below
 // describes the discipline without quoting the retired numbers.
-export function RagEvidenceClaims() {
+export function RagEvidenceClaims({ repository }: Pick<Project, "repository">) {
   const { locale } = useI18n();
+  const baselineHref = repository.status === "public" ? `${repository.href}/tree/${RAG_BASELINE_COMMIT}` : undefined;
 
   return (
     <section id="exhibit-02" className="exhibit rag-claims" data-exhibit="02" data-bg="paper-alt" aria-labelledby="exhibit-02-title">
@@ -58,7 +59,7 @@ export function RagEvidenceClaims() {
       <h2 id="exhibit-02-title" className="exhibit-title">
         {locale === "en"
           ? <>Verified stays verified.<br /><em>Blocked stays blocked.</em></>
-          : zhWrapNode(<>已验证的保持已验证，<br /><em>被阻断的保持被阻断。</em></>)}
+          : zhWrapDisplay(<>{zhGroup("已验证的", "保持已验证，")}<br /><em>{zhGroup("被阻断的", "保持被阻断。")}</em></>)}
       </h2>
       <p className="exhibit-intro">
         {locale === "en"
@@ -133,8 +134,8 @@ export function RagEvidenceClaims() {
 
         <p className="rag-claims-note">
           {locale === "en"
-            ? <>A public repository (baseline commit <code>{RAG_BASELINE_COMMIT}</code>, <a href={RAG_REPOSITORY_URL} target="_blank" rel="noreferrer noopener">GitHub</a>) predates and does not yet contain the local checkpoint <code>{RAG_CHECKPOINT_COMMIT}</code> above — a distinct claim of its own, not a substitute for it. Earlier drafts of this page carried different corpus and answer-quality figures; this rebuild retires every one of them rather than repeat them here.</>
-            : <>公开仓库（基线提交 <code>{RAG_BASELINE_COMMIT}</code>，<a href={RAG_REPOSITORY_URL} target="_blank" rel="noreferrer noopener">GitHub</a>）先于本地检查点 <code>{RAG_CHECKPOINT_COMMIT}</code> 存在，尚未包含后者——这是一项独立的主张，不能替代上面的结果。本页早期草稿中出现过不同的语料规模与答案质量数字；这次重写把它们全部废弃，不在此处重复。</>}
+            ? <>A public repository (baseline commit <code>{RAG_BASELINE_COMMIT}</code>, <a href={baselineHref} target="_blank" rel="noreferrer noopener">GitHub</a>) predates and does not yet contain the local checkpoint <code>{RAG_CHECKPOINT_COMMIT}</code> above — a distinct claim of its own, not a substitute for it. Earlier drafts of this page carried different corpus and answer-quality figures; this rebuild retires every one of them rather than repeat them here.</>
+            : <>公开仓库<span className="zh-inline-atomic" data-zh-raw>（基线提交 <code>{RAG_BASELINE_COMMIT}</code>，<a href={baselineHref} target="_blank" rel="noreferrer noopener">GitHub</a>）</span>先于本地检查点 <code>{RAG_CHECKPOINT_COMMIT}</code> 存在，尚未包含后者——这是一项独立的主张，不能替代上面的结果。本页早期草稿中出现过不同的语料规模与答案质量数字；这次重写把它们全部废弃，不在此处重复。</>}
         </p>
       </div>
     </section>

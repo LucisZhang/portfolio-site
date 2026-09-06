@@ -1,35 +1,39 @@
 "use client";
 
+import { EvidenceDisclosure } from "@/components/exhibition/EvidenceDisclosure";
+import { EvidenceFileLink } from "@/components/exhibition/EvidenceFileLink";
 import { type FormEvent, Fragment, useId, useState } from "react";
 import { usePathname } from "next/navigation";
 import AssistantRichAnswer from "@/components/assistant/AssistantRichAnswer";
 import AssistantSourcesIndex from "@/components/assistant/AssistantSourcesIndex";
 import { Exhibit } from "@/components/exhibition/Exhibit";
-import { Finding } from "@/components/exhibition/Finding";
+import { ProjectReportContents, ProjectReportSection, ProjectReportFindings } from "@/components/report/ProjectReport";
 import LocaleDocumentMetadata from "@/components/LocaleDocumentMetadata";
-import LocaleLink from "@/components/LocaleLink";
 import { getRouteQuestions } from "@/lib/ask-question-bank";
 import { prefetchPresetAnswers } from "@/lib/ask-preset-answers";
 import type { AssistantCitation } from "@/lib/assistant-policy";
-import { localize, useI18n } from "@/lib/i18n";
-import { zhWrapText } from "@/lib/zh-wrap";
-import { getProject, type Project } from "@/lib/projects";
+import { useI18n } from "@/lib/i18n";
+import ProjectMentionText from "@/components/assistant/ProjectMentionText";
+import { zhWrapDisplay, zhWrapText } from "@/lib/zh-wrap";
+import type { Project } from "@/lib/projects";
+import { assistantProjectActions } from "@/lib/assistant-project-references";
 import { siteIdentity } from "@/lib/site-config";
 import { useAssistantConversation } from "@/lib/use-assistant-conversation";
 import recordedExample from "@/data/generated/ask-recorded-example.json";
 import "./ask.css";
 
-const MAX_INPUT_CHARACTERS = 2_500;
-
-// Task L5 [CLAUDE]: three real, already-cited project routes offered as the
-// honest static fallback (spec §6.7: "failure -> honest static route
-// suggestions, never fabricated answers") when a live question fails --
-// picked from the existing catalog rather than invented, one per track.
-const FALLBACK_ROUTES: Array<{ track: string; slug: string }> = [
-  { track: "ai", slug: "frontier-forge" },
-  { track: "engineering", slug: "crossover-study" },
-  { track: "analytics", slug: "credit-policy-desk" },
+const askBoundaries = [
+  {
+    "en": "Retrieval is keyword-ranked, not embeddings-based — it can miss a paraphrased question that doesn't share the source's wording.",
+    "zh": "检索是关键词排序，不是向量检索——如果提问的措辞和源文档差异较大，可能检索不到。"
+  },
+  {
+    "en": "The assistant only cites this site's own repositories and one verified private profile; it does not browse the web or verify claims about anyone else.",
+    "zh": "助手只引用本站自身的仓库和一份已核验的私有材料；不会联网搜索，也不核实与他人相关的说法。"
+  }
 ];
+
+const MAX_INPUT_CHARACTERS = 2_500;
 
 const copy = {
   en: {
@@ -70,8 +74,6 @@ const copy = {
     eyebrow03: "SOURCE / REPORT",
     title03a: "Every citation opens",
     title03b: "the exact commit.",
-    architectureTitle: "Architecture",
-    limitationsTitle: "Limitations",
   },
   zh: {
     eyebrow01: "对话仪器",
@@ -111,8 +113,6 @@ const copy = {
     eyebrow03: "来源 / 报告",
     title03a: "每条引用，",
     title03b: "都能打开同一次提交。",
-    architectureTitle: "架构",
-    limitationsTitle: "局限",
   },
 } as const;
 
@@ -171,6 +171,7 @@ export default function AskPage({ project }: { project: Project }) {
         title={{ en: `${project.title.en} | ${siteIdentity.name}`, zh: `${project.title.zh} | ${siteIdentity.chineseName}` }}
         description={project.summary}
       />
+      <ProjectReportContents />
 
       <Exhibit
         id="exhibit-01"
@@ -180,7 +181,7 @@ export default function AskPage({ project }: { project: Project }) {
         title={<>{labels.title01a} <span className="ask-accent">{labels.title01b}</span></>}
         intro={labels.lede01}
       >
-        {locale === "zh" ? <p className="cn-gloss" lang="zh">{project.glossZh}</p> : null}
+        {locale === "zh" ? <p className="cn-gloss" lang="zh">{zhWrapDisplay(project.glossZh)}</p> : null}
         <div className="ask-convo">
           <div className="ask-script">
             <div className="ask-turn ask-turn-you">
@@ -191,7 +192,7 @@ export default function AskPage({ project }: { project: Project }) {
             <div className="ask-turn ask-turn-folio">
               <span className="ask-who">{labels.recordedPortfolio}<small>{labels.recordedAnsweredLabel}</small></span>
               <div className="ask-say">
-                <p><em>{locale === "en" ? recordedExample.answer.en : recordedExample.answer.zh}</em><sup>1</sup></p>
+                <p><em><ProjectMentionText text={recordedExample.answer[locale]} locale={locale} /></em><sup>1</sup></p>
                 <AssistantSourcesIndex
                   citations={[recordedExample.citation as AssistantCitation]}
                   locale={locale}
@@ -220,7 +221,7 @@ export default function AskPage({ project }: { project: Project }) {
                         {message.presetSegments.map((segment, index) => (
                           <Fragment key={segment.ref}>
                             {index > 0 ? " " : null}
-                            <em>{locale === "zh" ? zhWrapText(segment.text) : segment.text}</em>
+                            <em><ProjectMentionText text={segment.text} locale={locale} /></em>
                             <sup>{segment.ref}</sup>
                           </Fragment>
                         ))}
@@ -237,15 +238,9 @@ export default function AskPage({ project }: { project: Project }) {
                         <p className="ask-fallback-title">{labels.fallbackTitle}</p>
                         <p>{labels.fallbackBody}</p>
                         <ul>
-                          {FALLBACK_ROUTES.map(({ track, slug }) => {
-                            const fallbackProject = getProject(track, slug);
-                            if (!fallbackProject) return null;
-                            return (
-                              <li key={slug}>
-                                <LocaleLink href={`/${track}/${slug}`}>{localize(fallbackProject.title, locale)}</LocaleLink>
-                              </li>
-                            );
-                          })}
+                          {assistantProjectActions(message.question ?? "", locale).map((reference) => (
+                            <li key={reference.id}><a href={reference.href}>{reference.label}</a></li>
+                          ))}
                         </ul>
                       </div>
                     ) : null}
@@ -316,23 +311,7 @@ export default function AskPage({ project }: { project: Project }) {
           <div className="ask-how-block">
             <h3>{labels.how2Title}</h3>
             <p>{labels.how2Body}</p>
-            {/* Task R9c (B5-a): the two recorded refusals are verbatim data, not
-                quotations to admire — re-set as ledger rows (mono record label,
-                roman serif text between hairlines) per
-                output/r3-align/mocks/b5-a-guard-refusals.html. No bar-quote
-                grammar, no italics; the refusal texts themselves are unchanged. */}
-            <div className="ask-refusals">
-              {([
-                { kind: labels.refusal1Kind, number: "R1", text: guardExamples.off_topic[locale] },
-                { kind: labels.refusal2Kind, number: "R2", text: guardExamples.injection[locale] },
-              ] as const).map((refusal) => (
-                <div className="ask-refusal" key={refusal.number}>
-                  <p className="ask-refusal-kind"><span>{refusal.number}</span>{refusal.kind}</p>
-                  <p className="ask-refusal-text">{locale === "zh" ? zhWrapText(refusal.text) : refusal.text}</p>
-                  <p className="ask-refusal-meta">{labels.refusalMeta}</p>
-                </div>
-              ))}
-            </div>
+            <a href="#report-results">{locale === "en" ? "View the recorded refusals" : "查看已记录的拒答"}</a>
           </div>
           <div className="ask-how-block">
             <h3>{labels.how3Title}</h3>
@@ -343,49 +322,58 @@ export default function AskPage({ project }: { project: Project }) {
 
       <Exhibit id="exhibit-03" num="03" eyebrow={labels.eyebrow03} bg="ink" title={<>{labels.title03a}<br />{labels.title03b}</>}>
         <div className="ask-source">
+          <EvidenceDisclosure project="ask">
           <dl className="ask-receipts">
             <div>
-              <dt><code>src/lib/assistant-retrieval.ts</code></dt>
+              <dt><EvidenceFileLink source="src/lib/assistant-retrieval.ts" /></dt>
               <dd>{locale === "en" ? "Retrieval + citation ranking, no model call" : "检索与引用排序，未调用模型"}</dd>
             </div>
             <div>
-              <dt><code>src/data/assistant-knowledge.generated.json</code></dt>
-              <dd>{locale === "en" ? "Public knowledge snapshot, pinned to one commit" : "公开知识快照，锁定到某一次提交"}</dd>
+              <dt><EvidenceFileLink source="src/data/assistant-knowledge.generated.json" /></dt>
+              <dd>{locale === "en" ? "Knowledge snapshot built from pinned public sources" : "由锁定版本的公开来源构建的知识快照"}</dd>
             </div>
             <div>
-              <dt><code>scripts/generate-ask-recorded-example.mjs</code></dt>
+              <dt><EvidenceFileLink source="scripts/generate-ask-recorded-example.mjs" /></dt>
               <dd>{locale === "en" ? "Regenerates the recorded exchange above" : "重新生成上方的已记录对话"}</dd>
             </div>
             <div>
-              <dt><code>scripts/generate-ask-question-bank.mjs</code></dt>
+              <dt><EvidenceFileLink source="scripts/generate-ask-question-bank.mjs" /></dt>
               <dd>{locale === "en" ? "Builds the preset answers and checks every number in them against its committed source" : "生成预置回答，并逐个数字对照已提交的来源核验"}</dd>
             </div>
           </dl>
-
-          <div className="ask-report">
-            <h3>{labels.architectureTitle}</h3>
-            <ol className="ask-architecture">
-              <li>{locale === "en" ? "Retrieve: rank knowledge chunks against the question." : "检索：对问题排序检索知识片段。"}</li>
-              <li>{locale === "en" ? "Guard: classify scope before any generation." : "审查：在生成之前先做范围分类。"}</li>
-              <li>{locale === "en" ? "Generate: answer only from the retrieved chunks." : "生成：只基于检索到的片段作答。"}</li>
-              <li>{locale === "en" ? "Verify: reject any sentence the citations do not support." : "核对：拒绝任何引用支撑不了的句子。"}</li>
-              <li>{locale === "en" ? "Rate-limit: cap requests per visitor, disclosed above." : "限流：按访客限制请求数，状态展示在上方。"}</li>
-            </ol>
-
-            <h3>{labels.limitationsTitle}</h3>
-            <Finding kind="limitation">
-              {locale === "en"
-                ? "Retrieval is keyword-ranked, not embeddings-based — it can miss a paraphrased question that doesn't share the source's wording."
-                : "检索是关键词排序，不是向量检索——如果提问的措辞和源文档差异较大，可能检索不到。"}
-            </Finding>
-            <Finding kind="limitation">
-              {locale === "en"
-                ? "The assistant only cites this site's own repositories and one verified private profile; it does not browse the web or verify claims about anyone else."
-                : "助手只引用本站自身的仓库和一份已核验的私有材料；不会联网搜索，也不核实与他人相关的说法。"}
-            </Finding>
-          </div>
+          </EvidenceDisclosure>
         </div>
       </Exhibit>
+      <ProjectReportSection concept="architecture">
+        <ol className="ask-architecture">
+          <li>{locale === "en" ? "Retrieve: rank knowledge chunks against the question." : "检索：对问题排序检索知识片段。"}</li>
+          <li>{locale === "en" ? "Guard: classify scope before any generation." : "审查：在生成之前先做范围分类。"}</li>
+          <li>{locale === "en" ? "Generate: answer only from the retrieved chunks." : "生成：只基于检索到的片段作答。"}</li>
+          <li>{locale === "en" ? "Verify: reject any sentence the citations do not support." : "核对：拒绝任何引用支撑不了的句子。"}</li>
+          <li>{locale === "en" ? "Rate-limit: cap requests per visitor, disclosed above." : "限流：按访客限制请求数，状态展示在上方。"}</li>
+        </ol>
+      </ProjectReportSection>
+      <ProjectReportSection concept="results" title={locale === "en" ? "Recorded retrieval & refusals" : "已记录的检索与拒答"}>
+        <p>{locale === "en"
+          ? "RECORDED — this exchange is frozen at build/dev time from a real offline retrieval run over the committed knowledge snapshot (no model call, no network request)."
+          : "RECORDED——这段对话是构建/开发阶段冻结的一次真实离线检索结果，基于已提交的知识快照（未调用模型、未发出网络请求）。"}</p>
+        <p><a href="#exhibit-01">{locale === "en" ? "View the recorded exchange and its citation" : "查看已记录的对话及引用"}</a></p>
+        <div className="ask-refusals">
+          {([
+            { kind: labels.refusal1Kind, number: "R1", text: guardExamples.off_topic[locale] },
+            { kind: labels.refusal2Kind, number: "R2", text: guardExamples.injection[locale] },
+          ] as const).map((refusal) => (
+            <div className="ask-refusal" key={refusal.number}>
+              <p className="ask-refusal-kind"><span>{refusal.number}</span>{refusal.kind}</p>
+              <p className="ask-refusal-text">{locale === "zh" ? zhWrapText(refusal.text) : refusal.text}</p>
+              <p className="ask-refusal-meta">{labels.refusalMeta}</p>
+            </div>
+          ))}
+        </div>
+      </ProjectReportSection>
+      <ProjectReportSection concept="limitations">
+        <ProjectReportFindings items={askBoundaries} kind="limitation" />
+      </ProjectReportSection>
     </div>
   );
 }

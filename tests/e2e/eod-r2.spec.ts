@@ -303,13 +303,54 @@ test("Exactly-Once Drills verification proposition and 10 PASS rows", async ({ p
   expect(await verdicts.allTextContents()).toEqual(new Array(10).fill("PASS"));
 });
 
+test("Exactly-Once Drills uses one header hierarchy and keeps duty/run metadata", async ({ page }) => {
+  for (const locale of ["en", "zh"] as const) {
+    await page.addInitScript((selectedLocale) => {
+      window.localStorage.setItem("portfolio-locale", selectedLocale);
+    }, locale);
+    await page.goto(ROUTE, { waitUntil: "networkidle" });
+
+    const hero = page.locator(SEL.exhibit("01"));
+    await expect(page.locator("[data-eod-topstrip]")).toHaveCount(0);
+    await expect(hero.locator(":scope > h1")).toHaveCount(1);
+    await expect(hero.locator(":scope > .exhibit-opening-row .exhibit-number")).toHaveText("01");
+    await expect(hero.locator("[data-eod-duty-meta]")).toHaveText(locale === "en"
+      ? "DUTY LOG · 2026-08-20 · PHASE B1–B4 · LOCAL LAB"
+      : "值班日志 · DUTY LOG · 2026-08-20 · 阶段 B1–B4 · 本地实验室");
+
+    const featuredRun = hero.locator(`[data-log-entry][data-drill-id="${DEFAULT_ID}"]`);
+    await expect(featuredRun.locator("[data-log-dateline]")).toContainText(/RUN [0-9A-Za-z_-]+ · GIT [0-9A-Fa-f]+/);
+  }
+});
+
+test("Exactly-Once Drills header starts the first viewport without a spacer on desktop, tablet, and mobile", async ({ page }) => {
+  await page.goto(ROUTE, { waitUntil: "networkidle" });
+
+  const hero = page.locator(SEL.exhibit("01"));
+  const openingRow = hero.locator(":scope > .exhibit-opening-row");
+  const title = hero.locator(":scope > h1");
+  const [heroBox, openingBox, titleBox] = await Promise.all([
+    hero.boundingBox(),
+    openingRow.boundingBox(),
+    title.boundingBox(),
+  ]);
+  const viewport = page.viewportSize();
+
+  expect(heroBox && openingBox && titleBox && viewport).toBeTruthy();
+  expect(openingBox!.y).toBeGreaterThanOrEqual(heroBox!.y);
+  expect(openingBox!.y).toBeLessThan(viewport!.height);
+  expect(titleBox!.y).toBeGreaterThan(openingBox!.y);
+  expect(titleBox!.y - (openingBox!.y + openingBox!.height)).toBeLessThan(96);
+  expect(titleBox!.y).toBeLessThan(viewport!.height);
+});
+
 test("Exactly-Once Drills every drill's download link resolves to a real on-site file", async ({ page, request }) => {
   await page.goto(ROUTE, { waitUntil: "networkidle" });
   const hrefs = await page.locator("[data-drill-details-static] a[download]").evaluateAll((links) => links.map((link) => link.getAttribute("href")));
   expect(hrefs).toHaveLength(10);
   for (const href of hrefs) {
     expect(href).not.toBeNull();
-    const response = await request.head(`http://127.0.0.1:4173${href}`);
+    const response = await request.head(new URL(href!, page.url()).toString());
     expect(response.status(), `${href} should resolve`).toBe(200);
   }
 });
@@ -352,7 +393,9 @@ test("Exactly-Once Drills renders with no JavaScript: exhibits 01-04 have static
   await page.goto(ROUTE, { waitUntil: "domcontentloaded" });
 
   await expect(page.locator(SEL.exhibit("01")).locator("[data-log-entry]")).toHaveCount(10);
-  await expect(page.locator(SEL.exhibit("02")).locator("[data-eod-pass-row]")).toHaveCount(10);
+  const verificationTable = page.locator(SEL.exhibit("02")).locator("[data-eod-pass-table]");
+  await expect(verificationTable).toHaveAttribute("aria-label", "Per-drill verification verdict");
+  await expect(verificationTable.locator("[data-eod-pass-row]")).toHaveCount(10);
   await expect(page.locator(SEL.exhibit("03")).locator("[data-eod-parity]")).toBeVisible();
   await expect(page.locator(SEL.exhibit("04")).locator("[data-eod-pressure]")).toBeVisible();
 
@@ -375,6 +418,7 @@ for (const locale of ["en", "zh"] as const) {
     expect(response?.status()).toBe(200);
     await expect(page).toHaveTitle(/Exactly-Once Drills/);
     await expect(page.locator("#project-title")).toBeVisible();
+    await expect(page.locator("[data-eod-pass-table]")).toHaveAttribute("aria-label", locale === "en" ? "Per-drill verification verdict" : "逐项演练验证结论");
 
     await expect(page.locator(SEL.projectOutcome)).toHaveText(locale === "en"
       ? "Ten ways to break the same pipeline: MySQL CDC on one path, Debezium → Avro contracts → Kafka on the other, both landing in Flink → Iceberg. After every induced failure, source state, table snapshots, and event IDs are reconciled — all ten recoveries came back with zero diffs. Sustained throughput measured at 1,791 events/s in the B4 SLO run."
@@ -393,6 +437,21 @@ for (const locale of ["en", "zh"] as const) {
         ? "/case-studies/exactly-once-drills/media/phase-2.2-small-file-rewrite.svg"
         : "/case-studies/exactly-once-drills/media/phase-2.2-small-file-rewrite-zh.svg",
     );
+
+    // D-04: the figure is exhibit 04's primary surface. It must fill the content column
+    // (not a half-width grid cell), keep its 940x520 aspect, and reserve its box up front.
+    const figureImg = page.locator(SEL.exhibit("04")).locator(".media-grid--wide img");
+    await expect(figureImg).toHaveAttribute("width", "940");
+    await expect(figureImg).toHaveAttribute("height", "520");
+    await expect(figureImg).toHaveAttribute("loading", "lazy");
+    await figureImg.scrollIntoViewIfNeeded();
+    const [bodyBox, imgBox] = await Promise.all([
+      page.locator(SEL.exhibit("04")).locator(".exhibit-body").boundingBox(),
+      figureImg.boundingBox(),
+    ]);
+    expect(bodyBox && imgBox).toBeTruthy();
+    expect(imgBox!.width).toBeGreaterThanOrEqual(Math.min(bodyBox!.width, 1180) - 1);
+    expect(imgBox!.width / imgBox!.height).toBeCloseTo(940 / 520, 1);
 
     const boundary = page.locator(SEL.exhibit("05")).locator('[data-finding="limitation"]');
     await expect(boundary).toContainText(locale === "en" ? "does not prove" : "不能证明");

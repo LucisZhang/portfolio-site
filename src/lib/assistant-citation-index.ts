@@ -14,7 +14,7 @@
 //   rather than surfacing a raw internal ref;
 // - private profile chunk -> label only (existing rule, unchanged).
 import type { AssistantCitation } from "@/lib/assistant-policy";
-import { getProject, isTrackId } from "@/lib/projects";
+import { resolveProjectIdentity } from "./project-identities";
 
 export type CitationIndexEntryKind = "github" | "site" | "private";
 
@@ -83,21 +83,27 @@ function decodePath(encoded: string): string {
   }
 }
 
+function zhCitationLabel(project: string, descriptor: string) {
+  return /[。！？]$/u.test(project)
+    ? `查看“${project}”：${descriptor}`
+    : `查看${project}：${descriptor}`;
+}
+
 function siteEntry(sourceId: string): Pick<CitationIndexEntry, "href" | "title" | "route"> {
   const routeKey = PORTFOLIO_SITE_SOURCE.exec(sourceId)?.[1] ?? "home";
   if (routeKey !== "home") {
     const separator = routeKey.indexOf("-");
     const track = separator > 0 ? routeKey.slice(0, separator) : "";
     const slug = separator > 0 ? routeKey.slice(separator + 1) : "";
-    if (isTrackId(track) && slug) {
-      const project = getProject(track, slug);
+    if (track && slug) {
+      const project = resolveProjectIdentity(`/${track}/${slug}`);
       if (project) {
-        const href = `/${track}/${slug}`;
+        const href = project.href;
         return {
           href,
           title: {
-            en: `Open the ${project.title.en} project page`,
-            zh: `打开「${project.title.zh}」项目页`,
+            en: `Open the ${project.label.en} project page`,
+            zh: `打开「${project.label.zh}」项目页`,
           },
           route: { en: `${href} · project page`, zh: `${href} · 项目页` },
         };
@@ -135,7 +141,7 @@ function githubEntry(citation: AssistantCitation): Pick<CitationIndexEntry, "hre
     href: url,
     title: {
       en: `See ${descriptor.en} in ${projectEn}`,
-      zh: `查看${projectZh}：${descriptor.zh}`,
+      zh: zhCitationLabel(projectZh, descriptor.zh),
     },
     route: { en: routeLine, zh: routeLine },
   };

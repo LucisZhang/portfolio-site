@@ -1,6 +1,8 @@
+import { EvidenceScope } from "@/components/exhibition/EvidenceScope.server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ExhibitShell } from "@/components/exhibition/ExhibitShell";
+import ProjectRepositoryEntry from "@/components/exhibition/ProjectRepositoryEntry";
 import ProjectRailTools from "@/components/exhibition/ProjectRailTools";
 import CreditPage from "@/components/credit/CreditPage";
 import { creditRail } from "@/components/credit/creditRail";
@@ -20,8 +22,10 @@ export default function CreditPolicyDeskRoute() {
   const project = getProject("analytics", "credit-policy-desk");
   if (!project) notFound();
   return (
-    <ExhibitShell rail={creditRail} railTools={<ProjectRailTools />} mode="auto">
-      <CreditPage project={project} />
+    <ExhibitShell repositoryEntry={<ProjectRepositoryEntry project={project} />} rail={creditRail} railTools={<ProjectRailTools />} mode="auto">
+      <EvidenceScope project="credit">
+        <CreditPage project={project} />
+      </EvidenceScope>
     </ExhibitShell>
   );
 }

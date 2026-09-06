@@ -1,6 +1,8 @@
+import { EvidenceScope } from "@/components/exhibition/EvidenceScope.server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ExhibitShell } from "@/components/exhibition/ExhibitShell";
+import ProjectRepositoryEntry from "@/components/exhibition/ProjectRepositoryEntry";
 import ProjectRailTools from "@/components/exhibition/ProjectRailTools";
 import AskPage from "@/components/ask/AskPage";
 import { askRail } from "@/components/ask/askRail";
@@ -26,8 +28,10 @@ export default function AskPortfolioRoute() {
   const project = getProject("ai", "ask-portfolio");
   if (!project) notFound();
   return (
-    <ExhibitShell rail={askRail} railTools={<ProjectRailTools />} mode="auto">
-      <AskPage project={project} />
+    <ExhibitShell repositoryEntry={<ProjectRepositoryEntry project={project} />} rail={askRail} railTools={<ProjectRailTools />} mode="auto">
+      <EvidenceScope project="ask">
+        <AskPage project={project} />
+      </EvidenceScope>
     </ExhibitShell>
   );
 }

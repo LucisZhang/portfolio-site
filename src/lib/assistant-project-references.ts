@@ -1,14 +1,14 @@
-export const ASSISTANT_PROJECT_IDS = [
-  "release-guardian",
-  "streaming-reliability-lab",
-  "rag-quality-lab",
-  "privacy-preflight",
-  "margin-control-tower",
-  "credit-policy-desk",
-  "Voice-in-Security",
-] as const;
+import {
+  PROJECT_IDENTITY_IDS,
+  findProjectMentions,
+  mentionedProjectIds,
+  projectIdentityHref,
+  resolveProjectIdentity,
+  type ProjectIdentityId,
+} from "./project-identities";
 
-export type AssistantProjectId = (typeof ASSISTANT_PROJECT_IDS)[number];
+export const ASSISTANT_PROJECT_IDS = PROJECT_IDENTITY_IDS;
+export type AssistantProjectId = ProjectIdentityId;
 export type AssistantAnswerBlockType = "paragraph" | "heading" | "bullet";
 export type AssistantAnswerSegment =
   | { type: "text"; text: string; strong?: boolean }
@@ -24,47 +24,24 @@ export interface AssistantProjectReference {
   kind: "portfolio" | "github";
 }
 
-const catalog: Record<AssistantProjectId, {
-  label: { en: string; zh: string };
-  href: string;
-  kind: "portfolio" | "github";
-}> = {
-  "release-guardian": { label: { en: "Release Guardian", zh: "Release Guardian" }, href: "/ai/release-guardian", kind: "portfolio" },
-  "streaming-reliability-lab": { label: { en: "Exactly-Once Drills", zh: "Exactly-Once Drills" }, href: "/engineering/exactly-once-drills", kind: "portfolio" },
-  "rag-quality-lab": { label: { en: "RAG Quality Lab", zh: "RAG Quality Lab" }, href: "/ai/rag-quality-lab", kind: "portfolio" },
-  "privacy-preflight": { label: { en: "Privacy Preflight", zh: "Privacy Preflight" }, href: "/ai/privacy-preflight", kind: "portfolio" },
-  "margin-control-tower": { label: { en: "Margin Control Tower", zh: "Margin Control Tower" }, href: "/analytics/margin-control-tower", kind: "portfolio" },
-  "credit-policy-desk": { label: { en: "Credit Policy Desk", zh: "Credit Policy Desk" }, href: "/analytics/credit-policy-desk", kind: "portfolio" },
-  "Voice-in-Security": { label: { en: "Voice-in-Security", zh: "Voice-in-Security" }, href: "https://github.com/LucisZhang/Voice-in-Security", kind: "github" },
-};
-
-const projectIds = new Set<string>(ASSISTANT_PROJECT_IDS);
-const projectAliases = Object.entries(catalog).flatMap(([id, entry]) => [...new Set([
-  id,
-  entry.label.en,
-  entry.label.zh,
-])].map((alias) => ({ alias, id: id as AssistantProjectId })));
-const projectIdByAlias = new Map(projectAliases.map(({ alias, id }) => [alias.toLocaleLowerCase("en-US"), id]));
-const projectMentionPattern = new RegExp(projectAliases
-  .sort((left, right) => right.alias.length - left.alias.length)
-  .map(({ alias }) => {
-    const escaped = alias.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&");
-    return /^[\x00-\x7f]+$/u.test(alias)
-      ? `(?<![A-Za-z0-9])${escaped}(?![A-Za-z0-9])`
-      : escaped;
-  })
-  .join("|"), "giu");
-
 export function projectReference(id: string, locale: "en" | "zh"): AssistantProjectReference | null {
-  if (!projectIds.has(id)) return null;
-  const projectId = id as AssistantProjectId;
-  const entry = catalog[projectId];
+  const entry = resolveProjectIdentity(id);
+  if (!entry) return null;
   return {
-    id: projectId,
+    id: entry.id,
     label: entry.label[locale],
-    href: entry.kind === "portfolio" && locale === "zh" ? `${entry.href}?lang=zh` : entry.href,
+    href: projectIdentityHref(entry.id, locale),
     kind: entry.kind,
   };
+}
+
+export function assistantProjectActions(question: string, locale: "en" | "zh"): AssistantProjectReference[] {
+  const named = mentionedProjectIds(question);
+  const ids = named.length ? named : ["frontier-forge", "crossover-study", "credit-policy-desk"];
+  return ids.flatMap((id) => {
+    const reference = projectReference(id, locale);
+    return reference ? [reference] : [];
+  });
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -112,21 +89,21 @@ export function validateAssistantAnswerBlocks(value: unknown, locale: "en" | "zh
 function canonicalizeTextSegment(segment: Extract<AssistantAnswerSegment, { type: "text" }>) {
   const segments: AssistantAnswerSegment[] = [];
   let cursor = 0;
-  for (const match of segment.text.matchAll(projectMentionPattern)) {
-    const index = match.index ?? 0;
+  for (const match of findProjectMentions(segment.text)) {
+    const index = match.index;
     if (index > cursor) segments.push({
       type: "text",
       text: segment.text.slice(cursor, index),
       ...(segment.strong === true ? { strong: true } : {}),
     });
-    const projectId = projectIdByAlias.get(match[0].toLocaleLowerCase("en-US"));
+    const projectId = match.id;
     if (projectId) segments.push({
       type: "project",
       projectId,
       ...(segment.strong === true ? { strong: true } : {}),
     });
-    else segments.push({ type: "text", text: match[0], ...(segment.strong === true ? { strong: true } : {}) });
-    cursor = index + match[0].length;
+    else segments.push({ type: "text", text: match.text, ...(segment.strong === true ? { strong: true } : {}) });
+    cursor = index + match.text.length;
   }
   if (cursor < segment.text.length) segments.push({
     type: "text",

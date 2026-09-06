@@ -1,0 +1,20 @@
+.evidence-layer { min-width: 0; margin-block: 24px; }
+.evidence-overview { margin: 0 0 28px; max-width: 76ch; }
+.evidence-overview > div { margin-block: 18px; }
+.evidence-overview dt { font-family: var(--mono); font-size: 11px; line-height: 1.6; }
+.evidence-overview dd { margin: 4px 0 0; font-size: 16px; line-height: 1.65; text-wrap: pretty; }
+.evidence-overview > div:last-child { border-inline-start: 2px solid currentColor; padding-inline-start: 16px; }
+.evidence-details { border-block: 1px solid currentColor; }
+.evidence-details > summary { cursor: pointer; padding: 18px 4px; font-size: 15px; line-height: 1.6; }
+.evidence-details > summary:focus-visible, .evidence-file-link:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+.evidence-technical { min-width: 0; padding-block: 8px 24px; }
+.evidence-technical code, .evidence-technical dd, .evidence-technical a { overflow-wrap: anywhere; word-break: normal; }
+.evidence-technical pre { max-width: 100%; white-space: pre-wrap; overflow-wrap: anywhere; }
+.evidence-file-link { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.evidence-file-note { display: block; margin-block-start: 4px; font-size: 12px; line-height: 1.6; }
+.evidence-file-note code { font-size: inherit; }
+@media (max-width: 600px) {
+  .evidence-technical dl { grid-template-columns: minmax(0, 1fr); }
+  .evidence-technical dl > div { min-width: 0; }
+  .evidence-overview dd { font-size: 15px; }
+}

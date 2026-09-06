@@ -8,9 +8,14 @@ interface MediaCandidate {
   alt: LocalizedString;
   caption: LocalizedString;
   zhPresentationDerivative?: boolean;
+  /** Intrinsic pixel size of the asset; emitted as width/height so the browser reserves the box before load. */
+  width?: number;
+  height?: number;
+  /** Defer fetching until the figure nears the viewport (for below-the-fold evidence). */
+  lazy?: boolean;
 }
 
-type MediaLayout = "default" | "release-staggered" | "privacy-comparison" | "p1-readable";
+type MediaLayout = "default" | "release-staggered" | "privacy-comparison" | "p1-readable" | "wide";
 
 export default function OptionalMedia({ candidates, layout = "default" }: { candidates: MediaCandidate[]; layout?: MediaLayout }) {
   const { locale, dict } = useI18n();
@@ -33,7 +38,16 @@ export default function OptionalMedia({ candidates, layout = "default" }: { cand
     <figure key={item.resolvedSrc} data-evidence-kind={isLocalizedDerivative ? "presentation-layer-derivative" : undefined} style={wide ? { gridColumn: "1 / -1" } : undefined}>
       {/* The native element lets late-arriving public assets render without build-time coupling. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={item.resolvedSrc} alt={item.alt[locale]} onError={() => markFailed(item.resolvedSrc)} style={wide ? { maxHeight: "none" } : undefined} />
+      <img
+        src={item.resolvedSrc}
+        alt={item.alt[locale]}
+        width={item.width}
+        height={item.height}
+        loading={item.lazy ? "lazy" : undefined}
+        decoding="async"
+        onError={() => markFailed(item.resolvedSrc)}
+        style={wide ? { maxHeight: "none" } : undefined}
+      />
       <figcaption>{item.caption[locale]}</figcaption>
     </figure>
     );
@@ -53,6 +67,11 @@ export default function OptionalMedia({ candidates, layout = "default" }: { cand
         </div>
       );
     })}</div>;
+  }
+
+  if (layout === "wide") {
+    // One figure per row, spanning the full content width: the image is the exhibit's primary surface.
+    return <div className="media-grid media-grid--wide">{available.map((item) => figure(item, true))}</div>;
   }
 
   return <div className="media-grid">{available.map((item, index) => figure(item, layout === "p1-readable" && index === 0))}</div>;

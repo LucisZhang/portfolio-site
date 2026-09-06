@@ -1389,7 +1389,7 @@
           "kind": "public-github",
           "label": {
             "en": "Credit Policy Desk · src/lib/projects.ts",
-            "zh": "Credit Policy Desk · src/lib/projects.ts"
+            "zh": "分数不是策略。 · src/lib/projects.ts"
           },
           "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
         },
@@ -1398,7 +1398,7 @@
           "kind": "public-github",
           "label": {
             "en": "See the README's verified claims in Credit Policy Desk",
-            "zh": "查看Credit Policy Desk：README 中的已验证结论"
+            "zh": "查看“分数不是策略。”：README 中的已验证结论"
           },
           "url": "https://github.com/LucisZhang/credit-policy-desk/blob/bbad7e0dbf997d7fb64caad5ed3c8bf09e74658e/README.md"
         }
@@ -1436,7 +1436,7 @@
           "kind": "public-github",
           "label": {
             "en": "Credit Policy Desk · src/lib/projects.ts",
-            "zh": "Credit Policy Desk · src/lib/projects.ts"
+            "zh": "分数不是策略。 · src/lib/projects.ts"
           },
           "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
         },
@@ -1445,7 +1445,7 @@
           "kind": "public-github",
           "label": {
             "en": "See the recorded evidence file in Credit Policy Desk",
-            "zh": "查看Credit Policy Desk：评测证据文件"
+            "zh": "查看“分数不是策略。”：评测证据文件"
           },
           "url": "https://github.com/LucisZhang/credit-policy-desk/blob/bbad7e0dbf997d7fb64caad5ed3c8bf09e74658e/public/case-studies/credit-policy-lab/policy-contract.json"
         }
@@ -1483,7 +1483,7 @@
           "kind": "public-github",
           "label": {
             "en": "Credit Policy Desk · src/lib/projects.ts",
-            "zh": "Credit Policy Desk · src/lib/projects.ts"
+            "zh": "分数不是策略。 · src/lib/projects.ts"
           },
           "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
         },
@@ -1492,7 +1492,7 @@
           "kind": "public-github",
           "label": {
             "en": "See the recorded evidence file in Credit Policy Desk",
-            "zh": "查看Credit Policy Desk：评测证据文件"
+            "zh": "查看“分数不是策略。”：评测证据文件"
           },
           "url": "https://github.com/LucisZhang/credit-policy-desk/blob/bbad7e0dbf997d7fb64caad5ed3c8bf09e74658e/public/case-studies/credit-policy-lab/backtest-report.json"
         }
@@ -1539,7 +1539,7 @@
           "kind": "public-github",
           "label": {
             "en": "Credit Policy Desk · src/lib/projects.ts",
-            "zh": "Credit Policy Desk · src/lib/projects.ts"
+            "zh": "分数不是策略。 · src/lib/projects.ts"
           },
           "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
         }
@@ -1563,7 +1563,7 @@
             "ref": 1
           },
           {
-            "text": "重建后的继任项目是 Credit Policy Desk——风险这一半用真实授信数据、契约和留档的人工决策重做了一遍。旧页面则有意停在定性层面，不引用任何性能数字。",
+            "text": "重建后的继任项目是“分数不是策略。”——风险这一半用真实授信数据、契约和留档的人工决策重做了一遍。旧页面则有意停在定性层面，不引用任何性能数字。",
             "ref": 2
           }
         ]
@@ -1586,7 +1586,7 @@
           "kind": "public-github",
           "label": {
             "en": "Credit Policy Desk · src/lib/projects.ts",
-            "zh": "Credit Policy Desk · src/lib/projects.ts"
+            "zh": "分数不是策略。 · src/lib/projects.ts"
           },
           "url": "https://github.com/LucisZhang/portfolio-site/blob/346b8a81cbf9a238081ef179eb622ea8f0614466/src/lib/projects.ts"
         }
@@ -1610,7 +1610,7 @@
             "ref": 1
           },
           {
-            "text": "两者仍是公开检查界面（源码仓库为私有，不作为证据使用）；风险交互这一半，后来在 Credit Policy Desk 里用真实证据重建了。",
+            "text": "两者仍是公开检查界面（源码仓库为私有，不作为证据使用）；风险交互这一半，后来在“分数不是策略。”里用真实证据重建了。",
             "ref": 2
           }
         ]

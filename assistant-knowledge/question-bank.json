@@ -663,7 +663,7 @@
     "questions": [
       {
         "q_en": "How does Credit Policy Desk turn a score into a policy decision?",
-        "q_zh": "Credit Policy Desk 为什么说一个分数还不是策略？",
+        "q_zh": "“分数不是策略。”如何把模型分数变成信贷策略决策？",
         "id": "credit-overview",
         "answer": {
           "citations": [
@@ -685,7 +685,7 @@
       },
       {
         "q_en": "How does Credit Policy Desk choose approval and review thresholds?",
-        "q_zh": "Credit Policy Desk 的批准、复核、拒绝三段阈值怎么定？",
+        "q_zh": "“分数不是策略。”如何确定批准、复核、拒绝三段阈值？",
         "id": "credit-thresholds",
         "answer": {
           "citations": [
@@ -707,7 +707,7 @@
       },
       {
         "q_en": "What does granted-loan-only data limit in Credit Policy Desk?",
-        "q_zh": "Credit Policy Desk 只有已授信样本，会带来什么限制？",
+        "q_zh": "“分数不是策略。”只有已授信样本时，会受到什么限制？",
         "id": "credit-boundaries",
         "answer": {
           "citations": [
@@ -746,7 +746,7 @@
           ],
           "zh": [
             { "text": "这是一个旧版兼容入口，留着是为了让旧链接还能打开：一个定性组合案例，把电商决策仪表盘（Tableau）和双语交互式风险演示（Streamlit）放在一起。", "ref": 1 },
-            { "text": "重建后的继任项目是 Credit Policy Desk——风险这一半用真实授信数据、契约和留档的人工决策重做了一遍。旧页面则有意停在定性层面，不引用任何性能数字。", "ref": 2 }
+            { "text": "重建后的继任项目是“分数不是策略。”——风险这一半用真实授信数据、契约和留档的人工决策重做了一遍。旧页面则有意停在定性层面，不引用任何性能数字。", "ref": 2 }
           ],
           "grounding": [
             { "file": "src/lib/projects.ts", "contains": ["Tableau", "Streamlit", "旧版迁移路由", "rebuilt successor is Credit Policy Desk"] }
@@ -768,7 +768,7 @@
           ],
           "zh": [
             { "text": "两类：一类是 BI 探索——电商漏斗、RFM 和客户分群视图；另一类是模型交互——部署好的双语 Streamlit 演示，用合成案例经 predict_proba 得到批准或拦截的结果。", "ref": 1 },
-            { "text": "两者仍是公开检查界面（源码仓库为私有，不作为证据使用）；风险交互这一半，后来在 Credit Policy Desk 里用真实证据重建了。", "ref": 2 }
+            { "text": "两者仍是公开检查界面（源码仓库为私有，不作为证据使用）；风险交互这一半，后来在“分数不是策略。”里用真实证据重建了。", "ref": 2 }
           ],
           "grounding": [
             { "file": "src/lib/projects.ts", "contains": ["RFM", "predict_proba", "Streamlit", "批准或拦截"] }

@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 import { SEL } from "./selectors";
 import { bodyTextExcludingLanguageSwitcher, containsCJK, longestLatinWordRun } from "./localePurity";
 import { assertNoHorizontalOverflow, assertTouchTarget } from "./mobileAudit";
+import { frontierProjectDetail } from "../../src/lib/frontier-project-detail";
 
 const ROUTE = "/ai/frontier-forge";
 const HEAVY_ASSET_PATTERN = /\.(onnx|wasm|gguf)(\?|$)/i;
@@ -39,7 +40,8 @@ for (const locale of ["en", "zh"] as const) {
     // The free-input box sits after the chips and is disabled + labeled.
     const input = instrument.locator("[data-forge-input]");
     await expect(input).toBeDisabled();
-    await expect(input).toHaveAttribute("aria-label", "LIVE LAYER OFFLINE");
+    await expect(input).toHaveAttribute("aria-label", locale === "en" ? "LIVE LAYER OFFLINE" : "在线服务未启用");
+    await expect(input).toHaveAttribute("placeholder", locale === "en" ? "LIVE LAYER OFFLINE" : "在线服务未启用");
   });
 }
 
@@ -76,6 +78,7 @@ test("Frontier Forge renders with no JavaScript: exhibits 01-05 have static serv
 
   // 01: instrument readout has a real value.
   await expect(page.locator(SEL.exhibit("01")).locator("[data-readout] strong")).toHaveText(/^\d+\.\d+s$/);
+  await expect(page.locator(SEL.exhibit("01")).locator("[data-forge-input]")).toHaveAttribute("aria-label", "LIVE LAYER OFFLINE");
   // 02: evidence claim table has rows.
   await expect(page.getByTestId("forge-evidence-explorer").locator(SEL.tbodyTr)).toHaveCount(10);
   // 03: training ladder has all seven rungs.
@@ -170,6 +173,22 @@ for (const locale of ["en", "zh"] as const) {
     const noCount = await matrix.locator('[data-capability="no"]').count();
     expect(noCount).toBeGreaterThanOrEqual(yesCount);
     await expect(page.locator(SEL.exhibit("06")).locator(".forge-not-recorded")).toContainText(locale === "en" ? "NOT RECORDED" : "未记录");
+    // Task D-02: exhibit 06 stays on model suitability — its former
+    // LIMITATION block (a verbatim copy of boundaries[0]) now lives only in
+    // the Limitations section, which lists every boundary exactly once.
+    await expect(page.locator(SEL.exhibit("06")).locator('[data-finding="limitation"]')).toHaveCount(0);
+    const limitationItems = page.locator('[data-project-section="limitations"] [data-limitations] li');
+    await expect(limitationItems).toHaveCount(frontierProjectDetail.boundaries.length);
+    for (const [index, boundary] of frontierProjectDetail.boundaries.entries()) {
+      await expect(limitationItems.nth(index)).toContainText(boundary[locale]);
+    }
+    // Task D-02 de-box: the hero metric band is a ruled typographic row, not
+    // a framed checkerboard.
+    const heroBand = await page.locator("#hero .forge-hero-metrics").evaluate((band) => {
+      const style = getComputedStyle(band);
+      return { left: style.borderLeftWidth, right: style.borderRightWidth, bottom: style.borderBottomWidth, top: style.borderTopWidth };
+    });
+    expect(heroBand).toEqual({ left: "0px", right: "0px", bottom: "0px", top: "1px" });
 
     // Report layer: Architecture -> Results & negatives -> Limitations.
     expect(await page.locator('[data-project-section="how"], [data-project-section="results"], [data-project-section="limitations"]').evaluateAll(

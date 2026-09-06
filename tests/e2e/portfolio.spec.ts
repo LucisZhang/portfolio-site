@@ -112,22 +112,22 @@ for (const locale of ["en", "zh"] as const) {
         await expect(page.locator(SEL.h1)).toContainText("I build the whole path.");
         // The Chinese hero narrative is an independent composition (not a
         // translation of the English assertion), but task F5's locale
-        // purity rule gates it to zh locale only — it must not render at
-        // all in en locale.
+        // purity rule gates its visible and accessible state to zh.
         if (locale === "zh") await expect(page.locator(SEL.homeHeroZh)).toHaveText(/[㐀-鿿]/);
-        else await expect(page.locator(SEL.homeHeroZh)).toHaveCount(0);
+        else await expect(page.locator(SEL.homeHeroZh)).toBeHidden();
         await expect(page.locator(SEL.brandMark)).toHaveText("XGZ");
-        await expect(page.locator(SEL.targetRoles)).toHaveText(locale === "en"
+        await expect(page.locator(SEL.targetRoles).locator(`.home-locale-${locale}`)).toHaveText(locale === "en"
           ? "Open to: AI agent & LLM application engineering · backend & distributed systems · data engineering & analytics"
           : "校招方向：AI Agent 与大模型应用工程 / 后端与分布式系统 / 数据工程与分析");
-        // Task 1.2: GitHub/Email now each appear twice — the hero contact
-        // row (exhibit 00) and exhibit 06's receipts — so these href-based
-        // checks scope to the hero, matching what they exercised
-        // pre-rebuild; SEL.aHrefMailto.../aHrefGithub... stay href-based
-        // (not text-based) so both instances still satisfy them.
+        await expect(page.locator(SEL.targetRoles).locator(`.home-locale-${locale === "en" ? "zh" : "en"}`)).toBeHidden();
+        // Task 1.2: GitHub and Email now each appear twice — the hero
+        // contact row (exhibit 00) and exhibit 06's receipts — so these
+        // href-based checks scope to the hero, matching what they exercised
+        // pre-rebuild; SEL.aHrefMailto.../aHrefGithub... stay
+        // href-based (not text-based) so both instances still satisfy them.
         await expect(page.locator(SEL.homeHero).locator(SEL.aHrefGithubComLuciszhang)).toBeVisible();
         if (locale === "en") await expect(page.locator(SEL.homeHero).locator(SEL.aHrefWwwLinkedinComInXiangguoZhang)).toBeVisible();
-        else await expect(page.locator(SEL.aHrefWwwLinkedinComInXiangguoZhang)).toHaveCount(0);
+        else await expect(page.locator(SEL.aHrefWwwLinkedinComInXiangguoZhang)).toBeHidden();
         const emailLinks = page.locator(SEL.homeHero).locator(SEL.aHrefMailtoHsiangkuochangoutlookCom);
         await expect(emailLinks).toHaveCount(1);
         await expect(emailLinks).toBeVisible();
@@ -681,13 +681,14 @@ test.describe("Privacy Preflight Web", () => {
   // instead of an Accept/Reject button), SCAN's re-detect/reset behavior
   // (replacing the retired Undo/Redo/Reset trio), and the same zero-network
   // assertion. See task-F6-report.md for the full inventory.
-  test("text review is deterministic, click-to-keep toggles the output live, and does not send content", async ({ page }) => {
+  test("text review is deterministic, click-to-keep toggles the output live, and does not send content", async ({ page, baseURL }) => {
+    const localOrigin = new URL(baseURL!).origin;
     const requests: string[] = [];
     page.on("request", (request) => {
       if (!/^https?:/.test(request.url())) return;
       const url = new URL(request.url());
       if (
-        url.origin !== "http://127.0.0.1:4173" ||
+        url.origin !== localOrigin ||
         request.method() !== "GET" ||
         /ada%40example|415-555|Private|10\.0\.2\.15|ada-example|3f9a7c1e2b6d4859a0c7e3f1b2d4a6c8|Beijing/i.test(url.href)
       ) {
@@ -757,13 +758,14 @@ test.describe("Privacy Preflight Web", () => {
     await expect(output).toContainText("北京理工大学");
   });
 
-  test("image export burns pixels into a fresh verified PNG without requests", async ({ page }) => {
+  test("image export burns pixels into a fresh verified PNG without requests", async ({ page, baseURL }) => {
+    const localOrigin = new URL(baseURL!).origin;
     await page.getByRole("tab", { name: "Image" }).click();
     const requests: string[] = [];
     page.on("request", (request) => {
       if (!/^https?:/.test(request.url())) return;
       const url = new URL(request.url());
-      if (url.origin !== "http://127.0.0.1:4173" || request.method() !== "GET" || /ada%40example|415-555|Private/i.test(url.href)) {
+      if (url.origin !== localOrigin || request.method() !== "GET" || /ada%40example|415-555|Private/i.test(url.href)) {
         requests.push(`${request.method()} ${request.url()}`);
       }
     });
@@ -810,7 +812,8 @@ test.describe("Privacy Preflight Web", () => {
     expect(requests).toEqual([]);
   });
 
-  test("local OCR loads only same-origin runtime assets and produces review boxes", async ({ page }, testInfo) => {
+  test("local OCR loads only same-origin runtime assets and produces review boxes", async ({ page, baseURL }, testInfo) => {
+    const localOrigin = new URL(baseURL!).origin;
     test.skip(testInfo.project.name !== "desktop", "The heavy OCR runtime is exercised once; responsive review controls are covered separately.");
     test.setTimeout(120_000);
     await page.getByRole("tab", { name: "Image" }).click();
@@ -819,7 +822,7 @@ test.describe("Privacy Preflight Web", () => {
     page.on("request", (request) => {
       if (!/^https?:/.test(request.url())) return;
       const url = new URL(request.url());
-      if (url.origin !== "http://127.0.0.1:4173" || request.method() !== "GET" || /ada%40example|415-555|Private/i.test(url.href)) {
+      if (url.origin !== localOrigin || request.method() !== "GET" || /ada%40example|415-555|Private/i.test(url.href)) {
         unsafeRequests.push(`${request.method()} ${request.url()}`);
       }
     });
@@ -1102,14 +1105,15 @@ test.describe("Privacy Preflight Web", () => {
     expect(downloadedDocument.getPageCount()).toBe(3);
   });
 
-  test("PDF export reviews every page, rasterizes, rebuilds, and passes the fail-closed gate", async ({ page }, testInfo) => {
+  test("PDF export reviews every page, rasterizes, rebuilds, and passes the fail-closed gate", async ({ page, baseURL }, testInfo) => {
+    const localOrigin = new URL(baseURL!).origin;
     test.setTimeout(120_000);
     await page.getByRole("tab", { name: "PDF" }).click();
     const unsafeRequests: string[] = [];
     page.on("request", (request) => {
       if (!/^https?:/.test(request.url())) return;
       const url = new URL(request.url());
-      if (url.origin !== "http://127.0.0.1:4173" || request.method() !== "GET" || /ada%40example|415-555|Private/i.test(url.href)) {
+      if (url.origin !== localOrigin || request.method() !== "GET" || /ada%40example|415-555|Private/i.test(url.href)) {
         unsafeRequests.push(`${request.method()} ${request.url()}`);
       }
     });

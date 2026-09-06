@@ -1,6 +1,8 @@
+import { EvidenceScope } from "@/components/exhibition/EvidenceScope.server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ExhibitShell } from "@/components/exhibition/ExhibitShell";
+import ProjectRepositoryEntry from "@/components/exhibition/ProjectRepositoryEntry";
 import ProjectRailTools from "@/components/exhibition/ProjectRailTools";
 import PrivacyPage from "@/components/privacy/PrivacyPage";
 import { privacyRail } from "@/components/privacy/privacyRail";
@@ -28,8 +30,10 @@ export default function PrivacyPreflightRoute() {
     // hero content, so this page stays on the default `mode="fixed"`
     // rather than the task brief's naive forge/eod/triage/privacy list --
     // see task-W3-report.md for the full reasoning.
-    <ExhibitShell rail={privacyRail} railTools={<ProjectRailTools />}>
-      <PrivacyPage project={project} />
+    <ExhibitShell repositoryEntry={<ProjectRepositoryEntry project={project} />} rail={privacyRail} railTools={<ProjectRailTools />}>
+      <EvidenceScope project="privacy">
+        <PrivacyPage project={project} />
+      </EvidenceScope>
     </ExhibitShell>
   );
 }

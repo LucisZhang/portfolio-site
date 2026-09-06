@@ -1,0 +1,121 @@
+.contents,
+.section {
+  --report-gutter: clamp(24px, 5vw, 64px);
+  padding-inline: var(--report-gutter);
+  color: var(--ink);
+}
+
+.contents > ol,
+.content {
+  width: 100%;
+  max-width: 760px;
+  min-width: 0;
+  margin-inline: auto;
+}
+
+.contents > ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 24px;
+  margin-block: 0;
+  padding: 8px 0;
+  list-style: none;
+}
+
+.contents a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: .72rem;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.contents a:hover { color: var(--accent); }
+
+.contents a:focus-visible,
+.heading:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
+}
+
+.section {
+  padding-block: clamp(40px, 5vw, 72px);
+  border-bottom: 1px solid var(--hairline);
+  background: var(--paper);
+  overflow-wrap: anywhere;
+}
+
+.heading {
+  margin: 0 0 24px;
+  scroll-margin-top: 88px;
+  font-family: var(--display-serif);
+  font-size: clamp(1.6rem, 2.4vw, 2.2rem);
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+:global(:lang(zh)) .heading { font-family: var(--display-serif-zh); }
+
+.content > p,
+.content > ol {
+  margin-block: 0 24px;
+  font-size: .95rem;
+  line-height: 1.6;
+}
+
+.content > :last-child { margin-bottom: 0; }
+
+.content > .label {
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: .68rem;
+}
+
+.architecture,
+.findings {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 0;
+  list-style: none;
+}
+
+.architecture > li,
+.findings > li {
+  display: grid;
+  grid-template-columns: 2.6ch minmax(0, 1fr);
+  gap: 14px;
+}
+
+.architecture > li > span,
+.findings > li > span {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: .68rem;
+  line-height: 1.6;
+}
+
+.architecture p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: .88rem;
+  line-height: 1.6;
+}
+
+.findings { border-top: 1px solid var(--accent); padding-top: 14px; }
+.findings[data-findings="limitation"] { border-top: 3px solid var(--ink); }
+.findings p { margin: 0; }
+
+/* A workbench owns its wide content. Its report heading shares the same grammar. */
+.instrument { padding: 24px 0 0; border: 0; background: none; }
+.instrument > .content { max-width: none; }
+
+@media (max-width: 767.98px) {
+  .contents,
+  .section { --report-gutter: 24px; }
+  .contents > ol { gap: 0 18px; }
+}

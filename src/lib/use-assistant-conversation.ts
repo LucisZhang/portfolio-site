@@ -18,6 +18,7 @@ const HISTORY_LIMIT = 6;
 
 export interface AssistantDisplayMessage extends AssistantMessage {
   id: string;
+  question?: string;
   sources?: AssistantCitation[];
   blocks?: AssistantAnswerBlock[];
   retryable?: boolean;
@@ -111,6 +112,7 @@ export function useAssistantConversation({
       setMessages((current) => [...current, {
         id: crypto.randomUUID(),
         role: "assistant",
+        question,
         content: parsedReply?.reply ?? failedMessage,
         sources: parsedReply?.sources,
         blocks: parsedReply?.blocks,
@@ -118,7 +120,7 @@ export function useAssistantConversation({
         retryQuestion: parsedReply?.retryable ? question : undefined,
       }]);
     } catch {
-      setMessages((current) => [...current, { id: crypto.randomUUID(), role: "assistant", content: failedMessage }]);
+      setMessages((current) => [...current, { id: crypto.randomUUID(), role: "assistant", question, content: failedMessage }]);
     } finally {
       setBusy(false);
     }
@@ -143,6 +145,7 @@ export function useAssistantConversation({
       const assistantMessage: AssistantDisplayMessage = {
         id: crypto.randomUUID(),
         role: "assistant",
+        question,
         content: preset.segments.map((segment) => segment.text).join(" "),
         sources: preset.citations,
         presetSegments: preset.segments,
@@ -155,6 +158,7 @@ export function useAssistantConversation({
       const failure: AssistantDisplayMessage = {
         id: crypto.randomUUID(),
         role: "assistant",
+        question,
         content: failedMessage,
       };
       setMessages((current) => [...current, failure].slice(-HISTORY_LIMIT));

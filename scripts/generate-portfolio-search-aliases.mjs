@@ -1,6 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import OpenCC from "opencc-js";
 import { pinyin } from "pinyin-pro";
+import { projectIdentityNames, resolveProjectIdentity } from "../src/lib/project-identities.ts";
 
 const sourceUrl = new URL("../src/data/portfolio-search-vocabulary.json", import.meta.url);
 const outputUrl = new URL("../src/data/portfolio-search-aliases.generated.json", import.meta.url);
@@ -30,7 +31,7 @@ function buildSearchAliases(profile) {
 }
 
 const generated = Object.fromEntries(Object.entries(source).map(([id, profile]) => [id, {
-  aliases: profile.aliases,
+  aliases: [...projectIdentityNames(resolveProjectIdentity(id).id), profile.aliases].join(" "),
   domains: profile.domains,
   capabilities: profile.capabilities,
   useCases: profile.useCases,

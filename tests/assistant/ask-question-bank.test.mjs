@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import test from "node:test";
+import { resolveProjectIdentity } from "../../src/lib/project-identities.ts";
 import {
   citationsForChunkIds,
   retrieveAssistantKnowledge,
@@ -75,7 +76,7 @@ test("committed generated artifacts match a fresh derivation from the authored b
   assert.deepEqual(presetAnswers.answers, derivedAnswers, "ask-preset-answers.json is stale — run npm run generate:ask-question-bank");
   const derivedBank = Object.fromEntries(Object.entries(sourceBank).map(([route, entry]) => [
     route,
-    { questions: entry.questions.map(({ id, q_en, q_zh }) => ({ q_en, q_zh, id })) },
+    { aliases: [...(resolveProjectIdentity(route)?.routeAliases ?? [])], questions: entry.questions.map(({ id, q_en, q_zh }) => ({ q_en, q_zh, id })) },
   ]));
   assert.deepEqual(questionBank, derivedBank, "ask-question-bank.json is stale — run npm run generate:ask-question-bank");
 });

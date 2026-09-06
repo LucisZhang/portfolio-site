@@ -1,6 +1,7 @@
 "use client";
 
 import { type MouseEvent, useEffect, useRef, useState } from "react";
+import ContactIcon from "@/components/ContactIcon";
 import { useI18n } from "@/lib/i18n";
 import { siteIdentity } from "@/lib/site-config";
 
@@ -47,7 +48,9 @@ export default function PhoneContact() {
   return (
     <>
       <a ref={openerRef} href={siteIdentity.profiles.phoneHref} onClick={openForDesktop}>
-        <span>{locale === "en" ? "Phone" : "电话"}</span>
+        <ContactIcon kind="phone" />
+        <span className="home-locale-en">Phone</span>
+        <span className="home-locale-zh" lang="zh">电话</span>
       </a>
       {open ? (
         <div className="wechat-modal" role="dialog" aria-modal="true" aria-labelledby="phone-title" onMouseDown={(event) => { if (event.target === event.currentTarget) close(); }}>

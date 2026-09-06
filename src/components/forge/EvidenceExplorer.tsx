@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Exhibit } from "@/components/exhibition/Exhibit";
+import ScrollRegion from "@/components/ScrollRegion";
 import { useI18n, type LocalizedString } from "@/lib/i18n";
 import claimCommandsJson from "../../../public/case-studies/frontier-forge/claim-commands.json";
 import manifestJson from "../../../public/case-studies/frontier-forge/manifest.json";
@@ -234,7 +235,7 @@ export function EvidenceExplorer() {
             direction-mobile-table-b.html's dark section) -- toggled purely
             by CSS media query, so the shared `visible` filter state drives
             both renderings identically. */}
-        <div className="forge-claim-table-scroll">
+        <ScrollRegion className="forge-claim-table-scroll" label={{ en: "Claims and evidence table", zh: "断言与证据表" }}>
           <table>
             <thead>
               <tr>
@@ -265,7 +266,7 @@ export function EvidenceExplorer() {
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollRegion>
         <ul className="forge-claim-cards" data-testid="forge-claim-cards">
           {visible.map((claim) => (
             <li

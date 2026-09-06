@@ -99,20 +99,28 @@ test.describe("Crossover Study exhibit 01 (cached SQL workbench)", () => {
     expect(workbenchDataRequests).toEqual([]);
   });
 
-  test("RUN shows ENGINE ARRIVES WITH R6 and never requests the DuckDB runtime", async ({ page }) => {
-    const heavyRequests: string[] = [];
-    await page.goto(ROUTE, { waitUntil: "networkidle" });
-    page.on("request", (request) => {
-      if (isHeavyRuntimeRequest(request.url())) heavyRequests.push(request.url());
-    });
+  for (const locale of ["en", "zh"] as const) {
+    test(`${locale} RUN describes the deferred R6 engine and never requests the DuckDB runtime`, async ({ page }) => {
+      const heavyRequests: string[] = [];
+      await page.addInitScript((selectedLocale) => {
+        window.localStorage.setItem("portfolio-locale", selectedLocale);
+      }, locale);
+      await page.goto(ROUTE, { waitUntil: "networkidle" });
+      page.on("request", (request) => {
+        if (isHeavyRuntimeRequest(request.url())) heavyRequests.push(request.url());
+      });
 
-    const runButton = page.locator(SEL.exhibit("01")).locator(".crossover-run-button");
-    await expect(runButton).toHaveAttribute("data-asset", "/duckdb/duckdb-mvp.wasm");
-    await expect(runButton).toHaveAttribute("data-bytes", "39362651");
-    await runButton.click();
-    await expect(page.getByTestId("crossover-engine-note")).toHaveText("ENGINE ARRIVES WITH R6");
-    expect(heavyRequests).toEqual([]);
-  });
+      const runButton = page.locator(SEL.exhibit("01")).locator(".crossover-run-button");
+      await expect(runButton).toHaveAttribute("data-asset", "/duckdb/duckdb-mvp.wasm");
+      await expect(runButton).toHaveAttribute("data-bytes", "39362651");
+      await expect(runButton).toHaveAttribute("aria-label", locale === "en"
+        ? "Run (Cmd+Enter) — the live engine is not connected until R6"
+        : "运行（Cmd+Enter）——在线引擎将在 R6 阶段接入");
+      await runButton.click();
+      await expect(page.getByTestId("crossover-engine-note")).toHaveText(locale === "en" ? "ENGINE ARRIVES WITH R6" : "引擎将在 R6 阶段接入");
+      expect(heavyRequests).toEqual([]);
+    });
+  }
 
   test("the Iceberg nameplate renders the real committed snapshot", async ({ page }) => {
     const plate = loadWorkbenchJson<IcebergPlate>("iceberg-plate.json");
@@ -172,6 +180,7 @@ test("Crossover Study renders with no JavaScript: the cached query, table, and r
   await page.goto(ROUTE, { waitUntil: "domcontentloaded" });
 
   const exhibit01 = page.locator(SEL.exhibit("01"));
+  await expect(exhibit01.locator(".crossover-run-button")).toHaveAttribute("aria-label", "Run (Cmd+Enter) — the live engine is not connected until R6");
   await expect(exhibit01.getByTestId("crossover-sql")).toContainText("SELECT");
   await expect(exhibit01.getByTestId("crossover-results-table").locator("tbody tr")).toHaveCount(2);
   await expect(exhibit01.locator(".crossover-query-index li")).toHaveCount(6);

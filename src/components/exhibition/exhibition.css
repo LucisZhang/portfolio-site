@@ -8,6 +8,11 @@
 
 .exhibit-shell {
   --exhibit-rail-width: 260px;
+  /* Task D-01: one screen-height token shared by the fixed rail and any
+     content that wants to size itself against the rail (home.css sizes the
+     homepage exhibits with it). Rail and exhibits stop drifting apart
+     because they read the same number. */
+  --exhibit-screen: 100vh;
   position: relative;
   color: var(--ink);
 }
@@ -23,7 +28,7 @@
   flex-direction: column;
   gap: 34px;
   width: var(--exhibit-rail-width);
-  height: 100vh;
+  height: var(--exhibit-screen);
   overflow-y: auto;
   background: var(--ink-invert);
   padding: 34px 26px;
@@ -580,6 +585,11 @@
 
 :lang(zh) .exhibit-title {
   font-family: var(--display-serif-zh);
+  /* Task D05: CJK display type is set 5-10% below the Latin display serif
+     (full-square glyphs read larger at the same size). 2.1rem instead of
+     2.3rem below the 4vw crossover keeps a 7-character clause such as
+     看清前沿边界， on one line inside the 252px column at 320w. */
+  font-size: clamp(2.1rem, 4vw, 4.4rem);
 }
 
 .exhibit[data-bg="ink"] .exhibit-title em {
@@ -792,6 +802,12 @@
   padding: 14px 26px;
   background: var(--ink-invert);
   color: color-mix(in srgb, var(--ink-invert-fg) 78%, transparent);
+}
+
+/* Reserve the two-row tool band's space in the scrollable rail so its
+   collection link and any status stamp stay visible and clickable. */
+.exhibit-rail:has(.project-rail-tools) .exhibit-rail-fixed {
+  padding-bottom: calc(34px + 5rem);
 }
 
 .project-rail-tools .search-button,
@@ -1135,6 +1151,8 @@
   color: var(--ink);
 }
 
+/* The index heading is an <h2>; margin/size/weight are set explicitly so
+   the heading renders as the same mono label the layout is built around. */
 .circuit-colophon-label {
   margin: 0;
   font-family: var(--mono);
@@ -1154,12 +1172,20 @@
   border-top: 1px solid var(--hairline);
 }
 
+/* The family heading is an <h3> (the index is an <h2>), so the UA heading
+   margin and bold weight are reset here and the rendered strip is the same
+   mono line it reads as. */
 .circuit-colophon-track {
   margin: 0;
   font-family: var(--mono);
   font-size: .66rem;
+  font-weight: 400;
   letter-spacing: .14em;
   color: var(--muted);
+  /* "MEASURE & DECIDE — 04" is ~191px against a ~182px column at the 700px
+     three-column edge, so the heading wraps there; balance keeps the two
+     lines even instead of orphaning the count. */
+  text-wrap: balance;
 }
 
 .circuit-colophon-list {
@@ -1243,6 +1269,93 @@
   text-underline-offset: 3px;
 }
 
+/* ---------- D06: in-page family jump (crumb / TRACK -> colophon) ----------
+   The crumb's middle segment and the bottom TRACK row are same-document
+   fragment links into the colophon (#index-<family id>). Everything here is
+   state on the existing hairline typography: no pill, no box, no icon, and
+   no scroll-behavior (a smooth scroll over a page this long runs for
+   seconds and is worse for everyone, not only for reduced-motion). */
+
+.circuit-crumb {
+  /* .circuit-crumb is a flex item of .circuit-top; the family labels are
+     long enough that it must be allowed to shrink and to break a long
+     project title rather than widen the page at 390px. */
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* An in-page jump, not a page: a hairline dotted underline distinguishes it
+   from the XGZ home link beside it, and hover/focus promotes it to the
+   strip's normal solid rule. The explicit hover/focus pair is required, not
+   decorative -- .circuit-top a:hover above is the same specificity, so
+   without it the dotted rule would win on hover. */
+.circuit-crumb a[data-circuit-group-link] {
+  text-decoration: underline dotted;
+  text-decoration-color: var(--hairline);
+  text-underline-offset: 3px;
+}
+
+.circuit-crumb a[data-circuit-group-link]:hover,
+.circuit-crumb a[data-circuit-group-link]:focus-visible {
+  text-decoration-style: solid;
+  text-decoration-color: currentColor;
+}
+
+.circuit-colophon-group {
+  /* The landing rule is reserved on every group, transparent by default, so
+     :target adds colour and never layout. */
+  border-top: 2px solid transparent;
+  padding-top: 10px;
+  /* Clears the <980px sticky rail bar -- same value .exhibit uses. */
+  scroll-margin-top: 72px;
+  transition: border-top-color 160ms ease;
+}
+
+/* Non-interactive container (tabindex="-1" exists only so a fragment jump
+   lands real focus here); the :target rule below is the visible arrival
+   confirmation, and a keyboard arrival still gets the shared focus ring. */
+.circuit-colophon-group:focus {
+  outline: none;
+}
+
+.circuit-colophon-group:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.circuit-colophon-group:target {
+  border-top-color: var(--accent);
+}
+
+.circuit-colophon-group:target .circuit-colophon-track {
+  color: var(--accent);
+}
+
+/* "You are here" -- permanent and quieter than the landing state: the
+   heading rises from --muted to --ink and nothing else moves. */
+.circuit-colophon-group[data-colophon-group-current="true"] .circuit-colophon-track {
+  color: var(--ink);
+}
+
+/* One muted line per family, stating what the family claims. The em-based
+   max-width holds every en gloss to two lines and every zh gloss to one at
+   1440 and at 390; between roughly 700 and 900px the column itself is
+   narrower than this cap and the zh side takes two lines, where .zh-seg
+   (globals.css) keeps the break on a phrase boundary. */
+.circuit-colophon-gloss {
+  margin: 6px 0 0;
+  max-width: 24em;
+  color: var(--muted);
+  font-size: .8rem;
+  line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .circuit-colophon-group {
+    transition-duration: 0s;
+  }
+}
+
 @media (max-width: 699.98px) {
   .circuit-top {
     flex-direction: column;
@@ -1254,6 +1367,17 @@
   .circuit-colophon-grid {
     grid-template-columns: 1fr;
     row-gap: 26px;
+  }
+}
+
+@media (max-width: 359.98px) {
+  /* The 320px audit viewport leaves 252px after the standard exhibit
+     gutters. The top crumb also carries two slash separators and a long
+     project title, so give this navigation-only strip the compact gutter
+     already used by instrument frames rather than forcing page overflow. */
+  .circuit-top {
+    padding-right: 22px;
+    padding-left: 22px;
   }
 }
 

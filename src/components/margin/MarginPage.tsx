@@ -1,10 +1,14 @@
 "use client";
 
-import { Finding } from "@/components/exhibition/Finding";
+import methodsEvidence from "../../../public/case-studies/margin-control-tower/methods-evidence.json";
+import { EvidenceDisclosure } from "@/components/exhibition/EvidenceDisclosure";
+import { EvidenceFileLink } from "@/components/exhibition/EvidenceFileLink";
 import AnalyticsMethods from "@/components/analytics/AnalyticsMethods";
+import { ProjectReport, ProjectReportContents } from "@/components/report/ProjectReport";
 import LocaleDocumentMetadata from "@/components/LocaleDocumentMetadata";
+import ScrollRegion from "@/components/ScrollRegion";
 import { useI18n } from "@/lib/i18n";
-import { zhWrapNode } from "@/lib/zh-wrap";
+import { zhGroup, zhWrapDisplay } from "@/lib/zh-wrap";
 import type { Project } from "@/lib/projects";
 import { siteIdentity } from "@/lib/site-config";
 import "./margin.css";
@@ -29,7 +33,6 @@ import { MarginVerify } from "./MarginVerify";
 // heatmap, source toggle, waterfall) is unrouted by this task, not deleted
 // -- see task-L2-report.md for the old-assertion replacement inventory.
 export default function MarginPage({ project }: { project: Project }) {
-  const { locale } = useI18n();
 
   return (
     <div className="margin-page" data-testid="margin-control-tower">
@@ -37,46 +40,14 @@ export default function MarginPage({ project }: { project: Project }) {
         title={{ en: `${project.title.en} | ${siteIdentity.name}`, zh: `${project.title.zh} | ${siteIdentity.chineseName}` }}
         description={project.summary}
       />
+      <ProjectReportContents />
 
       <MarginDetectionFigure />
       <MarginDecisionBoundary />
       <MarginNegativeResults />
       <SourceReceipts />
 
-      <section data-project-section="how" className="margin-report-section">
-        <h2>{locale === "en" ? "Architecture" : "架构"}</h2>
-        <p>{locale === "en" ? project.role.en : project.role.zh}</p>
-        <ol className="margin-architecture-flow">
-          {project.architecture.map((step, index) => (
-            <li key={step.label.en}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <div>
-                <strong>{locale === "en" ? step.label.en : step.label.zh}</strong>
-                <p>{locale === "en" ? step.detail.en : step.detail.zh}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section data-project-section="results" className="margin-report-section">
-        <h2>{locale === "en" ? "Results & negatives" : "结果与负结果"}</h2>
-        <p className="project-outcome">{locale === "en" ? project.outcome.en : project.outcome.zh}</p>
-        {project.fieldNotes?.map((note) => (
-          <Finding kind="negative" key={note.en}>
-            {locale === "en" ? note.en : note.zh}
-          </Finding>
-        ))}
-      </section>
-
-      <section data-project-section="limitations" className="margin-report-section">
-        <h2>{locale === "en" ? "Limitations" : "局限与边界"}</h2>
-        {project.boundaries.map((boundary) => (
-          <Finding kind="limitation" key={boundary.en}>
-            {locale === "en" ? boundary.en : boundary.zh}
-          </Finding>
-        ))}
-      </section>
+      <ProjectReport project={project} />
     </div>
   );
 }
@@ -93,14 +64,15 @@ function SourceReceipts() {
         {locale === "en" ? (
           <>Every number opens<br /><em>the same file.</em></>
         ) : (
-          zhWrapNode(<>每个数字，<em>都能点开同一份文件。</em></>)
+          zhWrapDisplay(<>每个数字，<br /><em>{zhGroup("都能点开", "同一份文件。")}</em></>)
         )}
       </h2>
       <div className="exhibit-body">
+        <EvidenceDisclosure project="margin">
         <dl className="margin-receipts-dl">
           {Object.entries(MARGIN_RECEIPTS).map(([key, receipt]) => (
             <div key={key}>
-              <dt><code>{receipt.path}</code></dt>
+              <dt><EvidenceFileLink source={receipt.path} /></dt>
               <dd><code>sha256:{receipt.sha256}</code></dd>
             </div>
           ))}
@@ -110,7 +82,7 @@ function SourceReceipts() {
 
         <details className="margin-verify-sql">
           <summary>{locale === "en" ? "View verification SQL" : "查看验证 SQL"}</summary>
-          <pre><code>{MARGIN_VERIFY_SQL}</code></pre>
+          <ScrollRegion as="pre" label={{ en: "Verification SQL", zh: "验证 SQL" }}><code>{MARGIN_VERIFY_SQL}</code></ScrollRegion>
           <p>
             {locale === "en"
               // copy-lint: allow robust -- statistical method name (STL + robust z-score, DetectionPanel.tsx precedent)
@@ -124,16 +96,13 @@ function SourceReceipts() {
             ? "olist-margin.parquet, detection-report.json, and elasticity-report.json are produced by the pipeline below from a licensed Olist source lock; metric-registry.json is a hand-authored governance file. docs/evidence/digits-margin.md pins every number on this page to one of these files."
             : "olist-margin.parquet、detection-report.json 与 elasticity-report.json 均由下方流水线从已授权的 Olist 源锁定生成；metric-registry.json 为人工撰写的治理文件。docs/evidence/digits-margin.md 把本页每个数字都固定映射到其中一个文件。"}
         </p>
-        <p className="margin-reproduce-command">
+        <ScrollRegion as="p" className="margin-reproduce-command" label={{ en: "Reproduce commands", zh: "复现命令" }}>
           {MARGIN_REPRODUCE_COMMANDS.map((command) => <code key={command}>{command}</code>)}
-        </p>
-        <p className="margin-repo-link">
-          <a href="https://github.com/LucisZhang/margin-control-tower" target="_blank" rel="noreferrer noopener">
-            {locale === "en" ? "GitHub repository" : "GitHub 仓库"}
-          </a>
-        </p>
+        </ScrollRegion>
 
-        <AnalyticsMethods project="margin" />
+        <p><EvidenceFileLink source="public/case-studies/margin-control-tower/methods-evidence.json" /></p>
+        <AnalyticsMethods project="margin" committedEvidence={methodsEvidence} />
+        </EvidenceDisclosure>
       </div>
     </section>
   );

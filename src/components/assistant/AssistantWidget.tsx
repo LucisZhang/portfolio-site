@@ -7,7 +7,7 @@ import { prefetchPresetAnswers } from "@/lib/ask-preset-answers";
 import { useI18n } from "@/lib/i18n";
 import { getTrack, projects } from "@/lib/projects";
 import { useAssistantConversation } from "@/lib/use-assistant-conversation";
-import { zhWrapText } from "@/lib/zh-wrap";
+import ProjectMentionText from "./ProjectMentionText";
 import AssistantRichAnswer from "./AssistantRichAnswer";
 import AssistantSourcesIndex from "./AssistantSourcesIndex";
 import styles from "./AssistantWidget.module.css";
@@ -165,7 +165,7 @@ export default function AssistantWidget({ onClose, initialPrompt }: { onClose: (
                   {message.presetSegments.map((segment, index) => (
                     <span key={segment.ref}>
                       {index > 0 ? " " : null}
-                      <em>{locale === "zh" ? zhWrapText(segment.text) : segment.text}</em>
+                      <em><ProjectMentionText text={segment.text} locale={locale} /></em>
                       <sup>{segment.ref}</sup>
                     </span>
                   ))}

@@ -20,7 +20,7 @@ test("project references use canonical localized destinations", () => {
   assert.equal(projectReference("Voice-in-Security", "en")?.href, "https://github.com/LucisZhang/Voice-in-Security");
   assert.equal(projectReference("Risk-Control-Portfolio", "en"), null);
   assert.equal(projectReference("unknown", "en"), null);
-  assert.equal(ASSISTANT_PROJECT_IDS.length, 7);
+  assert.equal(ASSISTANT_PROJECT_IDS.length, 12);
 });
 
 test("answer block validation accepts only bounded typed project segments", () => {
