@@ -8,6 +8,7 @@ import { useI18n } from "@/lib/i18n";
 import { getTrack, projects } from "@/lib/projects";
 import { useAssistantConversation } from "@/lib/use-assistant-conversation";
 import ProjectMentionText from "./ProjectMentionText";
+import EvidenceMarker from "./EvidenceMarker";
 import AssistantRichAnswer from "./AssistantRichAnswer";
 import AssistantSourcesIndex from "./AssistantSourcesIndex";
 import styles from "./AssistantWidget.module.css";
@@ -18,7 +19,7 @@ const copy = {
   en: {
     eyebrow: "AI portfolio guide",
     title: "Ask about Xiangguo",
-    intro: "Ask about Xiangguo Zhang's background, projects, strengths, working style, or fit for a role.",
+    intro: "Ask about Xiangguo, a project, or role fit.",
     placeholder: "Why is Xiangguo a strong Applied AI candidate?",
     send: "Send",
     sending: "Thinking",
@@ -34,7 +35,7 @@ const copy = {
   zh: {
     eyebrow: "AI 作品集向导",
     title: "询问作品集",
-    intro: "可以询问章向国的背景、项目、优势、工作方式，或与某个岗位的匹配度等问题。",
+    intro: "可询问章向国、具体项目或岗位匹配。",
     placeholder: "为什么章向国适合 AI 应用岗位？",
     send: "发送",
     sending: "正在思考",
@@ -150,7 +151,7 @@ export default function AssistantWidget({ onClose, initialPrompt }: { onClose: (
       </header>
 
       <div className={styles.log} ref={logRef} role="log" aria-live="polite" aria-relevant="additions">
-        <div className={styles.intro}>{labels.intro}</div>
+        {messages.length === 0 ? <div className={styles.intro}>{labels.intro}</div> : null}
         {messages.map((message) => (
           <article key={message.id} className={message.role === "user" ? styles.userMessage : styles.assistantMessage}>
             <strong>{message.role === "user" ? labels.user : labels.assistant}</strong>
@@ -161,15 +162,14 @@ export default function AssistantWidget({ onClose, initialPrompt }: { onClose: (
             {message.role === "assistant" && message.presetSegments ? (
               <>
                 <p className={styles.presetTag}>{labels.presetLabel}</p>
-                <p>
-                  {message.presetSegments.map((segment, index) => (
-                    <span key={segment.ref}>
-                      {index > 0 ? " " : null}
+                <div className={styles.presetAnswer}>
+                  {message.presetSegments.map((segment) => (
+                    <p className={styles.presetSegment} key={segment.ref}>
                       <em><ProjectMentionText text={segment.text} locale={locale} /></em>
-                      <sup>{segment.ref}</sup>
-                    </span>
+                      <EvidenceMarker refNumber={segment.ref} locale={locale} />
+                    </p>
                   ))}
-                </p>
+                </div>
               </>
             ) : message.role === "assistant"
               ? message.blocks
@@ -216,7 +216,7 @@ export default function AssistantWidget({ onClose, initialPrompt }: { onClose: (
           ref={inputRef}
           value={draft}
           maxLength={MAX_INPUT_CHARACTERS}
-          rows={3}
+          rows={2}
           placeholder={context.placeholder}
           disabled={busy}
           onChange={(event) => setDraft(event.target.value)}

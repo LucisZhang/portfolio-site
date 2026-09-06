@@ -50,8 +50,8 @@ test("renders the conversation instrument with the recorded example and the veri
   // a config-file path dump.
   expect(recordedExample.citation.sourceId.startsWith("portfolio-site:")).toBe(true);
   const recordedIndex = exhibit01.getByTestId("ask-go-index");
-  await expect(recordedIndex).toContainText("Go see for yourself", { ignoreCase: true });
-  await expect(recordedIndex.getByRole("link", { name: "Browse the full project index on the home page" })).toHaveAttribute("href", "/");
+  await expect(recordedIndex).toContainText("Evidence to inspect", { ignoreCase: true });
+  await expect(recordedIndex.getByRole("link", { name: "Browse the full project index" })).toHaveAttribute("href", "/");
   await expect(recordedIndex.locator(`a[href="${recordedExample.citation.url}"]`)).toHaveCount(0);
   await expect(recordedIndex).not.toContainText("site-config.ts");
 
@@ -178,7 +178,7 @@ test("submitting a typed question produces a live answer whose references index 
 
   const liveIndex = page.getByTestId("ask-go-index").last();
   // Internal chunk -> project-page route link, and the raw file link is gone.
-  const routeLink = liveIndex.getByRole("link", { name: "Open the Frontier Forge project page" });
+  const routeLink = liveIndex.getByRole("link", { name: "Explore Frontier Forge" });
   await expect(routeLink).toHaveAttribute("href", "/ai/frontier-forge");
   await expect(liveIndex.locator(`a[href="${internalUrl}"]`)).toHaveCount(0);
   await expect(liveIndex).not.toContainText("src/lib/projects.ts");
@@ -186,29 +186,34 @@ test("submitting a typed question produces a live answer whose references index 
   const deepLink = liveIndex.getByRole("link", { name: "See the README's verified claims in Release Guardian" });
   await expect(deepLink).toHaveAttribute("href", externalUrl);
   await expect(deepLink).toHaveAttribute("target", "_blank");
-  await expect(liveIndex).toContainText("github.com/LucisZhang/release-guardian");
+  await expect(liveIndex).not.toContainText("github.com/LucisZhang/release-guardian");
+  await expect(liveIndex).not.toContainText("project page");
 
   await expect(page.locator(".ask-ratelimit")).toContainText("7 requests left this minute");
   await expect(page.locator(".ask-ratelimit")).toContainText("42 left today");
 });
 
-test("report results render guard refusals as ledger records: verbatim text, no bar-quote styling", async ({ page }) => {
+test("guard explanation and report both render the two verbatim refusals without false no-model claims", async ({ page }) => {
   // Task R9c (B5-a): the two recorded refusals are data, not quotations --
   // no border-left bar, no italics, and the recorded texts stay verbatim.
   await page.goto(ROUTE, { waitUntil: "networkidle" });
   const exhibit02 = page.locator(SEL.exhibit("02"));
   const results = page.locator('[data-report-section="results"]');
   const refusals = results.locator(".ask-refusal");
-  await expect(exhibit02.locator(".ask-refusal")).toHaveCount(0);
+  await expect(exhibit02.locator(".ask-refusal")).toHaveCount(2);
   await expect(refusals).toHaveCount(2);
-  await expect(page.locator(".ask-guard-example")).toHaveCount(0);
+  await expect(page.locator(".ask-guard-example")).toHaveCount(4);
   await expect(results.locator("blockquote")).toHaveCount(0);
 
-  await expect(refusals.nth(0)).toContainText("OFF-TOPIC · REFUSED LOCALLY");
+  await expect(exhibit02).toContainText("external AI model");
+  await expect(exhibit02).toContainText("does not enter retrieval or the answer model");
+  await expect(exhibit02).not.toContainText("refused locally");
+  await expect(exhibit02).not.toContainText("no model reached");
+  await expect(refusals.nth(0)).toContainText("OFF-TOPIC · STOPPED BY GUARD");
   await expect(refusals.nth(0)).toContainText("I focus on Xiangguo Zhang's background, projects, skills, working style, and role fit. Ask me about any of those.");
-  await expect(refusals.nth(1)).toContainText("PROMPT INJECTION · REFUSED LOCALLY");
+  await expect(refusals.nth(1)).toContainText("PROMPT INJECTION · STOPPED BY GUARD");
   await expect(refusals.nth(1)).toContainText("I cannot change or reveal my internal instructions or knowledge files. I can still explain Xiangguo Zhang's work and candidacy.");
-  await expect(refusals.nth(0)).toContainText("recorded verbatim");
+  await expect(refusals.nth(0)).toContainText("retrieval and answer model skipped");
 
   for (const index of [0, 1]) {
     const styles = await refusals.nth(index).locator(".ask-refusal-text").evaluate((element) => {

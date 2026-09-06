@@ -8,8 +8,8 @@
         "answer": {
           "citations": [
             { "site": "/" },
-            { "site": "/ai/frontier-forge" },
-            { "site": "/ai/release-guardian" }
+            { "site": "/ai/frontier-forge", "file": "public/case-studies/frontier-forge/release.json" },
+            { "repo": "release-guardian", "file": "README.md" }
           ],
           "en": [
             { "text": "Xiangguo Zhang builds LLM agents and applications, fine-tunes and serves the models himself, and publishes the runs that didn't work. The direction he is applying for is AI agent & LLM application engineering, with backend & distributed systems and data engineering & analytics behind it.", "ref": 1 },
@@ -33,23 +33,26 @@
         "id": "home-site-overview",
         "answer": {
           "citations": [
-            { "site": "/" },
-            { "site": "/ai/frontier-forge" },
-            { "site": "/engineering/exactly-once-drills" }
+            { "site": "/ai/frontier-forge", "file": "public/case-studies/frontier-forge/release.json" },
+            { "repo": "release-guardian", "file": "README.md" },
+            { "site": "/ai/triage-router", "file": "public/case-studies/triage-router/strategy-cards.json" },
+            { "repo": "streaming-reliability-lab", "file": "README.md" }
           ],
           "en": [
-            { "text": "Start with the AI application rooms: Frontier Forge (training to serving to gateway, measured end to end), Release Guardian (an agent release gate with a human approval), and Triage Router (the case against defaulting to the expensive model).", "ref": 1 },
-            { "text": "Frontier Forge is the flagship: the whole chain on one page, with the failed runs — distillation and GRPO — kept in red next to the wins.", "ref": 2 },
-            { "text": "For the engineering side, Exactly-Once Drills breaks one Flink → Iceberg pipeline ten different ways and reconciles every recovery to zero diffs. Every number on the site traces to a committed file, JSON path, and SHA-256.", "ref": 3 }
+            { "text": "Frontier Forge is the flagship: training, serving, and a C++20 gateway are measured as one chain, with failed distillation and GRPO runs kept beside the wins.", "ref": 1 },
+            { "text": "Release Guardian is an agent release gate with a durable human approval before publish and a strict result shown beside its aggregate pass.", "ref": 2 },
+            { "text": "Triage Router tests when a cheaper model tier is enough instead of making the expensive model the default.", "ref": 3 },
+            { "text": "Exactly-Once Drills breaks one Flink → Iceberg pipeline ten different ways and reconciles every recovery to zero diffs.", "ref": 4 }
           ],
           "zh": [
-            { "text": "先看 AI 应用这几间展厅：Frontier Forge（训练、推理服务到网关，全程实测）、Release Guardian（带人工审批的 Agent 发布门禁）、Triage Router（为什么贵的模型不该是默认选项）。", "ref": 1 },
-            { "text": "Frontier Forge 是主打项目：整条链摆在一页上，跑砸的蒸馏和 GRPO 实验标成红色，留在赢的结果旁边。", "ref": 2 },
-            { "text": "工程侧可以看 Exactly-Once Drills：把一条 Flink → Iceberg 管道用十种方法弄断，每次恢复都对账到零差异。站上每个数字都能追到文件、JSON path 和 SHA-256。", "ref": 3 }
+            { "text": "Frontier Forge 是主打项目：训练、推理服务和 C++20 网关作为一整条链实测，失败的蒸馏与 GRPO 运行也留在成功结果旁边。", "ref": 1 },
+            { "text": "Release Guardian 是 Agent 发布门禁，发布前保留可恢复的人工审批，严格口径与聚合通过结果并列展示。", "ref": 2 },
+            { "text": "Triage Router 检验什么时候便宜的模型层已经够用，而不是默认把每条请求都交给最贵模型。", "ref": 3 },
+            { "text": "Exactly-Once Drills 用十种方法弄断同一条 Flink → Iceberg 管道，并把每次恢复都对账到零差异。", "ref": 4 }
           ],
           "grounding": [
             { "file": "README.md", "contains": ["number → source file → JSON path → SHA-256", "Ten induced failures"] },
-            { "file": "src/lib/projects.ts", "contains": ["Ten ways to break the same pipeline", "zero diffs", "GRPO"] },
+            { "file": "src/lib/projects.ts", "contains": ["Ten ways to break the same pipeline", "zero diffs", "GRPO", "C++20"] },
             { "file": "src/lib/site-config.ts", "contains": ["in red, on the page"] }
           ]
         }
@@ -60,19 +63,22 @@
         "id": "home-tech-stack",
         "answer": {
           "citations": [
-            { "site": "/" },
-            { "site": "/ai/frontier-forge" },
-            { "site": "/engineering/exactly-once-drills" }
+            { "site": "/", "file": "package.json" },
+            { "site": "/ai/frontier-forge", "file": "src/lib/frontier-project-detail.ts" },
+            { "repo": "release-guardian", "file": "README.md" },
+            { "site": "/ai/triage-router", "file": "src/components/triage/LocalInference.tsx" }
           ],
           "en": [
             { "text": "The site itself is Next.js 16 App Router with static generation, React 19, TypeScript, and Tailwind CSS 4; the heavy in-browser engines — DuckDB-WASM for SQL over parquet, onnxruntime-web for in-tab inference, Tesseract.js for OCR — load only behind an explicit click.", "ref": 1 },
-            { "text": "On the model side: Qwen3.5-4B fine-tuned with SFT and served with vLLM behind a C++20 token-budget gateway on k3s, LangGraph orchestration in Release Guardian, and int8 ONNX inference running in the browser on the Triage Router page.", "ref": 2 },
-            { "text": "The data projects run MySQL CDC → Flink → Iceberg (with a Debezium → Avro → Kafka second path), and Spark + Iceberg for the 43.9M-review Crossover Study.", "ref": 3 }
+            { "text": "Frontier Forge uses Qwen3.5-4B fine-tuned with SFT and served with vLLM behind a C++20 token-budget gateway on k3s.", "ref": 2 },
+            { "text": "Release Guardian uses LangGraph to orchestrate its release gate and durable human approval.", "ref": 3 },
+            { "text": "Triage Router runs int8 ONNX inference inside the browser, only after the visitor explicitly starts it.", "ref": 4 }
           ],
           "zh": [
             { "text": "网站本身是 Next.js 16 App Router 静态生成，加 React 19、TypeScript、Tailwind CSS 4；DuckDB-WASM（SQL over parquet）、onnxruntime-web（页内推理）、Tesseract.js（OCR）这些重引擎都放在明确的点击之后才加载。", "ref": 1 },
-            { "text": "模型侧：Qwen3.5-4B 用 SFT 微调、vLLM 部署，前面是 C++20 的 token 预算网关，跑在 k3s 上；Release Guardian 用 LangGraph 编排；Triage Router 页面里跑的是浏览器内 int8 ONNX 推理。", "ref": 2 },
-            { "text": "数据项目是 MySQL CDC → Flink → Iceberg（另一路走 Debezium → Avro → Kafka），Crossover Study 用 Spark + Iceberg 处理 43.9M 条评论。", "ref": 3 }
+            { "text": "Frontier Forge 用 SFT 微调 Qwen3.5-4B，再用 vLLM 部署，前面是跑在 k3s 上的 C++20 token 预算网关。", "ref": 2 },
+            { "text": "Release Guardian 用 LangGraph 编排发布门禁和可恢复的人工审批。", "ref": 3 },
+            { "text": "Triage Router 在浏览器内运行 int8 ONNX 推理，而且只会在访客明确启动后加载。", "ref": 4 }
           ],
           "grounding": [
             { "file": "README.md", "contains": ["Next.js 16 App Router", "React 19", "Tailwind CSS 4", "DuckDB-WASM", "onnxruntime-web", "Tesseract.js"] },
@@ -90,8 +96,8 @@
         "id": "forge-overview",
         "answer": {
           "citations": [
-            { "site": "/ai/frontier-forge" },
-            { "site": "/" }
+            { "site": "/ai/frontier-forge", "file": "src/lib/frontier-project-detail.ts" },
+            { "site": "/ai/frontier-forge", "file": "public/case-studies/frontier-forge/release.json" }
           ],
           "en": [
             { "text": "One project, one chain: supervised fine-tuning of Qwen3.5-4B for complaint triage, serving with vLLM, and a C++20 token-budget gateway in front, autoscaled 1→3→1 on k3s.", "ref": 1 },

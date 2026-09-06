@@ -137,6 +137,10 @@ for (const route of expectedRoutes) {
         for (const citation of record.citations) {
           if (citation.sourceId.startsWith("portfolio-site:")) {
             assert.match(citation.sourceId, /^portfolio-site:[a-z0-9-]+:/u);
+          } else if (citation.sourceId.startsWith("portfolio-evidence:")) {
+            assert.ok(citation.url.startsWith(
+              `https://github.com/${manifest.siteRepository.owner}/${manifest.siteRepository.repo}/blob/${manifest.siteRepository.commit}/`,
+            ), `${question.id} ${locale} carries unpinned portfolio evidence: ${citation.url}`);
           } else {
             const repository = manifest.repositories.find((entry) => citation.url.startsWith(
               `https://github.com/${entry.owner}/${entry.repo}/blob/${entry.commit}/`,

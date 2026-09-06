@@ -81,10 +81,10 @@ for (const locale of ["en", "zh"] as const) {
       await page.locator(".ask-opener").nth(index).click();
       const answer = page.locator(".ask-turn-folio").last();
       const record = presetAnswers.answers[question.id as keyof typeof presetAnswers.answers];
-      await expect(answer.locator(".ask-say > p > em")).toHaveCount(record[locale].segments.length);
+      await expect(answer.locator(".ask-preset-segment > em")).toHaveCount(record[locale].segments.length);
       const expected = record[locale].segments.flatMap((segment) => findProjectMentions(segment.text)
         .map((mention) => projectIdentityHref(mention.id, locale)));
-      expect(await answer.locator(".ask-say > p > em a").evaluateAll((nodes) => nodes.map((node) => node.getAttribute("href")))).toEqual(expected);
+      expect(await answer.locator(".ask-preset-segment > em a").evaluateAll((nodes) => nodes.map((node) => node.getAttribute("href")))).toEqual(expected);
       for (const citation of record.citations.filter((c) => !c.sourceId.startsWith("portfolio-site:"))) {
         await expect(answer.locator(`.ask-go a[href="${citation.url}"]`)).toHaveCount(1);
       }

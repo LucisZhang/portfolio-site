@@ -44,7 +44,7 @@ const BADGE_PRIVATE = { en: "PRIVATE · CITED BY LABEL ONLY", zh: "私有材料 
 
 const HOME_ENTRY = {
   href: "/",
-  title: { en: "Browse the full project index on the home page", zh: "回到首页浏览全部项目" },
+  title: { en: "Browse the full project index", zh: "浏览完整项目索引" },
   route: { en: "/ · project index", zh: "/ · 项目索引" },
 };
 
@@ -102,8 +102,8 @@ function siteEntry(sourceId: string): Pick<CitationIndexEntry, "href" | "title" 
         return {
           href,
           title: {
-            en: `Open the ${project.label.en} project page`,
-            zh: `打开「${project.label.zh}」项目页`,
+            en: `Explore ${project.label.en}`,
+            zh: `查看「${project.label.zh}」`,
           },
           route: { en: `${href} · project page`, zh: `${href} · 项目页` },
         };

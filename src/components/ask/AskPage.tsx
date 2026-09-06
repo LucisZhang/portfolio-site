@@ -2,7 +2,7 @@
 
 import { EvidenceDisclosure } from "@/components/exhibition/EvidenceDisclosure";
 import { EvidenceFileLink } from "@/components/exhibition/EvidenceFileLink";
-import { type FormEvent, Fragment, useId, useState } from "react";
+import { type FormEvent, useId, useState } from "react";
 import { usePathname } from "next/navigation";
 import AssistantRichAnswer from "@/components/assistant/AssistantRichAnswer";
 import AssistantSourcesIndex from "@/components/assistant/AssistantSourcesIndex";
@@ -14,6 +14,7 @@ import { prefetchPresetAnswers } from "@/lib/ask-preset-answers";
 import type { AssistantCitation } from "@/lib/assistant-policy";
 import { useI18n } from "@/lib/i18n";
 import ProjectMentionText from "@/components/assistant/ProjectMentionText";
+import EvidenceMarker from "@/components/assistant/EvidenceMarker";
 import { zhWrapDisplay, zhWrapText } from "@/lib/zh-wrap";
 import type { Project } from "@/lib/projects";
 import { assistantProjectActions } from "@/lib/assistant-project-references";
@@ -61,16 +62,16 @@ const copy = {
     fallbackBody: "When a live answer fails or the rate limit is reached, the conversation says so directly instead of improvising — try again, or open one of these instead:",
     rateLimitIdle: "Rate limit is shown here once you ask — nothing is sent to the model until you do.",
     eyebrow02: "HOW IT ANSWERS",
-    title02: "Retrieval first. Generation only on top of it.",
+    title02: "Guard first. Grounded generation after retrieval.",
     how1Title: "Retrieval",
     how1Body: "A keyword-ranked (BM25-style) search over a knowledge snapshot built at build time from this repository, pinned to one commit, plus a separate verified private candidate profile. No embeddings, no vector database — the same source anyone can open on GitHub.",
     how2Title: "Guard",
-    how2Body: "A separate guard model classifies the question before any answer model runs. Off-topic, prompt-injection, and sensitive-input questions are refused locally — nothing reaches the answer model at all. Two real refusals, verbatim:",
+    how2Body: "A dedicated guard sends the question to an external AI model for scope classification before retrieval or answer generation. If the guard rejects it, the question stops there: it does not enter retrieval or the answer model. Two returned refusals, verbatim:",
     how3Title: "Citation contract",
     how3Body: "Every sentence the model returns is checked against the retrieved chunks before it is shown. Public sources link straight to the pinned GitHub line range; the private profile is cited by label only, never by raw text. An answer that fails this check is not displayed.",
-    refusal1Kind: "OFF-TOPIC · REFUSED LOCALLY",
-    refusal2Kind: "PROMPT INJECTION · REFUSED LOCALLY",
-    refusalMeta: "recorded verbatim — no model reached",
+    refusal1Kind: "OFF-TOPIC · STOPPED BY GUARD",
+    refusal2Kind: "PROMPT INJECTION · STOPPED BY GUARD",
+    refusalMeta: "verbatim response · retrieval and answer model skipped",
     eyebrow03: "SOURCE / REPORT",
     title03a: "Every citation opens",
     title03b: "the exact commit.",
@@ -100,16 +101,16 @@ const copy = {
     fallbackBody: "当一次实时回答失败，或触发限流时，对话会直接说明，而不是编造答案——可以重试，或直接打开下面几个页面：",
     rateLimitIdle: "限流状态会在你提问之后显示；在此之前不会向模型发送任何内容。",
     eyebrow02: "如何作答",
-    title02: "先检索，再生成。",
+    title02: "先审查，再检索与生成。",
     how1Title: "检索",
     how1Body: "对构建时从本仓库生成、并锁定到某一次提交的知识快照做关键词排序检索（BM25 风格），另外接入一份已核验的私有候选人材料。没有向量库，用的就是任何人都能在 GitHub 上打开的同一份源码。",
     how2Title: "审查",
-    how2Body: "在任何回答模型运行之前，先有一个独立的审查模型对问题分类。偏离主题、提示词注入与敏感信息类问题会在本地被直接拒答——完全不会进入回答模型。以下是两个真实的原文拒答示例：",
+    how2Body: "独立审查会先把问题发送给外部 AI 模型做范围分类，再决定是否检索和生成。如果审查拒绝，问题就停在这里：不会进入检索，也不会进入回答模型。以下是两个逐字返回的拒答示例：",
     how3Title: "引用契约",
     how3Body: "模型返回的每一句话在展示前都会对照检索到的片段核对。公开来源直接链接到锁定的 GitHub 行号区间；私有材料只标注来源标签，不展示原文。任何未通过核对的回答都不会展示。",
-    refusal1Kind: "偏离主题 · 本地拒答",
-    refusal2Kind: "提示词注入 · 本地拒答",
-    refusalMeta: "逐字记录——未调用任何模型",
+    refusal1Kind: "偏离主题 · 审查终止",
+    refusal2Kind: "提示词注入 · 审查终止",
+    refusalMeta: "逐字返回 · 未进入检索与回答模型",
     eyebrow03: "来源 / 报告",
     title03a: "每条引用，",
     title03b: "都能打开同一次提交。",
@@ -128,6 +129,24 @@ const guardExamples = {
 } as const;
 
 const askQuestionBankRoute = "/ai/ask-portfolio";
+
+function GuardRefusals({ locale, compact = false }: { locale: "en" | "zh"; compact?: boolean }) {
+  const labels = copy[locale];
+  return (
+    <div className={compact ? "ask-refusals ask-refusals-compact" : "ask-refusals"}>
+      {([
+        { kind: labels.refusal1Kind, number: "R1", text: guardExamples.off_topic[locale] },
+        { kind: labels.refusal2Kind, number: "R2", text: guardExamples.injection[locale] },
+      ] as const).map((refusal) => (
+        <div className="ask-refusal ask-guard-example" key={refusal.number}>
+          <p className="ask-refusal-kind"><span>{refusal.number}</span>{refusal.kind}</p>
+          <p className="ask-refusal-text">{locale === "zh" ? zhWrapText(refusal.text) : refusal.text}</p>
+          <p className="ask-refusal-meta">{labels.refusalMeta}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 // zh word order puts the noun before the count ("本分钟内还可提问 N 次"), unlike
 // en's "N requests left this minute" -- built as one localized sentence per
@@ -171,8 +190,6 @@ export default function AskPage({ project }: { project: Project }) {
         title={{ en: `${project.title.en} | ${siteIdentity.name}`, zh: `${project.title.zh} | ${siteIdentity.chineseName}` }}
         description={project.summary}
       />
-      <ProjectReportContents />
-
       <Exhibit
         id="exhibit-01"
         num="01"
@@ -192,7 +209,7 @@ export default function AskPage({ project }: { project: Project }) {
             <div className="ask-turn ask-turn-folio">
               <span className="ask-who">{labels.recordedPortfolio}<small>{labels.recordedAnsweredLabel}</small></span>
               <div className="ask-say">
-                <p><em><ProjectMentionText text={recordedExample.answer[locale]} locale={locale} /></em><sup>1</sup></p>
+                <p><em><ProjectMentionText text={recordedExample.answer[locale]} locale={locale} /></em><EvidenceMarker refNumber={1} locale={locale} /></p>
                 <AssistantSourcesIndex
                   citations={[recordedExample.citation as AssistantCitation]}
                   locale={locale}
@@ -217,15 +234,14 @@ export default function AskPage({ project }: { project: Project }) {
                         preset (预置回答), never as retrieval output, with
                         superscripts into the B5-c navigation index below. */}
                     {message.presetSegments ? (
-                      <p>
-                        {message.presetSegments.map((segment, index) => (
-                          <Fragment key={segment.ref}>
-                            {index > 0 ? " " : null}
+                      <div className="ask-preset-answer">
+                        {message.presetSegments.map((segment) => (
+                          <p className="ask-preset-segment" key={segment.ref}>
                             <em><ProjectMentionText text={segment.text} locale={locale} /></em>
-                            <sup>{segment.ref}</sup>
-                          </Fragment>
+                            <EvidenceMarker refNumber={segment.ref} locale={locale} />
+                          </p>
                         ))}
-                      </p>
+                      </div>
                     ) : message.blocks ? <AssistantRichAnswer blocks={message.blocks} locale={locale} /> : <p>{message.content}</p>}
                     {message.sources?.length ? (
                       <AssistantSourcesIndex citations={message.sources} locale={locale} />
@@ -305,13 +321,13 @@ export default function AskPage({ project }: { project: Project }) {
       <Exhibit id="exhibit-02" num="02" eyebrow={labels.eyebrow02} bg="paper-alt" title={labels.title02}>
         <div className="ask-how">
           <div className="ask-how-block">
-            <h3>{labels.how1Title}</h3>
-            <p>{labels.how1Body}</p>
-          </div>
-          <div className="ask-how-block">
             <h3>{labels.how2Title}</h3>
             <p>{labels.how2Body}</p>
-            <a href="#report-results">{locale === "en" ? "View the recorded refusals" : "查看已记录的拒答"}</a>
+            <GuardRefusals locale={locale} compact />
+          </div>
+          <div className="ask-how-block">
+            <h3>{labels.how1Title}</h3>
+            <p>{labels.how1Body}</p>
           </div>
           <div className="ask-how-block">
             <h3>{labels.how3Title}</h3>
@@ -344,10 +360,11 @@ export default function AskPage({ project }: { project: Project }) {
           </EvidenceDisclosure>
         </div>
       </Exhibit>
+      <ProjectReportContents />
       <ProjectReportSection concept="architecture">
         <ol className="ask-architecture">
-          <li>{locale === "en" ? "Retrieve: rank knowledge chunks against the question." : "检索：对问题排序检索知识片段。"}</li>
-          <li>{locale === "en" ? "Guard: classify scope before any generation." : "审查：在生成之前先做范围分类。"}</li>
+          <li>{locale === "en" ? "Guard: use an external AI model to classify scope before retrieval or generation." : "审查：先由外部 AI 模型分类问题范围，再决定是否检索与生成。"}</li>
+          <li>{locale === "en" ? "Retrieve: only accepted questions enter ranked knowledge retrieval." : "检索：只有审查通过的问题才进入知识片段排序检索。"}</li>
           <li>{locale === "en" ? "Generate: answer only from the retrieved chunks." : "生成：只基于检索到的片段作答。"}</li>
           <li>{locale === "en" ? "Verify: reject any sentence the citations do not support." : "核对：拒绝任何引用支撑不了的句子。"}</li>
           <li>{locale === "en" ? "Rate-limit: cap requests per visitor, disclosed above." : "限流：按访客限制请求数，状态展示在上方。"}</li>
@@ -358,18 +375,7 @@ export default function AskPage({ project }: { project: Project }) {
           ? "RECORDED — this exchange is frozen at build/dev time from a real offline retrieval run over the committed knowledge snapshot (no model call, no network request)."
           : "RECORDED——这段对话是构建/开发阶段冻结的一次真实离线检索结果，基于已提交的知识快照（未调用模型、未发出网络请求）。"}</p>
         <p><a href="#exhibit-01">{locale === "en" ? "View the recorded exchange and its citation" : "查看已记录的对话及引用"}</a></p>
-        <div className="ask-refusals">
-          {([
-            { kind: labels.refusal1Kind, number: "R1", text: guardExamples.off_topic[locale] },
-            { kind: labels.refusal2Kind, number: "R2", text: guardExamples.injection[locale] },
-          ] as const).map((refusal) => (
-            <div className="ask-refusal" key={refusal.number}>
-              <p className="ask-refusal-kind"><span>{refusal.number}</span>{refusal.kind}</p>
-              <p className="ask-refusal-text">{locale === "zh" ? zhWrapText(refusal.text) : refusal.text}</p>
-              <p className="ask-refusal-meta">{labels.refusalMeta}</p>
-            </div>
-          ))}
-        </div>
+        <GuardRefusals locale={locale} />
       </ProjectReportSection>
       <ProjectReportSection concept="limitations">
         <ProjectReportFindings items={askBoundaries} kind="limitation" />

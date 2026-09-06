@@ -14,12 +14,14 @@
 //      identical set of numeric tokens (site copy rule: the two locales
 //      carry the same numbers).
 //   3. CURATED CITATIONS — each answer names 2-4 destinations: site project
-//      routes ({site}) or files of manifest-pinned external repos
+//      routes ({site}), pinned evidence inside a site's reviewed source pack
+//      ({site, file}), or files of manifest-pinned external repos
 //      ({repo, file}); expandCitations() turns them into the exact
 //      AssistantCitation shape the UI's citation navigation index
 //      (src/lib/assistant-citation-index.ts, task B5-c) already maps.
-//      Unpinned repos cannot be cited; portfolio-site file links never
-//      surface (site sourceIds map to route destinations by design).
+//      Unpinned repos and unreviewed files cannot be cited. Plain {site}
+//      citations remain navigation links; {site, file} citations are
+//      explicit evidence links pinned to the portfolio commit.
 //
 // Imported by scripts/generate-ask-question-bank.mjs (the generator) and
 // tests/assistant/ask-question-bank.test.mjs (the gate test re-runs the
@@ -54,6 +56,11 @@ function labelForSite(manifest, route) {
   return source?.label ?? { en: "Xiangguo Zhang portfolio", zh: "章向国作品集" };
 }
 
+function manifestSiteFile(manifest, route, file) {
+  const source = manifest.siteSources.find((entry) => entry.route === route);
+  return source?.files.find((entry) => (typeof entry === "string" ? entry : entry.path) === file);
+}
+
 function zhCitationLabel(project, descriptor) {
   return /[。！？]$/u.test(project)
     ? `查看“${project}”：${descriptor}`
@@ -78,8 +85,9 @@ function fileDescriptor(filePath) {
 /**
  * Expands one bank citation spec into the AssistantCitation shape.
  * {site: "/x/y"}   -> portfolio-site sourceId (the B5-c index maps it to the
- *                     project-page route; the pinned URL is the grounding
- *                     file at the site commit, never surfaced as a link).
+ *                     project-page route; its backing URL is not surfaced).
+ * {site, file}      -> a reviewed portfolio evidence file at the pinned site
+ *                     commit, surfaced separately from project navigation.
  * {repo, file}     -> pinned GitHub deep link into a manifest-listed file of
  *                     a manifest-pinned repository, human-labeled.
  */
@@ -91,6 +99,25 @@ export function expandCitation(spec, manifest) {
     const routeKey = routeKeyOf(spec.site);
     const label = labelForSite(manifest, spec.site);
     const site = manifest.siteRepository;
+    if (spec.file) {
+      const reviewedFile = manifestSiteFile(manifest, spec.site, spec.file);
+      if (!reviewedFile) {
+        throw new Error(`citation file not in the reviewed site source pack for ${spec.site}: ${spec.file}`);
+      }
+      const descriptor = fileDescriptor(spec.file);
+      const lineStart = typeof reviewedFile === "object" ? reviewedFile.lineStart : undefined;
+      const lineEnd = typeof reviewedFile === "object" ? reviewedFile.lineEnd : undefined;
+      const lineHash = lineStart ? `#L${lineStart}${lineEnd ? `-L${lineEnd}` : ""}` : "";
+      return {
+        sourceId: `portfolio-evidence:${routeKey}:${spec.file}`,
+        kind: "public-github",
+        label: {
+          en: `See ${descriptor.en} for ${label.en}`,
+          zh: zhCitationLabel(label.zh, descriptor.zh),
+        },
+        url: `https://github.com/${site.owner}/${site.repo}/blob/${site.commit}/${spec.file}${lineHash}`,
+      };
+    }
     const sourceFile = spec.site === "/" ? "README.md" : "src/lib/projects.ts";
     return {
       sourceId: `portfolio-site:${routeKey}:${sourceFile}`,

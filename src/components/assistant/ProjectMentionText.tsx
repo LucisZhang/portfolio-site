@@ -13,7 +13,7 @@ export default function ProjectMentionText({ text, locale }: { text: string; loc
     const prefix = text.slice(cursor, mention.index);
     return <Fragment key={mention.index}>
       {prose(prefix)}
-      <a href={projectIdentityHref(mention.id, locale)}>{mention.text}</a>
+      <a className="assistant-project-link" href={projectIdentityHref(mention.id, locale)}>{mention.text}</a>
     </Fragment>;
   })}{prose(text.slice(last ? last.index + last.text.length : 0))}</>;
 }

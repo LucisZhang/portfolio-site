@@ -68,28 +68,6 @@ a.ask-go-dest:focus-visible {
   margin-left: 10px;
 }
 
-.ask-go-route {
-  display: block;
-  margin-top: 4px;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.05em;
-  color: var(--muted);
-  overflow-wrap: anywhere;
-}
-
-.ask-go-kind {
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  font-size: 9.5px;
-  margin-left: 12px;
-}
-
-/* Private label-only entries render the badge with no route text before it. */
-.ask-go-kind-solo {
-  margin-left: 0;
-}
-
 /* Compact variant for the floating assistant panel. */
 .ask-go-compact {
   margin-top: 8px;
@@ -107,12 +85,4 @@ a.ask-go-dest:focus-visible {
 .ask-go-compact .ask-go-dest {
   font-size: 13.5px;
   line-height: 1.4;
-}
-
-.ask-go-compact .ask-go-route {
-  font-size: 9px;
-}
-
-.ask-go-compact .ask-go-kind {
-  font-size: 8px;
 }

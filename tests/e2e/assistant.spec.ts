@@ -373,3 +373,32 @@ test("assistant route discloses hybrid RAG mode on a local refusal", async ({ re
     reply: "I focus on Xiangguo Zhang's background, projects, skills, working style, and role fit. Ask me about any of those.",
   });
 });
+
+test("409×658 drawer keeps its compact intro, answer controls, and evidence destinations usable", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile", "This is the compact mobile drawer contract.");
+  await page.setViewportSize({ width: 409, height: 658 });
+  await page.goto("/", { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: "Ask Portfolio", exact: true }).click();
+
+  const widget = page.getByTestId("assistant-widget");
+  const panelBox = await widget.boundingBox();
+  expect(panelBox).not.toBeNull();
+  expect(panelBox!.y).toBeGreaterThanOrEqual(0);
+  expect(panelBox!.y + panelBox!.height).toBeLessThanOrEqual(658);
+
+  const intro = widget.locator('[class*="intro"]');
+  await expect(intro).toHaveText("Ask about Xiangguo, a project, or role fit.");
+  expect((await intro.boundingBox())!.height).toBeLessThanOrEqual(28);
+
+  await widget.getByRole("button", { name: bankPrompts("/")[1], exact: true }).click();
+  await expect(intro).toHaveCount(0);
+  await expect(widget.locator("textarea")).toBeVisible();
+  await expect(widget.getByText("Your question is sent only to a zero-data-retention external AI service.", { exact: false })).toBeVisible();
+
+  const evidence = widget.getByTestId("ask-go-index");
+  await expect(evidence).toContainText("Evidence to inspect");
+  await expect(evidence.locator("a")).toHaveCount(4);
+  await expect(evidence).not.toContainText("project page");
+  await expect(evidence).not.toContainText("github.com/");
+  await expect.poll(() => widget.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
+});

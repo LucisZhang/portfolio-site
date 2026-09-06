@@ -114,9 +114,11 @@ test("all existing bilingual preset questions, answer names and citations have d
       }
       const index = buildCitationIndex(answer.citations);
       for (const citation of question.answer.citations) {
-        if (citation.site) {
+        if (citation.site && !citation.file) {
           const href = citation.site === "/" ? "/" : matrix[resolveProjectIdentity(citation.site).id];
           assert.ok(index.some((item) => item.href === href), `${question.id}: ${citation.site}`);
+        } else if (citation.site && citation.file) {
+          assert.ok(index.some((item) => item.kind === "github" && item.href?.includes(`/portfolio-site/blob/${manifest.siteRepository.commit}/${citation.file}`)), `${question.id}: ${citation.site} ${citation.file}`);
         }
       }
     }
@@ -129,6 +131,7 @@ test("generator rejects misrouted names, duplicate presets, unknown citations an
     (copy) => { copy["/ai/triage-router"].questions[0].q_zh = "Credit Policy Lab 为什么说一个分数还不是策略？"; },
     (copy) => { copy["/"].questions[1].q_en = copy["/"].questions[0].q_en; },
     (copy) => { copy["/"].questions[0].answer.citations[0].site = "/ai/unknown"; },
+    (copy) => { copy["/"].questions[0].answer.citations[1].file = "public/unreviewed.json"; },
     (copy) => { copy["/"].questions[0].answer.en[0].text += " https://unsafe.example"; },
   ];
   for (const mutate of badBanks) {
