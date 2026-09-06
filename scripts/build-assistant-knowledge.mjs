@@ -41,6 +41,14 @@ function canonicalJson(value) {
   return JSON.stringify(value);
 }
 
+function sanitizeKnowledgeText(text) {
+  // Keep source URLs, line numbers, and file hashes tied to the original public
+  // file while removing machine-specific workspace prefixes from retrieval text.
+  return text
+    .replace(/\/Users\/[A-Za-z0-9._-]+\//gu, "<local-workspace>/")
+    .replace(/\/private\/tmp\//gu, "<temporary-workspace>/");
+}
+
 function encodedPath(value) {
   return value.split("/").map(encodeURIComponent).join("/");
 }
@@ -107,7 +115,7 @@ function assertManifest(manifest) {
 }
 
 function chunkFile(repository, file, text, fileSha256, lineOffset = 0, idNamespace = repository.repo) {
-  const lines = text.replace(/\r\n?/gu, "\n").split("\n");
+  const lines = sanitizeKnowledgeText(text).replace(/\r\n?/gu, "\n").split("\n");
   const chunks = [];
   let start = 0;
   while (start < lines.length) {

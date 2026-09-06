@@ -19,7 +19,7 @@ const finalRepositoryCommits = new Map([
   ["LucisZhang/credit-policy-desk", "bbad7e0dbf997d7fb64caad5ed3c8bf09e74658e"],
   ["LucisZhang/Voice-in-Security", "81a40142d0f79e8bd8f90db150cd4ffbd4c1a1d8"],
 ]);
-const siteCommit = "346b8a81cbf9a238081ef179eb622ea8f0614466";
+const siteCommit = "b7a57776c9b9315ed328cbaa65e8be1e5c6d8a1d";
 
 test("generated public knowledge is pinned to final releases and the R2 site revision", () => {
   const snapshot = JSON.parse(readFileSync("src/data/assistant-knowledge.generated.json", "utf8"));
@@ -136,6 +136,13 @@ test("site identity grounding excludes private contact values", () => {
     assert.equal(siteContent.includes(value), false);
     assert.equal(result.grounding.includes(value), false);
   }
+});
+
+test("generated public knowledge excludes machine-specific workspace paths", () => {
+  const snapshot = JSON.parse(readFileSync("src/data/assistant-knowledge.generated.json", "utf8"));
+  const publicContent = snapshot.chunks.map((chunk) => chunk.content).join("\n");
+  assert.doesNotMatch(publicContent, /\/Users\/[A-Za-z0-9._-]+\//u);
+  assert.doesNotMatch(publicContent, /\/private\/tmp\//u);
 });
 
 test("offline assistant cache fails closed on identity and manifest tampering", () => {

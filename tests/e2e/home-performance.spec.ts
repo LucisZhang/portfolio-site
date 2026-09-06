@@ -164,7 +164,11 @@ for (const entry of localeEntries) {
           // scripts so a hydration shift is included in the CLS observer.
           await page.waitForTimeout(650);
           const before = await geometry();
-          expect(before).toHaveLength(16);
+          // The public candidate intentionally exposes four rail tools
+          // (search, Ask, language, contact); private resume navigation is not
+          // part of the published surface.
+          await expect(page.locator(".home-rail-tools > *")).toHaveCount(4);
+          expect(before).toHaveLength(15);
           const structureBefore = await heroStructure();
           const clsBeforeHydration = await page.evaluate(() => (window as unknown as { homeLocaleCLS: number }).homeLocaleCLS);
 

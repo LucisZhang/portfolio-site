@@ -789,7 +789,9 @@ test.describe("Privacy Preflight Web", () => {
     await page.mouse.up();
     expect(Number(await xInput.inputValue())).toBeGreaterThan(initialX);
     await page.getByRole("button", { name: "Confirm review and show result" }).click();
-    await expect(page.getByTestId("privacy-image-output")).toBeVisible();
+    // Canvas encoding, bitmap decoding, and SHA-256 validation can cross the
+    // default 5s assertion window under a full single-worker browser run.
+    await expect(page.getByTestId("privacy-image-output")).toBeVisible({ timeout: 15_000 });
     const redactedView = page.getByTestId("privacy-image-redacted-view");
     await expect(redactedView).toBeVisible();
     const redactedSize = await redactedView.boundingBox();
