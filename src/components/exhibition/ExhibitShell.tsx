@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import RailCopy from "./RailCopy";
+import RailLocalizedLabel from "./RailLocalizedLabel";
 import RailSpy from "./RailSpy";
 import RailAuto from "./RailAuto";
 import CircuitNav from "./CircuitNav";
@@ -22,7 +23,7 @@ export type RailSpec = {
     markBoxed?: boolean;
   };
   copy?: { en?: string; zh?: string };
-  nav: { id: string; num: string; label: string }[];
+  nav: { id: string; num: string; label: string; labelZh?: string }[];
   footer: { label: string; href: string }[];
   // Task W3: optional bottom-of-rail status slot, ported from the same
   // FORGE-DIFF reference ("绿点 + offline artifact"). RailSpec-driven and
@@ -64,7 +65,7 @@ function RailNavList({ nav, cascade }: { nav: RailSpec["nav"]; cascade?: boolean
         >
           <a href={railNavHref(item.id)}>
             <span className="exhibit-rail-num">{item.num}</span>
-            <span className="exhibit-rail-label">{item.label}</span>
+            <span className="exhibit-rail-label">{item.labelZh ? <RailLocalizedLabel en={item.label} zh={item.labelZh} /> : item.label}</span>
           </a>
         </li>
       ))}

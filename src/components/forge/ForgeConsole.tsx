@@ -71,7 +71,14 @@ function requestSnippet(tab: RequestTab, run: ServingRun, locale: Locale) {
   if (tab === "json") return json;
   if (tab === "curl") return `curl -s https://xiangguozhang.com/case-studies/frontier-forge/release.json | \
   jq '.serving.serving_at_4_qps[] | select(.run_id == "${run.run_id}")'`;
-  return `import json\n\nwith open("release.json") as source:\n    archive = json.load(source)\n\nrun = next(item for item in archive["serving"]["serving_at_4_qps"]\n           if item["run_id"] == "${run.run_id}")\nprint(json.dumps(run, indent=2))`;
+  return `import json
+
+with open("release.json") as source:
+    archive = json.load(source)
+
+run = next(item for item in archive["serving"]["serving_at_4_qps"]
+           if item["run_id"] == "${run.run_id}")
+print(json.dumps(run, indent=2))`;
 }
 
 export function ForgeConsole({ variant }: { variant: "compact" | "full" }) {

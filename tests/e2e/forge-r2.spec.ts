@@ -1,3 +1,5 @@
+import { execFileSync } from "node:child_process";
+import { resolve } from "node:path";
 import { expect, test } from "@playwright/test";
 import { SEL } from "./selectors";
 import { bodyTextExcludingLanguageSwitcher, containsCJK, longestLatinWordRun } from "./localePurity";
@@ -365,6 +367,17 @@ for (const locale of ["en", "zh"] as const) {
     await page.keyboard.press("Enter");
     await expect(instrument.locator("[data-forge-request-tab]")).toContainText("json.load");
     await expect(instrument.locator("[data-forge-request-tab]")).not.toContainText("requests.post");
+    const snippet = await instrument.locator("[data-forge-request-tab]").innerText();
+    expect(snippet).toContain("\n");
+    expect(snippet).not.toContain("\\n");
+    const output = execFileSync("python3", ["-c", "import ast, sys; text = sys.stdin.read(); ast.parse(text); exec(compile(text, '<archive-example>', 'exec'))"], {
+      input: snippet,
+      cwd: resolve("public/case-studies/frontier-forge"),
+      encoding: "utf8",
+    });
+    expect(JSON.parse(output).run_id).toContain("phase4_");
+    const railLabels = page.locator('.exhibit-rail-label').filter({ hasText: locale === "zh" ? "历史推理评测" : "Recorded serving" });
+    expect(await railLabels.count()).toBeGreaterThan(0);
     await tabs.nth(2).focus();
     await page.keyboard.press("Enter");
     await expect(instrument.locator("[data-forge-request-tab]")).toContainText("release.json");

@@ -31,7 +31,7 @@ export const forgeRail: RailSpec = {
   wordmark: { lines: ["Frontier", "Forge"], mark: "FF", markBoxed: true },
   copy: frontierForge ? { en: "SFT fine-tuning, taken through to a running vLLM release.", zh: frontierForge.glossZh } : undefined,
   nav: [
-    { id: "exhibit-01", num: "01", label: "Recorded serving" },
+    { id: "exhibit-01", num: "01", label: "Recorded serving", labelZh: "历史推理评测" },
     { id: "exhibit-02", num: "02", label: "Evidence explorer" },
     { id: "exhibit-03", num: "03", label: "Training ladder" },
     { id: "exhibit-04", num: "04", label: "Serving boundary" },
