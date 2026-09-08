@@ -52,7 +52,7 @@ export default function ForgePage({ project }: { project: Project }) {
           deliberately does not inherit). */}
       <section id="hero" data-project-section="hero" className="exhibit forge-hero" data-bg="paper">
         <p className="exhibit-opening-row">
-          <span className="exhibit-eyebrow">LIVE TRIAGE / RATE-LIMITED / NO LOGIN</span>
+          <span className="exhibit-eyebrow">{locale === "en" ? "RECORDED EVALUATION / OFFLINE REPLAY" : "历史评测 / 离线回放"}</span>
         </p>
         <h1 id="project-title" className="exhibit-title">
           {locale === "en" ? (
@@ -157,7 +157,7 @@ function ForgeFullInstrument() {
     <section id="exhibit-01" className="exhibit" data-exhibit="01" data-bg="paper" aria-labelledby="exhibit-01-title">
       <p className="exhibit-opening-row">
         <span className="exhibit-number" aria-hidden="true">01</span>
-        <span className="exhibit-eyebrow">LIVE TRIAGE / RATE-LIMITED / NO LOGIN</span>
+        <span className="exhibit-eyebrow">{locale === "en" ? "RECORDED EVALUATION / OFFLINE REPLAY" : "历史评测 / 离线回放"}</span>
       </p>
       <h2 id="exhibit-01-title" className="exhibit-title">
         {locale === "en" ? (

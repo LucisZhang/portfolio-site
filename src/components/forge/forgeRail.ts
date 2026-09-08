@@ -31,7 +31,7 @@ export const forgeRail: RailSpec = {
   wordmark: { lines: ["Frontier", "Forge"], mark: "FF", markBoxed: true },
   copy: frontierForge ? { en: "SFT fine-tuning, taken through to a running vLLM release.", zh: frontierForge.glossZh } : undefined,
   nav: [
-    { id: "exhibit-01", num: "01", label: "Live triage" },
+    { id: "exhibit-01", num: "01", label: "Recorded serving" },
     { id: "exhibit-02", num: "02", label: "Evidence explorer" },
     { id: "exhibit-03", num: "03", label: "Training ladder" },
     { id: "exhibit-04", num: "04", label: "Serving boundary" },
@@ -40,19 +40,6 @@ export const forgeRail: RailSpec = {
     { id: "exhibit-07", num: "07", label: "Source & receipts" },
   ],
   footer: [{ label: "← ALL WORK", href: "/" }],
-  // Task W3 (FORGE-DIFF.md §1.7's reference-demo bottom-of-rail status
-  // line, "绿点 + offline artifact"), corrected post-review: an earlier
-  // pass here read FORGE-DIFF.md's narrative about the "live triage"
-  // exhibit and shipped `{ label: "LIVE ARTIFACT", tone: "live" }" -- but
-  // the page's own LiveSlot/ForgeConsole copy is the ground truth, not
-  // that narrative, and LiveSlot.tsx declares the live layer OFFLINE
-  // (`data-live-state="closed"`, "LIVE LAYER — OFFLINE") until the R6
-  // live layer ships. "LIVE ARTIFACT" was therefore false. "RECORDED
-  // ARTIFACT" is precisely true instead: the console replays recorded
-  // runs. Flip this back to `{ label: "LIVE ARTIFACT", tone: "live" }`
-  // only once R6 ships and LiveSlot's `data-live-state` leaves "closed".
-  // The dot glyph is still dropped per the site's zero-icon box-grammar
-  // rule (task F8) -- ExhibitShell/exhibition.css carry tone via color on
-  // the label word alone.
+  // The page presents archived evaluations and offline replay.
   stamp: { label: "RECORDED ARTIFACT", tone: "offline" },
 };
