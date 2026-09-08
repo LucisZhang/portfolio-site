@@ -1,3 +1,5 @@
+import { execFileSync } from "node:child_process";
+import { resolve } from "node:path";
 import { expect, test } from "@playwright/test";
 import { SEL } from "./selectors";
 import { bodyTextExcludingLanguageSwitcher, containsCJK, longestLatinWordRun } from "./localePurity";
@@ -36,10 +38,8 @@ for (const locale of ["en", "zh"] as const) {
     const selectedChip = instrument.locator('[data-forge-chip][aria-selected="true"]');
     await expect(selectedChip).toHaveCount(1);
 
-    // The free-input box sits after the chips and is disabled + labeled.
-    const input = instrument.locator("[data-forge-input]");
-    await expect(input).toBeDisabled();
-    await expect(input).toHaveAttribute("aria-label", "LIVE LAYER OFFLINE");
+    await expect(instrument.locator("textarea, input")).toHaveCount(0);
+    await expect(page.locator("body")).not.toContainText("LIVE TRIAGE");
   });
 }
 
@@ -49,19 +49,19 @@ test("Frontier Forge live slot renders the closed state one-liner", async ({ pag
   const liveSlots = page.locator("[data-live-slot]");
   expect(await liveSlots.count()).toBeGreaterThan(0);
   for (const slot of await liveSlots.all()) {
-    await expect(slot).toHaveText("LIVE LAYER — OFFLINE");
+    await expect(slot).toHaveText("RECORDED EVALUATION · OFFLINE REPLAY");
     await expect(slot).toHaveAttribute("data-live-state", "closed");
   }
 });
 
-test("Frontier Forge request tabs show the same request body across cURL/Python/JSON", async ({ page }) => {
+test("Frontier Forge archive tabs read recorded evidence across cURL/Python/JSON", async ({ page }) => {
   await page.goto(ROUTE, { waitUntil: "networkidle" });
   const instrument = page.locator('[data-instrument][data-instrument-variant="full"]');
   const tabs = instrument.locator(".forge-console-tabs button");
   await expect(tabs).toHaveCount(3);
   await expect(instrument.locator("[data-forge-request-tab]")).toContainText("run_id");
   await tabs.nth(1).click();
-  await expect(instrument.locator('[data-forge-request-tab="python"]')).toContainText("requests.post");
+  await expect(instrument.locator('[data-forge-request-tab="python"]')).toContainText("json.load");
   await tabs.nth(2).click();
   await expect(instrument.locator('[data-forge-request-tab="json"]')).toContainText("complaint_narrative");
 });
@@ -346,3 +346,41 @@ test.describe("F7 mobile table grammar — Frontier Forge", () => {
     await expect(page.getByTestId("forge-claim-cards")).toBeHidden();
   });
 });
+
+for (const locale of ["en", "zh"] as const) {
+  test(`${locale} archived Forge controls remain keyboard usable without inference calls`, async ({ page }) => {
+    const calls: string[] = [];
+    page.on("request", request => {
+      if (/\/api\/(triage|forge)/.test(request.url())) calls.push(request.url());
+    });
+    await page.addInitScript(value => localStorage.setItem("portfolio-locale", value), locale);
+    await page.goto(ROUTE, { waitUntil: "networkidle" });
+    await expect(page.locator("[data-forge-input]")).toHaveCount(0);
+    await expect(page.locator("body")).not.toContainText("LIVE TRIAGE");
+    const instrument = page.locator('[data-instrument-variant="full"]');
+    const chips = instrument.locator("[data-forge-chip]");
+    await chips.first().focus();
+    await page.keyboard.press("Enter");
+    await expect(chips.first()).toHaveAttribute("aria-selected", "true");
+    const tabs = instrument.locator(".forge-console-tabs button");
+    await tabs.nth(1).focus();
+    await page.keyboard.press("Enter");
+    await expect(instrument.locator("[data-forge-request-tab]")).toContainText("json.load");
+    await expect(instrument.locator("[data-forge-request-tab]")).not.toContainText("requests.post");
+    const snippet = await instrument.locator("[data-forge-request-tab]").innerText();
+    expect(snippet).toContain("\n");
+    expect(snippet).not.toContain("\\n");
+    const output = execFileSync("python3", ["-c", "import ast, sys; text = sys.stdin.read(); ast.parse(text); exec(compile(text, '<archive-example>', 'exec'))"], {
+      input: snippet,
+      cwd: resolve("public/case-studies/frontier-forge"),
+      encoding: "utf8",
+    });
+    expect(JSON.parse(output).run_id).toContain("phase4_");
+    const railLabels = page.locator('.exhibit-rail-label').filter({ hasText: locale === "zh" ? "历史推理评测" : "Recorded serving" });
+    expect(await railLabels.count()).toBeGreaterThan(0);
+    await tabs.nth(2).focus();
+    await page.keyboard.press("Enter");
+    await expect(instrument.locator("[data-forge-request-tab]")).toContainText("release.json");
+    expect(calls).toEqual([]);
+  });
+}

@@ -1,5 +1,18 @@
 # Portfolio publication record
 
+## 2026-09-08 Forge online-content withdrawal authorization
+
+The owner authorized withdrawing Forge's online inference content while retaining the project
+and its historical results. Model hosting is paused. This candidate replaces the complaint input
+and inference API examples with archived-evaluation access and identifies the page as recorded
+evidence and offline replay. Historical benchmark artifacts and metrics remain unchanged.
+
+The authorized publication scope is this narrow Forge withdrawal through the existing candidate
+Preview, pull-request, and canonical release process. It excludes the Guardian runtime release.
+Local verification is a technical check; publication and owner acceptance of a Preview must be
+recorded separately when they occur. This entry does not claim that the candidate is deployed.
+
+
 Published: 2026-07-24
 
 - Production site: <https://portfolio-site-seven-murex.vercel.app>

@@ -55,7 +55,7 @@ type RequestTab = "curl" | "python" | "json";
 
 function requestBody(run: ServingRun, locale: Locale) {
   return {
-    endpoint: "/api/triage",
+    source: "/case-studies/frontier-forge/release.json",
     model: `frontier-forge/${run.precision}`,
     run_id: run.run_id,
     artifact_sha256: run.artifact_sha256,
@@ -69,8 +69,16 @@ function requestSnippet(tab: RequestTab, run: ServingRun, locale: Locale) {
   const body = requestBody(run, locale);
   const json = JSON.stringify(body, null, 2);
   if (tab === "json") return json;
-  if (tab === "curl") return `curl -s https://xiangguozhang.com/api/triage \\\n  -H "content-type: application/json" \\\n  -d '${JSON.stringify(body)}'`;
-  return `import requests\n\nrequests.post(\n    "https://xiangguozhang.com/api/triage",\n    json=${json.replaceAll("null", "None").replaceAll("true", "True").replaceAll("false", "False")},\n)`;
+  if (tab === "curl") return `curl -s https://xiangguozhang.com/case-studies/frontier-forge/release.json | \
+  jq '.serving.serving_at_4_qps[] | select(.run_id == "${run.run_id}")'`;
+  return `import json
+
+with open("release.json") as source:
+    archive = json.load(source)
+
+run = next(item for item in archive["serving"]["serving_at_4_qps"]
+           if item["run_id"] == "${run.run_id}")
+print(json.dumps(run, indent=2))`;
 }
 
 export function ForgeConsole({ variant }: { variant: "compact" | "full" }) {
@@ -111,18 +119,7 @@ export function ForgeConsole({ variant }: { variant: "compact" | "full" }) {
             ? "COMPLAINT TRANSCRIPT — NOT RECORDED. release.json ships aggregate serving metrics, not per-request text."
             : "投诉原文——未记录。release.json 只保留聚合服务指标，不含逐请求文本。"}
         </p>
-        <label className="forge-console-input-label" htmlFor={`forge-console-input-${variant}`}>
-          {locale === "en" ? "Describe a complaint" : "描述一条投诉"}
-        </label>
-        <textarea
-          id={`forge-console-input-${variant}`}
-          data-forge-input
-          disabled
-          aria-label="LIVE LAYER OFFLINE"
-          placeholder="LIVE LAYER OFFLINE"
-          rows={2}
-        />
-        <div className="forge-console-tabs" role="tablist" aria-label={locale === "en" ? "Request body" : "请求体"}>
+        <div className="forge-console-tabs" role="tablist" aria-label={locale === "en" ? "Read archived evidence" : "读取归档证据"}>
           {(["curl", "python", "json"] as RequestTab[]).map((candidate) => (
             <button type="button" role="tab" key={candidate} aria-selected={tab === candidate} onClick={() => setTab(candidate)}>
               {candidate === "curl" ? "cURL" : candidate === "python" ? "Python" : "JSON"}

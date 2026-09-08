@@ -1,13 +1,12 @@
-// Spec §6.1: the live layer (server-side CPU/GPU inference, §7) ships in R6.
-// This phase (R2) ships only its CLOSED state — one hairline mono line where
-// the live status badge / "wake the GPU" control will eventually sit. No
-// /api call is made anywhere on this page; there is nothing to poll yet.
-// `data-live-slot` is a stable test hook (forge-r2.spec.ts) distinct from
-// the frozen SEL.instrument contract, which this sits inside of.
+"use client";
+
+import { useI18n } from "@/lib/i18n";
+
 export function LiveSlot() {
+  const { locale } = useI18n();
   return (
     <p className="forge-live-slot" data-live-slot data-live-state="closed">
-      LIVE LAYER — OFFLINE
+      {locale === "en" ? "RECORDED EVALUATION · OFFLINE REPLAY" : "历史评测 · 离线回放"}
     </p>
   );
 }
