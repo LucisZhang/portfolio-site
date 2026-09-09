@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "node scripts/generate-artifact-catalog.mjs --check && node scripts/generate-portfolio-search-aliases.mjs --check && node scripts/sync-privacy-browser-assets.mjs && node scripts/sync-duckdb-browser-assets.mjs && node scripts/sync-triage-ort-assets.mjs && node scripts/generate-analytics-fixtures.mjs",
+    "predev": "node scripts/generate-artifact-catalog.mjs --check && node scripts/generate-portfolio-search-aliases.mjs --check && node scripts/sync-privacy-browser-assets.mjs && node scripts/sync-duckdb-browser-assets.mjs && node scripts/sync-triage-model-assets.mjs && node scripts/sync-triage-ort-assets.mjs && node scripts/generate-analytics-fixtures.mjs",
     "dev": "next dev",
-    "prebuild": "node scripts/generate-artifact-catalog.mjs --check && node scripts/generate-portfolio-search-aliases.mjs --check && node scripts/sync-privacy-browser-assets.mjs && node scripts/sync-duckdb-browser-assets.mjs && node scripts/sync-triage-ort-assets.mjs && node scripts/generate-analytics-fixtures.mjs",
+    "prebuild": "node scripts/generate-artifact-catalog.mjs --check && node scripts/generate-portfolio-search-aliases.mjs --check && node scripts/sync-privacy-browser-assets.mjs && node scripts/sync-duckdb-browser-assets.mjs && node scripts/sync-triage-model-assets.mjs && node scripts/sync-triage-ort-assets.mjs && node scripts/generate-analytics-fixtures.mjs",
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
