@@ -7,6 +7,18 @@ assistant. It is also the stop-condition list: any unexplained diff, failed chec
 missing secret, incorrect deployment SHA, private-data leak, or unsupported evidence claim blocks
 publication.
 
+## 2026-09-09 accepted preview release
+
+- [x] Owner accepted the preview and authorized publication after the Guardian button correction.
+- [x] Exact candidate Preview and normal PR #24 merge verified.
+- [x] Final focused regression resolved all six minimum-height failures from the full browser matrix.
+- [x] Typecheck, lint, evidence, source reproduction, glyph, asset, dependency, and route performance gates passed.
+- [x] Canonical runtime commit and service health independently read back.
+- [x] English/Chinese Guardian button verified on the canonical site at desktop and mobile widths.
+- [x] Fallback build provisioning PR #25 published; all four Triage inputs verified byte-for-byte.
+
+See [the complete receipt](releases/2026-09-09-accepted-preview.md) for exact commits, test counts, and measurement boundaries.
+
 ## 0. 2026-08-17 Crossover Study withdrawal receipt — verified
 
 - [x] Owner authorized removing Crossover Study from all portfolio discovery surfaces, the
