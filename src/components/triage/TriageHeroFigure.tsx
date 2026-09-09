@@ -20,7 +20,7 @@ export function TriageHeroFigure() {
 
   return (
     <figure className="triage-hero-figure" data-hero-figure>
-      <FrontierChart misrouteIndex={DEFAULT_MISROUTE_INDEX} thresholdIndex={DEFAULT_THRESHOLD_INDEX} />
+      <FrontierChart misroutePosition={DEFAULT_MISROUTE_INDEX} thresholdIndex={DEFAULT_THRESHOLD_INDEX} />
       <figcaption>
         {/* Mono/uppercase technical labels, unconditionally English -- same
             convention as this page's exhibit-eyebrow tags and stat labels

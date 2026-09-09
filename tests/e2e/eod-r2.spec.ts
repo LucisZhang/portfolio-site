@@ -18,12 +18,9 @@ import { assertNoHorizontalOverflow, assertTouchTarget } from "./mobileAudit";
 // and types the transcript in at the real recorded pace via the same
 // lazy-GSAP time-warp machinery the retired Scrubber used.
 //
-// Exhibits 02-05 (verification proposition, dual-path parity, checkpoint
-// pressure, source/receipts) and the report layer are UNCHANGED by this
-// task and their tests below are carried over verbatim from the prior
-// suite. Every test above that line was rewritten or retired for the new
-// first-screen grammar; a comment on each replacement documents what it
-// supersedes.
+// Exhibits 02-05 preserve the same evidence boundaries. Exhibit 04 now
+// presents its recorded checkpoint samples as an engineering trace and
+// table rather than a generic illustration.
 
 const LOG_ENTRIES = JSON.parse(
   readFileSync(path.resolve(__dirname, "../../src/data/generated/eod-log-summary.json"), "utf8"),
@@ -31,6 +28,22 @@ const LOG_ENTRIES = JSON.parse(
 const RECEIPTS = JSON.parse(
   readFileSync(path.resolve(__dirname, "../../src/data/generated/eod-receipts.json"), "utf8"),
 ) as { drillCount: number; allDiffsZero: boolean; sustainedThroughputEventsPerSecond: number };
+const CHECKPOINT_METRICS = JSON.parse(
+  readFileSync(path.resolve(__dirname, "../../public/case-studies/exactly-once-drills/results/checkpoint_metrics.json"), "utf8"),
+) as {
+  summary: {
+    baseline: { max_checkpoint_duration_ms: number };
+    under_backpressure: { max_checkpoint_duration_ms: number; max_iceberg_commit_lag_events: number; max_backpressure_indicator: number };
+    final: { checkpoint_failure_count: number; iceberg_commit_lag_events: number };
+  };
+  time_series: Array<{
+    sample_index: number;
+    phase: string;
+    checkpoint: { latest_completed_id: number; duration_ms: number };
+    iceberg_commit_lag: { lag_events: number };
+    backpressure: { indicator: number };
+  }>;
+};
 const DEFAULT_ID = "broker-restart";
 // The log renders in real chronological order (src/components/eod/eodLogData.ts's
 // EOD_LOG_ORDER), not the generated file's own array order (which mirrors
@@ -43,7 +56,7 @@ const LOG_IDS = [...LOG_ENTRIES].sort((a, b) => Date.parse(a.startedAtIso) - Dat
 const DISPLAY_IDS = [DEFAULT_ID, ...LOG_IDS.filter((id) => id !== DEFAULT_ID)];
 const RESULTS_PATH_PATTERN = /\/case-studies\/exactly-once-drills\/results\/[^/]+\.json/;
 
-const ROUTE = "/engineering/exactly-once-drills";
+const ROUTE = "/projects/exactly-once-drills";
 
 function fileBasename(id: string): string {
   const entry = LOG_ENTRIES.find((e) => e.id === id);
@@ -303,13 +316,54 @@ test("Exactly-Once Drills verification proposition and 10 PASS rows", async ({ p
   expect(await verdicts.allTextContents()).toEqual(new Array(10).fill("PASS"));
 });
 
+test("Exactly-Once Drills uses one header hierarchy and keeps duty/run metadata", async ({ page }) => {
+  for (const locale of ["en", "zh"] as const) {
+    await page.addInitScript((selectedLocale) => {
+      window.localStorage.setItem("portfolio-locale", selectedLocale);
+    }, locale);
+    await page.goto(ROUTE, { waitUntil: "networkidle" });
+
+    const hero = page.locator(SEL.exhibit("01"));
+    await expect(page.locator("[data-eod-topstrip]")).toHaveCount(0);
+    await expect(hero.locator(":scope > h1")).toHaveCount(1);
+    await expect(hero.locator(":scope > .exhibit-opening-row .exhibit-number")).toHaveText("01");
+    await expect(hero.locator("[data-eod-duty-meta]")).toHaveText(locale === "en"
+      ? "DUTY LOG · 2026-08-20 · PHASE B1–B4 · LOCAL LAB"
+      : "值班日志 · DUTY LOG · 2026-08-20 · 阶段 B1–B4 · 本地实验室");
+
+    const featuredRun = hero.locator(`[data-log-entry][data-drill-id="${DEFAULT_ID}"]`);
+    await expect(featuredRun.locator("[data-log-dateline]")).toContainText(/RUN [0-9A-Za-z_-]+ · GIT [0-9A-Fa-f]+/);
+  }
+});
+
+test("Exactly-Once Drills header starts the first viewport without a spacer on desktop, tablet, and mobile", async ({ page }) => {
+  await page.goto(ROUTE, { waitUntil: "networkidle" });
+
+  const hero = page.locator(SEL.exhibit("01"));
+  const openingRow = hero.locator(":scope > .exhibit-opening-row");
+  const title = hero.locator(":scope > h1");
+  const [heroBox, openingBox, titleBox] = await Promise.all([
+    hero.boundingBox(),
+    openingRow.boundingBox(),
+    title.boundingBox(),
+  ]);
+  const viewport = page.viewportSize();
+
+  expect(heroBox && openingBox && titleBox && viewport).toBeTruthy();
+  expect(openingBox!.y).toBeGreaterThanOrEqual(heroBox!.y);
+  expect(openingBox!.y).toBeLessThan(viewport!.height);
+  expect(titleBox!.y).toBeGreaterThan(openingBox!.y);
+  expect(titleBox!.y - (openingBox!.y + openingBox!.height)).toBeLessThan(96);
+  expect(titleBox!.y).toBeLessThan(viewport!.height);
+});
+
 test("Exactly-Once Drills every drill's download link resolves to a real on-site file", async ({ page, request }) => {
   await page.goto(ROUTE, { waitUntil: "networkidle" });
   const hrefs = await page.locator("[data-drill-details-static] a[download]").evaluateAll((links) => links.map((link) => link.getAttribute("href")));
   expect(hrefs).toHaveLength(10);
   for (const href of hrefs) {
     expect(href).not.toBeNull();
-    const response = await request.head(`http://127.0.0.1:4173${href}`);
+    const response = await request.head(new URL(href!, page.url()).toString());
     expect(response.status(), `${href} should resolve`).toBe(200);
   }
 });
@@ -352,9 +406,13 @@ test("Exactly-Once Drills renders with no JavaScript: exhibits 01-04 have static
   await page.goto(ROUTE, { waitUntil: "domcontentloaded" });
 
   await expect(page.locator(SEL.exhibit("01")).locator("[data-log-entry]")).toHaveCount(10);
-  await expect(page.locator(SEL.exhibit("02")).locator("[data-eod-pass-row]")).toHaveCount(10);
+  const verificationTable = page.locator(SEL.exhibit("02")).locator("[data-eod-pass-table]");
+  await expect(verificationTable).toHaveAttribute("aria-label", "Per-drill verification verdict");
+  await expect(verificationTable.locator("[data-eod-pass-row]")).toHaveCount(10);
   await expect(page.locator(SEL.exhibit("03")).locator("[data-eod-parity]")).toBeVisible();
   await expect(page.locator(SEL.exhibit("04")).locator("[data-eod-pressure]")).toBeVisible();
+  await expect(page.locator(SEL.exhibit("04")).locator("[data-eod-pressure-trace] svg")).toHaveCount(1);
+  await expect(page.locator(SEL.exhibit("04")).locator("[data-eod-pressure-table] tbody tr")).toHaveCount(CHECKPOINT_METRICS.time_series.length);
 
   await context.close();
 });
@@ -375,6 +433,7 @@ for (const locale of ["en", "zh"] as const) {
     expect(response?.status()).toBe(200);
     await expect(page).toHaveTitle(/Exactly-Once Drills/);
     await expect(page.locator("#project-title")).toBeVisible();
+    await expect(page.locator("[data-eod-pass-table]")).toHaveAttribute("aria-label", locale === "en" ? "Per-drill verification verdict" : "逐项演练验证结论");
 
     await expect(page.locator(SEL.projectOutcome)).toHaveText(locale === "en"
       ? "Ten ways to break the same pipeline: MySQL CDC on one path, Debezium → Avro contracts → Kafka on the other, both landing in Flink → Iceberg. After every induced failure, source state, table snapshots, and event IDs are reconciled — all ten recoveries came back with zero diffs. Sustained throughput measured at 1,791 events/s in the B4 SLO run."
@@ -385,14 +444,35 @@ for (const locale of ["en", "zh"] as const) {
     await expect(parity).toContainText("1,000 rows");
 
     const pressure = page.locator(SEL.exhibit("04")).locator("[data-eod-pressure]");
-    await expect(pressure).toContainText("55 ms → 19,022 ms");
-    await expect(pressure).toContainText(locale === "en" ? "320 events → 0" : "320 个事件 → 0");
-    await expect(page.getByAltText(locale === "en" ? "Historical Iceberg small-file rewrite evidence" : "历史 Iceberg 小文件重写证据")).toHaveAttribute(
-      "src",
-      locale === "en"
-        ? "/case-studies/exactly-once-drills/media/phase-2.2-small-file-rewrite.svg"
-        : "/case-studies/exactly-once-drills/media/phase-2.2-small-file-rewrite-zh.svg",
-    );
+    await expect(pressure).toContainText(`${CHECKPOINT_METRICS.summary.baseline.max_checkpoint_duration_ms} ms → ${CHECKPOINT_METRICS.summary.under_backpressure.max_checkpoint_duration_ms.toLocaleString("en-US")} ms`);
+    await expect(pressure).toContainText(locale === "en"
+      ? `${CHECKPOINT_METRICS.summary.under_backpressure.max_iceberg_commit_lag_events} events → ${CHECKPOINT_METRICS.summary.final.iceberg_commit_lag_events}`
+      : `${CHECKPOINT_METRICS.summary.under_backpressure.max_iceberg_commit_lag_events} 个事件 → ${CHECKPOINT_METRICS.summary.final.iceberg_commit_lag_events}`);
+    await expect(pressure.locator(":scope > div").nth(2).locator("strong")).toHaveText(CHECKPOINT_METRICS.summary.final.checkpoint_failure_count.toString());
+
+    const trace = page.locator(SEL.exhibit("04")).locator("[data-eod-pressure-trace]");
+    const traceSvg = trace.getByRole("img", { name: locale === "en"
+      ? `Recorded checkpoint duration, Iceberg commit lag and backpressure across ${CHECKPOINT_METRICS.time_series.length} samples`
+      : `${CHECKPOINT_METRICS.time_series.length} 个采样点的检查点时长、Iceberg 提交延迟与背压记录` });
+    await expect(traceSvg).toBeVisible();
+    await expect(traceSvg).toContainText(CHECKPOINT_METRICS.summary.under_backpressure.max_checkpoint_duration_ms.toLocaleString("en-US"));
+    await expect(traceSvg).toContainText(CHECKPOINT_METRICS.summary.under_backpressure.max_backpressure_indicator.toFixed(3));
+    await expect(trace).toContainText(locale === "en" ? `${CHECKPOINT_METRICS.time_series.length} recorded samples` : `${CHECKPOINT_METRICS.time_series.length} 个已记录采样点`);
+    await expect(page.locator(SEL.exhibit("04")).locator("img")).toHaveCount(0);
+
+    const sampleTable = page.locator(SEL.exhibit("04")).locator("[data-eod-pressure-table]");
+    await expect(sampleTable.locator("tbody tr")).toHaveCount(CHECKPOINT_METRICS.time_series.length);
+    const tableRows = await sampleTable.locator("tbody tr").evaluateAll((rows) => rows.map((row) => Array.from(row.querySelectorAll("td"), (cell) => cell.textContent?.trim() ?? "")));
+    expect(tableRows).toEqual(CHECKPOINT_METRICS.time_series.map((sample) => [
+      sample.sample_index.toString(),
+      locale === "en" ? sample.phase : (({ baseline: "基线", backpressure: "背压", recovery: "恢复" } as Record<string, string>)[sample.phase] ?? sample.phase),
+      sample.checkpoint.latest_completed_id.toString(),
+      `${sample.checkpoint.duration_ms.toLocaleString("en-US")} ms`,
+      sample.iceberg_commit_lag.lag_events.toString(),
+      sample.backpressure.indicator.toFixed(3),
+    ]));
+    const readingBackgrounds = await pressure.locator(":scope > div").evaluateAll((nodes) => nodes.map((node) => getComputedStyle(node).backgroundColor));
+    expect(readingBackgrounds).toEqual(Array(readingBackgrounds.length).fill("rgba(0, 0, 0, 0)"));
 
     const boundary = page.locator(SEL.exhibit("05")).locator('[data-finding="limitation"]');
     await expect(boundary).toContainText(locale === "en" ? "does not prove" : "不能证明");

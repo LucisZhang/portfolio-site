@@ -379,8 +379,8 @@ rail(项目展品 01–0N + ← ALL WORK)
 
 **相关文件路径：**
 - 参考稿：`/private/tmp/claude-501/-/0b9af4b4-589f-494b-9967-aae94141b7a4/scratchpad/design-final/index.html`、`.../assets/styles.css`、`.../assets/app.js`
-- 需改写：`/Users/hsiangkuochang/portfolio-site/src/app/globals.css`、`/Users/hsiangkuochang/portfolio-site/src/app/layout.tsx`、`/Users/hsiangkuochang/portfolio-site/src/components/home/HomePage.tsx`、`/Users/hsiangkuochang/portfolio-site/src/components/ProjectPageView.tsx`、`/Users/hsiangkuochang/portfolio-site/src/components/ProjectProof.tsx`、`/Users/hsiangkuochang/portfolio-site/src/components/CaseStudyBlock.tsx`
-- 需删除（作为页面）：`/Users/hsiangkuochang/portfolio-site/src/app/[track]/page.tsx`、`/Users/hsiangkuochang/portfolio-site/src/components/TrackPageView.tsx`
-- 需新建：`/Users/hsiangkuochang/portfolio-site/src/app/sitemap.ts`、`/Users/hsiangkuochang/portfolio-site/tests/e2e/selectors.ts`、`/Users/hsiangkuochang/portfolio-site/heavy-assets.json`
-- 需扩展：`/Users/hsiangkuochang/portfolio-site/scripts/verify-performance-budget.mjs`、`/Users/hsiangkuochang/portfolio-site/scripts/lint-copy.mjs`、`/Users/hsiangkuochang/portfolio-site/next.config.ts`（redirects）
-- 上游硬依赖：`/Users/hsiangkuochang/release_guardian`（13 节点 trace 导出）
+- 需改写：`$SOURCE_ROOT/portfolio-site/src/app/globals.css`、`$SOURCE_ROOT/portfolio-site/src/app/layout.tsx`、`$SOURCE_ROOT/portfolio-site/src/components/home/HomePage.tsx`、`$SOURCE_ROOT/portfolio-site/src/components/ProjectPageView.tsx`、`$SOURCE_ROOT/portfolio-site/src/components/ProjectProof.tsx`、`$SOURCE_ROOT/portfolio-site/src/components/CaseStudyBlock.tsx`
+- 需删除（作为页面）：`$SOURCE_ROOT/portfolio-site/src/app/[track]/page.tsx`、`$SOURCE_ROOT/portfolio-site/src/components/TrackPageView.tsx`
+- 需新建：`$SOURCE_ROOT/portfolio-site/src/app/sitemap.ts`、`$SOURCE_ROOT/portfolio-site/tests/e2e/selectors.ts`、`$SOURCE_ROOT/portfolio-site/heavy-assets.json`
+- 需扩展：`$SOURCE_ROOT/portfolio-site/scripts/verify-performance-budget.mjs`、`$SOURCE_ROOT/portfolio-site/scripts/lint-copy.mjs`、`$SOURCE_ROOT/portfolio-site/next.config.ts`（redirects）
+- 上游硬依赖：`$SOURCE_ROOT/release_guardian`（13 节点 trace 导出）

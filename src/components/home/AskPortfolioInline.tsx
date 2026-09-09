@@ -1,8 +1,7 @@
 "use client";
 
 import { useId, useState, type FormEvent } from "react";
-import { getHomeQuestions } from "@/lib/ask-question-bank";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, type Locale } from "@/lib/i18n";
 
 // Spec §4: exhibit 02 gets "Ask Portfolio inline input + 3 preset
 // questions"; exhibit 06 gets the same surface in a "compact variant" (no
@@ -11,15 +10,17 @@ import { useI18n } from "@/lib/i18n";
 // event rather than re-implementing the chat engine inline — this
 // component is only the homepage's entry point into that one product.
 //
-// Task F13b: the preset chips are the home route's ("/") verified question
-// bank entries (src/data/generated/ask-question-bank.json), the same source
-// the floating assistant panel resolves its own route-aware presets from —
-// one source of truth instead of a second hardcoded copy here.
+// HomePage selects the bilingual home questions from the verified bank on the
+// server. The full route-aware bank loads with the assistant when it is opened.
 function openAssistant(prompt?: string) {
   window.dispatchEvent(new CustomEvent("portfolio:open-assistant", { detail: prompt ? { prompt } : undefined }));
 }
 
-export default function AskPortfolioInline({ variant }: { variant: "chips" | "compact" }) {
+type AskPortfolioInlineProps =
+  | { variant: "chips"; questions: Record<Locale, string[]> }
+  | { variant: "compact"; questions?: never };
+
+export default function AskPortfolioInline({ variant, questions }: AskPortfolioInlineProps) {
   const { locale } = useI18n();
   const inputId = useId();
   const [value, setValue] = useState("");
@@ -44,7 +45,7 @@ export default function AskPortfolioInline({ variant }: { variant: "chips" | "co
       </div>
       {variant === "chips" ? (
         <div className="home-ask-presets">
-          {getHomeQuestions(locale).map((question) => (
+          {questions[locale].map((question) => (
             <button type="button" key={question} onClick={() => openAssistant(question)}>{question}</button>
           ))}
         </div>

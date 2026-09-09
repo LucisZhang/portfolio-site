@@ -10,10 +10,10 @@ const outputDirectory = path.resolve(
 );
 
 const desktopProjects = [
-  ["/ai/release-guardian", "20260717-project-release-guardian-desktop-full.png"],
-  ["/ai/rag-quality-lab", "20260717-project-rag-quality-lab-desktop-full.png"],
-  ["/ai/privacy-preflight", "20260717-project-privacy-preflight-desktop-full.png"],
-  ["/engineering/exactly-once-drills", "20260717-project-exactly-once-drills-desktop-full.png"],
+  ["/projects/release-guardian", "20260717-project-release-guardian-desktop-full.png"],
+  ["/projects/rag-quality-lab", "20260717-project-rag-quality-lab-desktop-full.png"],
+  ["/projects/privacy-preflight", "20260717-project-privacy-preflight-desktop-full.png"],
+  ["/projects/exactly-once-drills", "20260717-project-exactly-once-drills-desktop-full.png"],
 ];
 
 async function prepareCapture(page) {
@@ -44,7 +44,7 @@ try {
     await capture(desktop, route, filename);
   }
 
-  await desktop.goto(new URL("/analytics/margin-control-tower", baseUrl).toString(), {
+  await desktop.goto(new URL("/projects/margin-control-tower", baseUrl).toString(), {
     waitUntil: "networkidle",
   });
   await desktop.getByRole("button", { name: "Olist (real)" }).click();
@@ -55,7 +55,7 @@ try {
     fullPage: true,
   });
 
-  await desktop.goto(new URL("/analytics/credit-policy-desk", baseUrl).toString(), {
+  await desktop.goto(new URL("/projects/credit-policy-desk", baseUrl).toString(), {
     waitUntil: "networkidle",
   });
   await desktop.getByRole("button", { name: "Real backtest" }).click();

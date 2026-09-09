@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import ScrollRegion from "@/components/ScrollRegion";
 import { useI18n, type Locale } from "@/lib/i18n";
-import { zhWrapNode } from "@/lib/zh-wrap";
+import { zhWrapDisplay } from "@/lib/zh-wrap";
 import styles from "./AnalyticsMethods.module.css";
 
 type Project = "margin" | "credit";
@@ -73,11 +74,14 @@ function MethodBlock({ num, title, items, locale }: { num: string; title: Locali
   return <article><span className={styles.mnum} aria-hidden="true">{num}</span><h4>{title[locale]}</h4><ol>{items[locale].map((item) => <li key={item}>{item}</li>)}</ol></article>;
 }
 
-export default function AnalyticsMethods({ project }: { project: Project }) {
+export default function AnalyticsMethods({ project, committedEvidence }: { project: Project; committedEvidence?: unknown }) {
   const { locale } = useI18n();
-  const [state, setState] = useState<EvidenceState>({ kind: "loading" });
+  const [remoteState, setState] = useState<EvidenceState>({ kind: "loading" });
+  const state: EvidenceState = committedEvidence === undefined ? remoteState
+    : isEvidence(committedEvidence, project) ? { kind: "ready", evidence: committedEvidence } : { kind: "invalid" };
 
   useEffect(() => {
+    if (committedEvidence !== undefined) return;
     const controller = new AbortController();
     fetch(PATHS[project], { signal: controller.signal }).then(async (response) => {
       if (response.status === 404) return setState({ kind: "pending" });
@@ -88,7 +92,7 @@ export default function AnalyticsMethods({ project }: { project: Project }) {
       if (!(error instanceof DOMException && error.name === "AbortError")) setState({ kind: "pending" });
     });
     return () => controller.abort();
-  }, [project]);
+  }, [project, committedEvidence]);
 
   if (state.kind !== "ready") {
     return <section className={styles.methods} data-testid={`analytics-methods-${project}`}><div className={styles.pending}><h3>{locale === "en" ? "Methods / Results / Real-data analysis" : "方法 / 结果 / 真实数据分析"}</h3><p>{state.kind === "invalid" ? (locale === "en" ? "The methods report is unavailable because its data contract did not pass." : "方法报告的数据契约未通过，暂不可用。") : state.kind === "loading" ? (locale === "en" ? "Loading the pipeline-backed methods report…" : "正在载入由流水线支持的方法报告……") : (locale === "en" ? "The methods report is being prepared with the real-data artifact." : "正在基于真实数据产物准备方法报告。")}</p></div></section>;
@@ -100,7 +104,7 @@ export default function AnalyticsMethods({ project }: { project: Project }) {
       <p className={styles.eyebrow}>{locale === "en" ? "Pipeline-backed analysis" : "由流水线支持的分析"}</p>
       <a className={styles.openRecord} href={evidence.dataset.source_url} target="_blank" rel="noreferrer">{locale === "en" ? "Open source record" : "打开来源记录"}</a>
     </header>
-    <h3 id={`${project}-methods-title`} className={styles.title}>{locale === "en" ? <>Methods / Results / <em>Real-data analysis.</em></> : zhWrapNode(<>方法 / 结果 / <em>真实数据分析。</em></>)}</h3>
+    <h3 id={`${project}-methods-title`} className={styles.title} data-zh-display>{locale === "en" ? <>Methods / Results / <em>Real-data analysis.</em></> : zhWrapDisplay(<>方法 / 结果 / <em>真实数据分析。</em></>)}</h3>
     <div className={styles.meta}>
       {/* The literal space after each .k label keeps innerText from fusing the
           uppercase Latin label onto the value ("DERIVED547,593"), which erases
@@ -118,6 +122,6 @@ export default function AnalyticsMethods({ project }: { project: Project }) {
       <MethodBlock num="05" title={{ en: "Quality controls", zh: "质量控制" }} items={evidence.trust} locale={locale} />
     </div>
     <div className={styles.finding}><span className={styles.flabel}>{locale === "en" ? "What changed with real data" : "真实数据带来的变化"}</span><p>{evidence.changed[locale]}</p></div>
-    <div className={styles.repro}><span className={styles.flabel}>{locale === "en" ? "Reproduce" : "复现"}</span><div className={styles.cmds}>{evidence.reproduction.map((command) => <code key={command}>{command}</code>)}</div></div>
+    <div className={styles.repro}><span className={styles.flabel}>{locale === "en" ? "Reproduce" : "复现"}</span><ScrollRegion className={styles.cmds} label={{ en: "Reproduce commands", zh: "复现命令" }}>{evidence.reproduction.map((command) => <code key={command}>{command}</code>)}</ScrollRegion></div>
   </section>;
 }

@@ -120,7 +120,31 @@ does not depend on the visitor's OS having a CJK serif installed at all.
   individual zh-adjacent codepoints the same scan found, listed in
   globals.css) means the browser only requests this file when it is laying
   out CJK (or one of those marks) at all, so en-locale visitors trigger
-  zero network request for it (asserted in `tests/e2e/home-r2.spec.ts`).
+  zero network request for it (asserted in `tests/e2e/home-r2.spec.ts`). The
+  homepage's parser-time locale bootstrap conditionally preloads the separate
+  critical subset below, never this full file.
+
+### Homepage Chinese critical subset
+
+`display-serif-zh-home.woff2` is a 5,364-byte, 21-codepoint derivative of
+`display-serif-zh.woff2`. It contains exactly the characters used by
+`Hero.tsx`'s `HERO_ZH_LINES` narrative. The parser-time locale bootstrap
+preloads it only when the resolved homepage locale is Chinese, so the approved
+Noto Serif SC pairing is ready for first paint without making the 253KB
+site-wide subset critical; English requests neither Chinese font. The full
+subset remains available to the later project and exhibit headings.
+
+Regenerate this derivative after changing `HERO_ZH_LINES`:
+
+```sh
+npm run generate:zh-home-serif-subset
+```
+
+The generator derives its glyph set directly from that TypeScript constant,
+uses the committed full subset as input, and enforces a 12,000-byte ceiling.
+`npm run verify:zh-glyphs` independently checks both cmap coverage and the
+byte ceiling, while the homepage browser tests assert conditional preload and
+zero English requests.
 
 ### Subsetting
 

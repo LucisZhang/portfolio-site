@@ -132,7 +132,7 @@ async function captureRecording(browser, { url, viewport, outName, setup, run })
 async function recordEodReplay(browser) {
   for (const [label, viewport] of [["desktop", DESKTOP], ["mobile", MOBILE]]) {
     await captureRecording(browser, {
-      url: `${BASE_URL}/engineering/exactly-once-drills`,
+      url: `${BASE_URL}/projects/exactly-once-drills`,
       viewport,
       outName: `eod-replay-${label}`,
       setup: async (page) => {

@@ -1,7 +1,8 @@
 "use client";
 
 import { useI18n } from "@/lib/i18n";
-import { zhWrapNode } from "@/lib/zh-wrap";
+import ScrollRegion from "@/components/ScrollRegion";
+import { zhWrapDisplay } from "@/lib/zh-wrap";
 import { amazonNull, ml32mChurnPercent, ml32mCrossover, ml32mMarkerIndex, ml32mNStar, type CurveSeries } from "./crossoverCurvesData";
 
 // Task L6 [CLAUDE]: exhibit 02, the two main curves the task brief keeps
@@ -22,7 +23,7 @@ function formatMetric(value: number, maximum: number) {
   return maximum < 0.02 ? value.toFixed(4) : value.toFixed(2);
 }
 
-function CurveChart({ title, segments, series, markerAt, markerLabel }: { title: string; segments: string[]; series: CurveSeries[]; markerAt?: number; markerLabel?: string }) {
+function CurveChart({ title, regionLabel, segments, series, markerAt, markerLabel }: { title: string; regionLabel: { en: string; zh: string }; segments: string[]; series: CurveSeries[]; markerAt?: number; markerLabel?: string }) {
   const values = series.flatMap((item) => item.points.flatMap((point) => [point.value, point.ci_hi]));
   const maximum = Math.max(...values) * 1.08;
   const innerWidth = CHART.width - CHART.left - CHART.right;
@@ -32,7 +33,7 @@ function CurveChart({ title, segments, series, markerAt, markerLabel }: { title:
   const ticks = [0, 0.5, 1].map((ratio) => ratio * maximum);
 
   return (
-    <div className="crossover-curve-scroll">
+    <ScrollRegion className="crossover-curve-scroll" label={regionLabel}>
       <svg className="crossover-curve-chart" viewBox={`0 0 ${CHART.width} ${CHART.height}`} role="img" aria-label={title}>
         <title>{title}</title>
         {ticks.map((tick) => (
@@ -67,7 +68,7 @@ function CurveChart({ title, segments, series, markerAt, markerLabel }: { title:
           <text className="crossover-curve-axis-label" textAnchor="middle" x={x(index)} y={CHART.height - 14} key={segment}>{segment}</text>
         ))}
       </svg>
-    </div>
+    </ScrollRegion>
   );
 }
 
@@ -85,9 +86,9 @@ function CurveLegend({ series }: { series: CurveSeries[] }) {
 
 // No-JS static fallback: the same rows the SVG plots, always server-
 // rendered regardless of hydration (MarginDetectionFigure.tsx precedent).
-function CurveTable({ segments, series }: { segments: string[]; series: CurveSeries[] }) {
+function CurveTable({ regionLabel, segments, series }: { regionLabel: { en: string; zh: string }; segments: string[]; series: CurveSeries[] }) {
   return (
-    <div className="crossover-table-scroll">
+    <ScrollRegion className="crossover-table-scroll" label={regionLabel}>
       <table className="crossover-curve-table">
         <thead>
           <tr>
@@ -104,7 +105,7 @@ function CurveTable({ segments, series }: { segments: string[]; series: CurveSer
           ))}
         </tbody>
       </table>
-    </div>
+    </ScrollRegion>
   );
 }
 
@@ -118,7 +119,7 @@ export function CrossoverCurves() {
         <span className="exhibit-eyebrow">NDCG@10 BY HISTORY DEPTH · AMAZON ELECTRONICS + MOVIELENS-32M</span>
       </p>
       <h1 id="exhibit-02-title" className="exhibit-title">
-        {locale === "en" ? <>One curve never crosses. <em>The other crosses at n*={ml32mNStar}.</em></> : zhWrapNode(<>一条曲线从未交叉，<em>另一条在 n*={ml32mNStar} 处交叉。</em></>)}
+        {locale === "en" ? <>One curve never crosses. <em>The other crosses at n*={ml32mNStar}.</em></> : zhWrapDisplay(<>一条曲线从未交叉，<em>{`另一条在 n*=${ml32mNStar} 处交叉。`}</em></>)}
       </h1>
       <p className="exhibit-intro">
         {locale === "en"
@@ -136,9 +137,9 @@ export function CrossoverCurves() {
             ? "ALS stays below recency-weighted popularity at every observed history depth. The gap narrows from 1–4 interactions to 20+, but never reaches zero."
             : "在每一个观测到的历史深度，ALS 都低于按近期加权的热门榜。差距从 1–4 次交互到 20+ 次在收窄，但从未走到零。"}
         </p>
-        <CurveChart title={locale === "en" ? "Amazon NDCG at 10 by history depth" : "Amazon 各历史深度的 NDCG@10"} segments={amazonNull.segments} series={amazonNull.series as CurveSeries[]} />
+        <CurveChart title={locale === "en" ? "Amazon NDCG at 10 by history depth" : "Amazon 各历史深度的 NDCG@10"} regionLabel={{ en: "Amazon results chart", zh: "Amazon 结果图表" }} segments={amazonNull.segments} series={amazonNull.series as CurveSeries[]} />
         <CurveLegend series={amazonNull.series as CurveSeries[]} />
-        <CurveTable segments={amazonNull.segments} series={amazonNull.series as CurveSeries[]} />
+        <CurveTable regionLabel={{ en: "Amazon results table", zh: "Amazon 结果表" }} segments={amazonNull.segments} series={amazonNull.series as CurveSeries[]} />
       </div>
 
       <div className="crossover-curve-panel" data-exhibit="ml32m-crossover">
@@ -153,13 +154,14 @@ export function CrossoverCurves() {
         </p>
         <CurveChart
           title={locale === "en" ? "MovieLens-32M NDCG at 10 by history depth" : "MovieLens-32M 各历史深度的 NDCG@10"}
+          regionLabel={{ en: "ML-32M results chart", zh: "ML-32M 结果图表" }}
           segments={ml32mCrossover.segments}
           series={ml32mCrossover.series as CurveSeries[]}
           markerAt={ml32mMarkerIndex}
           markerLabel={`n*=${ml32mNStar}`}
         />
         <CurveLegend series={ml32mCrossover.series as CurveSeries[]} />
-        <CurveTable segments={ml32mCrossover.segments} series={ml32mCrossover.series as CurveSeries[]} />
+        <CurveTable regionLabel={{ en: "ML-32M results table", zh: "ML-32M 结果表" }} segments={ml32mCrossover.segments} series={ml32mCrossover.series as CurveSeries[]} />
       </div>
     </section>
   );

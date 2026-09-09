@@ -14,18 +14,23 @@
 //      identical set of numeric tokens (site copy rule: the two locales
 //      carry the same numbers).
 //   3. CURATED CITATIONS — each answer names 2-4 destinations: site project
-//      routes ({site}) or files of manifest-pinned external repos
+//      routes ({site}), pinned evidence inside a site's reviewed source pack
+//      ({site, file}), or files of manifest-pinned external repos
 //      ({repo, file}); expandCitations() turns them into the exact
 //      AssistantCitation shape the UI's citation navigation index
 //      (src/lib/assistant-citation-index.ts, task B5-c) already maps.
-//      Unpinned repos cannot be cited; portfolio-site file links never
-//      surface (site sourceIds map to route destinations by design).
+//      Unpinned repos and unreviewed files cannot be cited. Plain {site}
+//      citations remain navigation links; {site, file} citations are
+//      explicit evidence links pinned to the portfolio commit.
 //
 // Imported by scripts/generate-ask-question-bank.mjs (the generator) and
 // tests/assistant/ask-question-bank.test.mjs (the gate test re-runs the
 // same verification against the committed artifacts).
 
 import { readFileSync } from "node:fs";
+import { mentionedProjectIds, normalizeProjectAlias, resolveProjectIdentity } from "../../src/lib/project-identities.ts";
+import { groupconvEvidence, groupconvCitationLabel } from "../../src/lib/groupconv-citation-label.ts";
+import { zhCitationLabel } from "../../src/lib/zh-citation-label.ts";
 
 export const MIN_CITATIONS = 2;
 export const MAX_CITATIONS = 4;
@@ -33,7 +38,7 @@ export const MAX_SEGMENTS = 4;
 
 // Grounding sources must be committed, reviewable text files inside this
 // repository. Nothing outside these roots may anchor a claim.
-const GROUNDING_FILE_PATTERN = /^(?:README\.md|README\.zh-CN\.md|package\.json|src\/(?:lib|data)\/[\w./-]+|docs\/evidence\/[\w./-]+|public\/case-studies\/[\w./-]+)$/u;
+const GROUNDING_FILE_PATTERN = /^(?:README\.md|README\.zh-CN\.md|package\.json|src\/components\/analytics\/MarginControlTower\.tsx|src\/(?:lib|data)\/[\w./-]+|docs\/evidence\/[\w./-]+|public\/case-studies\/[\w./-]+)$/u;
 
 // Numeric tokens: digit-led runs incl. thousands separators, decimals,
 // ratios (8/8, 30/44) and percentages. Leading currency signs are dropped
@@ -44,6 +49,53 @@ export function numericTokens(text) {
   return [...new Set((text.match(/[0-9][0-9,./]*%?/gu) ?? []).map((token) => token.replace(/[,./]+$/u, "")))];
 }
 
+// Task B4 [CLAUDE]: the section anchors a {site, anchor} citation may target.
+// Ruling Q5: the RAIL is the source of truth, not the manifest. A page's rail
+// is the table of contents ExhibitShell renders and the only list of section
+// ids the page actually mounts, so an anchor that is not a rail id is a dead
+// URL fragment. Each route below names the rail its page passes to
+// <ExhibitShell rail={...}>; analytics-tandem is still served by the shared
+// legacy shell, whose rail declares no exhibit sections at all, so no anchored
+// citation to it can pass (ruling Q4 pins that page's citations to files
+// instead). Read through verifyAuthoredBank's readSource, which fails closed:
+// a missing or renamed rail file rejects every anchor into that route rather
+// than silently accepting them.
+const RAIL_BY_ROUTE = {
+  "/projects/groupconv-atlas": "src/components/groupconv/groupconvRail.ts",
+  "/": "src/components/home/homeRail.ts",
+  "/projects/frontier-forge": "src/components/forge/forgeRail.ts",
+  "/projects/release-guardian": "src/components/guardian/guardianRail.ts",
+  "/projects/rag-quality-lab": "src/components/ragdiff/ragRail.ts",
+  "/projects/triage-router": "src/components/triage/triageRail.ts",
+  "/projects/privacy-preflight": "src/components/privacy/privacyRail.ts",
+  "/projects/exactly-once-drills": "src/components/eod/eodRail.ts",
+  "/projects/crossover-study": "src/components/crossover/crossoverRail.ts",
+  "/projects/margin-control-tower": "src/components/margin/marginRail.ts",
+  "/projects/credit-policy-desk": "src/components/credit/creditRail.ts",
+  "/projects/analytics-tandem": "src/components/exhibition/legacyRail.ts",
+};
+
+/** Small bilingual destination labels, derived from the same rails as the anchor gate. */
+export function buildCitationSections(repositoryRoot) {
+  const navigation = readFileSync(`${repositoryRoot}/src/lib/navigation.ts`, "utf8");
+  const shared = Object.fromEntries([...navigation.matchAll(/(\w+):\s*\{\s*en:\s*"([^"]+)",\s*zh:\s*"([^"]+)"/gu)]
+    .map(([, key, en, zh]) => [key, { en, zh }]));
+  return Object.fromEntries(Object.entries(RAIL_BY_ROUTE).filter(([, file]) => !file.endsWith("legacyRail.ts")).map(([route, file]) => {
+    const source = readFileSync(`${repositoryRoot}/${file}`, "utf8");
+    const labels = [...source.matchAll(/\{ id: "(exhibit-\d+)", num: "\d+", label: (\{[^\n]+?\}|navigationCopy\.\w+) \}/gu)].map(([, anchor, label]) => {
+      const literal = /en: "([^"]+)", zh: "([^"]+)"/u.exec(label);
+      const value = literal ? { en: literal[1], zh: literal[2] } : shared[label.split(".")[1]];
+      if (!value) throw new Error(`Unresolved citation section label: ${file} ${anchor}`);
+      return [anchor, value];
+    });
+    const anchors = [...source.matchAll(RAIL_ANCHOR_PATTERN)].map((match) => match[1]);
+    if (labels.length !== anchors.length) throw new Error(`Citation section labels do not cover ${file}`);
+    return [route === "/" ? "home" : route.split("/").at(-1), Object.fromEntries(labels)];
+  }));
+}
+
+const RAIL_ANCHOR_PATTERN = /\bid:\s*"(exhibit-\d{2})"/gu;
+
 function routeKeyOf(route) {
   return route === "/" ? "home" : route.slice(1).replaceAll("/", "-");
 }
@@ -51,6 +103,11 @@ function routeKeyOf(route) {
 function labelForSite(manifest, route) {
   const source = manifest.siteSources.find((entry) => entry.route === route);
   return source?.label ?? { en: "Xiangguo Zhang portfolio", zh: "章向国作品集" };
+}
+
+function manifestSiteFile(manifest, route, file) {
+  const source = manifest.siteSources.find((entry) => entry.route === route);
+  return source?.files.find((entry) => (typeof entry === "string" ? entry : entry.path) === file);
 }
 
 // Human "what you'll find" descriptors for pinned external files — the
@@ -71,16 +128,39 @@ function fileDescriptor(filePath) {
 /**
  * Expands one bank citation spec into the AssistantCitation shape.
  * {site: "/x/y"}   -> portfolio-site sourceId (the B5-c index maps it to the
- *                     project-page route; the pinned URL is the grounding
- *                     file at the site commit, never surfaced as a link).
+ *                     project-page route; its backing URL is not surfaced).
+ * {site, file}      -> a reviewed portfolio evidence file at the pinned site
+ *                     commit, surfaced separately from project navigation.
  * {repo, file}     -> pinned GitHub deep link into a manifest-listed file of
  *                     a manifest-pinned repository, human-labeled.
  */
 export function expandCitation(spec, manifest) {
   if (spec.site) {
+    if (spec.site !== "/" && !resolveProjectIdentity(spec.site)) {
+      throw new Error(`citation names an unknown project route: ${spec.site}`);
+    }
     const routeKey = routeKeyOf(spec.site);
     const label = labelForSite(manifest, spec.site);
     const site = manifest.siteRepository;
+    if (spec.file) {
+      const reviewedFile = manifestSiteFile(manifest, spec.site, spec.file);
+      if (!reviewedFile) {
+        throw new Error(`citation file not in the reviewed site source pack for ${spec.site}: ${spec.file}`);
+      }
+      const descriptor = fileDescriptor(spec.file);
+      const lineStart = typeof reviewedFile === "object" ? reviewedFile.lineStart : undefined;
+      const lineEnd = typeof reviewedFile === "object" ? reviewedFile.lineEnd : undefined;
+      const lineHash = lineStart ? `#L${lineStart}${lineEnd ? `-L${lineEnd}` : ""}` : "";
+      return {
+        sourceId: `portfolio-evidence:${routeKey}:${spec.file}`,
+        kind: "public-github",
+        label: {
+          en: `See ${descriptor.en} for ${label.en}`,
+          zh: zhCitationLabel(label.zh, descriptor.zh),
+        },
+        url: `https://github.com/${site.owner}/${site.repo}/blob/${site.commit}/${spec.file}${lineHash}`,
+      };
+    }
     const sourceFile = spec.site === "/" ? "README.md" : "src/lib/projects.ts";
     return {
       sourceId: `portfolio-site:${routeKey}:${sourceFile}`,
@@ -90,6 +170,12 @@ export function expandCitation(spec, manifest) {
         zh: `${label.zh} · ${sourceFile}`,
       },
       url: `https://github.com/${site.owner}/${site.repo}/blob/${site.commit}/${sourceFile}`,
+      // Deep-links a plain {site} navigation citation to one exhibit section
+      // of the destination page (src/lib/assistant-citation-index.ts
+      // siteEntry() appends it as a URL fragment). Only meaningful here: a
+      // {site, file} citation above resolves through githubEntry(), which
+      // never reads .anchor.
+      ...(spec.anchor ? { anchor: spec.anchor } : {}),
     };
   }
   const repository = manifest.repositories.find((entry) => entry.repo === spec.repo);
@@ -97,15 +183,19 @@ export function expandCitation(spec, manifest) {
   if (!repository.files.includes(spec.file)) {
     throw new Error(`citation file not in the pinned manifest for ${spec.repo}: ${spec.file}`);
   }
+  if (spec.evidence && repository.repo !== "groupconv-atlas") throw new Error("Reviewed GroupConv evidence belongs only to GroupConv");
+  const reviewed = spec.evidence ? groupconvEvidence(spec.evidence, spec.file) : undefined;
   const descriptor = fileDescriptor(spec.file);
+  const topic = repository.repo === "groupconv-atlas" ? reviewed?.label ?? groupconvCitationLabel(spec.file) : undefined;
+  const lineHash = reviewed ? `#L${reviewed.lineStart}-L${reviewed.lineEnd}` : "";
   return {
-    sourceId: `${repository.repo}:${spec.file}`,
+    sourceId: `${repository.repo}:${spec.file}${reviewed ? `:L${reviewed.lineStart}-L${reviewed.lineEnd}` : ""}`,
     kind: "public-github",
     label: {
-      en: `See ${descriptor.en} in ${repository.label.en}`,
-      zh: `查看${repository.label.zh}：${descriptor.zh}`,
+      en: topic ? `${repository.label.en} · ${topic.en}` : `See ${descriptor.en} in ${repository.label.en}`,
+      zh: topic ? `${repository.label.zh} · ${topic.zh}` : zhCitationLabel(repository.label.zh, descriptor.zh),
     },
-    url: `https://github.com/${repository.owner}/${repository.repo}/blob/${repository.commit}/${spec.file}`,
+    url: `https://github.com/${repository.owner}/${repository.repo}/blob/${repository.commit}/${spec.file}${lineHash}`,
   };
 }
 
@@ -120,6 +210,7 @@ function validateSegments(segments, locale, citationCount, id, errors) {
     if (typeof segment.text !== "string" || segment.text.trim().length < 20) {
       errors.push(`${id} ${locale}: segment text too short`);
     }
+    if (/(?:https?:\/\/|www\.)/iu.test(segment.text)) errors.push(`${id} ${locale}: raw URL in answer text`);
     if (!Number.isInteger(segment.ref) || segment.ref < 1 || segment.ref > citationCount) {
       errors.push(`${id} ${locale}: segment ref ${segment.ref} out of citation range`);
       continue;
@@ -142,7 +233,7 @@ function validateSegments(segments, locale, citationCount, id, errors) {
  */
 export function verifyAuthoredBank(bank, manifest, repositoryRoot) {
   const errors = [];
-  const expectedRoutes = manifest.siteSources.map((source) => source.route).sort();
+  const expectedRoutes = [...manifest.siteSources.map((source) => source.route), ...manifest.repositories.flatMap((source) => source.portfolioRoute ? [source.portfolioRoute] : [])].sort();
   const actualRoutes = Object.keys(bank).sort();
   if (JSON.stringify(actualRoutes) !== JSON.stringify(expectedRoutes)) {
     errors.push("question bank routes must match the R2 site-source routes");
@@ -159,12 +250,24 @@ export function verifyAuthoredBank(bank, manifest, repositoryRoot) {
     }
     return sourceCache.get(file);
   };
+  // The exhibit section ids a route's rail declares, or null when the route
+  // has no rail on file (fail closed — see RAIL_BY_ROUTE).
+  const railAnchors = (route) => {
+    const railFile = RAIL_BY_ROUTE[route];
+    if (!railFile) return null;
+    const content = readSource(railFile);
+    if (content === null) return null;
+    return new Set([...content.matchAll(RAIL_ANCHOR_PATTERN)].map((match) => match[1]));
+  };
 
   const ids = new Set();
+  const prompts = new Set();
   for (const route of actualRoutes) {
+    const identity = resolveProjectIdentity(route);
+    if (route !== "/" && !identity) errors.push(`unknown project route: ${route}`);
     const entry = bank[route];
-    if (!entry || !Array.isArray(entry.questions) || entry.questions.length !== 3) {
-      errors.push(`${route} must contain exactly three questions`);
+    if (!entry || !Array.isArray(entry.questions) || entry.questions.length !== (route === "/projects/groupconv-atlas" ? 4 : 3)) {
+      errors.push(`${route} has an incorrect question count`);
       continue;
     }
     for (const question of entry.questions) {
@@ -179,6 +282,19 @@ export function verifyAuthoredBank(bank, manifest, repositoryRoot) {
         || typeof question.q_zh !== "string" || question.q_zh.length < 8 || question.q_zh.length > 90
         || !/[A-Za-z]/u.test(question.q_en) || !/\p{Script=Han}/u.test(question.q_zh)) {
         errors.push(`${route} ${id}: invalid question text`);
+      }
+      for (const locale of ["en", "zh"]) {
+        const text = question[`q_${locale}`];
+        if (typeof text !== "string") continue;
+        const key = `${locale}:${normalizeProjectAlias(text)}`;
+        if (prompts.has(key)) errors.push(`${id} ${locale}: duplicate preset prompt`);
+        prompts.add(key);
+        if (identity) {
+          const mentioned = mentionedProjectIds(text);
+          if (mentioned.length !== 1 || mentioned[0] !== identity.id) {
+            errors.push(`${id} ${locale}: preset must name its own project (${identity.id})`);
+          }
+        }
       }
       const answer = question.answer;
       if (!answer || !Array.isArray(answer.citations) || !Array.isArray(answer.en) || !Array.isArray(answer.zh) || !Array.isArray(answer.grounding)) {
@@ -198,6 +314,74 @@ export function verifyAuthoredBank(bank, manifest, repositoryRoot) {
           errors.push(`${id}: ${error.message}`);
         }
       }
+      // Task B4 [CLAUDE]: the destination rule (spec §6). A citation is a
+      // place worth going; a reader standing on the page does not need a link
+      // back to it, and a link to the home index answers no project question.
+      //   1. bare in-site citation to the question's OWN route — rejected;
+      //   2. the same route WITH a rail section anchor — allowed (the reader
+      //      is sent to the exhibit that answers the question);
+      //   3. in-site citation to a DIFFERENT project — only if the answer
+      //      prose names that project, so the link is earned by the text;
+      //   4. the home question set must keep a project destination, either a
+      //      reviewed project repository file or a project page;
+      //   5. bare {site: "/"} from a project route — rejected. Rules 1 and 3
+      //      both miss it (the route differs, and resolveProjectIdentity("/")
+      //      is null), which is how eleven of these survive today.
+      // Any anchor, wherever it appears, must be a real section of its
+      // destination's rail, so a typo fails generation instead of shipping a
+      // dead fragment — and an anchor on a {site, file} evidence pin, which
+      // nothing renders, is rejected rather than quietly dropped.
+      const prose = [...answer.en, ...answer.zh].map((segment) => segment?.text ?? "").join(" ");
+      const namedProjects = new Set(mentionedProjectIds(prose));
+      let siblingEntries = 0;
+      for (const spec of answer.citations) {
+        if (spec?.repo) {
+          const destination = resolveProjectIdentity(`/projects/${spec.repo}`);
+          if (destination && namedProjects.has(destination.id)) siblingEntries += 1;
+          continue;
+        }
+        if (!spec?.site) continue;
+        if (spec.file) {
+          // A {site, file} citation is an evidence pin: expandCitation routes
+          // it through the GitHub branch, which never reads .anchor. Say so
+          // rather than discarding an authored field in silence — {site, file}
+          // and {site, anchor} differ by one key.
+          if (spec.anchor) {
+            errors.push(`${id}: {site, file} citations are evidence links and cannot carry an anchor`);
+          }
+          continue;
+        }
+        if (spec.anchor) {
+          const anchors = railAnchors(spec.site);
+          if (!anchors) {
+            errors.push(`${id}: ${spec.site} has no rail on file to anchor into`);
+          } else if (!anchors.has(spec.anchor)) {
+            errors.push(`${id}: anchor "${spec.anchor}" is not a section of ${spec.site}`);
+          }
+        }
+        // Compare identities, not route strings: resolveProjectIdentity()
+        // accepts a page's retired routeAliases, so "/ai/frontier-forge" is
+        // the frontier-forge page and citing it from /projects/frontier-forge
+        // is still a self-citation. `identity` is this route's own identity;
+        // both are null on "/", where the literal comparison still holds.
+        const destination = resolveProjectIdentity(spec.site);
+        if (spec.site === route || (identity && destination && destination.id === identity.id)) {
+          if (!spec.anchor) errors.push(`${id}: cites its own page with no section anchor`);
+          continue;
+        }
+        if (route !== "/" && spec.site === "/") {
+          errors.push(`${id}: links to the home index, which answers no project question`);
+          continue;
+        }
+        siblingEntries += 1;
+        if (route !== "/" && destination && !namedProjects.has(destination.id)) {
+          errors.push(`${id}: links to ${spec.site}, which is not named in the answer`);
+        }
+      }
+      if (route === "/" && siblingEntries === 0) {
+        errors.push(`${id}: the home question set must keep a project destination`);
+      }
+
       validateSegments(answer.en, "en", answer.citations.length, id, errors);
       validateSegments(answer.zh, "zh", answer.citations.length, id, errors);
 

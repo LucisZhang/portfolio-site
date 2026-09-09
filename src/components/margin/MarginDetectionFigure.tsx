@@ -1,9 +1,10 @@
 "use client";
 
 import { useMemo } from "react";
+import ScrollRegion from "@/components/ScrollRegion";
 import { StatGrid } from "@/components/exhibition/StatGrid";
 import { useI18n } from "@/lib/i18n";
-import { zhWrapNode, zhWrapText } from "@/lib/zh-wrap";
+import { zhWrapDisplay, zhWrapText } from "@/lib/zh-wrap";
 import { getProject } from "@/lib/projects";
 import { calendarEndWeek, detectionReport, elasticityReport, metricRegistry, totalWeeks, weekIndex } from "./marginData";
 
@@ -75,19 +76,23 @@ export function MarginDetectionFigure() {
 
   return (
     <section id="exhibit-01" className="exhibit margin-detection" data-exhibit="01" data-bg="paper" aria-labelledby="exhibit-01-title">
-      <p className="exhibit-opening-row">
+      <div className="exhibit-opening-row">
         <span className="exhibit-number" aria-hidden="true">01</span>
-        {/* copy-lint: allow robust -- statistical method name (STL + robust z-score, DetectionPanel.tsx precedent) */}
-        <span className="exhibit-eyebrow">OLIST-MARGIN-PARQUET-V1 / STL + ROBUST Z-SCORE / EVALUATED {detectionReport.evaluated_at}</span>
-      </p>
+        <ul className="exhibit-meta" aria-label={locale === "en" ? "Evidence context" : "证据上下文"}>
+          <li>OLIST-MARGIN-PARQUET-V1</li>
+          {/* copy-lint: allow robust -- statistical method name (STL + robust z-score, DetectionPanel.tsx precedent) */}
+          <li>STL + ROBUST Z-SCORE</li>
+          <li>EVALUATED {detectionReport.evaluated_at}</li>
+        </ul>
+      </div>
       <h1 id="exhibit-01-title" className="exhibit-title">
         {locale === "en" ? (
           <>Six injected leaks. Six alarms.<br /><em>Thirteen false ones — counted, not hidden.</em></>
         ) : (
-          zhWrapNode(<>六次注入的泄漏，六次告警。<br /><em>还有十三次假阳性——如实计入，不是藏起来。</em></>)
+          zhWrapDisplay(<>六次注入的泄漏，六次告警。<br /><em>还有十三次假阳性——如实计入，不是藏起来。</em></>)
         )}
       </h1>
-      {locale === "zh" && marginProject ? <p className="cn-gloss" lang="zh">{zhWrapText(marginProject.glossZh)}</p> : null}
+      {locale === "zh" && marginProject ? <p className="cn-gloss" lang="zh">{zhWrapDisplay(marginProject.glossZh)}</p> : null}
       <p className="exhibit-intro">
         {locale === "en"
           // copy-lint: allow robust -- statistical method name (STL + robust z-score, DetectionPanel.tsx precedent)
@@ -151,7 +156,7 @@ export function MarginDetectionFigure() {
             server-rendered regardless of hydration (tests/e2e/no-js.spec.ts
             precedent -- DriftChart.tsx's identical table-under-chart
             pattern). */}
-        <div className="margin-table-scroll">
+        <ScrollRegion className="margin-table-scroll" label={{ en: "Detection weeks table", zh: "检出周表" }}>
           <table className="margin-detection-table" data-detection-table>
             <thead>
               <tr>
@@ -173,7 +178,7 @@ export function MarginDetectionFigure() {
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollRegion>
       </div>
 
       <div className="margin-detection-foot">

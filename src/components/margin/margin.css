@@ -21,6 +21,10 @@
   padding-top: 14px;
 }
 
+.margin-detection > .exhibit-title {
+  margin-top: 22px;
+}
+
 .margin-detection-figure-head {
   margin-bottom: 4px;
 }
@@ -434,34 +438,4 @@
 .margin-repo-link a:focus-visible {
   text-decoration: underline;
   text-underline-offset: 4px;
-}
-
-/* ---------- Report layer ---------- */
-
-.margin-report-section {
-  max-width: 860px;
-  margin: 0 auto;
-  padding: clamp(48px, 8vw, 96px) clamp(20px, 5vw, 48px);
-}
-
-.margin-architecture-flow {
-  list-style: none;
-  margin: 24px 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.margin-architecture-flow li {
-  display: grid;
-  grid-template-columns: 40px 1fr;
-  gap: 12px;
-  border-top: 1px solid var(--hairline);
-  padding-top: 14px;
-}
-
-.margin-architecture-flow li span {
-  font-family: var(--mono);
-  color: var(--muted);
 }

@@ -136,8 +136,8 @@
 
 **Data**
 
-- 核心：`/Users/hsiangkuochang/frontier-forge/demo/data/release.json`；当前大小 `29,330 bytes`。
-- Overload 原始 receipt：`/Users/hsiangkuochang/frontier-forge/results/phase7_1/raw/phase7_1_sustained_gateway_bench.json`。
+- 核心：`$SOURCE_ROOT/frontier-forge/demo/data/release.json`；当前大小 `29,330 bytes`。
+- Overload 原始 receipt：`$SOURCE_ROOT/frontier-forge/results/phase7_1/raw/phase7_1_sustained_gateway_bench.json`。
 - GPU ledgers：
   - `results/phase7_1/gpu_ledger.jsonl`
   - `results/phase7_2/gpu_ledger.jsonl`
@@ -174,7 +174,7 @@
 
 **Data**
 
-- Scenario library：`/Users/hsiangkuochang/release_guardian/mockworld/data/scenarios/scenarios.json`，真实为 object 内 `44` 个 scenarios。
+- Scenario library：`$SOURCE_ROOT/release_guardian/mockworld/data/scenarios/scenarios.json`，真实为 object 内 `44` 个 scenarios。
 - 13-node topology：`agent/src/release_guardian/graph/build.py`。
 - 当前 deterministic eval：`eval/results/latest.json`，文件明确标为 `llm_mode: "stub"`、44 scenarios、132 runs。
 - Mockworld hash manifest：`mockworld/data/MANIFEST.json`。
@@ -216,7 +216,7 @@
 
 **Data**
 
-- Narrative/number registry：`/Users/hsiangkuochang/nlp-eval-lab/demo/data/case_study.json`
+- Narrative/number registry：`$SOURCE_ROOT/nlp-eval-lab/demo/data/case_study.json`
 - Pareto：`demo/data/frontier.json`
 - Drift：`demo/data/drift.json`
 - Threshold/cost policy：`demo/data/policies.json`

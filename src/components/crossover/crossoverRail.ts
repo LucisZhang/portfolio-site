@@ -1,4 +1,4 @@
-import type { RailSpec } from "@/components/exhibition/ExhibitShell";
+import { navigationCopy, projectRailFooter, type RailSpec } from "@/lib/navigation";
 import { getProject } from "@/lib/projects";
 
 // Task L6 [CLAUDE]: Crossover Study rail (auto-rail v3, matching ragRail.ts
@@ -15,11 +15,11 @@ export const crossoverRail: RailSpec = {
   wordmark: { lines: ["Crossover", "Study"] },
   copy: crossoverProject ? { en: "Run the argument, query by query — cached, and honest about it.", zh: crossoverProject.glossZh } : undefined,
   nav: [
-    { id: "exhibit-01", num: "01", label: "SQL workbench" },
-    { id: "exhibit-02", num: "02", label: "The two curves" },
-    { id: "exhibit-03", num: "03", label: "Source & receipts" },
+    { id: "exhibit-01", num: "01", label: { en: "SQL workbench", zh: "SQL 工作台" } },
+    { id: "exhibit-02", num: "02", label: { en: "The two curves", zh: "两条曲线" } },
+    { id: "exhibit-03", num: "03", label: navigationCopy.sourceReceipts },
   ],
-  footer: [{ label: "← ALL WORK", href: "/" }],
+  footer: projectRailFooter,
 };
 
 export default crossoverRail;

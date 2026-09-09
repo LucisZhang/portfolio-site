@@ -1,5 +1,9 @@
 # Public Portfolio state
 
+## 2026-09-09 accepted preview release authorization
+
+The owner accepted the latest website preview and authorized full publication after making the Guardian MCP installation link clearly actionable. This release includes the accepted project layouts, flat project routes, GroupConv case study, citation and navigation corrections, hosted Guardian connection, and paused Forge hosting. The Guardian action now has button styling and bilingual app-opening guidance. Production dependencies are updated to patched versions before release verification. The existing normal public PR and exact-commit deployment process applies. Deployment verification remains pending.
+
 ## 2026-09-08 Forge online-content withdrawal authorization
 
 The owner authorized withdrawing Forge's online inference content while retaining the project

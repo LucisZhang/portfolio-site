@@ -1,0 +1,232 @@
+{
+  "groupconv-atlas": {
+    "exhibit-01": {
+      "en": "Shape atlas",
+      "zh": "形状地图"
+    },
+    "exhibit-02": {
+      "en": "Kernel design",
+      "zh": "内核设计"
+    },
+    "exhibit-03": {
+      "en": "Into a module",
+      "zh": "模块实测"
+    },
+    "exhibit-04": {
+      "en": "Source & receipts",
+      "zh": "源码与记录"
+    }
+  },
+  "home": {
+    "exhibit-01": {
+      "en": "Frontier Forge",
+      "zh": "Frontier Forge"
+    },
+    "exhibit-02": {
+      "en": "Agent systems",
+      "zh": "Agent"
+    },
+    "exhibit-03": {
+      "en": "Systems stack",
+      "zh": "系统技术栈"
+    },
+    "exhibit-04": {
+      "en": "Negative results",
+      "zh": "负结果"
+    },
+    "exhibit-05": {
+      "en": "Secondary & archive",
+      "zh": "其他项目与归档"
+    },
+    "exhibit-06": {
+      "en": "Source & receipts",
+      "zh": "源码与记录"
+    }
+  },
+  "frontier-forge": {
+    "exhibit-01": {
+      "en": "Recorded serving",
+      "zh": "历史推理评测"
+    },
+    "exhibit-02": {
+      "en": "Evidence explorer",
+      "zh": "证据浏览器"
+    },
+    "exhibit-03": {
+      "en": "Training ladder",
+      "zh": "训练阶梯"
+    },
+    "exhibit-04": {
+      "en": "Serving boundary",
+      "zh": "服务边界"
+    },
+    "exhibit-05": {
+      "en": "Overload replay",
+      "zh": "过载回放"
+    },
+    "exhibit-06": {
+      "en": "Model boundary",
+      "zh": "模型边界"
+    },
+    "exhibit-07": {
+      "en": "Source & receipts",
+      "zh": "源码与记录"
+    }
+  },
+  "release-guardian": {
+    "exhibit-01": {
+      "en": "Overview",
+      "zh": "项目总览"
+    },
+    "exhibit-02": {
+      "en": "Recorded trace",
+      "zh": "执行记录"
+    },
+    "exhibit-03": {
+      "en": "Approval gate",
+      "zh": "审批关口"
+    },
+    "exhibit-04": {
+      "en": "Recorded outcomes",
+      "zh": "已记录结果"
+    },
+    "exhibit-05": {
+      "en": "Method notes",
+      "zh": "方法说明"
+    }
+  },
+  "rag-quality-lab": {
+    "exhibit-01": {
+      "en": "Drift lab",
+      "zh": "漂移实验"
+    },
+    "exhibit-02": {
+      "en": "Evidence claims",
+      "zh": "证据声明"
+    },
+    "exhibit-03": {
+      "en": "Source & receipts",
+      "zh": "源码与记录"
+    }
+  },
+  "triage-router": {
+    "exhibit-01": {
+      "en": "Market terminal",
+      "zh": "分流终端"
+    },
+    "exhibit-02": {
+      "en": "Known misroutes",
+      "zh": "已知误分流"
+    },
+    "exhibit-03": {
+      "en": "Tier frontier",
+      "zh": "分层边界"
+    },
+    "exhibit-04": {
+      "en": "Drift",
+      "zh": "漂移"
+    },
+    "exhibit-05": {
+      "en": "Source & receipts",
+      "zh": "源码与记录"
+    }
+  },
+  "privacy-preflight": {
+    "exhibit-01": {
+      "en": "Workbench",
+      "zh": "工作台"
+    },
+    "exhibit-02": {
+      "en": "Detect, review, destroy",
+      "zh": "检测、复核与销毁"
+    },
+    "exhibit-03": {
+      "en": "OCR benchmark",
+      "zh": "OCR 基准"
+    },
+    "exhibit-04": {
+      "en": "Fail-closed export",
+      "zh": "校验通过后导出"
+    },
+    "exhibit-05": {
+      "en": "Boundary",
+      "zh": "适用边界"
+    },
+    "exhibit-06": {
+      "en": "Source & receipts",
+      "zh": "源码与记录"
+    }
+  },
+  "exactly-once-drills": {
+    "exhibit-01": {
+      "en": "Duty logbook",
+      "zh": "值班日志"
+    },
+    "exhibit-02": {
+      "en": "Verification proposition",
+      "zh": "验证命题"
+    },
+    "exhibit-03": {
+      "en": "Dual-path parity",
+      "zh": "双路径对照"
+    },
+    "exhibit-04": {
+      "en": "Checkpoint pressure",
+      "zh": "检查点压力"
+    },
+    "exhibit-05": {
+      "en": "Source & receipts",
+      "zh": "源码与记录"
+    }
+  },
+  "crossover-study": {
+    "exhibit-01": {
+      "en": "SQL workbench",
+      "zh": "SQL 工作台"
+    },
+    "exhibit-02": {
+      "en": "The two curves",
+      "zh": "两条曲线"
+    },
+    "exhibit-03": {
+      "en": "Source & receipts",
+      "zh": "源码与记录"
+    }
+  },
+  "margin-control-tower": {
+    "exhibit-01": {
+      "en": "Detection",
+      "zh": "异常检测"
+    },
+    "exhibit-02": {
+      "en": "Decision boundary",
+      "zh": "决策边界"
+    },
+    "exhibit-03": {
+      "en": "Negative results",
+      "zh": "负结果"
+    },
+    "exhibit-04": {
+      "en": "Source & receipts",
+      "zh": "源码与记录"
+    }
+  },
+  "credit-policy-desk": {
+    "exhibit-01": {
+      "en": "Policy frontier",
+      "zh": "策略边界"
+    },
+    "exhibit-02": {
+      "en": "Decision boundary",
+      "zh": "决策边界"
+    },
+    "exhibit-03": {
+      "en": "Negative results",
+      "zh": "负结果"
+    },
+    "exhibit-04": {
+      "en": "Source & receipts",
+      "zh": "源码与记录"
+    }
+  }
+}

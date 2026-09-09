@@ -5,7 +5,7 @@ import path from "node:path";
 // (public/case-studies/release-guardian/data/evaluation-live.csv and
 // evaluation-stub.csv -- both already registered in
 // docs/evidence/r2-source-map.md and docs/release-guardian-claims.md §1).
-// Imported ONLY from src/app/ai/release-guardian/page.tsx (a Server
+// Imported ONLY from src/app/projects/release-guardian/page.tsx (a Server
 // Component: fs is unavailable in the "use client" GuardianPage), which
 // parses both ledgers once at request time and passes the plain rows down
 // as props -- the same "server reads, client renders" split the rest of

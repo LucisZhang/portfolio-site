@@ -1,4 +1,5 @@
 export const recruiterQuestionsByRoute: Record<string, { en: string[]; zh: string[] }> = {
+  "/projects/groupconv-atlas": {"en": ["Why do graph-device and eager API timings differ in GroupConv Atlas?", "How much does k3 improve on k0 in the current GroupConv Atlas?", "Does GroupConv Atlas beat tuned PyTorch overall?", "What did the GroupConv Atlas MobileNetV2 block substitution demonstrate?"], "zh": ["GroupConv Atlas 为什么将图内设备时间与同步调用时间分开？", "本轮 GroupConv Atlas 中，k3 相对 k0 的收益有多大？", "GroupConv Atlas 整体超过调优 PyTorch 了吗？", "GroupConv Atlas 的 MobileNetV2 模块替换证明了什么？"]},
   "/": {
     en: [
       "Which of the three disciplines you list — Applied AI, data engineering, or data analytics — do you consider your strongest fit, and why?",
@@ -55,7 +56,7 @@ export const recruiterQuestionsByRoute: Record<string, { en: string[]; zh: strin
       "你使用公开的 Olist 和 Lending Club 数据——这些分析能在多大程度上迁移到企业真实的毛利或信贷问题？",
     ],
   },
-  "/ai/frontier-forge": {
+  "/projects/frontier-forge": {
     en: [
       "How did the selected SFT run move task success from 66.35% to 99.05%, and what does the paired confidence interval establish?",
       "Why did free rule labels beat API distillation by 14.2 percentage points, and how did that negative result change model selection?",
@@ -69,7 +70,7 @@ export const recruiterQuestionsByRoute: Record<string, { en: string[]; zh: strin
       "如何用 Phase 1–5 小计和 Phase 7 GPU ledger 复算 $35.681 实测支出？",
     ],
   },
-  "/ai/release-guardian": {
+  "/projects/release-guardian": {
     en: [
       "Why does the publish decision stay with a human, and how does the workflow enforce that pause?",
       "The evaluation reports 8/8 aggregate gates passed but also a 30/44 strict all-trials residual — how should I read those two numbers together?",
@@ -83,7 +84,7 @@ export const recruiterQuestionsByRoute: Record<string, { en: string[]; zh: strin
       "SHA-256 审计哈希链如何让批准记录具备可验证的防篡改能力？",
     ],
   },
-  "/ai/rag-quality-lab": {
+  "/projects/rag-quality-lab": {
     en: [
       "Walk me through the regression that started this project — what changed and how did the harness catch it?",
       "How does the retrieval runner evaluate quality without using an LLM judge?",
@@ -97,7 +98,7 @@ export const recruiterQuestionsByRoute: Record<string, { en: string[]; zh: strin
       "确定性清单与 Manifest and Drift Lab 分别核验什么？为什么这些检查会影响结果的可信度？",
     ],
   },
-  "/ai/privacy-preflight": {
+  "/projects/privacy-preflight": {
     en: [
       "Why did you build the redaction workbench to run entirely in the browser, and what constraints did that impose?",
       "What do the destructive export checks verify before a redacted file is released?",
@@ -111,7 +112,7 @@ export const recruiterQuestionsByRoute: Record<string, { en: string[]; zh: strin
       "这个流程中的哪些环节仍必须人工复核？为什么不能完全依赖 OCR？",
     ],
   },
-  "/engineering/exactly-once-drills": {
+  "/projects/exactly-once-drills": {
     en: [
       "Which ten failure classes do you induce, and why did you choose those?",
       "After recovery, how do you prove the pipeline didn't silently lose or duplicate events?",
@@ -125,7 +126,7 @@ export const recruiterQuestionsByRoute: Record<string, { en: string[]; zh: strin
       "这项证据明确写出的边界是什么？零快照差异的结果在不同硬件上还会成立吗？",
     ],
   },
-  "/engineering/crossover-study": {
+  "/projects/crossover-study": {
     en: [
       "Why did the Amazon personalization curve remain a null result across every depth segment, and what decision did that negative finding support?",
       "What does the ML-32M crossover at n*=20 establish, and why does the failed Recall@20 robustness check limit the claim?",
@@ -139,7 +140,7 @@ export const recruiterQuestionsByRoute: Record<string, { en: string[]; zh: strin
       "如何把三件展品追溯到已记录的 run_id，并在本站不移植 MiniLM 浏览器模型的前提下查看完整 demo？",
     ],
   },
-  "/analytics/margin-control-tower": {
+  "/projects/margin-control-tower": {
     en: [
       "What can a category manager decide with this tool that a revenue-only dashboard wouldn't support?",
       "What do the ten fail-closed contract checks guard against, and what happens when one of them fails?",
@@ -153,7 +154,7 @@ export const recruiterQuestionsByRoute: Record<string, { en: string[]; zh: strin
       "促销场景依赖弹性假设——这个假设如何披露和检查，又明确不主张什么？",
     ],
   },
-  "/analytics/credit-policy-desk": {
+  "/projects/credit-policy-desk": {
     en: [
       "Your premise is that a probability and one cutoff aren't a policy — what does the lab add on top of the model score?",
       "How does the time-disciplined backtest prevent leakage between the training, calibration, and later backtest windows?",
@@ -167,7 +168,7 @@ export const recruiterQuestionsByRoute: Record<string, { en: string[]; zh: strin
       "数据档案只覆盖已放款贷款——这会限制哪些结论？你如何处理这一边界？",
     ],
   },
-  "/ai/triage-router": {
+  "/projects/triage-router": {
     en: [
       "How does the three-tier cascade decide when to escalate a complaint instead of routing it at the cheapest tier?",
       "What does cost-aware routing mean here, and how do you measure the cost and accuracy tradeoff?",
@@ -181,7 +182,7 @@ export const recruiterQuestionsByRoute: Record<string, { en: string[]; zh: strin
       "当一条投诉在多个层级之间界限模糊时会发生什么？路由器如何避免静默误判？",
     ],
   },
-  "/ai/ask-portfolio": {
+  "/projects/ask-portfolio": {
     en: [
       "How does the assistant ground its answers in this site's own repositories instead of generating from general knowledge?",
       "What happens between a live question you type and the cited reply — where do the guard model and the retrieval step each sit?",

@@ -11,29 +11,6 @@
   color: var(--ink);
 }
 
-/* ---------- Top strip ---------- */
-
-.eod-topstrip {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 16px;
-  flex-wrap: wrap;
-  padding-bottom: 12px;
-  margin-bottom: clamp(20px, 3vw, 32px);
-  border-bottom: 1px solid var(--hairline);
-  font-family: var(--mono);
-  font-size: .68rem;
-  letter-spacing: .12em;
-  color: var(--muted);
-  text-transform: uppercase;
-}
-
-.eod-topstrip-crumb b {
-  color: var(--ink);
-  font-weight: 500;
-}
-
 /* ---------- Hero copy ---------- */
 
 .eod-log-title {
@@ -491,19 +468,22 @@
 /* ---------- Checkpoint pressure (exhibit 04) ---------- */
 
 .eod-pressure-evidence {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  background: var(--hairline);
-  gap: 1px;
-  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 40px;
+  row-gap: 14px;
+  margin: 24px 0 0;
+  border-top: 1px solid var(--hairline);
+  padding-top: 14px;
 }
 
 .eod-pressure-evidence > div {
-  background: var(--paper-bright);
-  padding: 16px;
+  flex: 1 1 220px;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  padding: 0;
+  background: none;
 }
 
 .eod-pressure-evidence span {
@@ -522,13 +502,141 @@
   color: var(--muted);
 }
 
-/* Fix (audit3 B2): globals.css's legacy `.media-grid img { border: var(--bl); }`
-   is still needed by the not-yet-redone pages (release-guardian) that reuse
-   OptionalMedia, so it can't be deleted globally. Scope the border removal
-   to this redone exhibit only -- whitespace + the exhibit rhythm already
-   carry the separation here, matching the rest of the de-framing pass. */
-#exhibit-04 .media-grid img {
-  border: 0;
+.eod-pressure-trace {
+  margin: 0;
+  max-width: 1080px;
+}
+
+.eod-pressure-trace svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.eod-pressure-trace figcaption {
+  max-width: 68ch;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: .82rem;
+  line-height: 1.55;
+}
+
+.eod-pressure-gridline,
+.eod-pressure-indicator-base,
+.eod-pressure-phase-line {
+  stroke: var(--hairline);
+  stroke-width: 1;
+}
+
+.eod-pressure-axis-label,
+.eod-pressure-lane-label,
+.eod-pressure-checkpoint-id,
+.eod-pressure-phase-label,
+.eod-pressure-callout,
+.eod-pressure-spike-label {
+  fill: var(--muted);
+  font-family: var(--mono);
+  font-size: 9px;
+}
+
+.eod-pressure-lane-label,
+.eod-pressure-phase-label {
+  font-weight: 650;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.eod-pressure-checkpoint-id {
+  font-size: 8px;
+}
+
+.eod-pressure-callout {
+  fill: var(--ink);
+  font-weight: 650;
+}
+
+.eod-pressure-duration-line,
+.eod-pressure-lag-line {
+  fill: none;
+  stroke-linejoin: miter;
+  stroke-linecap: square;
+}
+
+.eod-pressure-duration-line {
+  stroke: var(--fig-1);
+  stroke-width: 2;
+}
+
+.eod-pressure-duration-dot {
+  fill: var(--fig-1);
+  stroke: var(--paper-bright);
+  stroke-width: 2;
+}
+
+.eod-pressure-lag-area {
+  fill: color-mix(in srgb, var(--fig-2) 14%, transparent);
+}
+
+.eod-pressure-lag-line {
+  stroke: var(--fig-2);
+  stroke-width: 2;
+}
+
+.eod-pressure-spike {
+  stroke: var(--accent);
+  stroke-width: 1;
+}
+
+.eod-pressure-spike-label {
+  fill: var(--accent);
+  font-weight: 700;
+}
+
+.eod-pressure-indicator {
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+.eod-pressure-table-scroll {
+  margin-top: 28px;
+  overflow-x: auto;
+}
+
+.eod-pressure-table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: .68rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.eod-pressure-table th,
+.eod-pressure-table td {
+  border-top: 1px solid var(--hairline);
+  padding: 9px 14px 9px 0;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.eod-pressure-table th {
+  color: var(--muted);
+  font-size: .62rem;
+  font-weight: 650;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 699.98px) {
+  .eod-pressure-trace {
+    overflow-x: auto;
+  }
+
+  .eod-pressure-trace svg {
+    width: 760px;
+    max-width: none;
+  }
 }
 
 /* ---------- Receipts (exhibit 05) ---------- */
@@ -566,52 +674,4 @@
   align-items: center;
   min-height: 44px;
   color: var(--accent-on-ink);
-}
-
-/* ---------- Report layer (Architecture / Results / Limitations) ---------- */
-
-.eod-report-section {
-  border-bottom: 1px solid var(--hairline);
-  padding: clamp(40px, 5vw, 72px) clamp(34px, 7vw, 110px);
-}
-
-.eod-report-section h2 {
-  margin: 0 0 20px;
-  font-family: var(--display-serif);
-  font-size: clamp(1.6rem, 2.4vw, 2.2rem);
-  font-weight: 400;
-}
-
-:lang(zh) .eod-report-section h2 {
-  font-family: var(--display-serif-zh);
-}
-
-.eod-architecture-flow {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  max-width: 720px;
-}
-
-.eod-architecture-flow li {
-  display: flex;
-  gap: 14px;
-  border-top: 1px solid var(--hairline);
-  padding-top: 12px;
-}
-
-.eod-architecture-flow li > span {
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: .68rem;
-}
-
-.eod-architecture-flow li p {
-  margin: 4px 0 0;
-  color: var(--muted);
-  font-size: .88rem;
-  line-height: 1.55;
 }

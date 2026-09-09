@@ -11,16 +11,16 @@ test("project references use canonical localized destinations", () => {
   assert.deepEqual(projectReference("margin-control-tower", "zh"), {
     id: "margin-control-tower",
     label: "Margin Control Tower",
-    href: "/analytics/margin-control-tower?lang=zh",
+    href: "/projects/margin-control-tower?lang=zh",
     kind: "portfolio",
   });
-  assert.equal(projectReference("release-guardian", "en")?.href, "/ai/release-guardian");
-  assert.equal(projectReference("streaming-reliability-lab", "en")?.href, "/engineering/exactly-once-drills");
+  assert.equal(projectReference("release-guardian", "en")?.href, "/projects/release-guardian");
+  assert.equal(projectReference("streaming-reliability-lab", "en")?.href, "/projects/exactly-once-drills");
   assert.equal(projectReference("ex-solver", "zh"), null);
   assert.equal(projectReference("Voice-in-Security", "en")?.href, "https://github.com/LucisZhang/Voice-in-Security");
   assert.equal(projectReference("Risk-Control-Portfolio", "en"), null);
   assert.equal(projectReference("unknown", "en"), null);
-  assert.equal(ASSISTANT_PROJECT_IDS.length, 7);
+  assert.equal(ASSISTANT_PROJECT_IDS.length, 13);
 });
 
 test("answer block validation accepts only bounded typed project segments", () => {

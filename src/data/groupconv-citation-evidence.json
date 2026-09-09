@@ -1,0 +1,62 @@
+{
+  "atlas-direct": {
+    "path": "results/rtx4090/session-20260908-vast-03/analysis-atlas/summary.zh-CN.md",
+    "lineStart": 9,
+    "lineEnd": 24,
+    "label": {
+      "en": "Direct CUDA comparison: measured ratios and classifications",
+      "zh": "直接 CUDA 对照：实测比值与逐点判定"
+    },
+    "sourceSha256": "90090361694d7ca2280541256c2dd6bca4d5b97759f6e75caa927b08346b7730",
+    "startText": "速度比均为baseline/candidate；大于1表示candidate更快。以下分类来自本轮10个配对批中位数、10,000次bootstrap、95%区间和5%实用阈值。",
+    "endText": "k3相对k0：Graph全80点WIN，几何平均3.8718；同步API为74 WIN、5 TIE、1 UNCERTAIN，几何平均3.4490。最弱点为N1/C256/H=W7/G256（gc_78e99ae160f2dd60），Graph比值1.1612、API比值1.0213。"
+  },
+  "atlas-framework": {
+    "path": "results/rtx4090/session-20260908-vast-03/analysis-atlas/summary.zh-CN.md",
+    "lineStart": 21,
+    "lineEnd": 30,
+    "label": {
+      "en": "Tuned PyTorch comparison: overall result and losing shapes",
+      "zh": "调优 PyTorch 对照：整体结果与退化形状"
+    },
+    "sourceSha256": "90090361694d7ca2280541256c2dd6bca4d5b97759f6e75caa927b08346b7730",
+    "startText": "| torch_cuda_tuned → k3 | Graph | 80/80 | 0.7384 | 34/35/6/5 | 0.1145 |",
+    "endText": "这些是同轮内部分类，不是跨轮稳定性证明。稳态重复输入、图重放设备边界与同步API分别报告；不能混入NCU cache-all采集时间，不能与旧4090D做同环境统计检验。当前分析器只对Graph/API作比较，host-feed原始样本保留。库算法身份、首次初始化/搜索、框架workspace管理和GPU独占性仍保持原协议边界。"
+  },
+  "module-results": {
+    "path": "results/rtx4090/session-20260908-vast-03/analysis-supplemental/summary.zh-CN.md",
+    "lineStart": 19,
+    "lineEnd": 28,
+    "label": {
+      "en": "MobileNetV2 block: paired results and timing boundaries",
+      "zh": "MobileNetV2 模块：配对结果与计时边界"
+    },
+    "sourceSha256": "ec43e4a09b5ac352102934a8a3171e62bc68852644889d1299e0f2009b4f46a7",
+    "startText": "MobileNetV2 使用随机权重，在完整 features[3] block 中仅替换一个固定卷积为 k3，其余操作保留。主计时每项 10 批，按实现随机顺序配对；下表比值均为原始 block 时间 / 替换后时间。",
+    "endText": "图内获益没有转化为同步 API 获益。API 边界包含输出分配与必需输入物化；图内结果属于另一个计时条件。区间只描述本次运行的批间变化，不代表独立会话确认或整模型加速。"
+  },
+  "timing-scope": {
+    "path": "results/rtx4090/session-20260908-vast-03/analysis-supplemental/summary.zh-CN.md",
+    "lineStart": 28,
+    "lineEnd": 32,
+    "label": {
+      "en": "API allocation costs and the limits of instrumented estimates",
+      "zh": "API 分配开销与插桩估计的适用范围"
+    },
+    "sourceSha256": "ec43e4a09b5ac352102934a8a3171e62bc68852644889d1299e0f2009b4f46a7",
+    "startText": "图内获益没有转化为同步 API 获益。API 边界包含输出分配与必需输入物化；图内结果属于另一个计时条件。区间只描述本次运行的批间变化，不代表独立会话确认或整模型加速。",
+    "endText": "另行保存的 eager profiler trace 在主计时后执行，回执明确将目标 GPU 时间占比 p 标为 UNKNOWN：CPU 模块标记不足以分配异步 GPU 工作归属。它不提供另一份可替代的 Amdahl 估计。"
+  },
+  "kernel-mechanisms": {
+    "path": "results/rtx4090/session-20260908-vast-03/analysis-profile/mechanism-review.zh-CN.md",
+    "lineStart": 18,
+    "lineEnd": 44,
+    "label": {
+      "en": "Kernel work assignment, reuse and observed tradeoffs",
+      "zh": "内核分工、数据复用与实测取舍"
+    },
+    "sourceSha256": "03ec0d02bc0e456df9657139add7551aea957d24bcfe78f48a5d3a542d3d926d",
+    "startText": "## k1 相对 k0：空间映射与专用几何",
+    "endText": "当前数据支持这些实现变化与时间/计数器变化的关联，不证明唯一因果、持续峰值、Roofline 上限或跨运行稳定性。.so SASS 到达后可追加核验展开、寄存器分配、实际访存和barrier指令；本稿没有预先宣称这些机器码已验证。"
+  }
+}

@@ -5,14 +5,46 @@ import { SEL } from "./selectors";
 import { bodyTextExcludingLanguageSwitcher, containsCJK, longestLatinWordRun } from "./localePurity";
 import { assertNoHorizontalOverflow, assertTouchTarget } from "./mobileAudit";
 
-const ROUTE = "/ai/triage-router";
+const ROUTE = "/projects/triage-router";
 // Sum of the three real on-site file sizes the RUN button advertises
 // (spec section 6.3): model.int8.onnx (67,575,183) + tokenizer.json
 // (711,494) + ort-wasm-simd-threaded.wasm (13,479,978), measured after
 // copying/syncing the real files -- see docs/evidence/digits-triage.md and
-// heavy-assets.json's "/ai/triage-router" entry.
+// heavy-assets.json's "/projects/triage-router" entry.
 const TOTAL_MODEL_BYTES = "81766655";
 const HEAVY_ASSET_PATTERN = /model\.int8\.onnx|ort-wasm-simd-threaded\.(wasm|mjs)/i;
+
+test("public source receipt uses the Triage Router name and a repository-relative command", async ({ page }) => {
+  await page.goto(ROUTE, { waitUntil: "networkidle" });
+  const receipts = page.locator(SEL.exhibit("05"));
+  await expect(receipts).toContainText("Triage Router's export_site_payloads.py");
+  await expect(receipts.locator(".triage-reproduce-command code")).toHaveText(
+    "python scripts/export_site_payloads.py --out public/case-studies/triage-router",
+  );
+  await expect(receipts).not.toContainText("nlp-eval-lab");
+  await expect(receipts).not.toContainText("/Users/");
+});
+
+test("misroute and monthly costs use the recorded USD basis with accessible ranges", async ({ page }) => {
+  await page.goto(ROUTE, { waitUntil: "networkidle" });
+  const terminal = page.locator(SEL.exhibit("01")).locator("[data-triage-terminal]");
+  const misroute = terminal.locator("[data-misroute-slider]");
+  const threshold = terminal.locator("[data-threshold-slider]");
+
+  await expect(terminal.locator("[data-misroute-value]")).toContainText(/^USD /);
+  await expect(misroute).toHaveAttribute("aria-valuetext", /USD .*recorded range USD .* to USD/);
+  await expect(threshold).toHaveAttribute("aria-valuetext", /recorded range .* to/);
+  await expect(terminal.locator(`#${await misroute.getAttribute("aria-describedby")}`)).toContainText(/^Recorded sensitivity range: USD .* — USD/);
+  await expect(terminal.locator(`#${await threshold.getAttribute("aria-describedby")}`)).toContainText(/^Recorded threshold range: .* —/);
+  await expect(terminal.locator('[data-drawer] summary').last()).toContainText("monthly cost (USD / 1k)");
+  await expect(terminal).not.toContainText(/CNY|monthlyCostCny|misrouteCostCny/);
+
+  await misroute.fill(await misroute.getAttribute("max") ?? "0");
+  await expect(misroute).toHaveAttribute("aria-valuetext", /USD 24\.00 misroute-cost sensitivity/);
+  await expect(terminal.locator("[data-misroute-value]")).toHaveText("USD 24.00");
+  await threshold.fill("0");
+  await expect(terminal.locator("[data-strategy-card]")).toContainText("USD");
+});
 
 test.describe("Triage Router first screen (zero heavy assets)", () => {
   // Task W2 (Option B, user ruling): the hero's right column no longer has
@@ -40,6 +72,105 @@ test.describe("Triage Router first screen (zero heavy assets)", () => {
 
     await expect(card).not.toHaveText(before);
     expect(requests).toEqual([]);
+  });
+
+  test("misroute sensitivity follows a fractional pointer drag, then settles on a recorded stop", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop", "Pointer geometry is covered at the desktop review size.");
+    await page.goto(ROUTE, { waitUntil: "networkidle" });
+    const full = page.locator(SEL.exhibit("01"));
+    const slider = full.locator("[data-misroute-slider]");
+    const frontier = full.locator("[data-frontier-chart] .triage-frontier-line");
+    await page.mouse.wheel(0, 40);
+    await expect(page.locator(".exhibit-shell")).toHaveClass(/rail-collapsed/);
+    await expect(page.locator("main#main-content")).toHaveCSS("margin-left", "0px");
+    await slider.scrollIntoViewIfNeeded();
+
+    const beforePath = await frontier.getAttribute("points");
+    const box = await slider.boundingBox();
+    expect(box).not.toBeNull();
+    const max = Number(await slider.getAttribute("max"));
+    const current = Number(await slider.inputValue());
+    const targets = current > max / 2 ? [current - .45, current - .9, 1.6] : [current + .45, current + .9, max - 1.6];
+    const usableWidth = box!.width - 18;
+    const xFor = (value: number) => box!.x + 9 + (usableWidth * value) / max;
+    const y = box!.y + box!.height / 2;
+    await page.mouse.move(xFor(current), y);
+    await page.mouse.down();
+    const dragValues: number[] = [];
+    const dragPaths: string[] = [];
+    for (const target of targets) {
+      await page.mouse.move(xFor(target), y, { steps: 4 });
+      dragValues.push(Number(await slider.inputValue()));
+      dragPaths.push(await frontier.getAttribute("points") ?? "");
+    }
+
+    const during = dragValues.at(-1)!;
+    expect(Math.abs(during - Math.round(during))).toBeGreaterThan(.05);
+    expect(new Set(dragValues.map((value) => value.toFixed(2))).size).toBeGreaterThanOrEqual(3);
+    expect(new Set([beforePath ?? "", ...dragPaths]).size).toBeGreaterThanOrEqual(3);
+    await page.mouse.up();
+
+    const settled = Math.round(during);
+    await expect.poll(async () => Number(await slider.inputValue()), { timeout: 1_000 }).toBe(settled);
+    await expect(full.locator(".triage-slider-ticks i")).toHaveCount(max + 1);
+  });
+
+  test("misroute keyboard moves animate through intermediate values and reduced motion snaps immediately", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop", "The motion contract only needs one desktop browser.");
+    await page.goto(ROUTE, { waitUntil: "networkidle" });
+    const slider = page.locator(SEL.exhibit("01")).locator("[data-misroute-slider]");
+    await slider.focus();
+    const start = Math.round(Number(await slider.inputValue()));
+    const max = Number(await slider.getAttribute("max"));
+    const key = start < max ? "ArrowRight" : "ArrowLeft";
+    const target = start + (key === "ArrowRight" ? 1 : -1);
+    await slider.evaluate((node) => {
+      const state = window as Window & { __triageRangeFrames?: string[] };
+      state.__triageRangeFrames = [];
+      let frames = 0;
+      const capture = () => {
+        state.__triageRangeFrames!.push((node as HTMLInputElement).value);
+        frames += 1;
+        if (frames < 20) requestAnimationFrame(capture);
+      };
+      requestAnimationFrame(capture);
+    });
+    await page.keyboard.press(key);
+    await expect.poll(async () => Number(await slider.inputValue()), { timeout: 1_000 }).toBe(target);
+    const animatedFrames = await page.evaluate(() => (window as Window & { __triageRangeFrames?: string[] }).__triageRangeFrames ?? []);
+    expect(new Set(animatedFrames).size).toBeGreaterThan(3);
+
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.keyboard.press("End");
+    await expect(slider).toHaveValue(String(max));
+    await page.keyboard.press("Home");
+    await expect(slider).toHaveValue("0");
+    await page.keyboard.press("PageUp");
+    await expect(slider).toHaveValue("1");
+    await page.keyboard.press("PageDown");
+    await expect(slider).toHaveValue("0");
+  });
+
+  test("misroute range authors circular 18px thumbs for WebKit and Mozilla range engines", async ({ page }) => {
+    await page.goto(ROUTE, { waitUntil: "networkidle" });
+    const thumbRules = await page.evaluate(() => {
+      const found: Array<{ selector: string; radius: string; width: string; height: string }> = [];
+      const visit = (rules: CSSRuleList) => {
+        for (const rule of Array.from(rules)) {
+          if (rule instanceof CSSStyleRule && rule.selectorText.includes("triage-slider-row") && rule.selectorText.includes("slider-thumb") && !rule.selectorText.includes(":active") && !rule.selectorText.includes(":focus-visible")) {
+            found.push({ selector: rule.selectorText, radius: rule.style.borderRadius, width: rule.style.width, height: rule.style.height });
+          }
+          if ("cssRules" in rule) visit((rule as CSSGroupingRule).cssRules);
+        }
+      };
+      for (const sheet of Array.from(document.styleSheets)) {
+        try { visit(sheet.cssRules); } catch { /* only same-origin site CSS is inspected */ }
+      }
+      return found;
+    });
+    expect(thumbRules.some((rule) => rule.selector.includes("webkit") && rule.radius === "50%" && rule.width === "18px" && rule.height === "18px")).toBe(true);
+    const authoredCss = readFileSync(path.resolve(__dirname, "../../src/components/triage/triage.css"), "utf8");
+    expect(authoredCss).toMatch(/::-moz-range-thumb\s*\{[\s\S]*?width:\s*18px;[\s\S]*?height:\s*18px;[\s\S]*?border-radius:\s*50%;/);
   });
 
   test("initial load requests no heavy asset (onnx/wasm) before any interaction", async ({ page }) => {
@@ -476,4 +607,86 @@ test.describe("Triage Router auto-rail v3 (task W3)", () => {
     const heroGridWidth = await page.locator(".triage-hero-grid").evaluate((el) => el.getBoundingClientRect().width);
     expect(heroGridWidth).toBeLessThanOrEqual(1180.5);
   });
+
+  // Task D-03: the content column re-centers in whatever canvas the rail
+  // leaves behind. Measured against <main>'s own box (which is what the
+  // rail pushes), the exhibit-01 body must sit with equal left/right
+  // gutters in BOTH rail states, never overflow, and keep the 1180px cap.
+  // 1440x1000 and 1024x768 are the two rail widths (260px / 208px); the
+  // mobile project's own overflow test covers the no-rail 390 state.
+  for (const viewport of [{ width: 1440, height: 1000 }, { width: 1024, height: 768 }]) {
+    test(`content column stays centered in <main> with the rail open and retracted at ${viewport.width}x${viewport.height}`, async ({ page }, testInfo) => {
+      test.skip(testInfo.project.name !== "desktop", "The viewport is set explicitly below; one browser project is enough.");
+      await page.setViewportSize(viewport);
+      await page.goto(ROUTE, { waitUntil: "networkidle" });
+      const shell = page.locator(".exhibit-shell");
+      await expect(shell).toHaveAttribute("data-rail-mode", "auto");
+      await expect(shell).not.toHaveClass(/rail-collapsed/);
+
+      const open = await measureTriageColumn(page);
+      expect(open.overflow, "rail open: no horizontal overflow").toBe(false);
+      expect(Math.abs(open.leftGutter - open.rightGutter), "rail open: symmetric gutters").toBeLessThanOrEqual(1);
+      expect(open.heroWidth).toBeLessThanOrEqual(1180.5);
+      expect(Math.abs(open.circuitContentLeft - open.columnLeft), "rail open: circuit strip sits on the column's left edge").toBeLessThanOrEqual(1);
+
+      await page.mouse.wheel(0, 40);
+      await expect(shell).toHaveClass(/rail-collapsed/);
+      await expect.poll(async () => (await measureTriageColumn(page)).mainLeft, { message: "main's push margin has finished animating to 0" }).toBe(0);
+
+      const collapsed = await measureTriageColumn(page);
+      expect(collapsed.overflow, "rail retracted: no horizontal overflow").toBe(false);
+      expect(Math.abs(collapsed.leftGutter - collapsed.rightGutter), "rail retracted: symmetric gutters").toBeLessThanOrEqual(1);
+      expect(collapsed.heroWidth).toBeLessThanOrEqual(1180.5);
+      expect(Math.abs(collapsed.circuitContentLeft - collapsed.columnLeft), "rail retracted: circuit strip sits on the column's left edge").toBeLessThanOrEqual(1);
+      // The column followed the canvas: its left edge moved toward the
+      // viewport's left as the rail left, and its gutter did not shrink
+      // (at 1440 it grows from the 7vw gutter to the centering gutter).
+      expect(collapsed.columnLeft).toBeLessThan(open.columnLeft);
+      expect(collapsed.leftGutter).toBeGreaterThanOrEqual(open.leftGutter - 0.5);
+    });
+  }
+});
+
+async function measureTriageColumn(page: import("@playwright/test").Page) {
+  return page.evaluate(() => {
+    const main = document.querySelector(".exhibit-shell > main")!.getBoundingClientRect();
+    const column = document.querySelector("#exhibit-01 > .exhibit-body")!.getBoundingClientRect();
+    const hero = document.querySelector(".triage-hero-grid")!.getBoundingClientRect();
+    const circuit = document.querySelector(".exhibit-shell > main > .circuit-top")!;
+    const circuitLeft = circuit.getBoundingClientRect().left + parseFloat(getComputedStyle(circuit).paddingLeft);
+    return {
+      mainLeft: main.left,
+      columnLeft: column.left,
+      circuitContentLeft: circuitLeft,
+      leftGutter: column.left - main.left,
+      rightGutter: main.right - column.right,
+      heroWidth: hero.width,
+      overflow: document.documentElement.scrollWidth > window.innerWidth,
+    };
+  });
+}
+
+// Task D-03: exhibit 01 reads in four labelled steps, in DOM order (so the
+// single-column mobile form and the two-column desktop form share one
+// reading order), and the CURRENT READING ledger has no per-cell fill --
+// the former paper-bright cells were the "coarse row of bordered cells".
+test("exhibit 01 reads control -> current reading -> interpretation -> detail, as a hairline ledger with no filled cells", async ({ page }) => {
+  await page.goto(ROUTE, { waitUntil: "networkidle" });
+  const terminal = page.locator(SEL.exhibit("01")).locator("[data-triage-terminal]");
+  const steps = await terminal.locator(":scope > [data-step]").evaluateAll((els) => els.map((el) => el.getAttribute("data-step")));
+  expect(steps).toEqual(["control", "reading", "interpretation", "detail"]);
+
+  await expect(terminal.locator('[data-step="control"] input[type=range]')).toHaveCount(2);
+  await expect(terminal.locator('[data-step="control"] [data-frontier-chart]')).toHaveCount(1);
+  await expect(terminal.locator('[data-step="reading"] [data-drawer]')).toHaveCount(4);
+  await expect(terminal.locator('[data-step="reading"] [data-drawer] > summary[data-drawer-summary]')).toHaveCount(4);
+  await expect(terminal.locator('[data-step="interpretation"] [data-strategy-card]')).toHaveCount(1);
+  await expect(terminal.locator('[data-step="interpretation"] [data-copy-syntax]')).toHaveCount(1);
+  await expect(terminal.locator('[data-step="detail"] [data-disclosure]')).toHaveCount(1);
+  await expect(terminal.locator('[data-step="detail"] [data-run-model]')).toHaveCount(1);
+
+  const fills = await terminal.locator("[data-drawer]").evaluateAll((els) => els.map((el) => getComputedStyle(el).backgroundColor));
+  for (const fill of fills) expect(fill, "readout rows carry no fill").toBe("rgba(0, 0, 0, 0)");
+  const rules = await terminal.locator("[data-drawer]").evaluateAll((els) => els.map((el) => getComputedStyle(el).borderTopWidth));
+  for (const rule of rules) expect(rule, "readout rows are hairline-ruled").toBe("1px");
 });

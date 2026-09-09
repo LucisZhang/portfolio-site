@@ -2,6 +2,7 @@
 
 import { LocalizedText, localize, useI18n } from "@/lib/i18n";
 import type { Project } from "@/lib/projects";
+import { zhWrapDisplay } from "@/lib/zh-wrap";
 
 function heroMetrics(project: Project, locale: "en" | "zh") {
   if (project.slug === "analytics-tandem") {
@@ -25,7 +26,7 @@ export default function CaseStudyBlock({ project }: { project: Project }) {
       <div className="case-title">
         <p className="eyebrow"><LocalizedText text={project.eyebrow} /></p>
         <h1 id="project-title"><LocalizedText text={project.title} /></h1>
-        <p className="cn-gloss">{project.glossZh}</p>
+        <p className="cn-gloss">{zhWrapDisplay(project.glossZh)}</p>
         {project.slug === "frontier-forge" ? <p className="forge-honesty-note">{locale === "en" ? "All numbers are recorded from on-demand GPU runs; commands and hashes included." : "所有数字来自按需 GPU 实测记录，附命令与哈希。"}</p> : null}
         <p className="lede"><LocalizedText text={project.summary} /></p>
         <div className="project-stat-grid" aria-label={dict.verifiedOutcome}>

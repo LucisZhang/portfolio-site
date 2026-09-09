@@ -5,13 +5,14 @@ import { SEL } from "./selectors";
 import { bodyTextExcludingLanguageSwitcher, containsCJK, longestLatinWordRun } from "./localePurity";
 import { assertNoHorizontalOverflow } from "./mobileAudit";
 
-const ROUTE = "/ai/rag-quality-lab";
+const ROUTE = "/projects/rag-quality-lab";
 
-// Task L3 [CLAUDE]: rebuild of /ai/rag-quality-lab to the user-approved
+// Task L3 [CLAUDE]: rebuild of /projects/rag-quality-lab to the user-approved
 // diff/对照 design (output/design-genres/genre-rag-diff.html). This file
 // replaces the RAG-specific coverage that used to live in
 // tests/e2e/portfolio.spec.ts (the "RAG Manifest & Drift Lab" describe
-// block, and the route-loop's "/ai/rag-quality-lab" and metadata-test
+// block, and the route-loop's "/ai/rag-quality-lab" -- the route's URL at
+// the time, ROUTE above today -- and metadata-test
 // legs) against the pre-rebuild RagManifestDriftLab.tsx workbench -- that
 // UI no longer renders on this route (unrouted, not deleted; see
 // docs/evidence/digits-rag.md). See task-L3-report.md for the full
@@ -189,6 +190,7 @@ test("RAG Quality Lab renders with no JavaScript: the diff, stats, and C3 honest
   // The editor is present but inert without JS -- must not vanish.
   await expect(exhibit01.getByTestId("rag-working-copy-editor")).toBeVisible();
   await expect(page.locator(SEL.exhibit("02")).getByTestId("rag-verified-claims")).toBeVisible();
+  await page.locator("[data-evidence=rag] > details > summary").click();
   await expect(page.locator(SEL.exhibit("03")).getByTestId("rag-receipts-list")).toBeVisible();
 
   await context.close();

@@ -1,0 +1,123 @@
+{
+  "rows": [
+    {
+      "baseline": "k0",
+      "cpg": 1,
+      "shapes": 10,
+      "graph": 2.4245259462011792,
+      "eager": 1.9264193457469037
+    },
+    {
+      "baseline": "k0",
+      "cpg": 2,
+      "shapes": 10,
+      "graph": 3.1203936993305397,
+      "eager": 2.4231165815970486
+    },
+    {
+      "baseline": "k0",
+      "cpg": 4,
+      "shapes": 10,
+      "graph": 3.795154805743276,
+      "eager": 3.051040925271904
+    },
+    {
+      "baseline": "k0",
+      "cpg": 8,
+      "shapes": 10,
+      "graph": 4.161483346917985,
+      "eager": 3.4930504403935525
+    },
+    {
+      "baseline": "k0",
+      "cpg": 16,
+      "shapes": 10,
+      "graph": 4.434372073968405,
+      "eager": 4.1572257988952
+    },
+    {
+      "baseline": "k0",
+      "cpg": 32,
+      "shapes": 10,
+      "graph": 4.5167007836680595,
+      "eager": 4.57783928369105
+    },
+    {
+      "baseline": "k0",
+      "cpg": 64,
+      "shapes": 10,
+      "graph": 4.574724048038913,
+      "eager": 4.604674436737997
+    },
+    {
+      "baseline": "k0",
+      "cpg": 256,
+      "shapes": 10,
+      "graph": 4.613316902024451,
+      "eager": 4.593081190979805
+    },
+    {
+      "baseline": "torch_cuda_tuned",
+      "cpg": 1,
+      "shapes": 10,
+      "graph": 1.2994888595719474,
+      "eager": 0.8115769247469276
+    },
+    {
+      "baseline": "torch_cuda_tuned",
+      "cpg": 2,
+      "shapes": 10,
+      "graph": 1.4102369704421247,
+      "eager": 0.978904693349858
+    },
+    {
+      "baseline": "torch_cuda_tuned",
+      "cpg": 4,
+      "shapes": 10,
+      "graph": 1.5285241609706666,
+      "eager": 1.122327618207726
+    },
+    {
+      "baseline": "torch_cuda_tuned",
+      "cpg": 8,
+      "shapes": 10,
+      "graph": 1.455935408580045,
+      "eager": 1.2729213698491715
+    },
+    {
+      "baseline": "torch_cuda_tuned",
+      "cpg": 16,
+      "shapes": 10,
+      "graph": 0.9321923558677733,
+      "eager": 0.909020656564161
+    },
+    {
+      "baseline": "torch_cuda_tuned",
+      "cpg": 32,
+      "shapes": 10,
+      "graph": 0.4479441044689164,
+      "eager": 0.5068681736195582
+    },
+    {
+      "baseline": "torch_cuda_tuned",
+      "cpg": 64,
+      "shapes": 10,
+      "graph": 0.2889854732124645,
+      "eager": 0.31804771825919054
+    },
+    {
+      "baseline": "torch_cuda_tuned",
+      "cpg": 256,
+      "shapes": 10,
+      "graph": 0.17953279825823498,
+      "eager": 0.1796941436790678
+    }
+  ],
+  "shape_count": 80,
+  "record_count": 480,
+  "status_counts": {
+    "PASS": 430,
+    "UNSUPPORTED": 50
+  },
+  "definition": "median of batch medians baseline / candidate; geometric mean across shapes per cpg"
+}

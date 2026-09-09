@@ -5,9 +5,9 @@ import { SEL } from "./selectors";
 import { bodyTextExcludingLanguageSwitcher, containsCJK, longestLatinWordRun } from "./localePurity";
 import { assertNoHorizontalOverflow } from "./mobileAudit";
 
-const ROUTE = "/engineering/crossover-study";
+const ROUTE = "/projects/crossover-study";
 
-// Task L6 [CLAUDE]: rebuild of /engineering/crossover-study to the user-
+// Task L6 [CLAUDE]: rebuild of /projects/crossover-study to the user-
 // approved notebook/workbench design (spec §6.6, output/design-legacy/
 // legacy-4-crossover-study.html), mirroring tests/e2e/credit-r2.spec.ts's
 // / tests/e2e/rag-r2.spec.ts's structure. This file replaces the
@@ -29,7 +29,7 @@ function loadExhibits(): Exhibits {
 // Iceberg snapshot ID that exceeds Number.MAX_SAFE_INTEGER -- JSON.parse
 // (loadWorkbenchJson above) silently rounds it to the nearest
 // representable double, the same reason the page itself
-// (src/app/engineering/crossover-study/page.tsx) reads the raw file text
+// (src/app/projects/crossover-study/page.tsx) reads the raw file text
 // and regex-extracts the digit string instead of trusting the parsed
 // number. This test does the same, so it asserts against the exact
 // committed value, not a float-rounded stand-in.
@@ -99,20 +99,28 @@ test.describe("Crossover Study exhibit 01 (cached SQL workbench)", () => {
     expect(workbenchDataRequests).toEqual([]);
   });
 
-  test("RUN shows ENGINE ARRIVES WITH R6 and never requests the DuckDB runtime", async ({ page }) => {
-    const heavyRequests: string[] = [];
-    await page.goto(ROUTE, { waitUntil: "networkidle" });
-    page.on("request", (request) => {
-      if (isHeavyRuntimeRequest(request.url())) heavyRequests.push(request.url());
-    });
+  for (const locale of ["en", "zh"] as const) {
+    test(`${locale} RUN describes the deferred R6 engine and never requests the DuckDB runtime`, async ({ page }) => {
+      const heavyRequests: string[] = [];
+      await page.addInitScript((selectedLocale) => {
+        window.localStorage.setItem("portfolio-locale", selectedLocale);
+      }, locale);
+      await page.goto(ROUTE, { waitUntil: "networkidle" });
+      page.on("request", (request) => {
+        if (isHeavyRuntimeRequest(request.url())) heavyRequests.push(request.url());
+      });
 
-    const runButton = page.locator(SEL.exhibit("01")).locator(".crossover-run-button");
-    await expect(runButton).toHaveAttribute("data-asset", "/duckdb/duckdb-mvp.wasm");
-    await expect(runButton).toHaveAttribute("data-bytes", "39362651");
-    await runButton.click();
-    await expect(page.getByTestId("crossover-engine-note")).toHaveText("ENGINE ARRIVES WITH R6");
-    expect(heavyRequests).toEqual([]);
-  });
+      const runButton = page.locator(SEL.exhibit("01")).locator(".crossover-run-button");
+      await expect(runButton).toHaveAttribute("data-asset", "/duckdb/duckdb-mvp.wasm");
+      await expect(runButton).toHaveAttribute("data-bytes", "39362651");
+      await expect(runButton).toHaveAttribute("aria-label", locale === "en"
+        ? "Run (Cmd+Enter) — the live engine is not connected until R6"
+        : "运行（Cmd+Enter）——在线引擎将在 R6 阶段接入");
+      await runButton.click();
+      await expect(page.getByTestId("crossover-engine-note")).toHaveText(locale === "en" ? "ENGINE ARRIVES WITH R6" : "引擎将在 R6 阶段接入");
+      expect(heavyRequests).toEqual([]);
+    });
+  }
 
   test("the Iceberg nameplate renders the real committed snapshot", async ({ page }) => {
     const plate = loadWorkbenchJson<IcebergPlate>("iceberg-plate.json");
@@ -172,6 +180,7 @@ test("Crossover Study renders with no JavaScript: the cached query, table, and r
   await page.goto(ROUTE, { waitUntil: "domcontentloaded" });
 
   const exhibit01 = page.locator(SEL.exhibit("01"));
+  await expect(exhibit01.locator(".crossover-run-button")).toHaveAttribute("aria-label", "Run (Cmd+Enter) — the live engine is not connected until R6");
   await expect(exhibit01.getByTestId("crossover-sql")).toContainText("SELECT");
   await expect(exhibit01.getByTestId("crossover-results-table").locator("tbody tr")).toHaveCount(2);
   await expect(exhibit01.locator(".crossover-query-index li")).toHaveCount(6);

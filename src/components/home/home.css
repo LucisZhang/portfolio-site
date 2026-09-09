@@ -7,10 +7,31 @@
 /* ---------- 00 Hero ---------- */
 
 .home-hero {
-  min-height: 94vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+/* ---------- Desktop exhibition rhythm (task D-01) ----------
+   With the rail fixed at one screen height (exhibition.css
+   --exhibit-screen), the content column follows the same measure: every
+   homepage exhibit is at least one screen tall, and an anchor jump lands
+   the exhibit flush with the viewport top. Before this, the hero stopped
+   at 94vh (a strip of exhibit 01's ink showed under it on first paint),
+   sections ran 700-1000px tall against a 1000px rail, and the mobile
+   sticky-bar allowance (scroll-margin-top: 72px) left a strip of the
+   previous exhibit above every anchor target on desktop. Only min-height
+   is set -- long exhibits keep growing with their content -- and the
+   opening row keeps its top padding, so the eyebrow lands at the same y
+   on every jump. Scoped to >= 980px, the same breakpoint at which the
+   fixed rail exists; the mobile sticky bar model below it is untouched. */
+@media (min-width: 980px) {
+  .home-exhibits .exhibit {
+    min-height: var(--exhibit-screen, 100vh);
+    padding-block: clamp(40px, 6vh, 72px);
+    scroll-margin-top: 0;
+  }
 }
 
 .home-hero-title {
@@ -37,19 +58,43 @@
   font-size: clamp(2.6rem, min(9vh, 11vw), 5.6rem);
 }
 
-.home-hero-zh {
+/* This headline is English in both locales. Its explicit language must
+   beat the shared ancestor selector :lang(zh) .exhibit-title. */
+.home-hero h1[lang="en"] {
+  font-family: var(--display-serif);
+}
+
+.home-locale-zh,
+.home-hero-narrative {
+  display: none;
+}
+
+html[lang="zh-CN"] .home-locale-en {
+  display: none;
+}
+
+html[lang="zh-CN"] .home-locale-zh {
+  display: inline;
+}
+
+.home-hero-narrative {
   margin: 20px 0 0;
   max-width: 30ch;
   /* Task F4 (user's binding feedback: "中文字体和英文字体不搭"): this line sits
      directly under the self-hosted Source Serif 4 Display h1 -- pairing it
      with the sans stack was exactly the giant-zh-next-to-serif-en clash
-     the user called out. Now on the self-hosted zh serif (--display-serif-zh,
-     globals.css), matching the user's reference pairing. */
-  font-family: var(--display-serif-zh);
+     the user called out. It uses the hero-only cut of the same self-hosted
+     zh serif (--display-serif-zh-home, globals.css), preserving that pairing
+     without putting the full site-wide subset on the critical paint path. */
+  font-family: var(--display-serif-zh-home);
   font-size: clamp(1.7rem, 3.4vh, 3rem);
   font-weight: 600;
   line-height: 1.2;
   color: var(--ink);
+}
+
+html[lang="zh-CN"] .home-hero-narrative {
+  display: block;
 }
 
 .home-hero-body {
@@ -73,18 +118,54 @@
   gap: 8px 20px;
 }
 
+/* Task D-01: every contact control (the <a>s and the WeChat <button>)
+   shares one box model -- inline-flex, centred, 30px tall -- so the text
+   baselines of link and button coincide by construction rather than by
+   the accident of matching line boxes. The glyph sits in the same flex
+   line, centred on the label's x-height; the underline stays on the label
+   only (span) so the icon is not struck through. */
 .home-hero-contact a,
 .home-hero-contact button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 30px;
   border: 0;
   background: none;
   padding: 0;
   color: var(--ink);
   font: inherit;
   font-weight: 650;
+  line-height: 1.25;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.home-hero-contact a > span,
+.home-hero-contact button > span {
   text-decoration: underline;
   text-decoration-color: color-mix(in srgb, var(--ink) 30%, transparent);
   text-underline-offset: 3px;
-  cursor: pointer;
+}
+
+.home-hero-contact a:hover > span,
+.home-hero-contact a:focus-visible > span,
+.home-hero-contact button:hover > span,
+.home-hero-contact button:focus-visible > span {
+  text-decoration-color: var(--accent);
+}
+
+/* ---------- Contact glyphs (task D-01; see ContactIcon.tsx) ----------
+   Sized in em so the glyph tracks its label through 200% text zoom;
+   .92em on the body size lands at ~15px next to a ~16px label. The 1px
+   nudge sits the optical centre of a 24-unit glyph on the label's
+   x-height centre (cap glyphs read slightly high otherwise). */
+.contact-icon {
+  flex: none;
+  width: .92em;
+  height: .92em;
+  margin-top: 1px;
+  fill: none;
 }
 
 .home-hero-contact a:hover,
@@ -92,7 +173,20 @@
 .home-hero-contact button:hover,
 .home-hero-contact button:focus-visible {
   color: var(--accent);
-  text-decoration-color: var(--accent);
+}
+
+/* Task D-01: keyboard focus on a contact control is a square accent frame
+   (the same treatment as the Ask Portfolio controls below) instead of the
+   browser's blue auto ring. Never removed -- only restyled. */
+.home-hero-contact a:focus-visible,
+.home-hero-contact button:focus-visible,
+.home-receipts-contact a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.home-receipts-contact a:focus-visible {
+  outline-color: var(--accent-on-ink);
 }
 
 /* ---------- 01 Flagship ---------- */
@@ -228,7 +322,7 @@
   align-items: center;
   gap: 20px;
   border-top: 1px solid var(--hairline);
-  padding: 20px 0;
+  padding: 14px 0;
 }
 
 .home-agent-row::before {
@@ -268,7 +362,7 @@
 /* ---------- Ask Portfolio inline ---------- */
 
 .home-ask {
-  margin-top: clamp(28px, 4vw, 44px);
+  margin-top: clamp(20px, 3vh, 32px);
   max-width: 620px;
 }
 
@@ -295,6 +389,12 @@
   padding-bottom: 8px;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .home-ask-row {
+    transition: border-color 120ms ease-out, box-shadow 120ms ease-out;
+  }
+}
+
 .exhibit[data-bg="ink"] .home-ask-row {
   border-bottom-color: color-mix(in srgb, var(--ink-invert-fg) 30%, transparent);
 }
@@ -306,12 +406,50 @@
   border: 0;
   background: none;
   color: inherit;
+  caret-color: var(--accent);
   font: inherit;
   font-size: .95rem;
 }
 
 .home-ask-row input::placeholder {
   color: var(--muted);
+}
+
+/* The writing field keeps one open baseline. Its focused state strengthens
+   that line; the adjacent button and presets use a compact accent ring. */
+.home-ask-row button:focus-visible,
+.home-ask-presets button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.home-ask-row input:focus-visible {
+  outline: 0;
+}
+
+.home-ask-row:has(input:focus-visible) {
+  border-bottom-color: var(--accent);
+  box-shadow: 0 1px 0 0 var(--accent);
+}
+
+.exhibit[data-bg="ink"] .home-ask-row button:focus-visible,
+.exhibit[data-bg="ink"] .home-ask-presets button:focus-visible {
+  outline-color: var(--accent-on-ink);
+}
+
+.exhibit[data-bg="ink"] .home-ask-row:has(input:focus-visible) {
+  border-bottom-color: var(--accent-on-ink);
+  box-shadow: 0 1px 0 0 var(--accent-on-ink);
+}
+
+@supports not selector(:has(*)) {
+  .home-ask-row input:focus-visible {
+    box-shadow: 0 2px 0 0 var(--accent);
+  }
+
+  .exhibit[data-bg="ink"] .home-ask-row input:focus-visible {
+    box-shadow: 0 2px 0 0 var(--accent-on-ink);
+  }
 }
 
 /* Task F1 (spec §2.5 touch targets >= 44px): "Ask" was a padding:0 text
@@ -341,10 +479,11 @@
 }
 
 .home-ask-presets {
-  margin-top: 12px;
+  margin-top: 8px;
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0 28px;
 }
 
 /* Task F1 (spec §2.5 touch targets >= 44px): these preset-question chips
@@ -409,6 +548,17 @@
   color: var(--muted);
 }
 
+.home-stack-layer-projects a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.home-stack-layer-projects a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
 .home-stack-layer-metric {
   margin: 6px 0 0;
   font-family: var(--mono);
@@ -446,10 +596,10 @@
 .home-negative-row {
   display: grid;
   grid-template-columns: minmax(0, 2.4fr) 5ch minmax(0, 2fr) 9ch;
-  gap: 16px;
+  gap: 12px;
   align-items: start;
   border-top: 1px solid color-mix(in srgb, var(--ink-invert-fg) 26%, transparent);
-  padding: 14px 0;
+  padding: 12px 0;
 }
 
 .home-negative-head {
@@ -614,6 +764,11 @@
 
 /* ---------- 06 Receipts ---------- */
 
+.home-exhibits [data-exhibit="06"] .exhibit-title {
+  max-width: none;
+  font-size: clamp(2.3rem, 3.6vw, 4rem);
+}
+
 .home-receipts-dl {
   margin: 0;
   display: grid;
@@ -622,6 +777,14 @@
   font-family: var(--mono);
   font-size: .82rem;
   max-width: 720px;
+}
+
+@media (min-width: 1180px) {
+  .home-receipts-dl {
+    grid-template-columns: max-content minmax(0, 1fr) max-content minmax(0, 1fr);
+    gap: 8px 32px;
+    max-width: 980px;
+  }
 }
 
 .home-receipts-dl dt {
@@ -648,6 +811,7 @@
 .home-receipts-contact a {
   display: inline-flex;
   align-items: center;
+  gap: 7px;
   min-width: 44px;
   min-height: 44px;
   color: var(--ink-invert-fg);
@@ -656,9 +820,27 @@
   text-decoration-color: color-mix(in srgb, var(--ink-invert-fg) 40%, transparent);
 }
 
+/* Task D-01: move the underline to each link label so the contact icon
+   remains clear. Row gap (8px 20px) is unchanged; that spacing is a
+   protected baseline in home-r2.spec.ts. */
+.home-receipts-contact a:has(> .contact-icon) {
+  text-decoration: none;
+}
+
+.home-receipts-contact a > span {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--ink-invert-fg) 40%, transparent);
+  text-underline-offset: 3px;
+}
+
 .home-receipts-contact a:hover,
 .home-receipts-contact a:focus-visible {
   color: var(--accent-on-ink);
+  text-decoration-color: var(--accent-on-ink);
+}
+
+.home-receipts-contact a:hover > span,
+.home-receipts-contact a:focus-visible > span {
   text-decoration-color: var(--accent-on-ink);
 }
 
@@ -778,7 +960,29 @@
   }
 
   .home-rail-tools {
-    justify-content: space-between;
+    /* Locale initialization must not change the number of toolbar rows:
+       CONTACT XIANGGUO wraps where 联系章向国 fits. With content-sized
+       flex wrapping that removed a row and shifted the whole <main>.
+       Give the contact link its own row on phones and stable columns on
+       wider screens. All controls remain in normal flow, including no-JS. */
+    display: grid;
+    grid-template-columns: repeat(2, minmax(44px, 1fr)) auto minmax(44px, 1fr);
+    column-gap: 12px;
+    justify-items: start;
+  }
+
+  .home-rail-tools > a:last-child {
+    grid-column: 1 / -1;
+  }
+
+  @media (min-width: 640px) {
+    .home-rail-tools {
+      grid-template-columns: repeat(2, minmax(44px, 1fr)) auto minmax(0, 2fr);
+    }
+
+    .home-rail-tools > a:last-child {
+      grid-column: auto;
+    }
   }
 
   /* Task F1 (spec §2.5: touch targets >= 44px): these were plain
@@ -803,11 +1007,12 @@
     justify-content: center;
     min-width: 44px;
   }
-  /* .search-button also gets an icon-only width:32px at <=640px
-     (globals.css); this wins over it (two classes beats one). */
+  /* Keep the icon-only target >=44px and let the wider-screen label use
+     its intrinsic width. A forced 44px box wrapped the English shortcut. */
   .home-rail-tools .search-button {
-    width: 44px;
+    width: auto;
     min-width: 44px;
+    white-space: nowrap;
   }
   .home-rail-tools .language-switcher { gap: 4px; }
   .home-rail-tools .language-switcher button {

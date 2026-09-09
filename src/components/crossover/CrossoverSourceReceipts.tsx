@@ -1,7 +1,10 @@
 "use client";
 
+import { EvidenceDisclosure } from "@/components/exhibition/EvidenceDisclosure";
+import { EvidenceFileLink } from "@/components/exhibition/EvidenceFileLink";
+
 import { LocalizedText, useI18n } from "@/lib/i18n";
-import { zhWrapNode } from "@/lib/zh-wrap";
+import { zhGroup, zhWrapDisplay } from "@/lib/zh-wrap";
 import { getProject } from "@/lib/projects";
 import { crossoverReceipts, type CrossoverReceipt } from "./crossoverCurvesData";
 
@@ -21,7 +24,7 @@ function ReceiptDetails({ receipt }: { receipt: CrossoverReceipt }) {
       <dl>
         <div><dt>git SHA</dt><dd><code>{receipt.git_sha}</code></dd></div>
         <div><dt>{locale === "en" ? "Recorded" : "记录时间"}</dt><dd>{receipt.run_ts}</dd></div>
-        <div><dt>{locale === "en" ? "Config" : "配置"}</dt><dd><code>{receipt.config_path ?? "—"}</code></dd></div>
+        <div><dt>{locale === "en" ? "Config" : "配置"}</dt><dd><EvidenceFileLink source={`crossover:${receipt.run_id}`}><code>{receipt.config_path ?? "—"}</code></EvidenceFileLink></dd></div>
         <div><dt>config SHA-256</dt><dd><code>{receipt.config_hash}</code></dd></div>
         <div><dt>dataset SHA-256</dt><dd><code>{receipt.dataset_manifest_hash}</code></dd></div>
         <div><dt>{locale === "en" ? "Frozen split" : "冻结切分"}</dt><dd>{receipt.splits.frozen_at}</dd></div>
@@ -39,12 +42,13 @@ export function CrossoverSourceReceipts() {
     <section id="exhibit-03" className="exhibit crossover-receipts" data-exhibit="03" data-bg="ink" aria-labelledby="exhibit-03-title">
       <p className="exhibit-opening-row">
         <span className="exhibit-number" aria-hidden="true">03</span>
-        <span className="exhibit-eyebrow">SOURCE / RECEIPTS</span>
+        <span className="exhibit-eyebrow">SOURCE · RECEIPTS</span>
       </p>
       <h1 id="exhibit-03-title" className="exhibit-title">
-        {locale === "en" ? <>Every curve opens<br /><em>the same six runs.</em></> : zhWrapNode(<>每条曲线，<br /><em>都能点开同样六次运行。</em></>)}
+        {locale === "en" ? <>Every curve opens<br /><em>the same six runs.</em></> : zhWrapDisplay(<>每条曲线，<br /><em>{zhGroup("都能点开", "同样六次运行。")}</em></>)}
       </h1>
 
+      <EvidenceDisclosure project="crossover">
       <div className="crossover-provenance">
         {crossoverProject.provenance.map((item) => <p key={item.en}><LocalizedText text={item} /></p>)}
       </div>
@@ -66,6 +70,8 @@ export function CrossoverSourceReceipts() {
           </a>
         ) : <span key={`pending-${index}`} aria-disabled="true"><LocalizedText text={link.label} /></span>)}
       </p>
+        <p><EvidenceFileLink source="public/case-studies/crossover-study/exhibits.json" /></p>
+      </EvidenceDisclosure>
     </section>
   );
 }

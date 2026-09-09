@@ -1,6 +1,10 @@
 import { expect, test } from "@playwright/test";
 import { SEL } from "./selectors";
 
+// Project URLs in the two history notes below are the ones that were live
+// when each task ran. Both pages are served at "/projects/<slug>" today; the
+// old URLs 308 there (next.config.ts, tests/e2e/redirects.spec.ts).
+//
 // Task L2 [CLAUDE]: the "margin" fixture variant is no longer exercised
 // here -- Margin Control Tower's equivalent-or-stronger coverage (including
 // its own click-gated DuckDB verify affordance) moved to
@@ -45,10 +49,11 @@ test.describe("analytics real-data evidence", () => {
 
   test("both project pages mount the dedicated methods section and authoritative dataset source", async ({ page }) => {
     for (const [route, project, sourceHref] of [
-      ["/analytics/margin-control-tower", "margin", "https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce"],
-      ["/analytics/credit-policy-desk", "credit", "https://zenodo.org/records/11295916"],
+      ["/projects/margin-control-tower", "margin", "https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce"],
+      ["/projects/credit-policy-desk", "credit", "https://zenodo.org/records/11295916"],
     ] as const) {
       await page.goto(route, { waitUntil: "networkidle" });
+      await page.locator(`[data-evidence=${project}] > details > summary`).click();
       const methods = page.getByTestId(`analytics-methods-${project}`);
       await expect(methods).toBeVisible();
       await expect(methods).toContainText("Methods / Results / Real-data analysis");

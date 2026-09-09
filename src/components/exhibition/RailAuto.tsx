@@ -82,7 +82,58 @@ export default function RailAuto() {
       clearTimeout(dwellTimer);
       entryMode = false;
       shell!.classList.remove("rail-cascade");
+      // Collapsing reclaims the rail's width for `main`, so every fluid
+      // block reflows and content above the reader's position can shrink —
+      // an anchor jump that landed just before this mutation (TOC link:
+      // fragment navigation focuses the target heading, then the focusin
+      // retract fires one rAF later) would otherwise drift ~166px out of
+      // the viewport at 1024px. Pin whatever the user is focused on: snap
+      // its viewport offset now and give back any reflow drift once the
+      // push settles. Wheel/dwell retracts leave focus on <body> and start
+      // no pin at all.
+      const active = document.activeElement;
+      const anchor = active && active !== document.body && content!.contains(active) ? active : null;
+      const anchorTop = anchor?.getBoundingClientRect().top;
       shell!.classList.add("rail-collapsed");
+      if (anchor && anchorTop !== undefined) {
+        let pinned = anchor;
+        let pinnedTop = anchorTop;
+        // The pinned element must never be frozen for the whole push: a
+        // keyboard reader whose focused TOC link started this retract can
+        // press Enter *mid-collapse*, and the browser's fragment jump then
+        // scrolls to and focuses the target heading. Holding the old link's
+        // offset through that would treat the jump as drift and scroll it
+        // straight back (the F-05 audit's below-the-viewport heading), so
+        // each frame re-reads document.activeElement: a focus handoff to
+        // another content element adopts that element at the offset the
+        // jump gave it, focus leaving content (rail re-entry starts a
+        // reveal) stops steering entirely, and a wheel event cancels too —
+        // the pin never fights a scroll the user is driving themselves.
+        let frames = 0;
+        let cancelled = false;
+        const cancel = () => { cancelled = true; };
+        window.addEventListener("wheel", cancel, { passive: true, once: true });
+        const stop = () => window.removeEventListener("wheel", cancel);
+        const pin = () => {
+          if (cancelled) return;
+          const focused = document.activeElement;
+          if (focused !== pinned) {
+            if (!focused || focused === document.body || !content!.contains(focused)) return stop();
+            pinned = focused;
+            pinnedTop = focused.getBoundingClientRect().top;
+          }
+          if (pinned.isConnected) {
+            const delta = pinned.getBoundingClientRect().top - pinnedTop;
+            if (Math.abs(delta) > 0.5) window.scrollBy(0, delta);
+          }
+          // Reduced motion collapses in one synchronous reflow (transition:
+          // none); otherwise follow the 240ms margin push frame by frame,
+          // with a couple of spare frames beyond the transition's end.
+          if (parseFloat(getComputedStyle(content!).marginLeft) > 0 && ++frames < 45) requestAnimationFrame(pin);
+          else stop();
+        };
+        pin();
+      }
       clearTimeout(settleTimer);
       settleTimer = setTimeout(() => {
         if (shell!.classList.contains("rail-collapsed")) railSettled = true;
@@ -130,14 +181,26 @@ export default function RailAuto() {
     // been dispatched and hit-tested, never during.
     function retractDeferred() {
       requestAnimationFrame(() => {
-        if (entryMode && isDesktop()) retract();
+        if (isDesktop() && !shell!.classList.contains("rail-collapsed")) retract();
       });
     }
     function onContentClick() {
       if (entryMode && isDesktop()) retractDeferred();
     }
-    function onContentFocusIn() {
-      if (entryMode && isDesktop()) retractDeferred();
+    function onContentFocusIn(event: FocusEvent) {
+      if (!isDesktop()) return;
+      if (entryMode) {
+        retractDeferred();
+        return;
+      }
+      const related = event.relatedTarget as Node | null;
+      // A handoff from the rail is already covered by its focusout grace
+      // path, which preserves the focused fragment while the layout moves.
+      if (related && rail!.contains(related)) return;
+      if (!shell!.classList.contains("rail-collapsed")) {
+        hint(false);
+        retractDeferred();
+      }
     }
     function onWheel(event: WheelEvent) {
       if (!entryMode || !isDesktop()) return;

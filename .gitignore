@@ -64,3 +64,6 @@ next-env.d.ts
 # private review source for the explicitly generated, hash-bound assistant grounding
 .assistant-private/
 /docs/PROJECT_DOSSIER.md
+
+# Local candidate review evidence
+/.candidate-review/

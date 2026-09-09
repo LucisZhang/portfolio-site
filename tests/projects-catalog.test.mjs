@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { homepageProjects, projects, routableProjects } from "../src/lib/projects.ts";
 
-// Task L5 [CLAUDE]: Ask Portfolio's own detail route (/ai/ask-portfolio, the
+// Task L5 [CLAUDE]: Ask Portfolio's own detail route (/projects/ask-portfolio, the
 // dialogue-genre conversation page) was enabled by this task -- it is no
 // longer launcher-only. See tests/e2e/ask-r2.spec.ts for that route's own
 // coverage.
@@ -30,5 +30,6 @@ test("the homepage catalog includes planned rows in the approved tier order with
     "ask-portfolio",
     "margin-control-tower",
     "credit-policy-desk",
+    "groupconv-atlas",
   ]);
 });

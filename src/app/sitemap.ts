@@ -2,11 +2,11 @@ import type { MetadataRoute } from "next";
 import { routableProjects } from "@/lib/projects";
 
 const SITE_ORIGIN = "https://xiangguozhang.com";
-const RETIRED_PROJECT_ROUTES = new Set(["/analytics/analytics-tandem"]);
+const RETIRED_PROJECT_ROUTES = new Set(["/projects/analytics-tandem"]);
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const projectRoutes = routableProjects
-    .map((project) => `/${project.track}/${project.slug}`)
+    .map((project) => `/projects/${project.slug}`)
     .filter((route) => !RETIRED_PROJECT_ROUTES.has(route));
 
   return ["/", ...projectRoutes, "/artifact"].map((route) => ({

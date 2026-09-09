@@ -107,7 +107,7 @@ can re-verify on every `npm run verify:r2-sources` run.
 ## Exhibit 05 — install + SOURCE/RECEIPTS
 
 - `docker compose -f docker-compose.full.yml up` — copied verbatim from
-  `/Users/hsiangkuochang/release_guardian/README.md`'s "One-command full
+  `$SOURCE_ROOT/release_guardian/README.md`'s "One-command full
   stack" section (real, current as of that repo's 2026-08-22 README).
 - `claude mcp add --transport http release-guardian
   https://mcp.xiangguozhang.com/mcp` — copied verbatim from

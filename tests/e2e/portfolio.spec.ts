@@ -8,21 +8,22 @@ import { getProject } from "../../src/lib/projects";
 
 const routes = [
   "/",
-  "/engineering/exactly-once-drills",
-  "/engineering/crossover-study",
-  "/ai/release-guardian",
-  "/ai/frontier-forge",
-  "/ai/rag-quality-lab",
-  "/ai/privacy-preflight",
-  "/ai/triage-router",
-  "/analytics/margin-control-tower",
-  "/analytics/credit-policy-desk",
+  "/projects/exactly-once-drills",
+  "/projects/crossover-study",
+  "/projects/release-guardian",
+  "/projects/frontier-forge",
+  "/projects/rag-quality-lab",
+  "/projects/privacy-preflight",
+  "/projects/triage-router",
+  "/projects/margin-control-tower",
+  "/projects/credit-policy-desk",
 ];
 
-// "/ai/frontier-forge", "/engineering/exactly-once-drills",
-// "/ai/triage-router", "/ai/privacy-preflight", "/ai/release-
-// guardian", "/analytics/credit-policy-desk", "/ai/rag-quality-lab",
-// "/engineering/crossover-study", and "/analytics/margin-control-tower"
+// "/projects/frontier-forge", "/projects/exactly-once-drills",
+// "/projects/triage-router", "/projects/privacy-preflight",
+// "/projects/release-guardian", "/projects/credit-policy-desk",
+// "/projects/rag-quality-lab",
+// "/projects/crossover-study", and "/projects/margin-control-tower"
 // are deliberately absent (tasks 2.2, 2.3, 3.1, 3.2, L1, L4, L3, L6, L2):
 // all nine render their own standalone hero/proof/report composition
 // instead of the shared ProjectPageView/ProjectProof markup ("hero" ->
@@ -38,19 +39,28 @@ const routes = [
 // tests/e2e/crossover-r2.spec.ts, margin-control-tower's is
 // tests/e2e/margin-r2.spec.ts).
 //
-// "/analytics/analytics-tandem" is absent too, but for a different reason
-// (task 5.2): it no longer renders anything at all -- it 308-redirects to
-// "/#archive" (see next.config.ts and tests/e2e/redirects.spec.ts, which
-// covers the redirect itself plus the "not shadowed" and sitemap
-// contracts). Task-suite-reconcile: this route used to be the one
-// remaining slug still served by the shared [track]/[project] catch-all,
-// which is why it appeared in this array and in the now-removed
-// `projectRoutes` array/test below (both existed solely to exercise that
-// catch-all's shared markup with the one project that hadn't migrated off
-// it yet). Now that it redirects instead of rendering, iterating it here
-// only exercises whatever page the redirect lands on (the homepage) under
-// the wrong route label, which is not a meaningful assertion -- dropped,
-// not silently: see task-suite-reconcile-report.md.
+// "/projects/analytics-tandem" is absent too, but for a different reason.
+// It IS served -- a noindex compatibility shell, the sole surviving static
+// param of src/app/projects/[slug]/page.tsx, returning 200 with
+// <meta name="robots" content="noindex, follow"> and deliberately kept out
+// of the sitemap. tests/e2e/redirects.spec.ts owns all three of those
+// contracts: the retired "/analytics/analytics-tandem" URL's 308 to it,
+// its 200 alongside the eleven standalone pages ("the retired routes do
+// not shadow ..."), and its absence from the sitemap. What it does NOT
+// render is the standalone hero/proof/report composition every assertion
+// in this array's loop below expects -- it is still the legacy
+// ProjectPageView/CaseStudyBlock shell -- so it stays out of the array.
+// Task-suite-reconcile history: this route used to be the one remaining
+// slug still served by the shared [track]/[project] catch-all (that file's
+// name at the time), which is why it appeared in this array and in the
+// now-removed `projectRoutes` array/test below (both existed solely to
+// exercise that catch-all's shared markup with the one project that hadn't
+// migrated off it yet). Task 5.2 then made "/analytics/analytics-tandem"
+// 308-redirect to "/#archive", so iterating it here only exercised
+// whatever page the redirect landed on (the homepage) under the wrong
+// route label -- dropped then, not silently: see
+// task-suite-reconcile-report.md. The flat-route move has since given the
+// page a served URL again, but the composition mismatch above still holds.
 //
 // "/ai", "/engineering", and "/analytics" (the three track index pages,
 // src/app/[track]/page.tsx) are absent for the exact same reason as
@@ -112,22 +122,22 @@ for (const locale of ["en", "zh"] as const) {
         await expect(page.locator(SEL.h1)).toContainText("I build the whole path.");
         // The Chinese hero narrative is an independent composition (not a
         // translation of the English assertion), but task F5's locale
-        // purity rule gates it to zh locale only — it must not render at
-        // all in en locale.
+        // purity rule gates its visible and accessible state to zh.
         if (locale === "zh") await expect(page.locator(SEL.homeHeroZh)).toHaveText(/[㐀-鿿]/);
-        else await expect(page.locator(SEL.homeHeroZh)).toHaveCount(0);
+        else await expect(page.locator(SEL.homeHeroZh)).toBeHidden();
         await expect(page.locator(SEL.brandMark)).toHaveText("XGZ");
-        await expect(page.locator(SEL.targetRoles)).toHaveText(locale === "en"
+        await expect(page.locator(SEL.targetRoles).locator(`.home-locale-${locale}`)).toHaveText(locale === "en"
           ? "Open to: AI agent & LLM application engineering · backend & distributed systems · data engineering & analytics"
           : "校招方向：AI Agent 与大模型应用工程 / 后端与分布式系统 / 数据工程与分析");
-        // Task 1.2: GitHub/Email now each appear twice — the hero contact
-        // row (exhibit 00) and exhibit 06's receipts — so these href-based
-        // checks scope to the hero, matching what they exercised
-        // pre-rebuild; SEL.aHrefMailto.../aHrefGithub... stay href-based
-        // (not text-based) so both instances still satisfy them.
+        await expect(page.locator(SEL.targetRoles).locator(`.home-locale-${locale === "en" ? "zh" : "en"}`)).toBeHidden();
+        // Task 1.2: GitHub and Email now each appear twice — the hero
+        // contact row (exhibit 00) and exhibit 06's receipts — so these
+        // href-based checks scope to the hero, matching what they exercised
+        // pre-rebuild; SEL.aHrefMailto.../aHrefGithub... stay
+        // href-based (not text-based) so both instances still satisfy them.
         await expect(page.locator(SEL.homeHero).locator(SEL.aHrefGithubComLuciszhang)).toBeVisible();
         if (locale === "en") await expect(page.locator(SEL.homeHero).locator(SEL.aHrefWwwLinkedinComInXiangguoZhang)).toBeVisible();
-        else await expect(page.locator(SEL.aHrefWwwLinkedinComInXiangguoZhang)).toHaveCount(0);
+        else await expect(page.locator(SEL.aHrefWwwLinkedinComInXiangguoZhang)).toBeHidden();
         const emailLinks = page.locator(SEL.homeHero).locator(SEL.aHrefMailtoHsiangkuochangoutlookCom);
         await expect(emailLinks).toHaveCount(1);
         await expect(emailLinks).toBeVisible();
@@ -143,7 +153,7 @@ for (const locale of ["en", "zh"] as const) {
         await expect(page.locator(SEL.aHrefResumePdf)).toHaveCount(0);
         await expect(page.locator('a[href^="/resumes/"]')).toHaveCount(0);
         await expect(page.locator('a[href$=".pdf"]').filter({ hasText: /resume|简历/i })).toHaveCount(0);
-        await expect(page.locator(SEL.homeHeroEyebrow)).toHaveText("AI AGENTS / LLM APPLICATIONS / MEASURED SYSTEMS");
+        await expect(page.locator(SEL.homeHeroEyebrow)).toHaveText("AI AGENTS · LLM APPLICATIONS · MEASURED SYSTEMS");
         const heroCells = page.locator(".exhibit-stat-grid").first().locator(".exhibit-stat-cell");
         await expect(heroCells).toHaveCount(homeStats.heroTiles.length);
         for (const tile of homeStats.heroTiles) await expect(heroCells.filter({ hasText: tile.value })).not.toHaveCount(0);
@@ -166,7 +176,7 @@ for (const locale of ["en", "zh"] as const) {
         await expect(exhibit01.locator('[data-finding="negative"]')).toContainText(homeStats.negativeRuns[0].conclusion);
         const cta = exhibit01.locator(SEL.homeCta);
         await expect(cta).toHaveCount(1);
-        await expect(cta).toHaveAttribute("href", /^\/ai\/frontier-forge(?:\?lang=zh)?$/);
+        await expect(cta).toHaveAttribute("href", /^\/projects\/frontier-forge(?:\?lang=zh)?$/);
         await expect(cta).not.toContainText(locale === "en" ? "Report first" : "报告先行");
 
         const agentRows = page.locator(SEL.homeAgentRow);
@@ -190,14 +200,14 @@ for (const locale of ["en", "zh"] as const) {
         if (locale === "zh") await expect(agentRows.nth(0).locator(SEL.cnGloss)).toHaveText(getProject("ai", "release-guardian")!.glossZh);
         else await expect(agentRows.nth(0).locator(SEL.cnGloss)).toHaveCount(0);
         await expect(agentRows.nth(0).locator(SEL.projectSummary)).toHaveText("132 live runs · 8/8 gates · 30/44 strict · citation fidelity 100%");
-        await expect(agentRows.nth(0).locator("a")).toHaveAttribute("href", /^\/ai\/release-guardian(?:\?lang=zh)?$/);
-        await expect(agentRows.nth(1).locator("a")).toHaveAttribute("href", /^\/ai\/triage-router(?:\?lang=zh)?$/);
-        await expect(agentRows.nth(2).locator("a")).toHaveAttribute("href", /^\/ai\/privacy-preflight(?:\?lang=zh)?$/);
+        await expect(agentRows.nth(0).locator("a")).toHaveAttribute("href", /^\/projects\/release-guardian(?:\?lang=zh)?$/);
+        await expect(agentRows.nth(1).locator("a")).toHaveAttribute("href", /^\/projects\/triage-router(?:\?lang=zh)?$/);
+        await expect(agentRows.nth(2).locator("a")).toHaveAttribute("href", /^\/projects\/privacy-preflight(?:\?lang=zh)?$/);
 
         const shelfRows = page.locator(SEL.homeShelfRow);
-        await expect(shelfRows).toHaveCount(5);
-        await expect(shelfRows.nth(0)).toHaveAttribute("href", /^\/engineering\/crossover-study(?:\?lang=zh)?$/);
-        await expect(shelfRows.nth(1)).toHaveAttribute("href", /^\/ai\/rag-quality-lab(?:\?lang=zh)?$/);
+        await expect(shelfRows).toHaveCount(6);
+        await expect(shelfRows.nth(0)).toHaveAttribute("href", /^\/projects\/crossover-study(?:\?lang=zh)?$/);
+        await expect(shelfRows.nth(1)).toHaveAttribute("href", /^\/projects\/rag-quality-lab(?:\?lang=zh)?$/);
         await expect(page.locator(`${SEL.homeShelfRow}[data-tier="archive"]`)).toHaveCount(2);
         // Task 0.5: the global site footer (marketing pitch line + build-date
         // stamp) is deleted per spec §2.1 ("delete ... the global footer")
@@ -295,6 +305,8 @@ for (const locale of ["en", "zh"] as const) {
       // headline claim are covered in tests/e2e/forge-r2.spec.ts.
       // Task L3 (RAG Quality Lab diff/对照 rebuild): the
       // "if (route === '/ai/rag-quality-lab')" block that used to live here
+      // (that was the route's URL at the time; it is "/projects/rag-quality-lab"
+      // today)
       // targeted the pre-rebuild RagProof.tsx markup (.rag-historical-result
       // quoting the old "0.8093 → 0.9438" controlled-run figure, and
       // .notes-section's boundary sentence). rag-quality-lab is now its own
@@ -307,7 +319,8 @@ for (const locale of ["en", "zh"] as const) {
       // `.rag-report-section` h2s exactly like guardian-r2.spec.ts's
       // release-guardian coverage above.
       // Task 3.2 (Privacy Preflight restraint-first reflow): the two
-      // "/ai/privacy-preflight" blocks that used to live here targeted
+      // "/ai/privacy-preflight" blocks that used to live here (the route's
+      // URL at the time; "/projects/privacy-preflight" today) targeted
       // PrivacyProof.tsx's marketing-proof markup — a static
       // .privacy-verification-metrics stat line quoting the worker-suite
       // count, and four before/after PNG/SVG screenshots via OptionalMedia
@@ -340,10 +353,15 @@ for (const locale of ["en", "zh"] as const) {
       // an honest drop, not a silently absorbed one.
 
       // The `route === "/analytics/analytics-tandem"` -> noindex branch this
-      // used to have is gone along with that route (task 5.2's redirect):
-      // noindex was the catch-all's generateMetadata robots override for
-      // that one still-legacy slug, and no other route in this array ever
-      // set it, so the check now always takes the else-branch below.
+      // used to have is gone from HERE because that slug left this array
+      // (see the `routes` comment at the top of the file), not because the
+      // noindex went away. The override is alive at
+      // src/app/projects/[slug]/page.tsx's generateMetadata
+      // (`robots: { index: false, follow: true }`) and the page it marks is
+      // served at "/projects/analytics-tandem" -- 200, `noindex, follow`,
+      // asserted by tests/e2e/redirects.spec.ts. No other route in this
+      // array ever set robots, so with that slug gone the check here always
+      // takes the else-branch below.
       const robots = page.locator(SEL.metaNameRobots);
       await expect(robots).toHaveCount(0);
 
@@ -390,6 +408,8 @@ for (const locale of ["en", "zh"] as const) {
 // sequence, `.negative-finding`, and the links-section anchor/pending
 // marker). By the time task L6 (crossover-study) landed, `projectRoutes`
 // had been trimmed down to a single entry, "/analytics/analytics-tandem"
+// (its URL at the time; the page is served at "/projects/analytics-tandem"
+// today)
 // — every other project had already migrated to its own standalone
 // composition (see the `routes` array's comment above for the full list
 // and each page's *-r2.spec.ts replacement). Task 5.2 then made
@@ -445,7 +465,7 @@ test("homepage routes its single CTA to the flagship release console", async ({ 
   test.skip(testInfo.project.name !== "desktop", "The homepage flagship handoff only needs one runtime pass.");
   await page.goto("/", { waitUntil: "networkidle" });
   const cta = page.locator(SEL.exhibit("01")).locator(SEL.homeCta);
-  await expect(cta).toHaveAttribute("href", "/ai/frontier-forge");
+  await expect(cta).toHaveAttribute("href", "/projects/frontier-forge");
   await expect(cta).not.toContainText("Report first");
 });
 
@@ -471,8 +491,8 @@ test("375px homepage reaches exhibit 01 within a couple of screens and Ask Portf
 // exhibits with inspectable receipts" test used to drive the legacy
 // CrossoverExhibit.tsx markup (data-testid="crossover-exhibit",
 // SEL.crossoverReceiptsSummary/dataReceiptAug17/dataReceiptAug20) this
-// route no longer renders -- /engineering/crossover-study is now a
-// standalone route (src/app/engineering/crossover-study/page.tsx) built on
+// route no longer renders -- /projects/crossover-study is now a
+// standalone route (src/app/projects/crossover-study/page.tsx) built on
 // CrossoverPage.tsx. Equivalent-or-stronger coverage (the same two curves
 // + receipts, plus the new cached SQL workbench and Iceberg nameplate)
 // lives in tests/e2e/crossover-r2.spec.ts; see task-L6-report.md for the
@@ -495,7 +515,7 @@ test("homepage and non-analytics routes do not load the DuckDB browser runtime",
     if (request.url().includes("/duckdb/")) duckDbRequests.push(request.url());
   });
 
-  for (const route of ["/", "/engineering/exactly-once-drills", "/ai/release-guardian", "/ai/rag-quality-lab", "/ai/privacy-preflight"]) {
+  for (const route of ["/", "/projects/exactly-once-drills", "/projects/release-guardian", "/projects/rag-quality-lab", "/projects/privacy-preflight"]) {
     await page.goto(route, { waitUntil: "networkidle" });
   }
 
@@ -566,9 +586,9 @@ test.describe("Analytics decision vertical slices", () => {
   // "fixed-seed injected anomaly" copy, the 52 week bars, the
   // contract/quality-check grids, the Promotion depth scenario slider, and
   // the Metric definitions link). Root-caused live (63-failure full-suite
-  // run, HEAD cb11fdc): the routed /analytics/margin-control-tower page is
+  // run, HEAD cb11fdc): the routed /projects/margin-control-tower page is
   // now src/components/margin/MarginPage.tsx (its own literal route,
-  // src/app/analytics/margin-control-tower/page.tsx), which reuses the
+  // src/app/projects/margin-control-tower/page.tsx), which reuses the
   // same `data-testid="margin-control-tower"` string by coincidence but
   // renders none of the above -- `requestedSource`/`activeSource` state,
   // the source toggle, the contracts/quality tabs, and the scenario slider
@@ -599,7 +619,7 @@ test.describe("Analytics decision vertical slices", () => {
   // pre-rebuild src/components/analytics/CreditPolicyLab.tsx markup
   // (data-requested-source/data-active-source/data-real-artifact-status
   // attributes, the source toggle, capacity slider, and Record policy
-  // decision audit flow) -- /analytics/credit-policy-desk is now its own
+  // decision audit flow) -- /projects/credit-policy-desk is now its own
   // standalone chart-led Evidence page (src/components/credit/CreditPage.tsx)
   // built from the real backtest-report.json / policy-frontier-report.json
   // rather than the old interactive workbench, so every one of those
@@ -624,9 +644,9 @@ test.describe("Analytics decision vertical slices", () => {
   // The redirect itself, that it isn't shadowed by the standalone project
   // routes, and that it's absent from the sitemap are all covered by
   // tests/e2e/redirects.spec.ts ("/analytics/analytics-tandem permanently
-  // redirects to /#archive", "track redirects do not shadow the eleven
-  // standalone project and product pages", "sitemap contains home, every
-  // current project page, and artifact"). Nothing about "explaining the
+  // redirects to /projects/analytics-tandem", "the retired routes do not
+  // shadow the eleven standalone project and product pages", "sitemap
+  // contains home, every current project page, and artifact"). Nothing about "explaining the
   // migration to a visitor" survives to migrate elsewhere: /#archive is
   // the homepage's own archive-tier shelf row, which already links to both
   // margin-control-tower and credit-policy-desk directly (see this file's
@@ -638,7 +658,7 @@ test.describe("Analytics decision vertical slices", () => {
 test.describe("Privacy Preflight Web", () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "en"));
-    await page.goto("/ai/privacy-preflight", { waitUntil: "networkidle" });
+    await page.goto("/projects/privacy-preflight", { waitUntil: "networkidle" });
     await expect(page.getByTestId("privacy-preflight-lab")).toBeVisible();
   });
 
@@ -681,13 +701,14 @@ test.describe("Privacy Preflight Web", () => {
   // instead of an Accept/Reject button), SCAN's re-detect/reset behavior
   // (replacing the retired Undo/Redo/Reset trio), and the same zero-network
   // assertion. See task-F6-report.md for the full inventory.
-  test("text review is deterministic, click-to-keep toggles the output live, and does not send content", async ({ page }) => {
+  test("text review is deterministic, click-to-keep toggles the output live, and does not send content", async ({ page, baseURL }) => {
+    const localOrigin = new URL(baseURL!).origin;
     const requests: string[] = [];
     page.on("request", (request) => {
       if (!/^https?:/.test(request.url())) return;
       const url = new URL(request.url());
       if (
-        url.origin !== "http://127.0.0.1:4173" ||
+        url.origin !== localOrigin ||
         request.method() !== "GET" ||
         /ada%40example|415-555|Private|10\.0\.2\.15|ada-example|3f9a7c1e2b6d4859a0c7e3f1b2d4a6c8|Beijing/i.test(url.href)
       ) {
@@ -757,13 +778,14 @@ test.describe("Privacy Preflight Web", () => {
     await expect(output).toContainText("北京理工大学");
   });
 
-  test("image export burns pixels into a fresh verified PNG without requests", async ({ page }) => {
+  test("image export burns pixels into a fresh verified PNG without requests", async ({ page, baseURL }) => {
+    const localOrigin = new URL(baseURL!).origin;
     await page.getByRole("tab", { name: "Image" }).click();
     const requests: string[] = [];
     page.on("request", (request) => {
       if (!/^https?:/.test(request.url())) return;
       const url = new URL(request.url());
-      if (url.origin !== "http://127.0.0.1:4173" || request.method() !== "GET" || /ada%40example|415-555|Private/i.test(url.href)) {
+      if (url.origin !== localOrigin || request.method() !== "GET" || /ada%40example|415-555|Private/i.test(url.href)) {
         requests.push(`${request.method()} ${request.url()}`);
       }
     });
@@ -787,7 +809,9 @@ test.describe("Privacy Preflight Web", () => {
     await page.mouse.up();
     expect(Number(await xInput.inputValue())).toBeGreaterThan(initialX);
     await page.getByRole("button", { name: "Confirm review and show result" }).click();
-    await expect(page.getByTestId("privacy-image-output")).toBeVisible();
+    // Canvas encoding, bitmap decoding, and SHA-256 validation can cross the
+    // default 5s assertion window under a full single-worker browser run.
+    await expect(page.getByTestId("privacy-image-output")).toBeVisible({ timeout: 15_000 });
     const redactedView = page.getByTestId("privacy-image-redacted-view");
     await expect(redactedView).toBeVisible();
     const redactedSize = await redactedView.boundingBox();
@@ -810,7 +834,8 @@ test.describe("Privacy Preflight Web", () => {
     expect(requests).toEqual([]);
   });
 
-  test("local OCR loads only same-origin runtime assets and produces review boxes", async ({ page }, testInfo) => {
+  test("local OCR loads only same-origin runtime assets and produces review boxes", async ({ page, baseURL }, testInfo) => {
+    const localOrigin = new URL(baseURL!).origin;
     test.skip(testInfo.project.name !== "desktop", "The heavy OCR runtime is exercised once; responsive review controls are covered separately.");
     test.setTimeout(120_000);
     await page.getByRole("tab", { name: "Image" }).click();
@@ -819,7 +844,7 @@ test.describe("Privacy Preflight Web", () => {
     page.on("request", (request) => {
       if (!/^https?:/.test(request.url())) return;
       const url = new URL(request.url());
-      if (url.origin !== "http://127.0.0.1:4173" || request.method() !== "GET" || /ada%40example|415-555|Private/i.test(url.href)) {
+      if (url.origin !== localOrigin || request.method() !== "GET" || /ada%40example|415-555|Private/i.test(url.href)) {
         unsafeRequests.push(`${request.method()} ${request.url()}`);
       }
     });
@@ -1102,14 +1127,15 @@ test.describe("Privacy Preflight Web", () => {
     expect(downloadedDocument.getPageCount()).toBe(3);
   });
 
-  test("PDF export reviews every page, rasterizes, rebuilds, and passes the fail-closed gate", async ({ page }, testInfo) => {
+  test("PDF export reviews every page, rasterizes, rebuilds, and passes the fail-closed gate", async ({ page, baseURL }, testInfo) => {
+    const localOrigin = new URL(baseURL!).origin;
     test.setTimeout(120_000);
     await page.getByRole("tab", { name: "PDF" }).click();
     const unsafeRequests: string[] = [];
     page.on("request", (request) => {
       if (!/^https?:/.test(request.url())) return;
       const url = new URL(request.url());
-      if (url.origin !== "http://127.0.0.1:4173" || request.method() !== "GET" || /ada%40example|415-555|Private/i.test(url.href)) {
+      if (url.origin !== localOrigin || request.method() !== "GET" || /ada%40example|415-555|Private/i.test(url.href)) {
         unsafeRequests.push(`${request.method()} ${request.url()}`);
       }
     });

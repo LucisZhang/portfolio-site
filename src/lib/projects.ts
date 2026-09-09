@@ -1,18 +1,9 @@
 import type { LocalizedString } from "./i18n";
+import type { ProjectIdentityId } from "./project-identities";
+import type { ProjectRepository } from "./project-repositories";
 
 export type TrackId = "analytics" | "engineering" | "ai";
-export type ProjectId =
-  | "frontier-forge"
-  | "release-guardian"
-  | "exactly-once-drills"
-  | "rag-quality-lab"
-  | "triage-router"
-  | "privacy-preflight"
-  | "margin-control-tower"
-  | "crossover-study"
-  | "ask-portfolio"
-  | "credit-policy-desk"
-  | "analytics-tandem";
+export type ProjectId = Exclude<ProjectIdentityId, "Voice-in-Security">;
 
 export type ProjectTier = "flagship" | "core" | "secondary" | "archive";
 
@@ -40,6 +31,8 @@ export interface Project {
   routeEnabled?: boolean;
   tier: ProjectTier;
   title: LocalizedString;
+  /** Stable product name for navigation when the editorial title is a headline. */
+  navigationLabel?: LocalizedString;
   glossZh: string;
   eyebrow: LocalizedString;
   summary: LocalizedString;
@@ -53,6 +46,7 @@ export interface Project {
   fieldNotes?: LocalizedString[];
   provenance: LocalizedString[];
   boundaries: LocalizedString[];
+  repository: ProjectRepository;
   links: ProjectLink[];
   legacy?: boolean;
 }
@@ -88,7 +82,159 @@ export const tracks: Track[] = [
   },
 ];
 
+const repositoryLabel: LocalizedString = { en: "GitHub repository", zh: "GitHub 仓库" };
+export const repositoryNewTabLabel: LocalizedString = { en: "Opens in a new tab", zh: "在新标签页打开" };
+
 const projectCatalog: Project[] = [
+{
+  slug: "groupconv-atlas",
+  track: "ai",
+  tier: "secondary",
+  routeEnabled: true,
+  title: {
+    en: "GroupConv Atlas",
+    zh: "GroupConv Atlas"
+  },
+  glossZh: "分组卷积：优化收益与适用边界",
+  eyebrow: {
+    en: "GPU kernel engineering",
+    zh: "GPU 算子工程"
+  },
+  summary: {
+    en: "A measured map of grouped convolution: four CUDA implementations, strict FP32 checks, and separate graph-device and eager API timings on RTX 4090. The strongest custom kernel improves the direct baseline, but does not beat tuned PyTorch overall.",
+    zh: "用四个 CUDA 实现、严格 FP32 校验与两种独立计时口径，绘制 RTX 4090 上的分组卷积性能地图。专门化内核改进了直接实现，但整体没有超过调优后的 PyTorch。"
+  },
+  metrics: {
+    en: "80 SHAPES · 10 × 30 SAMPLES · GRAPH / EAGER",
+    zh: "80 个形状 · 10 × 30 样本 · 图内 / EAGER"
+  },
+  problem: {
+    en: "A faster kernel on one shape does not establish a faster operator across workloads.",
+    zh: "单个形状上的快内核，不等于各种负载下都更快的算子。"
+  },
+  audience: {
+    en: "GPU and systems engineers reviewing numerical correctness and benchmark design.",
+    zh: "关注数值正确性与实验设计的 GPU 和系统工程团队。"
+  },
+  role: {
+    en: "Designed and implemented the grouped-convolution kernels, built the numerical validation and benchmark pipeline, and analyzed performance across shapes and timing boundaries.",
+    zh: "设计并实现分组卷积内核，搭建数值校验与性能测试流程，分析不同形状和计时边界下的优化收益。"
+  },
+  outcome: {
+    en: "The Atlas keeps every supported and unsupported result visible. Ratios above one favor the candidate; ten paired batches support within-session bootstrap classification.",
+    zh: "Atlas 保留通过与不支持的结果。比值大于一表示候选更快；十个配对批次支持本轮 bootstrap 分类。"
+  },
+  stack: [
+    {
+      en: "C++",
+      zh: "C++"
+    },
+    {
+      en: "CUDA",
+      zh: "CUDA"
+    },
+    {
+      en: "OpenMP",
+      zh: "OpenMP"
+    },
+    {
+      en: "OpenCL",
+      zh: "OpenCL"
+    },
+    {
+      en: "PyTorch",
+      zh: "PyTorch"
+    },
+    {
+      en: "FP64 oracle",
+      zh: "FP64 oracle"
+    }
+  ],
+  architecture: [
+    {
+      label: {
+        en: "Freeze shapes",
+        zh: "固定形状"
+      },
+      detail: {
+        en: "Record NCHW geometry, groups and support limits before measurement.",
+        zh: "计时前固定 NCHW 几何、分组数与支持范围。"
+      }
+    },
+    {
+      label: {
+        en: "Check outputs",
+        zh: "核对输出"
+      },
+      detail: {
+        en: "Compare complete FP32 outputs; keep independent FP64 checks separate.",
+        zh: "比较完整 FP32 输出，独立记录 FP64 对照。"
+      }
+    },
+    {
+      label: {
+        en: "Measure twice",
+        zh: "分开计时"
+      },
+      detail: {
+        en: "Graph-internal CUDA events and synchronized eager API measure different boundaries.",
+        zh: "图内设备事件与同步调用接口分别衡量不同边界。"
+      }
+    },
+    {
+      label: {
+        en: "Keep the map",
+        zh: "保留全图"
+      },
+      detail: {
+        en: "Inspect shape-level results, including regressions and unsupported cases.",
+        zh: "逐形状检查结果，同时保留退化和不支持项。"
+      }
+    }
+  ],
+  provenance: [
+    {
+      en: "RTX 4090 session, 8 September 2026; PyTorch 2.8.0+cu128, cuDNN 9.10.2.",
+      zh: "2026 年 9 月 8 日 RTX 4090 本轮实测；PyTorch 2.8.0+cu128、cuDNN 9.10.2。"
+    },
+    {
+      en: "Displayed values are deterministic aggregates of the sanitized Atlas download. No GPU runs in this browser.",
+      zh: "展示值由脱敏 Atlas 数据确定性汇总；浏览器不运行 GPU 实验。"
+    }
+  ],
+  boundaries: [
+    {
+      en: "No overall advantage over tuned PyTorch; graph timing is not eager kernel timing.",
+      zh: "整体未胜过调优 PyTorch；图内时间不能称为 eager 内核时间。"
+    },
+    {
+      en: "A fixed MobileNetV2 block substitution won graph timing at N=4 (1.13849×), but lost synchronized eager API at N=1 and N=4. Random weights; no model accuracy evaluation.",
+      zh: "固定 MobileNetV2 模块替换在 N=4 图内计时获得 1.13849×，但 N=1、N=4 的同步调用接口均退化。随机权重，未评估模型准确率。"
+    },
+    {
+      en: "Frontend, Triton and Nsight evidence was audited separately on RTX 4090. Historical RTX 4090 D and Apple OpenCL remain separate; sustainable roofline bounds are not established.",
+      zh: "Frontend、Triton 与 Nsight 已在 RTX 4090 上分别审计；旧 RTX 4090 D、苹果设备的 OpenCL 保持独立，尚未确立可持续 roofline 上界。"
+    }
+  ],
+  repository: { status: "public", label: repositoryLabel, href: "https://github.com/LucisZhang/groupconv-atlas" },
+  links: [
+    { label: { en: "Historical RTX 4090 D data (five batches)", zh: "旧 RTX 4090 D 数据（五批）" }, href: "/case-studies/groupconv-atlas/atlas.json" },
+    {
+      label: {
+        en: "Inspect Atlas data",
+        zh: "查看 Atlas 数据"
+      },
+      href: "/case-studies/groupconv-atlas/rtx4090-atlas.json"
+    },
+    {
+      label: {
+        en: "Evidence and scope",
+        zh: "证据与范围"
+      },
+      href: "/case-studies/groupconv-atlas/current-evidence.md"
+    }
+  ]
+},
   {
     slug: "frontier-forge",
     track: "ai",
@@ -113,10 +259,10 @@ const projectCatalog: Project[] = [
     architecture: [],
     provenance: [],
     boundaries: [],
+    repository: { status: "public", label: repositoryLabel, href: "https://github.com/LucisZhang/frontier-forge" },
     links: [
       { label: { en: "Evidence Explorer", zh: "证据浏览器" }, href: "#evidence-explorer" },
       { label: { en: "Technical report", zh: "技术报告" }, href: "https://github.com/LucisZhang/frontier-forge#results" },
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/frontier-forge" },
     ],
   },
   {
@@ -125,7 +271,7 @@ const projectCatalog: Project[] = [
     tier: "core",
     title: { en: "Release Guardian", zh: "Release Guardian" },
     glossZh: "Agent 发布门禁：编排与审批",
-    eyebrow: { en: "AI Agent / LLM systems", zh: "AI Agent / LLM systems" },
+    eyebrow: { en: "AI Agent · LLM systems", zh: "AI Agent · LLM systems" },
     summary: {
       en: "A production-shaped LLM agent gate: 13-node LangGraph orchestration, four parallel evidence collectors, policy-guarded tools, deterministic validators with bounded retries, and a human approval that survives a process kill. 132 funded live runs, 8/8 aggregate gates (30/44 strict).",
       zh: "按生产模式设计的 LLM Agent 发布门禁：13 节点 LangGraph 编排，四路并行证据采集，工具层按节点白名单加调用预算，确定性校验挡在出口，人工审批断电也能恢复。132 次付费在线评测，8/8 聚合门禁全过（严格口径 30/44）。",
@@ -197,9 +343,8 @@ const projectCatalog: Project[] = [
         zh: "私有源码未提供链接；页面仅展示已通过记录中的发布检查的脱敏文件。",
       },
     ],
-    links: [
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/release-guardian" },
-    ],
+    repository: { status: "public", label: repositoryLabel, href: "https://github.com/LucisZhang/release-guardian" },
+    links: [],
   },
   {
     slug: "exactly-once-drills",
@@ -271,9 +416,8 @@ const projectCatalog: Project[] = [
         zh: "一次已捕获运行不能证明通用硬件兼容性或一键复现；历史面板仅证明其捕获的那次运行。",
       },
     ],
-    links: [
-      { label: { en: "GitHub repository", zh: "公开源码仓库" }, href: "https://github.com/LucisZhang/exactly-once-drills" },
-    ],
+    repository: { status: "public", label: repositoryLabel, href: "https://github.com/LucisZhang/exactly-once-drills" },
+    links: [],
   },
   {
     slug: "rag-quality-lab",
@@ -349,9 +493,8 @@ const projectCatalog: Project[] = [
       },
       { en: "The lab is a single-machine evaluation workbench, not a released package or a production serving system.", zh: "该实验室是单机评估工作台，并非已发布的软件包或生产服务系统。" },
     ],
-    links: [
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/rag-quality-lab" },
-    ],
+    repository: { status: "public", label: repositoryLabel, href: "https://github.com/LucisZhang/rag-quality-lab" },
+    links: [],
   },
   {
     slug: "triage-router",
@@ -441,9 +584,8 @@ const projectCatalog: Project[] = [
         zh: "结果只适用于这个任务、这份语料和测量当时的价目表；路由省下的钱由公开披露的成本模型算得，不是普适结论。",
       },
     ],
-    links: [
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/triage-router" },
-    ],
+    repository: { status: "public", label: repositoryLabel, href: "https://github.com/LucisZhang/triage-router" },
+    links: [],
   },
   {
     slug: "privacy-preflight",
@@ -518,9 +660,8 @@ const projectCatalog: Project[] = [
         zh: "外部模型始终是可选项，默认只接收脱敏后的内容。一旦启用外部服务，这套流程就不再称作离线流程。",
       },
     ],
-    links: [
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/privacy-preflight-web" },
-    ],
+    repository: { status: "public", label: repositoryLabel, href: "https://github.com/LucisZhang/privacy-preflight" },
+    links: [],
   },
   {
     slug: "margin-control-tower",
@@ -528,7 +669,7 @@ const projectCatalog: Project[] = [
     tier: "archive",
     title: { en: "Margin Control Tower", zh: "Margin Control Tower" },
     glossZh: "浏览器毛利归因工作台",
-    eyebrow: { en: "Analytics engineering / margin decisions", zh: "分析工程 / 毛利决策" },
+    eyebrow: { en: "Analytics engineering · margin decisions", zh: "分析工程 · 毛利决策" },
     summary: { en: "Weekly margin moves, decomposed in the browser on a hash-verified Olist aggregate — DuckDB-WASM, no server.", zh: "浏览器里当场拆解每周毛利变化。Olist 聚合经过哈希校验，由 DuckDB-WASM 就地处理，不用服务器。" },
     metrics: { en: "15,809 Olist aggregate rows · 99,441 source orders · 10 fail-closed contract checks", zh: "15,809 条 Olist 聚合记录 · 99,441 个源订单 · 10 项 fail-closed（失败即拦截）契约检查" },
     problem: { en: "A revenue-only view hides the margin lost to discounts, returns, cost of goods, and fulfillment, and gives a category manager no way to test a response.", zh: "只看收入会看不见折扣、退货、商品成本、履约这四类因素造成的毛利损失，品类经理也没法测试应对方案。" },
@@ -573,9 +714,8 @@ const projectCatalog: Project[] = [
       { en: "Detection precision and recall evaluate six deterministic perturbations on observed Mondays after the real totals are reindexed to a complete Monday calendar; 11 weeks with no derived cells are zero-filled. No manually labeled real anomaly is claimed, and neither calendar-completion rows nor perturbations enter the Parquet artifact.", zh: "检测的精确率与召回率评估方式如下：先将真实周总额重建为完整的星期一日历，对 11 个无衍生单元的周补零，再在有观测的星期一上施加 6 个确定性扰动。不声称存在人工标注的真实异常，日历补全行与扰动均不进入 Parquet 产物。" },
       { en: "The associational elasticity coefficient is fit on the analysis window; the later eight-week holdout evaluates MAPE only. Reference price, return deductions, and 60% COGS are disclosed proxies; no causal lift, audited company margin, forecast, or production decision is claimed.", zh: "相关性弹性系数在分析期窗口内拟合；后续 8 周留出期仅用于评估 MAPE。参考价、退货扣减与 60% COGS 均为已披露的代理变量；不声称因果提升、经审计的公司毛利、预测结果或生产决策依据。" },
     ],
-    links: [
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/margin-control-tower" },
-    ],
+    repository: { status: "public", label: repositoryLabel, href: "https://github.com/LucisZhang/margin-control-tower" },
+    links: [],
   },
   {
     slug: "crossover-study",
@@ -661,8 +801,8 @@ const projectCatalog: Project[] = [
         zh: "仅为单机批式评估：没有服务系统、在线指标或 A/B 测试。本页不分发原始评论、逐用户数组或 MiniLM 权重。",
       },
     ],
+    repository: { status: "public", label: repositoryLabel, href: "https://github.com/LucisZhang/crossover-study" },
     links: [
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/crossover-study" },
       { label: { en: "Full demo source", zh: "完整版 demo 源码" }, href: "https://github.com/LucisZhang/crossover-study/tree/main/demo" },
     ],
   },
@@ -687,6 +827,12 @@ const projectCatalog: Project[] = [
     architecture: [],
     provenance: [],
     boundaries: [],
+    // Ask Portfolio is implemented in this site's published repository (PUBLICATION.md).
+    repository: {
+      status: "public",
+      label: repositoryLabel,
+      href: "https://github.com/LucisZhang/portfolio-site",
+    },
     links: [],
   },
   {
@@ -694,8 +840,9 @@ const projectCatalog: Project[] = [
     track: "analytics",
     tier: "archive",
     title: { en: "Credit Policy Desk", zh: "Credit Policy Desk" },
+    navigationLabel: { en: "Credit Policy Desk", zh: "Credit Policy Desk" },
     glossZh: "信贷策略模拟工作台",
-    eyebrow: { en: "Risk analytics / policy governance", zh: "风险分析 / 策略治理" },
+    eyebrow: { en: "Risk analytics · policy governance", zh: "风险分析 · 策略治理" },
     summary: { en: "A score is not a policy. This desk walks the rest of the way: expected loss, thresholds, review capacity, and a recorded human decision.", zh: "分数不等于策略。这个工作台继续往下走：算预期损失、定阈值，把复核容量算进去，最后由人拍板并留档。" },
     metrics: { en: "120,000 scored loans · 24,000 later backtest rows · capacity-gated policy audit", zh: "120,000 笔已评分贷款 · 24,000 条后续回测记录 · 容量门控的策略审计" },
     problem: { en: "A probability and one cutoff cannot capture loss economics, review capacity, score drift, or the human decision that sets policy.", zh: "一个概率加一道阈值，说不清损失怎么算、人工复核排不排得开、分数会不会漂，也代替不了最后那次人工拍板。" },
@@ -740,9 +887,8 @@ const projectCatalog: Project[] = [
       { en: "LGD is a disclosed 45% assumption; legacy browser fields absent upstream use explicit unavailable sentinels, and home-ownership slices are descriptive only.", zh: "LGD 是明确披露的 45% 假设；上游缺失的旧版浏览器字段使用明确的不可用哨兵，住房状态切片仅作描述。" },
       { en: "This granted-loan-only archive does not represent rejected applicants or identify acceptance-population policy effects; it is an offline historical backtest, not causal impact, live or production decisioning, regulatory validation, or real-world fairness evidence.", zh: "该档案仅含已授信贷款，不代表被拒申请人，也不能识别完整受理人群的策略效果；它是离线历史回测，不构成因果影响、在线或生产决策、监管验证或真实世界公平性证据。" },
     ],
-    links: [
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, href: "https://github.com/LucisZhang/credit-policy-desk" },
-    ],
+    repository: { status: "public", label: repositoryLabel, href: "https://github.com/LucisZhang/credit-policy-desk" },
+    links: [],
   },
   {
     slug: "analytics-tandem",
@@ -796,12 +942,12 @@ const projectCatalog: Project[] = [
         zh: "模型交互是使用合成输入的演示，不代表生产风险审批或已验证的预测性能。",
       },
     ],
-    links: [
-      {
-        label: { en: "GitHub repository", zh: "GitHub 仓库" },
-        pending: { en: "The legacy Risk-Control-Portfolio repository is private; its rebuilt successor is Credit Policy Desk.", zh: "旧的 Risk-Control-Portfolio 仓库已转为私有；重建后的继任项目是 Credit Policy Desk。" },
-      },
-    ],
+    repository: {
+      status: "private",
+      label: { en: "Legacy repository · private", zh: "旧版仓库 · 私有" },
+      reason: { en: "The legacy Risk-Control-Portfolio repository is private; its rebuilt successor is Credit Policy Desk.", zh: "旧的 Risk-Control-Portfolio 仓库已转为私有；重建后的继任项目是 Credit Policy Desk。" },
+    },
+    links: [],
     legacy: true,
   },
 ];
@@ -820,6 +966,7 @@ const featuredProjectOrder: ProjectId[] = [
   "ask-portfolio",
   "margin-control-tower",
   "credit-policy-desk",
+  "groupconv-atlas",
 ];
 
 export const homepageProjects = featuredProjectOrder

@@ -35,6 +35,20 @@ export const SEL = {
   colophonItemAttr: '[data-colophon-item]',
   colophonCurrent: '[data-colophon-current="true"]',
 
+  // --- Task D06: family taxonomy + in-page category crumb ---
+  // The crumb's family segment (slot "crumb") and the bottom TRACK row
+  // (slot "track") are same-document links to #index-<family id>. Both
+  // carry data-circuit-group-link, so page-wide locators hit Playwright's
+  // strict mode -- scope them under circuitTop / circuitBottom, or use the
+  // slot form. NOTE: [data-colophon-current] (the item) and
+  // [data-colophon-group-current] (the family block) are distinct attribute
+  // names and never match each other.
+  circuitGroupLink: '[data-circuit-group-link]',
+  circuitGroupLinkSlot: (slot: 'crumb' | 'track') => `[data-circuit-group-link="${slot}"]`,
+  colophonGroup: (id: string) => `[data-colophon-group="${id}"]`,
+  colophonGroupAttr: '[data-colophon-group]',
+  colophonGroupCurrent: '[data-colophon-group-current="true"]',
+
   // --- Dynamic (parameterized) structural selectors ---
   optionWithValue: (value: string) => `option[value="${value}"]`,
   creditVintageButton: (vintage: string) => `.credit-vintages button[title^="${vintage}:"]`,
@@ -46,7 +60,7 @@ export const SEL = {
   // src/components/exhibition/LegacyRailTools.tsx), not duplicated per
   // breakpoint the way the rail's own nav/footer lists are.
   aBrand: 'a.rail-home-link',
-  aHrefAiReleaseGuardian: 'a[href="/ai/release-guardian"]',
+  aHrefProjectsReleaseGuardian: 'a[href="/projects/release-guardian"]',
   aHrefArtifactHrefWorkstationReproductionGuideMd: 'a[href^="/artifact?"][href*="workstation-reproduction-guide.md"]',
   aHrefGithubComLuciszhang: 'a[href="https://github.com/LucisZhang"]',
   aHrefGithubComLuciszhangExactlyOnceDrills: 'a[href="https://github.com/LucisZhang/exactly-once-drills"]',
@@ -61,8 +75,8 @@ export const SEL = {
   analyticsFieldGrid: '.analytics-field-grid',
   analyticsLabFooterCode: '.analytics-lab-footer code',
   analyticsMigration: '.analytics-migration',
-  analyticsMigrationAHrefAnalyticsCreditPolicyDesk: '.analytics-migration a[href="/analytics/credit-policy-desk"]',
-  analyticsMigrationAHrefAnalyticsMarginControlTower: '.analytics-migration a[href="/analytics/margin-control-tower"]',
+  analyticsMigrationAHrefProjectsCreditPolicyDesk: '.analytics-migration a[href="/projects/credit-policy-desk"]',
+  analyticsMigrationAHrefProjectsMarginControlTower: '.analytics-migration a[href="/projects/margin-control-tower"]',
   analyticsOfflinePanel: '.analytics-offline-panel',
   analyticsQualityListPass: '.analytics-quality-list .pass',
   analyticsQualityListPPass: '.analytics-quality-list p.pass',
@@ -238,8 +252,8 @@ export const SEL = {
   redlineGridSpan: '.redline-grid > span',
   redlineGridSvg: '.redline-grid svg',
   relatedEngineeringEvidence: '.related-engineering-evidence',
-  relatedEngineeringEvidenceAHrefAiRagQualityLab: '.related-engineering-evidence a[href^="/ai/rag-quality-lab"]',
-  relatedEngineeringEvidenceAHrefAiReleaseGuardian: '.related-engineering-evidence a[href^="/ai/release-guardian"]',
+  relatedEngineeringEvidenceAHrefProjectsRagQualityLab: '.related-engineering-evidence a[href^="/projects/rag-quality-lab"]',
+  relatedEngineeringEvidenceAHrefProjectsReleaseGuardian: '.related-engineering-evidence a[href^="/projects/release-guardian"]',
   releaseApprovalGate: '.release-approval-gate',
   releaseAuditGrid: '.release-audit-grid',
   releaseAuditGridArticle: '.release-audit-grid article',

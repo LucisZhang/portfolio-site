@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import ContactIcon from "@/components/ContactIcon";
 import { useI18n } from "@/lib/i18n";
 
 const wechatId = "ZJ_Lucis";
@@ -49,7 +50,9 @@ export default function WeChatContact() {
   return (
     <>
       <button ref={openerRef} type="button" className="identity-contact-button" onClick={() => setOpen(true)}>
-        <span>{locale === "en" ? "WeChat" : "微信"}</span>
+        <ContactIcon kind="wechat" />
+        <span className="home-locale-en">WeChat</span>
+        <span className="home-locale-zh" lang="zh">微信</span>
       </button>
       {open ? (
         <div className="wechat-modal" role="dialog" aria-modal="true" aria-labelledby="wechat-title" onMouseDown={(event) => { if (event.target === event.currentTarget) close(); }}>

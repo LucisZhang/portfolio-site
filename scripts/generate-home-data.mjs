@@ -3,6 +3,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { artifactViewerHref } from "../src/lib/artifacts.ts";
 
+import { PROJECT_IDENTITIES } from "../src/lib/project-identities.ts";
+
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const outputPath = path.join(repositoryRoot, "src/data/generated/home-stats.json");
 
@@ -234,27 +236,27 @@ async function main() {
     stackDepth: [
       {
         layer: "Gateway",
-        projects: ["Frontier Forge"],
+        projects: [PROJECT_IDENTITIES["frontier-forge"].label.en],
         metric: `${overloadCell.gateway_upstream_5xx_rate} upstream 5xx @ ${overloadCell.multiplier}× · n=${overloadDenominator}`,
       },
       {
         layer: "Serving",
-        projects: ["Frontier Forge"],
+        projects: [PROJECT_IDENTITIES["frontier-forge"].label.en],
         metric: `GPTQ-int4 p95 ${gptqServing.e2e_p95_s.toFixed(3)} s @ ${gptqServing.arrival_rate_qps} QPS`,
       },
       {
         layer: "Stream",
-        projects: ["Exactly-Once Drills"],
+        projects: [PROJECT_IDENTITIES["exactly-once-drills"].label.en],
         metric: `${allFailureClasses} failure classes drilled`,
       },
       {
         layer: "Storage",
-        projects: ["Exactly-Once Drills", "Crossover Study"],
+        projects: [PROJECT_IDENTITIES["exactly-once-drills"].label.en, PROJECT_IDENTITIES["crossover-study"].label.en],
         metric: `${eodReconciliation.results.reduce((total, { snapshot_diff_count }) => total + snapshot_diff_count, 0)} snapshot diffs across ${eodReconciliation.results.length} recovery drills`,
       },
       {
         layer: "Orchestration",
-        projects: ["Release Guardian"],
+        projects: [PROJECT_IDENTITIES["release-guardian"].label.en],
         metric: `${releaseGuardian.graph_runs} funded live graph runs`,
       },
     ],

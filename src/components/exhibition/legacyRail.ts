@@ -1,4 +1,4 @@
-import type { RailSpec } from "./ExhibitShell";
+import { type RailSpec } from "@/lib/navigation";
 
 // Task 0.5 (R0 re-shelling): every pre-rebuild route is wrapped in
 // <ExhibitShell> with this one shared rail while its content is still the
@@ -11,9 +11,9 @@ import type { RailSpec } from "./ExhibitShell";
 export const legacyRail: RailSpec = {
   wordmark: { lines: ["Xiangguo", "Zhang"], mark: "XGZ" },
   nav: [
-    { id: "/ai", num: "01", label: "AI applications" },
-    { id: "/engineering", num: "02", label: "Engineering" },
-    { id: "/analytics", num: "03", label: "Analytics" },
+    { id: "/ai", num: "01", label: { en: "AI applications", zh: "AI 应用" } },
+    { id: "/engineering", num: "02", label: { en: "Engineering", zh: "系统工程" } },
+    { id: "/analytics", num: "03", label: { en: "Analytics", zh: "数据分析" } },
   ],
   footer: [],
 };

@@ -1,4 +1,4 @@
-import type { RailSpec } from "@/components/exhibition/ExhibitShell";
+import { navigationCopy, projectRailFooter, type RailSpec } from "@/lib/navigation";
 import { getProject } from "@/lib/projects";
 
 // Margin Control Tower project-page rail (task L2, spec §6.0/§6.7 "Margin /
@@ -12,12 +12,12 @@ export const marginRail: RailSpec = {
   wordmark: { lines: ["Margin", "Control Tower"] },
   copy: marginProject ? { en: "Six injected margin leaks, replayed against 106 weeks of real Olist contribution margin.", zh: marginProject.glossZh } : undefined,
   nav: [
-    { id: "exhibit-01", num: "01", label: "Detection" },
-    { id: "exhibit-02", num: "02", label: "Decision boundary" },
-    { id: "exhibit-03", num: "03", label: "Negative results" },
-    { id: "exhibit-04", num: "04", label: "Source & receipts" },
+    { id: "exhibit-01", num: "01", label: { en: "Detection", zh: "异常检测" } },
+    { id: "exhibit-02", num: "02", label: { en: "Decision boundary", zh: "决策边界" } },
+    { id: "exhibit-03", num: "03", label: { en: "Negative results", zh: "负结果" } },
+    { id: "exhibit-04", num: "04", label: navigationCopy.sourceReceipts },
   ],
-  footer: [{ label: "← ALL WORK", href: "/" }],
+  footer: projectRailFooter,
   // §6.7 "全部项目挂 mono 状态标 active / maintained / archived" -- this
   // project's own tier in projects.ts is "archive" (see the homepage shelf's
   // identical projects.ts read), so the tag here is the derived, non-live
@@ -26,7 +26,7 @@ export const marginRail: RailSpec = {
   // inventing a second status-tag mechanism -- tone "offline" is the closest
   // existing semantic (not live) since RailSpec's stamp tone enum does not
   // (yet) carry a third "archived" value of its own.
-  stamp: { label: "ARCHIVED", tone: "offline" },
+  stamp: { label: navigationCopy.archived, tone: "offline" },
 };
 
 export default marginRail;

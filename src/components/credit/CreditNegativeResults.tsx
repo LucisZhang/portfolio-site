@@ -1,8 +1,9 @@
 "use client";
 
 import { Finding } from "@/components/exhibition/Finding";
+import ScrollRegion from "@/components/ScrollRegion";
 import { useI18n } from "@/lib/i18n";
-import { zhWrapNode } from "@/lib/zh-wrap";
+import { zhWrapDisplay } from "@/lib/zh-wrap";
 import { DISCLOSED_LGD_ASSUMPTION, backtestReport } from "./creditData";
 
 function pct(value: number, digits = 1) {
@@ -35,17 +36,17 @@ export function CreditNegativeResults() {
     <section id="exhibit-03" className="exhibit credit-negative" data-exhibit="03" data-bg="white" aria-labelledby="exhibit-03-title">
       <p className="exhibit-opening-row">
         <span className="exhibit-number" aria-hidden="true">03</span>
-        <span className="exhibit-eyebrow">BASELINE ISOTONIC / CHALLENGER ISOTONIC / {backtestReport.splits.backtest.toLocaleString()} BACKTEST ROWS</span>
+        <span className="exhibit-eyebrow">BASELINE ISOTONIC · CHALLENGER ISOTONIC · {backtestReport.splits.backtest.toLocaleString()} BACKTEST ROWS</span>
       </p>
       <h2 id="exhibit-03-title" className="exhibit-title">
         {locale === "en" ? (
           <>The challenger <em>doesn&rsquo;t win.</em></>
         ) : (
-          zhWrapNode(<>挑战者，<em>并没有赢。</em></>)
+          zhWrapDisplay(<>挑战者，<em>并没有赢。</em></>)
         )}
       </h2>
 
-      <div className="credit-table-scroll">
+      <ScrollRegion className="credit-table-scroll" label={{ en: "Model comparison table", zh: "模型对比表" }}>
         <table className="credit-compare-table" data-testid="credit-model-compare">
           <thead>
             <tr>
@@ -76,7 +77,7 @@ export function CreditNegativeResults() {
             </tr>
           </tbody>
         </table>
-      </div>
+      </ScrollRegion>
 
       <Finding kind="negative">
         {locale === "en"

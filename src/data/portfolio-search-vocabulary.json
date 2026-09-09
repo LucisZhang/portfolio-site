@@ -48,7 +48,7 @@
     "regionalTerms": "電商 貢獻毛利 獲利分析 商業智慧 資料分析 資料管線 品類管理 零售營運"
   },
   "credit-policy-desk": {
-    "aliases": "credit risk lab lending policy simulator loan approval 信贷风控实验室 借贷策略模拟 贷款审批",
+    "aliases": "Credit Policy Desk 分数不是策略 credit risk lab lending policy simulator loan approval 信贷风控实验室 借贷策略模拟 贷款审批",
     "domains": "finance fintech banking lending credit risk analytics risk management policy governance 金融 金融科技 银行 借贷 信贷 风险分析 风险管理 策略治理",
     "capabilities": "Lending Club credit score probability of default expected loss approval review decline threshold queue capacity calibration Brier drift PSI vintage backtest challenger swap set audit 评分 违约概率 预期损失 批准 复核 拒绝 阈值 队列容量 校准 漂移 批次 回测 挑战模型 换入换出 审计",
     "useCases": "turn model scores into lending policy test approval thresholds manage review capacity monitor credit drift record a policy decision 将模型评分转成信贷策略 测试审批阈值 管理复核容量 监控信贷漂移 记录策略决策",
@@ -70,5 +70,13 @@
     "useCases": "evaluate recommenders on full catalog ranking build a governed lakehouse on a laptop measure when personalization beats popularity account for every dropped row 在全目录排序上评估推荐系统 在笔记本上搭建受治理湖仓 测量个性化何时赢过热门榜 对账每一条被剔除的记录",
     "roles": "data engineer recommender engineer ML engineer data platform engineer 数据工程师 推荐系统工程师 机器学习工程师 数据平台工程师",
     "regionalTerms": "資料工程 推薦系統 資料湖倉 批次處理 排序評估"
+  },
+  "groupconv-atlas": {
+    "aliases": "GroupConv Atlas grouped convolution depthwise 分组卷积 深度卷积 算子性能图谱",
+    "domains": "GPU computing parallel programming numerical computing GPU计算 并行编程 数值计算",
+    "capabilities": "CUDA C++ OpenCL OpenMP grouped convolution kernel optimization FP32 FP64 numerical correctness benchmark 图内计时 数值正确性 算子优化 分组卷积",
+    "useCases": "compare CUDA kernels investigate launch overhead evaluate grouped convolution 比较CUDA内核 分析启动开销 评估分组卷积",
+    "roles": "GPU engineer CUDA engineer systems engineer 算子工程师 GPU工程师 系统工程师",
+    "regionalTerms": "分組卷積 數值正確性 平行運算 圖內計時"
   }
 }

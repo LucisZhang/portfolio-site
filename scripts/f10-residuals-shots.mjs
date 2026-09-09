@@ -29,8 +29,8 @@ const VIEWPORTS = [
 // consumer page still lays out" instruction).
 const ROUTES = [
   ["home", "/"],
-  ["forge", "/ai/frontier-forge"],
-  ["triage", "/ai/triage-router"],
+  ["forge", "/projects/frontier-forge"],
+  ["triage", "/projects/triage-router"],
 ];
 
 async function main() {

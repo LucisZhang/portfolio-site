@@ -1,7 +1,6 @@
 "use client";
 
 import { Exhibit } from "@/components/exhibition/Exhibit";
-import { Finding } from "@/components/exhibition/Finding";
 import { useI18n, type LocalizedString } from "@/lib/i18n";
 import forgeReceipts from "@/data/generated/forge-receipts.json";
 import releaseJson from "../../../public/case-studies/frontier-forge/release.json";
@@ -126,11 +125,12 @@ export function BoundaryMatrix() {
           ))}
         </ul>
       </div>
-      <Finding kind="limitation">
-        {locale === "en"
-          ? "The lifted production block applies only to the measured single-node gateway overload contract; it does not establish cloud production or multi-GPU scaling."
-          : "解除的 production block 只适用于实测的单节点网关过载契约，不代表云生产或多 GPU 扩缩容已经成立。"}
-      </Finding>
+      {/* Task D-02: the "lifted production block" LIMITATION that used to
+          close this exhibit is a deployment-scope boundary, not a model-
+          suitability one, and it duplicated verbatim the first entry of the
+          page's Limitations section (frontierProjectDetail.boundaries[0]).
+          It now lives only there; this exhibit stays on what the model can
+          and cannot do plus the evidence behind each verdict. */}
       <p className="forge-snapshot-line">
         <code>
           {forgeReceipts.snapshotId} · release.json sha256:{forgeReceipts.releaseJson.sha256.slice(0, 16)}…

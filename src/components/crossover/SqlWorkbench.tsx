@@ -1,8 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import ScrollRegion from "@/components/ScrollRegion";
+import { ProjectReportSection } from "@/components/report/ProjectReport";
 import { useI18n } from "@/lib/i18n";
-import { zhWrapNode, zhWrapText } from "@/lib/zh-wrap";
+import { zhGroup, zhWrapDisplay } from "@/lib/zh-wrap";
 import { getProject } from "@/lib/projects";
 import { ml32mNStar } from "./crossoverCurvesData";
 import {
@@ -140,7 +142,7 @@ const crossoverProject = getProject("engineering", "crossover-study");
 // ID (884031112460958161) that exceeds Number.MAX_SAFE_INTEGER -- parsing
 // it as a JS `number` (the normal JSON-import path) silently rounds it to
 // the nearest representable double. The route's own Server Component
-// (src/app/engineering/crossover-study/page.tsx) reads the committed
+// (src/app/projects/crossover-study/page.tsx) reads the committed
 // file's raw text and regex-extracts the digit string before any
 // JSON.parse ever touches it, and passes it down as a plain string prop
 // -- the only way to render the exact committed value.
@@ -172,108 +174,110 @@ export function SqlWorkbench({ icebergSnapshotId }: { icebergSnapshotId: string 
         <span className="exhibit-eyebrow">SQL WORKBENCH · CACHED STATE · BUILD {activeResult.builtAt.slice(0, 10)}</span>
       </p>
       <h1 id="exhibit-01-title" className="exhibit-title">
-        {locale === "en" ? <>Run the argument, <em>query by query.</em></> : zhWrapNode(<>跑一遍论证过程，<em>一条查询接一条查询。</em></>)}
+        {locale === "en" ? <>Run the argument, <em>query by query.</em></> : zhWrapDisplay(<>跑一遍论证过程，<em>{zhGroup("一条查询", "接一条查询。")}</em></>)}
       </h1>
-      {locale === "zh" && crossoverProject ? <p className="cn-gloss" lang="zh">{zhWrapText(crossoverProject.glossZh)}</p> : null}
-      <p className="exhibit-intro">
-        {locale === "en"
-          ? "Six curated queries walk from raw scale to the study's null result and its one honest counterexample. Every result on this screen is cached from the full local build — the workbench replays it exactly, and says so."
-          : "六条精选查询，从原始数据规模一路走到这项研究的 null 结果，以及它唯一如实交代的反例。这一屏上的每个结果，都是本地全量构建缓存下来的——工作台原样回放，并如实标注。"}
-      </p>
-      <p className="crossover-layering-note">
-        {locale === "en"
-          ? "This workbench renders pre-aggregated, cached views of the committed Iceberg snapshot; the full Spark batch results appear in the analysis exhibit below."
-          : "工作台展示的是已提交 Iceberg 快照上的预聚合缓存视图；全量 Spark 批处理结果见下方的分析展区。"}
-      </p>
+      {locale === "zh" && crossoverProject ? <p className="cn-gloss" lang="zh">{zhWrapDisplay(crossoverProject.glossZh)}</p> : null}
+      <ProjectReportSection concept="architecture" layout="instrument" title={locale === "en" ? "SQL workbench" : "SQL 工作台"}>
+        <p className="exhibit-intro">
+          {locale === "en"
+            ? "Six curated queries walk from raw scale to the study's null result and its one honest counterexample. Every result on this screen is cached from the full local build — the workbench replays it exactly, and says so."
+            : "六条精选查询，从原始数据规模一路走到这项研究的 null 结果，以及它唯一如实交代的反例。这一屏上的每个结果，都是本地全量构建缓存下来的——工作台原样回放，并如实标注。"}
+        </p>
+        <p className="crossover-layering-note">
+          {locale === "en"
+            ? "This workbench renders pre-aggregated, cached views of the committed Iceberg snapshot; the full Spark batch results appear in the analysis exhibit below."
+            : "工作台展示的是已提交 Iceberg 快照上的预聚合缓存视图；全量 Spark 批处理结果见下方的分析展区。"}
+        </p>
 
-      <div className="crossover-bench">
-        <div className="crossover-bench-main" data-testid="crossover-workbench-main">
-          <div className="crossover-col-head">
-            <span className="crossover-eyebrow-small">{locale === "en" ? activeQuery.title : TITLE_ZH[activeQuery.id]}</span>
-            <span className="crossover-eyebrow-small">CACHED</span>
-          </div>
+        <div className="crossover-bench">
+          <div className="crossover-bench-main" data-testid="crossover-workbench-main">
+            <div className="crossover-col-head">
+              <span className="crossover-eyebrow-small">{locale === "en" ? activeQuery.title : TITLE_ZH[activeQuery.id]}</span>
+              <span className="crossover-eyebrow-small">CACHED</span>
+            </div>
 
-          <div className="crossover-sql-scroll">
-            <pre className="crossover-sql" data-testid="crossover-sql">
-              <span className="crossover-sql-comment">{`-- ${researchQuestion}`}</span>
-              {"\n\n"}
-              {highlightSql(activeQuery.sql)}
-            </pre>
-          </div>
+            <ScrollRegion className="crossover-sql-scroll" label={{ en: "SQL query", zh: "SQL 查询" }}>
+              <pre className="crossover-sql" data-testid="crossover-sql">
+                <span className="crossover-sql-comment">{`-- ${researchQuestion}`}</span>
+                {"\n\n"}
+                {highlightSql(activeQuery.sql)}
+              </pre>
+            </ScrollRegion>
 
-          <p className="crossover-runline">
-            <button
-              type="button"
-              className="crossover-run-button"
-              data-asset="/duckdb/duckdb-mvp.wasm"
-              data-bytes="39362651"
-              aria-label="Run (Cmd+Enter) — the live engine is not connected until R6"
-              onClick={() => setRunAttempted(true)}
-            >
-              RUN ↵
-            </button>
-            <span className="crossover-telemetry" data-testid="crossover-telemetry">{formatTelemetry(activeResult)}</span>
-          </p>
-          {runAttempted ? <p className="crossover-engine-note" data-testid="crossover-engine-note">ENGINE ARRIVES WITH R6</p> : null}
+            <p className="crossover-runline">
+              <button
+                type="button"
+                className="crossover-run-button"
+                data-asset="/duckdb/duckdb-mvp.wasm"
+                data-bytes="39362651"
+                aria-label={locale === "en" ? "Run (Cmd+Enter) — the live engine is not connected until R6" : "运行（Cmd+Enter）——在线引擎将在 R6 阶段接入"}
+                onClick={() => setRunAttempted(true)}
+              >
+                RUN ↵
+              </button>
+              <span className="crossover-telemetry" data-testid="crossover-telemetry">{formatTelemetry(activeResult)}</span>
+            </p>
+            {runAttempted ? <p className="crossover-engine-note" data-testid="crossover-engine-note">{locale === "en" ? "ENGINE ARRIVES WITH R6" : "引擎将在 R6 阶段接入"}</p> : null}
 
-          <div className="crossover-table-scroll">
-            <table className="crossover-results-table" data-testid="crossover-results-table">
-              <thead>
-                <tr>
-                  {columns.map((column) => (
-                    <th key={column} className={isNumericColumn(activeResult.rows, column) ? "r" : undefined}>{column}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {activeResult.rows.map((row, rowIndex) => (
-                  <tr key={rowIndex}>
+            <ScrollRegion className="crossover-table-scroll" label={{ en: "Results table", zh: "结果表" }}>
+              <table className="crossover-results-table" data-testid="crossover-results-table">
+                <thead>
+                  <tr>
                     {columns.map((column) => (
-                      <td key={column} data-label={column} className={typeof row[column] === "number" ? "r" : undefined}>{formatCell(row[column])}</td>
+                      <th key={column} className={isNumericColumn(activeResult.rows, column) ? "r" : undefined}>{column}</th>
                     ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="crossover-table-foot">
-            <span>{activeResult.rows.length} rows</span>
-            <a href={workbenchResultHref(activeQuery.id)} download>{locale === "en" ? "Download JSON" : "下载 JSON"}</a>
+                </thead>
+                <tbody>
+                  {activeResult.rows.map((row, rowIndex) => (
+                    <tr key={rowIndex}>
+                      {columns.map((column) => (
+                        <td key={column} data-label={column} className={typeof row[column] === "number" ? "r" : undefined}>{formatCell(row[column])}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </ScrollRegion>
+            <div className="crossover-table-foot">
+              <span>{activeResult.rows.length} rows</span>
+              <a href={workbenchResultHref(activeQuery.id)} download>{locale === "en" ? "Download JSON" : "下载 JSON"}</a>
+            </div>
+
+            <details className="crossover-iceberg-plate" data-testid="crossover-iceberg-plate">
+              <summary>ICEBERG</summary>
+              <dl>
+                <div><dt>snapshotId</dt><dd>{icebergSnapshotId}</dd></div>
+                <div><dt>committedAt</dt><dd>{icebergPlate.committedAt.slice(0, 10)}</dd></div>
+                <div><dt>schema</dt><dd>v{icebergPlate.schemaVersion}</dd></div>
+                <div><dt>rowCount</dt><dd>{icebergPlate.rowCount.toLocaleString("en-US")}</dd></div>
+                <div><dt>files</dt><dd>{icebergPlate.files}</dd></div>
+                <div><dt>bytes</dt><dd>{formatBytesGb(icebergPlate.bytes)}</dd></div>
+              </dl>
+            </details>
           </div>
 
-          <details className="crossover-iceberg-plate" data-testid="crossover-iceberg-plate">
-            <summary>ICEBERG</summary>
-            <dl>
-              <div><dt>snapshotId</dt><dd>{icebergSnapshotId}</dd></div>
-              <div><dt>committedAt</dt><dd>{icebergPlate.committedAt.slice(0, 10)}</dd></div>
-              <div><dt>schema</dt><dd>v{icebergPlate.schemaVersion}</dd></div>
-              <div><dt>rowCount</dt><dd>{icebergPlate.rowCount.toLocaleString("en-US")}</dd></div>
-              <div><dt>files</dt><dd>{icebergPlate.files}</dd></div>
-              <div><dt>bytes</dt><dd>{formatBytesGb(icebergPlate.bytes)}</dd></div>
-            </dl>
-          </details>
-        </div>
-
-        <div className="crossover-bench-index">
-          <div className="crossover-col-head">
-            <span className="crossover-eyebrow-small">{locale === "en" ? "The six queries" : "六条查询"}</span>
-            <span className="crossover-eyebrow-small">{locale === "en" ? "a narrative index" : "按论证顺序排列"}</span>
+          <div className="crossover-bench-index">
+            <div className="crossover-col-head">
+              <span className="crossover-eyebrow-small">{locale === "en" ? "The six queries" : "六条查询"}</span>
+              <span className="crossover-eyebrow-small">{locale === "en" ? "a narrative index" : "按论证顺序排列"}</span>
+            </div>
+            <ol className="crossover-query-index">
+              {workbenchQueries.map((item) => {
+                const blurb = item.id === "category-distribution" ? query02Blurb : INDEX_BLURBS[item.id];
+                return (
+                  <li key={item.id} className={item.id === activeId ? "active" : undefined}>
+                    <button type="button" onClick={() => selectQuery(item.id)} aria-current={item.id === activeId ? "true" : undefined}>
+                      <span className="crossover-query-title">{locale === "en" ? item.title : TITLE_ZH[item.id]}</span>
+                      <span className="crossover-query-blurb">{locale === "en" ? blurb.en : blurb.zh}</span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
           </div>
-          <ol className="crossover-query-index">
-            {workbenchQueries.map((item) => {
-              const blurb = item.id === "category-distribution" ? query02Blurb : INDEX_BLURBS[item.id];
-              return (
-                <li key={item.id} className={item.id === activeId ? "active" : undefined}>
-                  <button type="button" onClick={() => selectQuery(item.id)} aria-current={item.id === activeId ? "true" : undefined}>
-                    <span className="crossover-query-title">{locale === "en" ? item.title : TITLE_ZH[item.id]}</span>
-                    <span className="crossover-query-blurb">{locale === "en" ? blurb.en : blurb.zh}</span>
-                  </button>
-                </li>
-              );
-            })}
-          </ol>
         </div>
-      </div>
+      </ProjectReportSection>
     </section>
   );
 }

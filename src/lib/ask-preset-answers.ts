@@ -13,7 +13,7 @@ import { getRouteQuestionBankEntries } from "@/lib/ask-question-bank";
 //
 // Payload discipline: the answers artifact (~80KB of bilingual prose) is
 // CONTENT, not app code — it ships as its own lazily-imported chunk so no
-// route pays for it in its initial JS budget (/ai/ask-portfolio holds a
+// route pays for it in its initial JS budget (/projects/ask-portfolio holds a
 // hard 200KB initial ratchet). Whether a prompt IS a preset is decided
 // synchronously from the small routed question bank; the answer chunk is
 // fetched from the site's own static assets on first use (prefetchable on
@@ -49,6 +49,9 @@ function loadPresetAnswersFile(): Promise<PresetAnswersFile> {
   pending ??= import("@/data/generated/ask-preset-answers.json").then((module) => {
     loaded = (module.default ?? module) as unknown as PresetAnswersFile;
     return loaded;
+  }).catch((error: unknown) => {
+    pending = null;
+    throw error;
   });
   return pending;
 }

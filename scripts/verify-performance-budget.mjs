@@ -15,6 +15,14 @@ const routeClasses = {
   instrument: { initialGzip: 240_000, routeOwnGzip: 80_000 },
 };
 
+// Task A4 note on the history below: the project routes in this file's
+// notes are written with their CURRENT "/projects/<slug>" keys, matching the
+// table rows they annotate. The measurements and re-pins they describe were
+// taken while those same pages were served at "/ai/...", "/engineering/..."
+// and "/analytics/..."; the flat-route move renamed the row keys, not the
+// pages or the bytes. Where a note describes something that happened TO the
+// old URL rather than to the page, it names the old URL explicitly.
+//
 // A fresh browser context is used for every concrete public route. `family`
 // identifies pages that share one Next.js route entry; chunks requested by
 // every sibling are family infrastructure, while additional requested chunks
@@ -65,7 +73,7 @@ const routeClasses = {
 //
 // R13 pattern applied a third time, task-suite-reconcile pass: /artifact's
 // initialCeiling re-pinned 226,471 -> 226,472 after adding one new bilingual
-// question-bank entry for "/ai/ask-portfolio" to src/data/recruiter-
+// question-bank entry for "/projects/ask-portfolio" to src/data/recruiter-
 // content.ts (fixing a real gap: search-ranking.spec.ts's "every primary
 // recruiter route exposes four distinct bilingual questions" test caught
 // that route enabling ask-portfolio, task L5, never added its
@@ -78,20 +86,38 @@ const routeClasses = {
 // (90,890 / 93,293). Reproduced identically across repeat runs both with
 // and without the change before re-pinning.
 //
-// Final fix wave (whole-branch review): dropped the "/ai", "/engineering",
-// "/analytics", and "/analytics/analytics-tandem" rows entirely (the
-// "track" family and its provisional ceilings above, R13's /ai paragraph
-// included, are now purely historical). next.config.ts's redirects() sends
-// all four as permanent (308) redirects to sections of "/" -- Playwright's
-// page.goto() silently followed each redirect and captured the HOME
-// page's own initial JS/CSS under a different route label, so these four
-// rows were re-measuring "/" a second (and third, and fourth, and fifth)
-// time in disguise, never the redirecting route itself. Removing them
+// Final fix wave (whole-branch review): dropped the "/ai", "/engineering"
+// and "/analytics" rows entirely (the "track" family and its provisional
+// ceilings above, R13's /ai paragraph included, are now purely historical).
+// next.config.ts's redirects() sends all three as permanent (308) redirects
+// to sections of "/" -- Playwright's page.goto() silently followed each
+// redirect and captured the HOME page's own initial JS/CSS under a different
+// route label, so those rows were re-measuring "/" a second (and third, and
+// fourth) time in disguise, never the redirecting route itself. Removing them
 // loses no real coverage: "/" is already measured directly on its own row.
 //
-// Same wave: added "/ai/ask-portfolio" (task L5's dialogue-genre page,
-// spec §6.7 report class -- same family as the other standalone /ai/*
-// project routes). Measured clean at initial=181,080 / route-own=45,498
+// Task A4: the "/analytics/analytics-tandem" row was dropped in that same
+// wave for the same reason (that was its key at the time), but that reason
+// no longer holds -- the retired
+// URL now redirects to /projects/analytics-tandem, a genuinely served page,
+// not to a section of "/". It stays off this table on a different footing:
+// it is a noindex compatibility shell, kept out of the sitemap.
+//
+// It is NOT off every navigation surface -- src/components/home/ShelfExhibit.tsx
+// links every archive-tier project, analytics-tandem included, as a
+// "/projects/<slug>" row on the homepage's archive shelf, and
+// scripts/check-links.mjs seeds it into its crawl for that reason. So this is
+// a deferral, not an exemption on principle.
+//
+// Adding a row here is not a rename: it needs a fresh initial/route-own
+// ceiling measured from a clean build and pinned across three reproducing
+// runs, exactly the discipline the rows below document. That belongs in its
+// own measurement pass. FOLLOW-UP: measure and pin this route, or state
+// explicitly that a noindex compatibility shell gets no budget.
+//
+// Same wave: added "/projects/ask-portfolio" (task L5's dialogue-genre page,
+// spec §6.7 report class -- same family as the other standalone project
+// routes). Measured clean at initial=181,080 / route-own=45,498
 // gzip bytes, comfortably under the bare report-class plan targets
 // (200,000 / 70,000) with real headroom -- no ceiling override needed,
 // so it takes the "target" policy (bare className target) like Forge and
@@ -159,8 +185,8 @@ const routeClasses = {
 // /artifact). The 90,653-byte generated artifact
 // src/data/generated/ask-recorded-answers.json itself stays OUT of every
 // route's initial payload -- it rides the dynamically imported
-// AssistantWidget chunk and /ai/ask-portfolio's route-own chunk, and
-// /ai/ask-portfolio absorbs it inside its untouched hard target (measured
+// AssistantWidget chunk and /projects/ask-portfolio's route-own chunk, and
+// /projects/ask-portfolio absorbs it inside its untouched hard target (measured
 // 199,156 vs 200,000). Route-own is untouched everywhere; every project
 // route absorbs the growth inside its existing initial ceiling. The two
 // zero-headroom PROVISIONAL initial pins tipped and are re-pinned at their
@@ -191,7 +217,7 @@ const routeClasses = {
 // payload entirely: src/lib/ask-preset-answers.ts now decides
 // prompt-vs-preset synchronously from the small routed bank and lazily
 // imports the answers as their own chunk on first hover/focus/click --
-// /ai/ask-portfolio's initial DROPPED 206,267 (over its hard 200,000
+// /projects/ask-portfolio's initial DROPPED 206,267 (over its hard 200,000
 // ratchet with the statically imported artifact) -> 187,791, comfortably
 // inside the untouched hard target. What remains in the shared
 // intersection is only the preset wiring (isPresetPrompt + the lazy-import
@@ -210,7 +236,7 @@ const routeClasses = {
 // Voice-in-Security's rewritten head) regenerates the snapshot, preset
 // answers, and recorded example with new 40-character commit hashes in
 // their citation URLs. No code changed; the regenerated artifacts ride
-// their existing chunks (recorded example in /ai/ask-portfolio route-own,
+// their existing chunks (recorded example in /projects/ask-portfolio route-own,
 // answers in their lazy chunk), but the changed bytes shift content-hashed
 // build output, measuring +1 gzip byte on each zero-headroom route.
 // Route-own is untouched everywhere; every project route absorbs the
@@ -223,16 +249,17 @@ const routeClasses = {
 // this script before re-pinning.
 const routes = [
   { route: "/", family: "home", className: "archive", initialCeiling: 183_605, policy: "R7 provisional initial / target route-own" },
-  { route: "/ai/frontier-forge", family: "project", className: "instrument", policy: "target" },
-  { route: "/ai/release-guardian", family: "project", className: "instrument", initialCeiling: 269_808, routeOwnCeiling: 93_028, policy: "provisional" },
-  { route: "/ai/rag-quality-lab", family: "project", className: "report", initialCeiling: 268_128, routeOwnCeiling: 91_348, policy: "provisional" },
-  { route: "/ai/triage-router", family: "project", className: "instrument", initialCeiling: 236_187, policy: "provisional initial / target route-own" },
-  { route: "/ai/privacy-preflight", family: "project", className: "instrument", initialCeiling: 265_878, policy: "provisional initial / target route-own" },
-  { route: "/engineering/exactly-once-drills", family: "project", className: "instrument", policy: "target" },
-  { route: "/analytics/margin-control-tower", family: "project", className: "archive", initialCeiling: 309_447, routeOwnCeiling: 132_667, policy: "provisional" },
-  { route: "/engineering/crossover-study", family: "project", className: "instrument", initialCeiling: 236_187, routeOwnCeiling: 59_407, policy: "provisional" },
-  { route: "/analytics/credit-policy-desk", family: "project", className: "archive", initialCeiling: 278_037, routeOwnCeiling: 101_257, policy: "provisional" },
-  { route: "/ai/ask-portfolio", family: "project", className: "report", policy: "target" },
+  { route: "/projects/frontier-forge", family: "project", className: "instrument", policy: "target" },
+  { route: "/projects/release-guardian", family: "project", className: "instrument", initialCeiling: 269_808, routeOwnCeiling: 93_028, policy: "provisional" },
+  { route: "/projects/rag-quality-lab", family: "project", className: "report", initialCeiling: 268_128, routeOwnCeiling: 91_348, policy: "provisional" },
+  { route: "/projects/triage-router", family: "project", className: "instrument", initialCeiling: 236_187, policy: "provisional initial / target route-own" },
+  { route: "/projects/privacy-preflight", family: "project", className: "instrument", initialCeiling: 265_878, policy: "provisional initial / target route-own" },
+  { route: "/projects/exactly-once-drills", family: "project", className: "instrument", policy: "target" },
+  { route: "/projects/margin-control-tower", family: "project", className: "archive", initialCeiling: 309_447, routeOwnCeiling: 132_667, policy: "provisional" },
+  { route: "/projects/crossover-study", family: "project", className: "instrument", initialCeiling: 236_187, routeOwnCeiling: 59_407, policy: "provisional" },
+  { route: "/projects/credit-policy-desk", family: "project", className: "archive", initialCeiling: 278_037, routeOwnCeiling: 101_257, policy: "provisional" },
+  { route: "/projects/groupconv-atlas", family: "project", className: "report", policy: "target" },
+  { route: "/projects/ask-portfolio", family: "project", className: "report", policy: "target" },
   { route: "/artifact", family: "artifact", className: "report", initialCeiling: 230_358, routeOwnCeiling: 93_293, policy: "provisional" },
 ];
 

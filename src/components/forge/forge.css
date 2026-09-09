@@ -1,70 +1,34 @@
-/* Frontier Forge release console (task 2.2, spec §6.0/§6.1 reference
-   implementation). Builds on top of exhibition.css's shared primitives
-   (Exhibit/Finding/StatGrid/InstrumentFrame) — this file only adds the
-   forge-specific instrument internals and analysis-exhibit layouts.
-   Hairline dividers only; zero border-radius, zero shadow, zero gradient,
-   zero icon/emoji. */
+/* Frontier Forge pairs a manifesto-scale introduction with an open release
+   console. Hairlines mark controls and evidence boundaries; typography and
+   spacing carry the rest of the page hierarchy. */
 
 .forge-page {
   color: var(--ink);
 }
 
-/* ---------- Hero (task W1: conforms to the reference demo's single-column
-   manifesto composition — the frontier-forge repository's demo/,
-   output/design-align-r4/FORGE-DIFF.md §1.1). The reference's right-column
-   instrument does not exist in its hero; ForgeConsole "full" already lives
-   at exhibit-01 below (§6.0's "same instrument, two variants" contract).
-   Reference oranges (#e16b3d/#f29b66) map to the site's vermilion tokens
-   (--accent on this paper section) per spec §2.2; reference Iowan Old
-   Style/Avenir/SF Mono map to the site's self-hosted
-   --display-serif(-zh)/--mono stacks (FORGE-DIFF C3).
-
-   Deliberately NOT the reference's `.hero{min-height:94vh}` full-viewport
-   vertical centering: tests/e2e/forge-r2.spec.ts's "instrument is
-   prefilled in the first viewport with zero clicks" test (kept per this
-   task's own brief -- exhibit-01's live instrument keeps its current
-   test contract) requires exhibit-01's ForgeConsole to still appear at
-   y < viewport height + 40 at 1440x900, and exhibit-01 begins immediately
-   after this section with its own ~315px of shared-class heading/padding
-   this file cannot touch. The reference demo has no such instrument and
-   was never bound by that contract, so its 94vh/7vw scale and this
-   contract cannot both hold; the resolution kept here is the reference's
-   full compositional grammar (kicker -> big serif 2-line assertion -> zh
-   gloss -> one headline sentence -> 4-metric hairline band -> scope note)
-   at a tightened scale/spacing that fits above the fold with the
-   instrument, rather than the reference's absolute maximum type size on
-   a full 94vh canvas. See task-W1-report.md for the measured numbers. */
+/* ---------- Hero: quiet status tokens, serif assertion, measured headline,
+   four aligned metrics and a scope note in one reading column. ---------- */
 
 .forge-hero {
-  /* Task R12 fold fix: CircuitNav's top chain (a3-b mock spacing, ~58px of
-     chrome the W1 fold budget never contained) now sits directly above this
-     hero, and at 1440x900 the zh serif h1 (1.15 line-height vs en's 1.0)
-     pushed exhibit-01's instrument to y=969.6 vs the <940 contract. The
-     chain itself is already at the approved mock's own 20px padding, so the
-     compensation comes from this hero's top whitespace instead (identical
-     in both locales): the top pad gives back the chain's height against the
-     W1 clamp (calc term), floored at 10px so the kicker never touches the
-     chain's hairline. Bottom pad keeps the original W1 clamp untouched. */
-  padding-block: clamp(10px, calc(5vw - 58px), 14px) clamp(40px, 5vw, 60px);
+  padding-block: clamp(34px, 7vw, 64px) clamp(40px, 5vw, 60px);
 }
 
-/* Reference kicker is orange (.kicker{color:var(--orange)}); the shared
-   .exhibit-eyebrow (exhibition.css) is muted-grey sitewide for numbered
-   exhibits, so this is a hero-only override, not a change to that shared
-   rule. */
-.forge-hero .exhibit-eyebrow {
-  color: var(--accent);
+@media (min-width: 980px) {
+  .forge-hero {
+    padding-top: 64px;
+  }
 }
 
-/* Reference: h1{font-size:clamp(3.1rem,7vw,7.3rem); line-height:.92},
-   single column, no max-width cap (the shared .exhibit-title caps at
-   20ch/4.4rem for numbered exhibits). Scaled down from the reference's
-   literal clamp (see the section comment above) -- still well above the
-   4.4rem ceiling every other exhibit heading on this page uses, so the
-   hero still reads as a distinct, larger typographic statement. */
+/* Exhibit 01 turns directly from the introduction into the operating
+   surface, with a shorter opening pause than analysis exhibits. */
+.forge-page #exhibit-01 {
+  padding-top: clamp(44px, 3.25vw, 50px);
+}
+
+/* The uncapped hero statement stays visibly larger than numbered exhibits. */
 .forge-hero .exhibit-title {
   max-width: none;
-  margin-top: 16px;
+  margin-top: 22px;
   font-size: clamp(2.3rem, 5vw, 5.4rem);
   line-height: 1;
 }
@@ -95,16 +59,18 @@
 .forge-hero-metrics {
   display: grid;
   grid-template-columns: repeat(4, minmax(110px, 1fr));
-  gap: 1px;
-  background: var(--hairline);
-  border: 1px solid var(--hairline);
+  gap: 14px clamp(18px, 3vw, 36px);
+  /* D-02: was a 1px-gap hairline checkerboard inside a full 1px frame —
+     the boxed-stat-tiles look the site already retired from StatGrid.
+     One rule above the band, cells aligned by the shared baseline grid. */
+  border-top: 1px solid var(--hairline);
   margin-top: 24px;
+  padding-top: 14px;
   max-width: 880px;
 }
 
 .forge-hero-metric {
-  background: var(--paper);
-  padding: 12px 14px;
+  min-width: 0;
 }
 
 .forge-hero-metric strong {
@@ -157,6 +123,14 @@
   min-width: 0;
 }
 
+.forge-console-run-column,
+.forge-console-request-column {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
 .forge-live-slot {
   margin: 0;
   border-top: 1px solid var(--hairline);
@@ -170,14 +144,18 @@
 }
 
 .forge-console-chips {
-  display: flex;
-  flex-wrap: wrap;
+  display: inline-flex;
+  align-self: flex-start;
+  max-width: 100%;
+  overflow-x: auto;
   gap: 1px;
   background: var(--hairline);
+  scrollbar-width: thin;
 }
 
 .forge-console-chips button {
-  flex: 1 1 auto;
+  flex: 0 0 auto;
+  min-width: 8rem;
   min-height: 44px;
   border: 0;
   background: var(--paper-bright);
@@ -266,13 +244,18 @@
 }
 
 .forge-console-tabs {
-  display: flex;
+  display: inline-flex;
+  align-self: flex-start;
+  max-width: 100%;
+  overflow-x: auto;
   gap: 1px;
   background: var(--hairline);
+  scrollbar-width: thin;
 }
 
 .forge-console-tabs button {
-  flex: 1 1 auto;
+  flex: 0 0 auto;
+  min-width: 5.5rem;
   min-height: 44px;
   border: 0;
   background: var(--paper-bright);
@@ -285,8 +268,20 @@
 }
 
 .forge-console-tabs button[aria-selected="true"] {
-  background: var(--ink);
-  color: var(--paper-bright);
+  box-shadow: inset 0 -3px 0 var(--accent);
+  color: var(--ink);
+}
+
+.forge-console-chips button:focus-visible,
+.forge-console-tabs button:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.forge-console-request-panel {
+  min-width: 0;
 }
 
 .forge-console-request {
@@ -311,6 +306,137 @@
   font-family: var(--mono);
   font-size: .68rem;
   line-height: 1.55;
+  scrollbar-width: thin;
+  scrollbar-color: var(--hairline) transparent;
+}
+
+.forge-console-request::-webkit-scrollbar {
+  height: 4px;
+}
+
+.forge-console-request::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.forge-console-request::-webkit-scrollbar-thumb {
+  background: var(--hairline);
+}
+
+/* The full console is an operating surface with two reading columns. The
+   run controls and request body are separated by one structural rule;
+   individual rows rely on type, spacing and a single working baseline. */
+.instrument-frame[data-instrument-variant="full"]:has(.forge-console) {
+  padding: 0;
+}
+
+.instrument-frame[data-instrument-variant="full"] .forge-console-run-column {
+  gap: 18px;
+}
+
+.instrument-frame[data-instrument-variant="full"] .forge-console-request-column {
+  border-top: 1px solid var(--hairline);
+  padding-top: 20px;
+}
+
+.instrument-frame[data-instrument-variant="full"] :is(.forge-console-chips, .forge-console-tabs) {
+  display: flex;
+  align-self: stretch;
+  gap: 28px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-bottom: 1px solid var(--hairline);
+  background: none;
+}
+
+.instrument-frame[data-instrument-variant="full"] :is(.forge-console-chips, .forge-console-tabs) button {
+  min-width: 44px;
+  min-height: 44px;
+  margin: 0 0 -1px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  padding: 0 0 10px;
+  color: var(--muted);
+}
+
+.instrument-frame[data-instrument-variant="full"] :is(.forge-console-chips, .forge-console-tabs) button[aria-selected="true"] {
+  border-bottom-color: var(--ink);
+  background: none;
+  box-shadow: none;
+  color: var(--ink);
+}
+
+.instrument-frame[data-instrument-variant="full"] :is(.forge-console-chips, .forge-console-tabs) button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.instrument-frame[data-instrument-variant="full"] .forge-live-slot,
+.instrument-frame[data-instrument-variant="full"] .forge-console-readout,
+.instrument-frame[data-instrument-variant="full"] .forge-console-transcript-note {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.instrument-frame[data-instrument-variant="full"] .forge-live-slot {
+  font-size: .62rem;
+  font-weight: 650;
+}
+
+.instrument-frame[data-instrument-variant="full"] .forge-console-readout {
+  gap: 6px;
+}
+
+.instrument-frame[data-instrument-variant="full"] .forge-console-readout strong {
+  font-size: clamp(2.6rem, 4vw, 3.6rem);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.instrument-frame[data-instrument-variant="full"] .forge-console-readout-detail {
+  font-size: .78rem;
+}
+
+.instrument-frame[data-instrument-variant="full"] .forge-console-run-id {
+  font-size: .68rem;
+}
+
+.instrument-frame[data-instrument-variant="full"] .forge-console-transcript-note {
+  max-width: 52ch;
+}
+
+.instrument-frame[data-instrument-variant="full"] .forge-console-input-label {
+  margin-top: 2px;
+}
+
+.instrument-frame[data-instrument-variant="full"] .forge-console textarea {
+  min-height: 3.5rem;
+  border: 0;
+  border-bottom: 1px dashed var(--hairline);
+  background: transparent;
+  padding: 8px 0;
+}
+
+.instrument-frame[data-instrument-variant="full"] .forge-console-request {
+  border: 0;
+  background: transparent;
+  padding: 10px 0;
+}
+
+@media (min-width: 980px) {
+  .instrument-frame[data-instrument-variant="full"] .forge-console {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(32px, 4vw, 64px);
+    align-items: stretch;
+  }
+
+  .instrument-frame[data-instrument-variant="full"] .forge-console-request-column {
+    border-top: 0;
+    border-left: 1px solid var(--hairline);
+    padding-top: 0;
+    padding-left: clamp(24px, 3vw, 40px);
+  }
 }
 
 /* ---------- Evidence Explorer (exhibit 02) ---------- */
@@ -821,10 +947,11 @@
   font-size: .68rem;
 }
 
+/* D-02: a caveat paragraph, not an evidence boundary — set as fineprint
+   without its own rule (the receipt identity keeps its rule in <footer>). */
 .forge-replay-receipt-boundary {
   margin: 18px 0 0;
-  border-top: 1px solid color-mix(in srgb, var(--ink-invert-fg) 24%, transparent);
-  padding-top: 10px;
+  max-width: 760px;
   color: color-mix(in srgb, var(--ink-invert-fg) 68%, transparent);
   font-family: var(--mono);
   font-size: .68rem;
@@ -842,17 +969,17 @@
   color: var(--accent-on-ink);
 }
 
+/* D-02: the 2x2 stat pairs were a second hairline lattice nested inside
+   the replay block (itself inside exhibit 05). Plain aligned pairs now. */
 .forge-replay-comparison dl {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1px;
-  margin: 10px 0 0;
-  background: color-mix(in srgb, var(--ink-invert-fg) 22%, transparent);
+  gap: 12px 16px;
+  margin: 12px 0 0;
 }
 
 .forge-replay-comparison dl > div {
-  background: var(--ink-invert);
-  padding: 10px;
+  min-width: 0;
 }
 
 .forge-replay-comparison dt {
@@ -998,52 +1125,4 @@
   align-items: center;
   min-height: 44px;
   color: var(--accent-on-ink);
-}
-
-/* ---------- Report layer (Architecture / Results / Limitations) ---------- */
-
-.forge-report-section {
-  border-bottom: 1px solid var(--hairline);
-  padding: clamp(40px, 5vw, 72px) clamp(34px, 7vw, 110px);
-}
-
-.forge-report-section h2 {
-  margin: 0 0 20px;
-  font-family: var(--display-serif);
-  font-size: clamp(1.6rem, 2.4vw, 2.2rem);
-  font-weight: 400;
-}
-
-:lang(zh) .forge-report-section h2 {
-  font-family: var(--display-serif-zh);
-}
-
-.forge-architecture-flow {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  max-width: 720px;
-}
-
-.forge-architecture-flow li {
-  display: flex;
-  gap: 14px;
-  border-top: 1px solid var(--hairline);
-  padding-top: 12px;
-}
-
-.forge-architecture-flow li > span {
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: .68rem;
-}
-
-.forge-architecture-flow li p {
-  margin: 4px 0 0;
-  color: var(--muted);
-  font-size: .88rem;
-  line-height: 1.55;
 }

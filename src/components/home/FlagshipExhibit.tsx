@@ -5,9 +5,8 @@ import { Finding } from "@/components/exhibition/Finding";
 import LocaleLink from "@/components/LocaleLink";
 import { localize, useI18n } from "@/lib/i18n";
 import { homeStats, isMissing } from "@/lib/home-stats";
-import { homepageProjects } from "@/lib/projects";
-
-const flagship = homepageProjects.find((project) => project.tier === "flagship");
+import type { Project } from "@/lib/projects";
+import { zhGroup } from "@/lib/zh-wrap";
 
 // Claim-chain expansion uses a native <details>/<summary> per claim (task
 // 1.2 brief: "prefer <details> — zero JS"), so the SHA-256 receipt is in
@@ -45,7 +44,9 @@ function ClaimRow({ claim }: { claim: (typeof homeStats.flagshipClaims)[number] 
   );
 }
 
-export default function FlagshipExhibit() {
+export default function FlagshipExhibit({ project: flagship }: {
+  project?: Pick<Project, "slug" | "track" | "summary">;
+}) {
   const { locale } = useI18n();
   if (!flagship) return null;
   const negative = homeStats.negativeRuns[0];
@@ -54,13 +55,13 @@ export default function FlagshipExhibit() {
     <Exhibit
       id="exhibit-01"
       num="01"
-      eyebrow="QWEN3.5-4B / RTX 4090 / $35.68 MEASURED / SHA-256 GATED"
+      eyebrow="QWEN3.5-4B · RTX 4090 · $35.68 MEASURED · SHA-256 GATED"
       bg="ink"
       title={
         locale === "en" ? (
           <>I don&apos;t just cite the number.<br /><em>I open the command that made it.</em></>
         ) : (
-          <>页面上的数字都能点开——<em>点开就是生成它的命令。</em></>
+          <>{zhGroup("页面上的数字", "都能点开——")}<br /><em>{zhGroup("点开就是", "生成它的命令。")}</em></>
         )
       }
     >
@@ -73,7 +74,7 @@ export default function FlagshipExhibit() {
               {!isMissing(negative.disposition) ? ` — ${negative.disposition}` : null}
             </Finding>
           ) : null}
-          <LocaleLink className="home-cta" href={`/${flagship.track}/${flagship.slug}`}>
+          <LocaleLink className="home-cta" href={`/projects/${flagship.slug}`}>
             {locale === "en" ? "OPEN THE RELEASE CONSOLE →" : "打开发布控制台 →"}
           </LocaleLink>
         </div>

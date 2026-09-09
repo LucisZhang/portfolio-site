@@ -1,5 +1,6 @@
 {
   "/": {
+    "aliases": [],
     "questions": [
       {
         "q_en": "Who is Xiangguo Zhang, and what kind of work does he do?",
@@ -18,7 +19,10 @@
       }
     ]
   },
-  "/ai/frontier-forge": {
+  "/projects/frontier-forge": {
+    "aliases": [
+      "/ai/frontier-forge"
+    ],
     "questions": [
       {
         "q_en": "How does Frontier Forge connect training, serving, and the gateway?",
@@ -37,7 +41,10 @@
       }
     ]
   },
-  "/ai/release-guardian": {
+  "/projects/release-guardian": {
+    "aliases": [
+      "/ai/release-guardian"
+    ],
     "questions": [
       {
         "q_en": "What does Release Guardian do before a release?",
@@ -56,7 +63,10 @@
       }
     ]
   },
-  "/ai/rag-quality-lab": {
+  "/projects/rag-quality-lab": {
+    "aliases": [
+      "/ai/rag-quality-lab"
+    ],
     "questions": [
       {
         "q_en": "What kind of problem does RAG Quality Lab catch?",
@@ -75,7 +85,10 @@
       }
     ]
   },
-  "/ai/triage-router": {
+  "/projects/triage-router": {
+    "aliases": [
+      "/ai/triage-router"
+    ],
     "questions": [
       {
         "q_en": "What does Triage Router route?",
@@ -94,7 +107,12 @@
       }
     ]
   },
-  "/ai/privacy-preflight": {
+  "/projects/privacy-preflight": {
+    "aliases": [
+      "/ai/privacy-preflight",
+      "/ai/privacy-preflight-mac",
+      "/ai/privacy-preflight-web"
+    ],
     "questions": [
       {
         "q_en": "What can Privacy Preflight redact?",
@@ -113,7 +131,12 @@
       }
     ]
   },
-  "/engineering/exactly-once-drills": {
+  "/projects/exactly-once-drills": {
+    "aliases": [
+      "/engineering/exactly-once-drills",
+      "/engineering/p1-reliability-lab",
+      "/engineering/streaming-reliability-lab"
+    ],
     "questions": [
       {
         "q_en": "Why does Exactly-Once Drills inject failures and reconcile the pipeline afterward?",
@@ -132,7 +155,10 @@
       }
     ]
   },
-  "/engineering/crossover-study": {
+  "/projects/crossover-study": {
+    "aliases": [
+      "/engineering/crossover-study"
+    ],
     "questions": [
       {
         "q_en": "What question does Crossover Study investigate?",
@@ -151,7 +177,10 @@
       }
     ]
   },
-  "/analytics/margin-control-tower": {
+  "/projects/margin-control-tower": {
+    "aliases": [
+      "/analytics/margin-control-tower"
+    ],
     "questions": [
       {
         "q_en": "What decision does Margin Control Tower help someone make?",
@@ -170,26 +199,33 @@
       }
     ]
   },
-  "/analytics/credit-policy-desk": {
+  "/projects/credit-policy-desk": {
+    "aliases": [
+      "/analytics/credit-policy-desk",
+      "/analytics/credit-policy-lab"
+    ],
     "questions": [
       {
         "q_en": "How does Credit Policy Desk turn a score into a policy decision?",
-        "q_zh": "Credit Policy Desk 为什么说一个分数还不是策略？",
+        "q_zh": "Credit Policy Desk 如何把模型分数变成信贷策略决策？",
         "id": "credit-overview"
       },
       {
         "q_en": "How does Credit Policy Desk choose approval and review thresholds?",
-        "q_zh": "Credit Policy Desk 的批准、复核、拒绝三段阈值怎么定？",
+        "q_zh": "Credit Policy Desk 如何确定批准、复核、拒绝三段阈值？",
         "id": "credit-thresholds"
       },
       {
         "q_en": "What does granted-loan-only data limit in Credit Policy Desk?",
-        "q_zh": "Credit Policy Desk 只有已授信样本，会带来什么限制？",
+        "q_zh": "Credit Policy Desk 只有已授信样本时，会受到什么限制？",
         "id": "credit-boundaries"
       }
     ]
   },
-  "/analytics/analytics-tandem": {
+  "/projects/analytics-tandem": {
+    "aliases": [
+      "/analytics/analytics-tandem"
+    ],
     "questions": [
       {
         "q_en": "What is the Analytics Tandem page?",
@@ -205,6 +241,33 @@
         "q_en": "What results should I not infer from Analytics Tandem?",
         "q_zh": "Analytics Tandem 这个旧案例明确不主张哪些效果？",
         "id": "tandem-boundaries"
+      }
+    ]
+  },
+  "/projects/groupconv-atlas": {
+    "aliases": [
+      "/ai/groupconv-atlas"
+    ],
+    "questions": [
+      {
+        "q_en": "In GroupConv Atlas, why do graph-device and eager API timings differ?",
+        "q_zh": "GroupConv Atlas：为什么图内设备时间与同步调用时间不同？",
+        "id": "groupconv-boundaries"
+      },
+      {
+        "q_en": "In GroupConv Atlas, how much does k3 improve on k0 in the current RTX 4090 Atlas?",
+        "q_zh": "GroupConv Atlas：本轮 RTX 4090 Atlas 中，k3 相对 k0 的收益有多大？",
+        "id": "groupconv-direct"
+      },
+      {
+        "q_en": "In GroupConv Atlas, does the custom kernel beat tuned PyTorch overall?",
+        "q_zh": "GroupConv Atlas：自定义内核整体超过调优 PyTorch 了吗？",
+        "id": "groupconv-framework"
+      },
+      {
+        "q_en": "In GroupConv Atlas, what did the fixed MobileNetV2 block substitution demonstrate?",
+        "q_zh": "GroupConv Atlas：固定 MobileNetV2 模块替换证明了什么？",
+        "id": "groupconv-module"
       }
     ]
   }

@@ -78,7 +78,7 @@ test.describe("Chinese runtime failures use bounded display copy", () => {
   // and had a bounded fetch-failure message to test. GuardianPage.tsx has
   // no equivalent runtime fetch: recorded-stub-runs.json is a static
   // bundler import (guardianData.ts) resolved at build time, and the two
-  // eval CSVs are read server-side in src/app/ai/release-guardian/page.tsx
+  // eval CSVs are read server-side in src/app/projects/release-guardian/page.tsx
   // before any HTML reaches the browser — there is no client-side network
   // request on this route left to fail, so this test has nothing left to
   // exercise (same reasoning as the Duty Logbook case directly below).
@@ -95,7 +95,7 @@ test.describe("Chinese runtime failures use bounded display copy", () => {
   // English error surfacing anywhere on the page.
   test("Exactly-Once Drills log entry keeps its real static content when the enrichment fetch fails", async ({ page }) => {
     await page.route("**/case-studies/exactly-once-drills/results/eo_reconciliation.json", (route) => route.fulfill({ status: 503 }));
-    await page.goto("/engineering/exactly-once-drills?lang=zh", { waitUntil: "networkidle" });
+    await page.goto("/projects/exactly-once-drills?lang=zh", { waitUntil: "networkidle" });
 
     const entry = page.locator(SEL.exhibit("01")).locator('[data-log-entry][data-drill-id="eo-reconciliation"]');
     await entry.locator("summary").click();

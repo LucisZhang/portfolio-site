@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { mentionedProjectIds } from "./project-identities";
 
 export const ASSISTANT_PUBLIC_PROJECT_ID = "streaming-reliability-lab" as const;
 export const ASSISTANT_PUBLIC_SOURCE_EXCERPT_BYTE_CAP = 6_000;
@@ -429,8 +430,6 @@ export const ASSISTANT_PUBLIC_SOURCE_PACK_SHA256 = sha256Utf8(
   canonicalJson(ASSISTANT_PUBLIC_SOURCE_PACK),
 );
 
-const OTHER_PROJECT_PATTERN = /(?:release[\s_-]+guardian|rag[\s_-]+quality[\s_-]+lab|privacy[\s_-]+preflight|margin[\s_-]+control[\s_-]+tower|credit[\s_-]+policy[\s_-]+lab|隐私预检|信贷策略实验室)/iu;
-
 function aliasPattern(alias: string) {
   const escaped = alias
     .replace(/[.*+?^${}()|[\]\\]/gu, "\\$&")
@@ -447,9 +446,10 @@ const P1_ALIAS_PATTERNS = [...EXPECTED_ALIASES.en, ...EXPECTED_ALIASES.zh]
 export function resolveAssistantPublicProject(question: string): AssistantPublicProjectResolution {
   if (typeof question !== "string" || question.length === 0 || question.length > 1_000) return null;
   const normalized = question.normalize("NFKC");
-  const hasP1 = P1_ALIAS_PATTERNS.some((pattern) => pattern.test(normalized));
+  const identities = mentionedProjectIds(normalized);
+  const hasP1 = identities.includes("exactly-once-drills") || P1_ALIAS_PATTERNS.some((pattern) => pattern.test(normalized));
   if (!hasP1) return null;
-  if (OTHER_PROJECT_PATTERN.test(normalized)) return "ambiguous";
+  if (identities.some((id) => id !== "exactly-once-drills")) return "ambiguous";
   return ASSISTANT_PUBLIC_PROJECT_ID;
 }
 

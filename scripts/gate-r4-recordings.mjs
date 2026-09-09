@@ -231,7 +231,7 @@ async function recordZhHomeMobile(browser) {
 // exhibit.
 async function recordTriage(browser) {
   await captureRecording(browser, {
-    url: `${BASE_URL}/ai/triage-router`,
+    url: `${BASE_URL}/projects/triage-router`,
     viewport: DESKTOP,
     outName: "triage-desktop",
     run: async (page) => {
@@ -260,7 +260,7 @@ async function recordTriage(browser) {
 async function recordPrivacy(browser) {
   for (const [label, viewport] of [["desktop", DESKTOP], ["mobile", MOBILE]]) {
     await captureRecording(browser, {
-      url: `${BASE_URL}/ai/privacy-preflight`,
+      url: `${BASE_URL}/projects/privacy-preflight`,
       viewport,
       outName: `privacy-${label}`,
       run: async (page) => {
@@ -294,7 +294,7 @@ async function recordPrivacy(browser) {
 async function recordEod(browser) {
   for (const [label, viewport] of [["desktop", DESKTOP], ["mobile", MOBILE]]) {
     await captureRecording(browser, {
-      url: `${BASE_URL}/engineering/exactly-once-drills`,
+      url: `${BASE_URL}/projects/exactly-once-drills`,
       viewport,
       outName: `eod-${label}`,
       setup: async (page) => page.emulateMedia({ reducedMotion: "no-preference" }),

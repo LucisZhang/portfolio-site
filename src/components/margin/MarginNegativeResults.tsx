@@ -2,7 +2,7 @@
 
 import { Finding } from "@/components/exhibition/Finding";
 import { useI18n } from "@/lib/i18n";
-import { zhWrapNode } from "@/lib/zh-wrap";
+import { zhWrapDisplay } from "@/lib/zh-wrap";
 import { detectionReport, elasticityReport } from "./marginData";
 
 // Exhibit 03: the honesty exhibit -- spec §6.7's "03 negative/limitation
@@ -20,13 +20,13 @@ export function MarginNegativeResults() {
     <section id="exhibit-03" className="exhibit margin-negative" data-exhibit="03" data-bg="white" aria-labelledby="exhibit-03-title">
       <p className="exhibit-opening-row">
         <span className="exhibit-number" aria-hidden="true">03</span>
-        <span className="exhibit-eyebrow">FALSE ALARMS / HOLDOUT HONESTY</span>
+        <span className="exhibit-eyebrow">FALSE ALARMS · HOLDOUT HONESTY</span>
       </p>
       <h2 id="exhibit-03-title" className="exhibit-title">
         {locale === "en" ? (
           <>Recall cost <em>precision.</em></>
         ) : (
-          zhWrapNode(<>召回率，是用<em>精确率换来的。</em></>)
+          zhWrapDisplay(<>召回率，是用<em>精确率换来的。</em></>)
         )}
       </h2>
 

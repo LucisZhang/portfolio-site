@@ -6,21 +6,21 @@ import questionBank from "../../src/data/generated/ask-question-bank.json";
 import presetAnswers from "../../src/data/generated/ask-preset-answers.json";
 import recordedExample from "../../src/data/generated/ask-recorded-example.json";
 
-// Task L5 [CLAUDE]: /ai/ask-portfolio, the user-approved dialogue-genre
+// Task L5 [CLAUDE]: /projects/ask-portfolio, the user-approved dialogue-genre
 // "Ask Portfolio" page (output/design-genres/genre-ask-dialogue.html is the
 // design authority). This route was previously routeEnabled: false (404);
 // this task enables it and builds the full-page conversation surface as a
-// standalone route (src/app/ai/ask-portfolio/page.tsx), reusing the
+// standalone route (src/app/projects/ask-portfolio/page.tsx), reusing the
 // floating panel's own ask/submit/citation machinery (extracted to
 // src/lib/use-assistant-conversation.ts, also now used by
 // AssistantWidget.tsx) rather than forking a second copy of it.
 
-const ROUTE = "/ai/ask-portfolio";
+const ROUTE = "/projects/ask-portfolio";
 
 type QuestionBank = Record<string, { questions: Array<{ id: string; q_en: string; q_zh: string }> }>;
 const bank = questionBank as QuestionBank;
 
-// /ai/ask-portfolio has no route-specific entry in the generated bank (task
+// /projects/ask-portfolio has no route-specific entry in the generated bank (task
 // F13a's route set is "/" plus the 11 pre-existing leaf project routes), so
 // src/lib/ask-question-bank.ts's exact-path-with-home-fallback resolution
 // always falls back to the home ("/") question set for this page -- see
@@ -50,8 +50,9 @@ test("renders the conversation instrument with the recorded example and the veri
   // a config-file path dump.
   expect(recordedExample.citation.sourceId.startsWith("portfolio-site:")).toBe(true);
   const recordedIndex = exhibit01.getByTestId("ask-go-index");
-  await expect(recordedIndex).toContainText("Go see for yourself", { ignoreCase: true });
-  await expect(recordedIndex.getByRole("link", { name: "Browse the full project index on the home page" })).toHaveAttribute("href", "/");
+  await expect(recordedIndex).toContainText("References and destinations", { ignoreCase: true });
+  await expect(recordedIndex).toContainText("PROJECT INDEX");
+  await expect(recordedIndex.getByRole("link", { name: "Browse the full project index" })).toHaveAttribute("href", "/");
   await expect(recordedIndex.locator(`a[href="${recordedExample.citation.url}"]`)).toHaveCount(0);
   await expect(recordedIndex).not.toContainText("site-config.ts");
 
@@ -102,20 +103,19 @@ for (const locale of ["en", "zh"] as const) {
     // The truthful preset labeling, on the appended turn itself: an
     // authored answer must never carry the retrieval-provenance label.
     await expect(liveTurn.locator(".ask-who small")).toHaveText(
-      locale === "en" ? "preset answer · authored, cited · no model call" : "预置回答 · 附引用 · 未调用模型",
+      locale === "en" ? "preset answer" : "预置回答",
     );
 
-    // B5-c: every preset citation resolves in the navigation index --
-    // site-internal chunks as this site's route links (never raw repo file
-    // links), external chunks as their pinned GitHub deep links.
+    // The reviewed feedback contract routes overview answers to project homes.
+    // Detailed questions retain pinned evidence files (covered below).
     const index = liveTurn.getByTestId("ask-go-index");
     await expect(index).toBeVisible();
     for (const citation of record.citations) {
-      if (citation.sourceId.startsWith("portfolio-site:")) {
-        await expect(index.locator(`a[href="${citation.url}"]`)).toHaveCount(0);
-      } else if (citation.url) {
-        await expect(index.locator(`a[href="${citation.url}"]`)).toHaveCount(1);
-      }
+      if (citation.url) await expect(index.locator(`a[href="${citation.url}"]`)).toHaveCount(0);
+    }
+    for (const path of ["/", "/projects/frontier-forge", "/projects/release-guardian"]) {
+      const href = locale === "zh" ? `${path}?lang=zh` : path;
+      await expect(index.locator(`a[href="${href}"]`)).toHaveCount(1);
     }
     const indexLinks = index.locator("a");
     expect(await indexLinks.count()).toBeGreaterThan(0);
@@ -126,6 +126,32 @@ for (const locale of ["en", "zh"] as const) {
     expect(assistantRequests).toBe(0);
   });
 }
+
+// Task B6: an authored citation's section anchor (scripts/lib/ask-authored-answers.mjs
+// spec.anchor, spread onto a {site} citation) must survive rendering as a
+// "#exhibit-NN" fragment on the destination link, not just land on the bare
+// project page. "home-tech-stack" (bank["/"].questions[2]) cites Triage
+// Router's exhibit-01 this way.
+test("an overview preset keeps project-level destinations even when its evidence has an exhibit anchor", async ({ page }) => {
+  await page.route("**/api/assistant", async (route) => {
+    await route.abort();
+  });
+  await page.goto(ROUTE, { waitUntil: "networkidle" });
+
+  const anchoredQuestion = bank["/"].questions[2];
+  expect(anchoredQuestion.id).toBe("home-tech-stack");
+  const record = (presetAnswers.answers as Record<string, { citations: Array<{ sourceId: string; url?: string; anchor?: string }> }>)[anchoredQuestion.id];
+  const anchoredCitation = record.citations.find((citation) => citation.anchor);
+  expect(anchoredCitation?.anchor).toBe("exhibit-01");
+
+  await page.getByRole("button", { name: anchoredQuestion.q_en, exact: false }).click();
+
+  const liveTurn = page.locator(".ask-turn-folio").last();
+  const index = liveTurn.getByTestId("ask-go-index");
+  await expect(index).toBeVisible();
+  await expect(index.locator(`a[href$="#${anchoredCitation!.anchor}"]`)).toHaveCount(0);
+  await expect(index.locator('a[href="/projects/triage-router"]')).toHaveCount(1);
+});
 
 test("submitting a typed question produces a live answer whose references index maps internals to routes and keeps external deep links", async ({ page }) => {
   // Task R9c (B5-c): a portfolio-site-internal chunk (site-config.ts /
@@ -174,39 +200,45 @@ test("submitting a typed question produces a live answer whose references index 
   // R9a circuit/colophon navigation) also carries a Release Guardian link,
   // so the page-level locator is ambiguous. The assertion target is the
   // answer's project chip, unchanged.
-  await expect(page.getByTestId("ask-portfolio").getByRole("link", { name: "Release Guardian", exact: true })).toHaveAttribute("href", "/ai/release-guardian");
+  await expect(page.getByTestId("ask-portfolio").getByRole("link", { name: "Release Guardian", exact: true })).toHaveAttribute("href", "/projects/release-guardian");
 
   const liveIndex = page.getByTestId("ask-go-index").last();
   // Internal chunk -> project-page route link, and the raw file link is gone.
-  const routeLink = liveIndex.getByRole("link", { name: "Open the Frontier Forge project page" });
-  await expect(routeLink).toHaveAttribute("href", "/ai/frontier-forge");
+  const routeLink = liveIndex.getByRole("link", { name: "Explore Frontier Forge" });
+  await expect(routeLink).toHaveAttribute("href", "/projects/frontier-forge");
   await expect(liveIndex.locator(`a[href="${internalUrl}"]`)).toHaveCount(0);
   await expect(liveIndex).not.toContainText("src/lib/projects.ts");
   // External chunk -> the pinned GitHub deep link survives, human-labeled.
   const deepLink = liveIndex.getByRole("link", { name: "See the README's verified claims in Release Guardian" });
   await expect(deepLink).toHaveAttribute("href", externalUrl);
   await expect(deepLink).toHaveAttribute("target", "_blank");
-  await expect(liveIndex).toContainText("github.com/LucisZhang/release-guardian");
+  await expect(liveIndex).not.toContainText("github.com/LucisZhang/release-guardian");
+  await expect(liveIndex).not.toContainText("project page");
 
   await expect(page.locator(".ask-ratelimit")).toContainText("7 requests left this minute");
   await expect(page.locator(".ask-ratelimit")).toContainText("42 left today");
 });
 
-test("exhibit 02 guard refusals render as ledger records: verbatim text, no bar-quote styling", async ({ page }) => {
+test("layered policy explanation and report both render the two verbatim refusals", async ({ page }) => {
   // Task R9c (B5-a): the two recorded refusals are data, not quotations --
   // no border-left bar, no italics, and the recorded texts stay verbatim.
   await page.goto(ROUTE, { waitUntil: "networkidle" });
   const exhibit02 = page.locator(SEL.exhibit("02"));
-  const refusals = exhibit02.locator(".ask-refusal");
+  const results = page.locator('[data-report-section="results"]');
+  const refusals = results.locator(".ask-refusal");
+  await expect(exhibit02.locator(".ask-refusal")).toHaveCount(2);
   await expect(refusals).toHaveCount(2);
-  await expect(page.locator(".ask-guard-example")).toHaveCount(0);
-  await expect(page.locator('#exhibit-02 blockquote')).toHaveCount(0);
+  await expect(page.locator(".ask-guard-example")).toHaveCount(4);
+  await expect(results.locator("blockquote")).toHaveCount(0);
 
-  await expect(refusals.nth(0)).toContainText("OFF-TOPIC · REFUSED LOCALLY");
+  await expect(exhibit02).toContainText("external AI guard");
+  await expect(exhibit02).toContainText("local policy screen");
+  await expect(exhibit02).toContainText("Only an allowed question reaches retrieval and the answer model");
+  await expect(refusals.nth(0)).toContainText("OFF-TOPIC · POLICY STOP");
   await expect(refusals.nth(0)).toContainText("I focus on Xiangguo Zhang's background, projects, skills, working style, and role fit. Ask me about any of those.");
-  await expect(refusals.nth(1)).toContainText("PROMPT INJECTION · REFUSED LOCALLY");
+  await expect(refusals.nth(1)).toContainText("PROMPT INJECTION · POLICY STOP");
   await expect(refusals.nth(1)).toContainText("I cannot change or reveal my internal instructions or knowledge files. I can still explain Xiangguo Zhang's work and candidacy.");
-  await expect(refusals.nth(0)).toContainText("recorded verbatim");
+  await expect(refusals.nth(0)).toContainText("no retrieval or answer-model call");
 
   for (const index of [0, 1]) {
     const styles = await refusals.nth(index).locator(".ask-refusal-text").evaluate((element) => {
@@ -248,9 +280,9 @@ test("a failing live answer states it honestly and offers real static route sugg
   const fallback = page.locator(".ask-fallback");
   await expect(fallback).toBeVisible();
   await expect(fallback).toContainText("Honest fallback");
-  await expect(fallback.getByRole("link", { name: "Frontier Forge" })).toHaveAttribute("href", "/ai/frontier-forge");
-  await expect(fallback.getByRole("link", { name: "Crossover Study" })).toHaveAttribute("href", "/engineering/crossover-study");
-  await expect(fallback.getByRole("link", { name: "Credit Policy Desk" })).toHaveAttribute("href", "/analytics/credit-policy-desk");
+  await expect(fallback.getByRole("link", { name: "Frontier Forge" })).toHaveAttribute("href", "/projects/frontier-forge");
+  await expect(fallback.getByRole("link", { name: "Crossover Study" })).toHaveAttribute("href", "/projects/crossover-study");
+  await expect(fallback.getByRole("link", { name: "Credit Policy Desk" })).toHaveAttribute("href", "/projects/credit-policy-desk");
   await expect(page.getByRole("button", { name: "Retry", exact: true })).toBeVisible();
 });
 
@@ -324,4 +356,18 @@ test.describe("Ask Portfolio mobile layout", () => {
     await page.locator(SEL.exhibit("03")).scrollIntoViewIfNeeded();
     await assertNoHorizontalOverflow(page, `${ROUTE} at 360 (exhibit 03)`);
   });
+});
+
+
+test("global opener references lead to project homes in both languages", async ({ page }) => {
+  for (const locale of ["en", "zh"] as const) {
+    await page.goto(`${ROUTE}${locale === "zh" ? "?lang=zh" : ""}`, { waitUntil: "networkidle" });
+    for (const question of bank["/"].questions) {
+      await page.locator(".ask-openers").getByRole("button", { name: question[locale === "en" ? "q_en" : "q_zh"], exact: false }).click();
+      const index = page.locator("#ask-opener-answer").getByTestId("ask-go-index");
+      await expect(index).toBeVisible();
+      await expect(index.locator('a[href*="/blob/"]')).toHaveCount(0);
+      await expect(index.locator('a[href*="/projects/"]').first()).toBeVisible();
+    }
+  }
 });
