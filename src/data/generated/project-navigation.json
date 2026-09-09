@@ -1,0 +1,102 @@
+[
+  {
+    "slug": "groupconv-atlas",
+    "title": {
+      "en": "GroupConv Atlas",
+      "zh": "GroupConv Atlas"
+    },
+    "glossZh": "分组卷积：优化收益与适用边界"
+  },
+  {
+    "slug": "frontier-forge",
+    "title": {
+      "en": "Frontier Forge",
+      "zh": "Frontier Forge"
+    },
+    "glossZh": "SFT 微调到 vLLM 上线跑通"
+  },
+  {
+    "slug": "release-guardian",
+    "title": {
+      "en": "Release Guardian",
+      "zh": "Release Guardian"
+    },
+    "glossZh": "Agent 发布门禁：编排与审批"
+  },
+  {
+    "slug": "exactly-once-drills",
+    "title": {
+      "en": "Exactly-Once Drills",
+      "zh": "Exactly-Once Drills"
+    },
+    "glossZh": "消息队列与流处理的故障恢复验证"
+  },
+  {
+    "slug": "rag-quality-lab",
+    "title": {
+      "en": "RAG Quality Lab",
+      "zh": "RAG Quality Lab"
+    },
+    "glossZh": "RAG 回归评测基线：知识库一动就重测"
+  },
+  {
+    "slug": "triage-router",
+    "title": {
+      "en": "Triage Router",
+      "zh": "Triage Router"
+    },
+    "glossZh": "大模型成本路由：三层级联按置信度分发"
+  },
+  {
+    "slug": "privacy-preflight",
+    "title": {
+      "en": "Privacy Preflight",
+      "zh": "Privacy Preflight"
+    },
+    "glossZh": "浏览器本地的敏感信息脱敏工作台"
+  },
+  {
+    "slug": "margin-control-tower",
+    "title": {
+      "en": "Margin Control Tower",
+      "zh": "Margin Control Tower"
+    },
+    "glossZh": "浏览器毛利归因工作台"
+  },
+  {
+    "slug": "crossover-study",
+    "title": {
+      "en": "Crossover Study",
+      "zh": "Crossover Study"
+    },
+    "glossZh": "推荐系统个性化收益对照研究"
+  },
+  {
+    "slug": "ask-portfolio",
+    "title": {
+      "en": "Ask Portfolio",
+      "zh": "Ask Portfolio"
+    },
+    "glossZh": "可溯源的作品集问答助手"
+  },
+  {
+    "slug": "credit-policy-desk",
+    "title": {
+      "en": "Credit Policy Desk",
+      "zh": "Credit Policy Desk"
+    },
+    "navigationLabel": {
+      "en": "Credit Policy Desk",
+      "zh": "Credit Policy Desk"
+    },
+    "glossZh": "信贷策略模拟工作台"
+  },
+  {
+    "slug": "analytics-tandem",
+    "title": {
+      "en": "Analytics Tandem",
+      "zh": "Analytics Tandem"
+    },
+    "glossZh": "旧版分析项目兼容入口"
+  }
+]

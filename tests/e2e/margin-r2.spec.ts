@@ -5,9 +5,9 @@ import { SEL } from "./selectors";
 import { bodyTextExcludingLanguageSwitcher, containsCJK, longestLatinWordRun } from "./localePurity";
 import { assertNoHorizontalOverflow } from "./mobileAudit";
 
-const ROUTE = "/analytics/margin-control-tower";
+const ROUTE = "/projects/margin-control-tower";
 
-// Task L2 [CLAUDE]: rebuild of /analytics/margin-control-tower to the
+// Task L2 [CLAUDE]: rebuild of /projects/margin-control-tower to the
 // user-approved chart-led Evidence page (spec §6.7 "Margin/Credit(归档)").
 // This file replaces the margin-only coverage that used to live in
 // tests/e2e/analytics-real-data.spec.ts and tests/e2e/analytics-phase2.spec.ts
@@ -39,6 +39,17 @@ function isDuckDBHeavyRuntimeRequest(url: string) {
 }
 
 test.describe("Margin Control Tower exhibit 01 (detection figure, real data)", () => {
+  test("evidence metadata is an aligned slashless token list", async ({ page }) => {
+    await page.goto(ROUTE, { waitUntil: "networkidle" });
+    const meta = page.locator(SEL.exhibit("01")).locator(".exhibit-opening-row .exhibit-meta");
+    await expect(meta.locator("li")).toHaveText([
+      "OLIST-MARGIN-PARQUET-V1",
+      "STL + ROBUST Z-SCORE",
+      /EVALUATED \d{4}-\d{2}-\d{2}/,
+    ]);
+    expect(await meta.innerText()).not.toContain("/");
+  });
+
   test("the figure plots exactly 6 vermilion detections read from detection-report.json", async ({ page }) => {
     const report = loadDetectionReport();
     await page.goto(ROUTE, { waitUntil: "networkidle" });
@@ -96,6 +107,7 @@ test.describe("Margin Control Tower exhibit 04 (click-gated DuckDB receipts)", (
     expect(heavyRuntimeRequests).toEqual([]);
     expect(parquetRequests).toBe(0);
 
+    await page.locator("[data-evidence=margin] > details > summary").click();
     const verify = page.locator(".margin-verify");
     await expect(verify).toHaveAttribute("data-verify-status", "idle");
     await verify.getByRole("button").click();
@@ -116,7 +128,8 @@ test("Margin Control Tower renders with no JavaScript: exhibits 01-04 show real 
   await expect(page.locator(SEL.exhibit("02")).locator(".margin-registry-table tbody tr")).toHaveCount(4);
   await expect(page.locator(SEL.exhibit("03")).locator(".exhibit-finding")).toHaveCount(2);
   await expect(page.locator(SEL.exhibit("04")).locator(".margin-receipts-dl > div")).toHaveCount(4);
-  // The verify button is present but inert without JS -- must not vanish.
+  // Native disclosure remains operable without JS; the verify action is still present.
+  await page.locator("[data-evidence=margin] > details > summary").click();
   await expect(page.locator(".margin-verify-button")).toBeVisible();
 
   await context.close();

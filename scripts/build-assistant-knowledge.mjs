@@ -12,7 +12,7 @@ const outputPath = path.join(root, "src", "data", "assistant-knowledge.generated
 const verifyOnly = process.argv.includes("--verify");
 const cacheSelfTestOnly = process.argv.includes("--self-test-cache");
 const MAX_FILE_BYTES = 180_000;
-const MAX_TOTAL_BYTES = 2_000_000;
+const MAX_TOTAL_BYTES = 3_000_000;
 const MAX_COMMITTED_SNAPSHOT_BYTES = 12_000_000;
 const TARGET_CHUNK_CHARACTERS = 1_650;
 const CHUNK_OVERLAP_LINES = 4;
@@ -39,6 +39,14 @@ function canonicalJson(value) {
     return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`).join(",")}}`;
   }
   return JSON.stringify(value);
+}
+
+function sanitizeKnowledgeText(text) {
+  // Keep source URLs, line numbers, and file hashes tied to the original public
+  // file while removing machine-specific workspace prefixes from retrieval text.
+  return text
+    .replace(/\/Users\/[A-Za-z0-9._-]+\//gu, "<local-workspace>/")
+    .replace(/\/private\/tmp\//gu, "<temporary-workspace>/");
 }
 
 function encodedPath(value) {
@@ -107,7 +115,7 @@ function assertManifest(manifest) {
 }
 
 function chunkFile(repository, file, text, fileSha256, lineOffset = 0, idNamespace = repository.repo) {
-  const lines = text.replace(/\r\n?/gu, "\n").split("\n");
+  const lines = sanitizeKnowledgeText(text).replace(/\r\n?/gu, "\n").split("\n");
   const chunks = [];
   let start = 0;
   while (start < lines.length) {

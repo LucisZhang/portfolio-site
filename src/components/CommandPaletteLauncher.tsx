@@ -1,7 +1,7 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { useEffect, useState, type ComponentType } from "react";
+import { useCallback, useEffect, useState, type ComponentType } from "react";
 import { useI18n } from "@/lib/i18n";
 import type { Project, Track } from "@/lib/projects";
 
@@ -11,16 +11,23 @@ type PaletteProps = {
   initiallyOpen?: boolean;
 };
 
-export default function CommandPaletteLauncher({ tracks, projects }: Omit<PaletteProps, "initiallyOpen">) {
-  const [Palette, setPalette] = useState<ComponentType<PaletteProps> | null>(null);
+type PaletteData = Omit<PaletteProps, "initiallyOpen">;
+type LauncherProps = PaletteData | { tracks?: never; projects?: never };
+
+export default function CommandPaletteLauncher({ tracks, projects }: LauncherProps) {
+  const [loaded, setLoaded] = useState<{ Palette: ComponentType<PaletteProps>; data: PaletteData } | null>(null);
   const { dict } = useI18n();
 
-  function loadPalette() {
-    void import("./CommandPalette").then((module) => setPalette(() => module.default));
-  }
+  const loadPalette = useCallback(() => {
+    void Promise.all([
+      import("./CommandPalette"),
+      tracks && projects ? Promise.resolve({ tracks, projects })
+        : import("@/lib/projects").then(({ tracks, featuredProjects }) => ({ tracks, projects: featuredProjects })),
+    ]).then(([module, data]) => setLoaded({ Palette: module.default, data }));
+  }, [projects, tracks]);
 
   useEffect(() => {
-    if (Palette) return;
+    if (loaded) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
@@ -29,9 +36,9 @@ export default function CommandPaletteLauncher({ tracks, projects }: Omit<Palett
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [Palette]);
+  }, [loaded, loadPalette]);
 
-  if (Palette) return <Palette tracks={tracks} projects={projects} initiallyOpen />;
+  if (loaded) return <loaded.Palette {...loaded.data} initiallyOpen />;
 
   return (
     <button

@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 import { StatGrid } from "@/components/exhibition/StatGrid";
 import { useI18n } from "@/lib/i18n";
-import { zhWrapNode, zhWrapText } from "@/lib/zh-wrap";
+import { zhGroup, zhWrapDisplay, zhWrapText } from "@/lib/zh-wrap";
 import { getProject } from "@/lib/projects";
 import {
   RAG_CHECKPOINT_COMMIT,
@@ -158,9 +158,9 @@ export function RagDiffLab() {
       <h1 id="exhibit-01-title" className="exhibit-title">
         {locale === "en"
           ? <>Baseline against working copy.<br /><em>The diff is the verdict.</em></>
-          : zhWrapNode(<>基线对照工作副本，<br /><em>差异即结论。</em></>)}
+          : zhWrapDisplay(<>{zhGroup("基线对照", "工作副本，")}<br /><em>差异即结论。</em></>)}
       </h1>
-      {locale === "zh" && ragProject ? <p className="cn-gloss" lang="zh">{zhWrapText(ragProject.glossZh)}</p> : null}
+      {locale === "zh" && ragProject ? <p className="cn-gloss" lang="zh">{zhWrapDisplay(ragProject.glossZh)}</p> : null}
       <p className="exhibit-intro">
         {locale === "en"
           ? "Edit the controlled document below and the lab re-compares it against the pinned baseline deterministically — no model call, no judged score. Left is what checkpoint 6c887a1 indexed; right is your working copy; the panel underneath is the arithmetic between them."

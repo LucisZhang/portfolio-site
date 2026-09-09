@@ -7,6 +7,10 @@
 // path, or matching the reviewed claim pattern, outrank incidental overlap).
 // One source of truth; the test imports these maps unchanged.
 export const relevantPathsByQuestion = {
+  "groupconv-boundaries": ["README.md", "README.zh-CN.md", "results/rtx4090/session-20260908-vast-03/analysis-atlas/summary.zh-CN.md", "results/rtx4090/session-20260908-vast-03/analysis-supplemental/summary.zh-CN.md"],
+  "groupconv-direct": ["README.md", "README.zh-CN.md", "results/rtx4090/session-20260908-vast-03/analysis-atlas/summary.zh-CN.md", "results/rtx4090/session-20260908-vast-03/analysis-supplemental/summary.zh-CN.md"],
+  "groupconv-framework": ["README.md", "README.zh-CN.md", "results/rtx4090/session-20260908-vast-03/analysis-atlas/summary.zh-CN.md", "results/rtx4090/session-20260908-vast-03/analysis-supplemental/summary.zh-CN.md"],
+  "groupconv-module": ["README.md", "README.zh-CN.md", "results/rtx4090/session-20260908-vast-03/analysis-atlas/summary.zh-CN.md", "results/rtx4090/session-20260908-vast-03/analysis-supplemental/summary.zh-CN.md"],
   "home-background": ["README.md", "README.zh-CN.md", "src/lib/site-config.ts"],
   "home-site-overview": ["README.md", "README.zh-CN.md"],
   "home-tech-stack": ["README.md", "README.zh-CN.md", "package.json", "src/lib/i18n.ts", "src/data/generated/home-stats.json"],
@@ -42,6 +46,10 @@ export const relevantPathsByQuestion = {
   "tandem-boundaries": ["src/lib/projects.ts"],
 };
 export const relevantClaimsByQuestion = {
+  "groupconv-boundaries": /graph|图内|API/u,
+  "groupconv-direct": /3\.8718|3\.4490/u,
+  "groupconv-framework": /0\.7384|0\.6448/u,
+  "groupconv-module": /MobileNetV2|1\.13849|0\.67902/u,
   "home-background": /Xiangguo Zhang|章向国|Applied AI|AI 应用/iu,
   "home-site-overview": /portfolio|作品集|case stud|案例/iu,
   "home-tech-stack": /Next\.js|TypeScript|Tailwind|Python|技术|stack|Gateway|Serving/iu,

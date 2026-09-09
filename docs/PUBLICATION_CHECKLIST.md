@@ -352,3 +352,8 @@ Only after those checks may `STATE.md` change from `V15_RELEASE_CANDIDATE` to a 
 - [x] All 11 public routes returned HTTP 200 for both language variants with expected security
   headers.
 - [x] Lighthouse 13.4.1: Performance 98, Accessibility 100, Best Practices 100, SEO 100.
+
+
+## GroupConv Atlas local integration — 8 September 2026
+
+The owner accepted the integrated website preview and authorized publication on 9 September 2026, superseding the earlier local-only boundary. Deployment verification is recorded in STATE.md. Canonical route: `/projects/groupconv-atlas`. Source: `LucisZhang/groupconv-atlas` at `6193482b66e2074643df114231da3cbdb49d2459`. Current RTX 4090 and historical RTX 4090 D data remain separate; data/figures CC-BY-4.0 and code MIT. `public/case-studies/groupconv-atlas/provenance.json` records hashes; `scripts/generate-groupconv-summary.mjs --check` verifies the current map. Local quality acceptance is recorded separately after checks complete.

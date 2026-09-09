@@ -18,7 +18,7 @@ import {
 } from "../../src/components/guardian/guardianData";
 import { readGuardianEvaluationLedgers } from "../../src/components/guardian/guardianEval.server";
 
-const ROUTE = "/ai/release-guardian";
+const ROUTE = "/projects/release-guardian";
 
 // Task L1: Release Guardian rebuilt to the user-approved 呈批件 (approval
 // dossier) design (output/design-genres/genre-rg-dossier.html). This file
@@ -140,6 +140,7 @@ test("Release Guardian renders with no JavaScript: both recorded branches are fu
 
   // Exhibit 02's full 13-node trace is also server-rendered static markup.
   await expect(page.locator(SEL.exhibit("02")).locator(".guardian-node-table [role=\"row\"]")).toHaveCount(allNodes.length + 1);
+  await expect(page.locator(SEL.exhibit("04")).getByRole("table", { name: "Release gate metrics" })).toBeVisible();
 
   await context.close();
 });
@@ -163,6 +164,7 @@ test("en Release Guardian renders no Chinese (CJK) text anywhere on the page", a
   await page.goto(ROUTE, { waitUntil: "networkidle" });
   await expect(page.locator(".exhibit-rail-copy-zh")).toHaveCount(0);
   await expect(page.locator(".exhibit-rail-copy-en")).toHaveCount(1);
+  await expect(page.locator(SEL.exhibit("04")).getByRole("table", { name: "Release gate metrics" })).toBeVisible();
   const bodyText = await bodyTextExcludingLanguageSwitcher(page);
   expect(containsCJK(bodyText)).toBe(false);
 });
@@ -179,6 +181,7 @@ test("zh Release Guardian renders an independently-written zh headline with no l
   const intro = page.locator(SEL.exhibit("04")).locator(".exhibit-intro");
   expect(containsCJK(await intro.innerText())).toBe(true);
   expect(longestLatinWordRun(await intro.innerText())).toBeLessThanOrEqual(8);
+  await expect(page.locator(SEL.exhibit("04")).getByRole("table", { name: "发布门禁指标" })).toBeVisible();
 
   await expect(page.locator(".exhibit-rail-copy-en")).toHaveCount(0);
 });
@@ -201,5 +204,83 @@ test.describe("F1 mobile pass — Release Guardian", () => {
     await page.goto(ROUTE, { waitUntil: "networkidle" });
     const columns = await page.locator(".guardian-doc").evaluate((el) => getComputedStyle(el).gridTemplateColumns.split(" ").length);
     expect(columns).toBe(2);
+  });
+});
+
+test.describe("Release Guardian setup areas", () => {
+  for (const locale of ["en", "zh"] as const) {
+    test(`${locale}: full Docker and MCP content stays visible in vertical order`, async ({ page }) => {
+      await page.addInitScript((value) => window.localStorage.setItem("portfolio-locale", value), locale);
+      await page.goto(ROUTE, { waitUntil: "networkidle" });
+      const docker = page.locator("#guardian-install-panel-docker");
+      const mcp = page.locator("#guardian-install-panel-mcp");
+      await expect(docker).toBeVisible();
+      await expect(mcp).toBeVisible();
+      await expect(page.locator(".guardian-install [role=tab]")).toHaveCount(0);
+      await expect(mcp).toContainText("https://xiangguozhang.com/release-guardian/mcp");
+      await expect(mcp).toContainText(locale === "en" ? "HOSTED BY THIS SITE · CONNECT DIRECTLY" : "网站托管 · 直接连接");
+      await expect(docker).toContainText(locale === "en" ? "OPTIONAL · SELF-HOSTED SETUP" : "可选 · 自行部署");
+      await expect(mcp).not.toContainText("127.0.0.1");
+      await expect(mcp).toContainText(locale === "en" ? "No local Docker setup is needed" : "无需在本机安装或启动 Docker");
+      const installLink = mcp.locator('a[href^="vscode:mcp/install?"]');
+      await expect(installLink).toHaveAccessibleName(locale === "en" ? "Add Guardian in VS Code" : "在 VS Code 中添加 Guardian");
+      await expect(installLink).toHaveAttribute("aria-describedby", "guardian-connect-help");
+      await expect(installLink).toHaveCSS("cursor", "pointer");
+      await installLink.focus();
+      await expect(installLink).toBeFocused();
+      await expect(installLink).toHaveCSS("outline-style", "solid");
+      const actionBox = await installLink.boundingBox();
+      expect(actionBox!.height).toBeGreaterThanOrEqual(48);
+      const installHref = await installLink.getAttribute("href");
+      expect(installHref).not.toBeNull();
+      expect(JSON.parse(decodeURIComponent(installHref!.split("?")[1]))).toEqual({
+        name: "release-guardian",
+        type: "http",
+        url: "https://xiangguozhang.com/release-guardian/mcp",
+      });
+      await expect(docker.getByRole("link")).toHaveAttribute("href", "https://github.com/LucisZhang/release-guardian/releases/tag/runtime-20260908");
+      const dockerBox = await docker.boundingBox();
+      const mcpBox = await mcp.boundingBox();
+      expect(dockerBox).not.toBeNull();
+      expect(mcpBox).not.toBeNull();
+      expect(mcpBox!.y).toBeGreaterThan(dockerBox!.y + dockerBox!.height);
+      await assertNoHorizontalOverflow(page, `${ROUTE} ${locale} setup`);
+    });
+  }
+
+  test("whole areas emphasize on hover and reset after click and pointer leave", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop", "Requires a fine hover pointer.");
+    await page.goto(ROUTE, { waitUntil: "networkidle" });
+    for (const method of ["docker", "mcp"]) {
+      const area = page.locator(`#guardian-install-panel-${method}`);
+      const note = area.locator(".guardian-install-note").first();
+      const resting = await area.evaluate((el) => ({ color: getComputedStyle(el).color, transform: getComputedStyle(el).transform }));
+      await note.hover();
+      await expect(area).toHaveCSS("color", "rgb(0, 0, 0)");
+      await expect(area).toHaveCSS("transform", "matrix(1, 0, 0, 1, 0, 0)");
+      await expect(note).toHaveCSS("color", "rgb(0, 0, 0)");
+      await note.click();
+      await page.mouse.move(0, 0);
+      await expect(area).toHaveCSS("color", resting.color);
+      await expect(area).toHaveCSS("transform", resting.transform);
+      await assertNoHorizontalOverflow(page, `${method} pointer leave`);
+    }
+  });
+
+  test("keyboard focus emphasizes each complete area without hiding its sibling", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop", "Keyboard behavior is shared across viewports.");
+    await page.goto(ROUTE, { waitUntil: "networkidle" });
+    const docker = page.locator("#guardian-install-panel-docker");
+    const mcp = page.locator("#guardian-install-panel-mcp");
+    await docker.focus();
+    await page.keyboard.press("Shift+Tab");
+    await page.keyboard.press("Tab");
+    await expect(docker).toBeFocused();
+    await expect(docker).toHaveCSS("color", "rgb(0, 0, 0)");
+    await mcp.focus();
+    await expect(mcp).toHaveCSS("color", "rgb(0, 0, 0)");
+    await expect(docker).toBeVisible();
+    await expect(mcp).toBeVisible();
+    await expect(docker).not.toHaveCSS("color", "rgb(0, 0, 0)");
   });
 });

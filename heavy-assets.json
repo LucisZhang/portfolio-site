@@ -1,8 +1,8 @@
 {
-  "shared:/analytics/margin-control-tower,/analytics/credit-policy-desk,/engineering/crossover-study": {
+  "shared:/projects/margin-control-tower,/projects/credit-policy-desk,/projects/crossover-study": {
     "public/duckdb/duckdb-mvp.wasm": 39362651
   },
-  "/ai/privacy-preflight": {
+  "/projects/privacy-preflight": {
     "public/generated/privacy-ocr/lang/chi_sim.traineddata.gz": 1718768,
     "public/generated/privacy-ocr/lang/eng.traineddata.gz": 2952873,
     "public/generated/privacy-ocr/worker.min.js": 111307,
@@ -14,7 +14,7 @@
     "public/generated/privacy-pdf/pdf.worker.core.min.mjs": 1262398,
     "public/generated/privacy-pdf/pdf.worker.compat.mjs": 151
   },
-  "/ai/triage-router": {
+  "/projects/triage-router": {
     "public/models/triage-tier-b2/model.int8.onnx": 67575183,
     "public/models/triage-tier-b2/tokenizer.json": 711494,
     "public/models/triage-tier-b2/tokenizer_config.json": 351,

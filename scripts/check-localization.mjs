@@ -72,19 +72,13 @@ const PROSE_ALLOWLIST_SUBSTRINGS = [
   "cf. RouteLLM (Ong et al., 2024)",
   // Task L2: the Kaggle dataset's own official title (rendered verbatim by
   // AnalyticsMethods.tsx from methods-evidence.json's dataset.name field on
-  // both /analytics/margin-control-tower and /analytics/credit-policy-desk)
+  // both /projects/margin-control-tower and /projects/credit-policy-desk)
   // -- a proper-noun citation, not translatable narrative prose, matching
   // the RouteLLM citation precedent above.
   "Brazilian E-Commerce Public Dataset by Olist",
-  // Task L4: the Credit Policy Desk hero assertion (CreditPolicyFrontier.tsx
-  // exhibit 01's <h1>, and projects.ts's pre-existing `summary` field) --
-  // the user-approved mock (output/design-legacy/legacy-6-credit-policy-desk.html)
-  // keeps this exact English sentence on the zh page too, same "kept
-  // sitewide-quota assertion" treatment as the Home hero's exempt line.
-  "A score is not a policy.",
   // Task L4: the Lending Club dataset's own official title (rendered
   // verbatim by AnalyticsMethods.tsx from methods-evidence.json's
-  // dataset.name field on /analytics/credit-policy-desk) -- a proper-noun
+  // dataset.name field on /projects/credit-policy-desk) -- a proper-noun
   // citation, not translatable narrative prose, same treatment as the
   // Olist dataset title above.
   "Lending Club loan dataset for granting models",
@@ -160,7 +154,7 @@ const PROSE_ALLOWLIST_SUBSTRINGS = [
 // so their prose gets the same real leak-detection the other five pages
 // already have, rather than only the narrower control-text/numeric-parity
 // checks every route gets.
-const PROSE_CHECK_ROUTES = new Set(["/", "/ai/frontier-forge", "/engineering/exactly-once-drills", "/ai/privacy-preflight", "/ai/triage-router", "/analytics/margin-control-tower", "/analytics/credit-policy-desk", "/ai/rag-quality-lab", "/engineering/crossover-study", "/ai/release-guardian", "/ai/ask-portfolio"]);
+const PROSE_CHECK_ROUTES = new Set(["/", "/projects/frontier-forge", "/projects/exactly-once-drills", "/projects/privacy-preflight", "/projects/triage-router", "/projects/margin-control-tower", "/projects/credit-policy-desk", "/projects/rag-quality-lab", "/projects/crossover-study", "/projects/release-guardian", "/projects/ask-portfolio"]);
 const PROSE_ALLOWLIST_PATTERNS = [
   /^(INJECT|DETECT|RECOVER|VERIFY|RESUME|RUN|REWRITE)\b/,
   /^curl\s/, /^make\s/, /^import\s+requests\b/, /^requests\.(post|get)\b/,
@@ -218,16 +212,6 @@ const PROSE_ALLOWLIST_PATTERNS = [
   // same recorded fixture -- after the literal field-label "SUBJECT". Real
   // prose does not open a sentence on an all-caps field-label token.
   /^SUBJECT\s/,
-  // Task R9a: the circuit chain's top strip (CircuitNav.tsx) renders
-  // "← {prev} {GROUP} · {n} of {N} {next} →" as one flex line of mono
-  // navigation fabric -- project titles and the position label stay
-  // English in both locales per the sitewide UI-fabric convention (the
-  // same ruling as the rail footer's SEARCH/RESUME row and the colophon's
-  // mono labels). Long neighbor titles (e.g. "MARGIN CONTROL TOWER") can
-  // exceed the 4-word threshold once stripNumericSubstrings erases the
-  // position digits, so the line is exempted by its own anchor: real zh
-  // narrative prose never opens a line with a directional arrow glyph.
-  /^←\s/,
 ];
 // Removes the numeric substring itself (digit run + comma/dot/colon/percent/
 // dollar/times/sign punctuation, plus one immediately-trailing letter for
@@ -238,7 +222,7 @@ const PROSE_ALLOWLIST_PATTERNS = [
 // discard the attached Chinese characters too, artificially closing a gap
 // between two unrelated English fragments on either side and creating a
 // false consecutive run (caught live: "Tier C" + "Amazon Bedrock" on
-// /ai/triage-router, ~30 Chinese characters and a percentage apart in the
+// /projects/triage-router, ~30 Chinese characters and a percentage apart in the
 // real sentence, false-positived before this fix because token-dropping
 // erased the entire "次（99.81%）由" token including its non-numeric
 // characters).
@@ -351,15 +335,38 @@ if (JSON.stringify(enKeys) !== JSON.stringify(zhKeys)) addFinding("error", "key 
 
 const browser = await chromium.launch({ channel: browserChannel, headless: true });
 try {
-  // Fix (task review, Important): "/ai/frontier-forge" (Forge, one of the
-  // five audit3-rebuilt pages, touched by this task's zh translations) was
+  // Fix (task review, Important): "/projects/frontier-forge" (Forge, one of
+  // the five audit3-rebuilt pages, touched by this task's zh translations) was
   // missing from this list entirely -- it was never checked at all.
-  // Final fix wave (whole-branch review): "/ai", "/engineering", "/analytics",
-  // and "/analytics/analytics-tandem" are dropped from this list -- next.config.ts's
-  // redirects() sends all four as permanent (308) redirects to sections of "/", so
-  // page.goto() here silently followed the redirect and re-measured the home page's
-  // own copy under a different route label (a phantom row, not a real page).
-  const routes = ["/", "/ai/frontier-forge", "/engineering/exactly-once-drills", "/engineering/crossover-study", "/ai/release-guardian", "/ai/rag-quality-lab", "/ai/privacy-preflight", "/analytics/margin-control-tower", "/analytics/credit-policy-desk", "/ai/triage-router", "/ai/ask-portfolio"];
+  // Final fix wave (whole-branch review): "/ai", "/engineering" and
+  // "/analytics" are dropped from this list -- next.config.ts's redirects()
+  // sends all three as permanent (308) redirects to sections of "/", so
+  // page.goto() here silently followed the redirect and re-measured the home
+  // page's own copy under a different route label (a phantom row, not a real
+  // page).
+  // Task A4: "/projects/analytics-tandem" stays off the list too, but for a
+  // different reason now that its old URL redirects to a real served page
+  // rather than to "/". It is a noindex compatibility shell, deliberately
+  // excluded from the sitemap.
+  //
+  // It is NOT off every navigation surface: src/components/home/ShelfExhibit.tsx
+  // renders every archive-tier project -- analytics-tandem included -- as a
+  // "/projects/<slug>" row on the homepage's archive shelf, so the page is one
+  // click from "/" and scripts/check-links.mjs seeds it into its crawl for
+  // exactly that reason. That makes this exclusion a real, currently
+  // unmitigated gap: it is the only project page whose zh copy gets no leak
+  // detection here.
+  //
+  // It is deferred, not waived. Adding the route would put the legacy
+  // ProjectPageView/ProjectProof/CaseStudyBlock shell's zh copy under full
+  // leak detection for the first time, which is a zh copy pass and very
+  // likely a red one -- out of scope for a route rename, and it would block
+  // this branch on unrelated translation work.
+  //
+  // FOLLOW-UP (owed, not optional): run a zh copy pass over
+  // /projects/analytics-tandem and add it to this list. Until then this gate
+  // does not speak for that page.
+  const routes = ["/", "/projects/frontier-forge", "/projects/exactly-once-drills", "/projects/crossover-study", "/projects/release-guardian", "/projects/rag-quality-lab", "/projects/privacy-preflight", "/projects/margin-control-tower", "/projects/credit-policy-desk", "/projects/triage-router", "/projects/ask-portfolio"];
   for (const route of routes) {
     const contexts = await Promise.all(["en", "zh"].map(async (locale) => {
       const context = await browser.newContext({ locale: locale === "zh" ? "zh-CN" : "en-US", serviceWorkers: "block" });
@@ -423,7 +430,7 @@ try {
   await page.goto(url.href, { waitUntil: "domcontentloaded" });
   await page.waitForLoadState("networkidle", { timeout: 15_000 }).catch(() => undefined);
   await page.waitForTimeout(750);
-  await page.locator('a[href^="/ai/release-guardian"]').first().click();
+  await page.locator('a[href^="/projects/release-guardian"]').first().click();
   if (new URL(page.url()).searchParams.get("lang") !== "zh") addFinding("error", "navigation locale", "/", "Internal navigation dropped the Chinese locale.", page.url());
   await page.reload({ waitUntil: "domcontentloaded" });
   if (new URL(page.url()).searchParams.get("lang") !== "zh" || await page.locator("html").getAttribute("lang") !== "zh-CN") addFinding("error", "refresh locale", page.url(), "Chinese locale did not survive refresh.");

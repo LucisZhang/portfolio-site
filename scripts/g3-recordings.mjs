@@ -165,7 +165,7 @@ async function recordHome(browser) {
 async function recordForge(browser) {
   for (const [label, viewport] of [["desktop", DESKTOP], ["mobile", MOBILE]]) {
     await captureRecording(browser, {
-      url: `${BASE_URL}/ai/frontier-forge`,
+      url: `${BASE_URL}/projects/frontier-forge`,
       viewport,
       outName: `forge-${label}`,
       run: async (page) => {
@@ -183,7 +183,7 @@ async function recordForge(browser) {
 async function recordEod(browser) {
   for (const [label, viewport] of [["desktop", DESKTOP], ["mobile", MOBILE]]) {
     await captureRecording(browser, {
-      url: `${BASE_URL}/engineering/exactly-once-drills`,
+      url: `${BASE_URL}/projects/exactly-once-drills`,
       viewport,
       outName: `eod-${label}`,
       setup: async (page) => {

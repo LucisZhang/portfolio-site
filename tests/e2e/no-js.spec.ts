@@ -20,10 +20,10 @@ test("with JavaScript disabled the whole seven-exhibit homepage renders in the i
 
   // Hero (exhibit 00): title and all 4 stat tiles. Without JavaScript the
   // client-only locale store never hydrates past its en snapshot (see
-  // src/lib/i18n.ts's getServerLocaleSnapshot), so the zh-locale-only hero
-  // narrative (task F5, locale purity) correctly does not render here.
+  // src/lib/i18n.ts's getServerLocaleSnapshot), so the stable zh narrative
+  // node stays outside layout and the accessibility tree.
   await expect(page.locator(SEL.homeHeroTitle)).toBeVisible();
-  await expect(page.locator(SEL.homeHeroZh)).toHaveCount(0);
+  await expect(page.locator(SEL.homeHeroZh)).toBeHidden();
   const heroCells = page.locator(".exhibit-stat-grid").first().locator(".exhibit-stat-cell");
   await expect(heroCells).toHaveCount(homeStats.heroTiles.length);
   // Two GitHub links exist on the homepage — the hero contact link
@@ -43,7 +43,7 @@ test("with JavaScript disabled the whole seven-exhibit homepage renders in the i
   await expect(page.locator(SEL.homeAgentRow)).toHaveCount(3);
 
   // Exhibit 05: shelf table (3 secondary + 2 archive rows).
-  await expect(page.locator(SEL.homeShelfRow)).toHaveCount(5);
+  await expect(page.locator(SEL.homeShelfRow)).toHaveCount(6);
 
   // The exhibition rail's fixed desktop sidebar is a plain anchor list
   // requiring no JavaScript to render or use (task 0.5's equivalent check,
@@ -60,4 +60,17 @@ test("with JavaScript disabled the whole seven-exhibit homepage renders in the i
     return el === null || el.closest('[data-testid="lucis-orbit-overlay"]') !== null;
   }, [viewport.width / 2, viewport.height / 2] as const);
   expect(covered).toBe(false);
+});
+
+for (const locale of ["en", "zh"] as const) test(`GroupConv ${locale} retains measured overview and evidence downloads without JavaScript`, async ({page}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "The no-JS fallback is exercised once per locale.");
+  await page.goto(`/projects/groupconv-atlas?lang=${locale}`);
+  await expect(page.locator("#project-title")).toBeVisible();
+  await expect(page.locator("#groupconv-overview")).toContainText("3.87");
+  await expect(page.locator("#groupconv-overview")).toContainText("0.74");
+  await expect(page.locator("#exhibit-03")).toContainText("1.14");
+  await expect(page.locator("#exhibit-03")).toContainText("0.68");
+  await expect(page.locator("#exhibit-01 noscript a")).toHaveAttribute("href", "/case-studies/groupconv-atlas/rtx4090-atlas.json");
+  await expect(page.locator('a[download]')).toHaveAttribute("href","/case-studies/groupconv-atlas/rtx4090-atlas.json");
+  await expect(page.getByRole("link",{name:"GitHub repository",exact:false}).first()).toHaveAttribute("href","https://github.com/LucisZhang/groupconv-atlas");
 });

@@ -1,13 +1,23 @@
 {
   "version": 1,
-  "snapshotId": "public-github-portfolio-20260903-r3-v1",
+  "snapshotId": "public-github-portfolio-20260908-groupconv-latest-v1",
   "repositories": [
     {
       "owner": "LucisZhang",
       "repo": "release-guardian",
       "commit": "bc7e7fdc6125019ceb6c7aa6e8a7af1084e775fc",
-      "label": { "en": "Release Guardian", "zh": "Release Guardian" },
-      "aliases": ["Release Guardian", "release gate", "发布门禁", "LangGraph", "human approval", "人工审批"],
+      "label": {
+        "en": "Release Guardian",
+        "zh": "Release Guardian"
+      },
+      "aliases": [
+        "Release Guardian",
+        "release gate",
+        "发布门禁",
+        "LangGraph",
+        "human approval",
+        "人工审批"
+      ],
       "files": [
         "README.md",
         "evidence/manifest.json",
@@ -17,10 +27,23 @@
     },
     {
       "owner": "LucisZhang",
-      "repo": "streaming-reliability-lab",
+      "repo": "exactly-once-drills",
       "commit": "f323090c36e6b3f84e8cf8e5a1152addedde3410",
-      "label": { "en": "Exactly-Once Drills", "zh": "Exactly-Once Drills" },
-      "aliases": ["streaming reliability lab", "流式可靠性实验室", "Flink", "Iceberg", "CDC", "failure injection", "故障注入", "p1-reliability-lab (historical repository name)", "p1 可靠性实验室（历史名称）"],
+      "label": {
+        "en": "Exactly-Once Drills",
+        "zh": "Exactly-Once Drills"
+      },
+      "aliases": [
+        "streaming reliability lab",
+        "流式可靠性实验室",
+        "Flink",
+        "Iceberg",
+        "CDC",
+        "failure injection",
+        "故障注入",
+        "p1-reliability-lab (historical repository name)",
+        "p1 可靠性实验室（历史名称）"
+      ],
       "files": [
         "README.md",
         "RUNBOOK.md",
@@ -34,8 +57,21 @@
       "owner": "LucisZhang",
       "repo": "rag-quality-lab",
       "commit": "6e3d6a2b040cc9fe4acb7dd4a61295405138f296",
-      "label": { "en": "RAG Quality Lab", "zh": "RAG Quality Lab" },
-      "aliases": ["RAG Quality Lab", "retrieval", "检索", "evaluation", "评估", "BM25", "Chroma", "regression", "回归"],
+      "label": {
+        "en": "RAG Quality Lab",
+        "zh": "RAG Quality Lab"
+      },
+      "aliases": [
+        "RAG Quality Lab",
+        "retrieval",
+        "检索",
+        "evaluation",
+        "评估",
+        "BM25",
+        "Chroma",
+        "regression",
+        "回归"
+      ],
       "files": [
         "README.md",
         "DATA.md",
@@ -53,8 +89,22 @@
       "owner": "LucisZhang",
       "repo": "privacy-preflight",
       "commit": "510454c2393d274168be0d605d938a8abeb7862d",
-      "label": { "en": "Privacy Preflight", "zh": "隐私预检" },
-      "aliases": ["Privacy Preflight", "隐私预检", "redaction", "脱敏", "OCR", "PDF", "fictional fixtures", "虚构夹具", "privacy-preflight-web (historical repository name)", "privacy-preflight-web（历史名称）"],
+      "label": {
+        "en": "Privacy Preflight",
+        "zh": "隐私预检"
+      },
+      "aliases": [
+        "Privacy Preflight",
+        "隐私预检",
+        "redaction",
+        "脱敏",
+        "OCR",
+        "PDF",
+        "fictional fixtures",
+        "虚构夹具",
+        "privacy-preflight-web (historical repository name)",
+        "privacy-preflight-web（历史名称）"
+      ],
       "files": [
         "README.md",
         "docs/architecture.mmd",
@@ -67,8 +117,21 @@
       "owner": "LucisZhang",
       "repo": "margin-control-tower",
       "commit": "c84559f1f141bc86b728d5a8133b926ad8529273",
-      "label": { "en": "Margin Control Tower", "zh": "Margin Control Tower" },
-      "aliases": ["Margin Control Tower", "margin", "毛利", "Olist", "DuckDB", "elasticity", "弹性", "scenario", "情景"],
+      "label": {
+        "en": "Margin Control Tower",
+        "zh": "Margin Control Tower"
+      },
+      "aliases": [
+        "Margin Control Tower",
+        "margin",
+        "毛利",
+        "Olist",
+        "DuckDB",
+        "elasticity",
+        "弹性",
+        "scenario",
+        "情景"
+      ],
       "files": [
         "README.md",
         "public/case-studies/margin-control-tower/README.md",
@@ -88,8 +151,25 @@
       "owner": "LucisZhang",
       "repo": "credit-policy-desk",
       "commit": "bbad7e0dbf997d7fb64caad5ed3c8bf09e74658e",
-      "label": { "en": "Credit Policy Desk", "zh": "Credit Policy Desk" },
-      "aliases": ["Credit Policy Desk", "Credit Policy Lab (historical name)", "信贷策略实验室（历史名称）", "credit", "信贷", "PD", "LGD", "EAD", "Brier", "PSI", "backtest", "回测"],
+      "label": {
+        "en": "Credit Policy Desk",
+        "zh": "Credit Policy Desk"
+      },
+      "aliases": [
+        "Credit Policy Desk",
+        "分数不是策略。",
+        "Credit Policy Lab (historical name)",
+        "信贷策略实验室（历史名称）",
+        "credit",
+        "信贷",
+        "PD",
+        "LGD",
+        "EAD",
+        "Brier",
+        "PSI",
+        "backtest",
+        "回测"
+      ],
       "files": [
         "README.md",
         "public/case-studies/credit-policy-lab/README.md",
@@ -108,33 +188,189 @@
       "owner": "LucisZhang",
       "repo": "Voice-in-Security",
       "commit": "81a40142d0f79e8bd8f90db150cd4ffbd4c1a1d8",
-      "label": { "en": "Voice in Security", "zh": "语音安全" },
-      "aliases": ["Voice in Security", "Voice-in-Security", "语音安全", "speaker verification", "说话人验证", "audio", "音频", "robustness", "鲁棒性"],
+      "label": {
+        "en": "Voice in Security",
+        "zh": "语音安全"
+      },
+      "aliases": [
+        "Voice in Security",
+        "Voice-in-Security",
+        "语音安全",
+        "speaker verification",
+        "说话人验证",
+        "audio",
+        "音频",
+        "robustness",
+        "鲁棒性"
+      ],
       "files": [
         "README.md",
         "backend/app.py",
         "backend/speaker_engine.py",
         "backend/augmentations.py"
       ]
+    },
+    {
+      "owner": "LucisZhang",
+      "repo": "frontier-forge",
+      "commit": "06de6e5c1d026dfce8b59c39a83658289925a55e",
+      "label": {
+        "en": "Frontier Forge",
+        "zh": "Frontier Forge"
+      },
+      "aliases": [
+        "Frontier Forge",
+        "Qwen3.5-4B",
+        "SFT",
+        "vLLM",
+        "distillation",
+        "蒸馏",
+        "GRPO",
+        "gateway",
+        "网关"
+      ],
+      "files": [
+        "README.md",
+        "MODEL_CARD.md",
+        "docs/runbooks/phase7_2.md",
+        "results/phase5_gateway_report.md",
+        "gateway/bench/phase7_1_report.py"
+      ]
+    },
+    {
+      "owner": "LucisZhang",
+      "repo": "triage-router",
+      "commit": "b2734bbcbd75aef1f83b872f31de0212a7926b7f",
+      "label": {
+        "en": "Triage Router",
+        "zh": "Triage Router"
+      },
+      "aliases": [
+        "Triage Router",
+        "cost routing",
+        "成本路由",
+        "confidence cascade",
+        "置信级联",
+        "macro-F1",
+        "drift",
+        "漂移"
+      ],
+      "files": [
+        "README.md",
+        "docs/DATASHEET.md",
+        "docs/TIER_B_RUNBOOK.md",
+        "results/oov/summary.json",
+        "scripts/validate_tier_b_bundle.py"
+      ]
+    },
+    {
+      "owner": "LucisZhang",
+      "repo": "crossover-study",
+      "commit": "bd8ddb12ccaa99adafa0679cda664fc1fca08caa",
+      "label": {
+        "en": "Crossover Study",
+        "zh": "Crossover Study"
+      },
+      "aliases": [
+        "Crossover Study",
+        "recommender",
+        "推荐系统",
+        "Spark",
+        "Iceberg",
+        "crossover point",
+        "交叉点"
+      ],
+      "files": [
+        "README.md",
+        "docs/demo-data-schemas.md",
+        "results/lineage.md",
+        "results/dq/waterfall.json",
+        "scripts/export_workbench.py"
+      ]
+    },
+    {
+      "owner": "LucisZhang",
+      "repo": "groupconv-atlas",
+      "commit": "ee6c07e3ae31a36a77c116cb97ea21ac179a1656",
+      "label": {
+        "en": "GroupConv Atlas",
+        "zh": "GroupConv Atlas"
+      },
+      "aliases": [
+        "/projects/groupconv-atlas",
+        "GroupConv Atlas",
+        "CUDA grouped convolution",
+        "分组卷积",
+        "RTX 4090",
+        "graph eager API",
+        "MobileNetV2",
+        "Triton"
+      ],
+      "files": [
+        "README.md",
+        "results/rtx4090/session-20260908-vast-03/analysis-atlas/summary.zh-CN.md",
+        "results/rtx4090/session-20260908-vast-03/analysis-supplemental/summary.zh-CN.md",
+        "results/rtx4090/session-20260908-vast-03/analysis-triton/summary.zh-CN.md",
+        "results/rtx4090/session-20260908-vast-03/analysis-profile/summary.zh-CN.md",
+        "results/rtx4090/session-20260908-vast-03/analysis-profile/mechanism-review.zh-CN.md",
+        "results/rtx4090/session-20260908-vast-03/analysis-supplemental/module-n1.json",
+        "results/rtx4090/session-20260908-vast-03/analysis-supplemental/module-n4.json"
+      ],
+      "portfolioRoute": "/projects/groupconv-atlas"
     }
   ],
   "siteRepository": {
     "owner": "LucisZhang",
     "repo": "portfolio-site",
-    "commit": "346b8a81cbf9a238081ef179eb622ea8f0614466"
+    "commit": "b7a57776c9b9315ed328cbaa65e8be1e5c6d8a1d"
   },
   "siteSources": [
     {
       "route": "/",
-      "label": { "en": "Xiangguo Zhang portfolio", "zh": "章向国作品集" },
-      "aliases": ["/", "Xiangguo Zhang", "章向国", "personal background", "个人背景", "portfolio site", "作品集", "technology stack", "技术栈", "AI agents", "AI Agent", "LLM applications", "LLM 应用", "fine-tuning", "微调", "inference serving", "推理服务", "job direction", "求职方向"],
+      "label": {
+        "en": "Xiangguo Zhang portfolio",
+        "zh": "章向国作品集"
+      },
+      "aliases": [
+        "/",
+        "Xiangguo Zhang",
+        "章向国",
+        "personal background",
+        "个人背景",
+        "portfolio site",
+        "作品集",
+        "technology stack",
+        "技术栈",
+        "AI agents",
+        "AI Agent",
+        "LLM applications",
+        "LLM 应用",
+        "fine-tuning",
+        "微调",
+        "inference serving",
+        "推理服务",
+        "job direction",
+        "求职方向"
+      ],
       "files": [
         "README.md",
         "README.zh-CN.md",
         "package.json",
-        { "path": "src/lib/site-config.ts", "lineStart": 1, "lineEnd": 37 },
-        { "path": "src/lib/site-config.ts", "lineStart": 60, "lineEnd": 69 },
-        { "path": "src/lib/i18n.ts", "lineStart": 64, "lineEnd": 156 },
+        {
+          "path": "src/lib/site-config.ts",
+          "lineStart": 1,
+          "lineEnd": 37
+        },
+        {
+          "path": "src/lib/site-config.ts",
+          "lineStart": 56,
+          "lineEnd": 65
+        },
+        {
+          "path": "src/lib/i18n.ts",
+          "lineStart": 64,
+          "lineEnd": 156
+        },
         "src/lib/home-stats.ts",
         "src/lib/projects.ts",
         "src/components/home/Hero.tsx",
@@ -152,11 +388,31 @@
       ]
     },
     {
-      "route": "/ai/frontier-forge",
-      "label": { "en": "Frontier Forge", "zh": "Frontier Forge" },
-      "aliases": ["/ai/frontier-forge", "Frontier Forge", "SFT", "Qwen3.5-4B", "vLLM", "C++20 gateway", "网关", "overload", "过载", "rule labels", "规则标签", "measured spend", "实测支出"],
+      "route": "/projects/frontier-forge",
+      "label": {
+        "en": "Frontier Forge",
+        "zh": "Frontier Forge"
+      },
+      "aliases": [
+        "/projects/frontier-forge",
+        "Frontier Forge",
+        "SFT",
+        "Qwen3.5-4B",
+        "vLLM",
+        "C++20 gateway",
+        "网关",
+        "overload",
+        "过载",
+        "rule labels",
+        "规则标签",
+        "measured spend",
+        "实测支出"
+      ],
       "files": [
-        { "path": "src/lib/projects.ts", "projectSlug": "frontier-forge" },
+        {
+          "path": "src/lib/projects.ts",
+          "projectSlug": "frontier-forge"
+        },
         "src/lib/frontier-project-detail.ts",
         "src/components/forge/ForgePage.tsx",
         "src/components/forge/ForgeConsole.tsx",
@@ -175,11 +431,29 @@
       ]
     },
     {
-      "route": "/ai/release-guardian",
-      "label": { "en": "Release Guardian", "zh": "Release Guardian" },
-      "aliases": ["/ai/release-guardian", "Release Guardian", "release gate", "发布门禁", "LangGraph", "human approval", "人工审批", "8/8", "30/44", "strict residual", "严格残差"],
+      "route": "/projects/release-guardian",
+      "label": {
+        "en": "Release Guardian",
+        "zh": "Release Guardian"
+      },
+      "aliases": [
+        "/projects/release-guardian",
+        "Release Guardian",
+        "release gate",
+        "发布门禁",
+        "LangGraph",
+        "human approval",
+        "人工审批",
+        "8/8",
+        "30/44",
+        "strict residual",
+        "严格残差"
+      ],
       "files": [
-        { "path": "src/lib/projects.ts", "projectSlug": "release-guardian" },
+        {
+          "path": "src/lib/projects.ts",
+          "projectSlug": "release-guardian"
+        },
         "src/components/guardian/GuardianPage.tsx",
         "src/components/guardian/guardianRail.ts",
         "src/components/guardian/guardianData.ts",
@@ -191,13 +465,34 @@
       ]
     },
     {
-      "route": "/ai/rag-quality-lab",
-      "label": { "en": "RAG Quality Lab", "zh": "RAG Quality Lab" },
-      "aliases": ["/ai/rag-quality-lab", "RAG Quality Lab", "retrieval regression", "检索回归", "C2", "C3", "blocked C3", "C3 未产出指标", "manifest drift", "清单漂移"],
+      "route": "/projects/rag-quality-lab",
+      "label": {
+        "en": "RAG Quality Lab",
+        "zh": "RAG Quality Lab"
+      },
+      "aliases": [
+        "/projects/rag-quality-lab",
+        "RAG Quality Lab",
+        "retrieval regression",
+        "检索回归",
+        "C2",
+        "C3",
+        "blocked C3",
+        "C3 未产出指标",
+        "manifest drift",
+        "清单漂移"
+      ],
       "files": [
-        { "path": "src/lib/projects.ts", "projectSlug": "rag-quality-lab" },
+        {
+          "path": "src/lib/projects.ts",
+          "projectSlug": "rag-quality-lab"
+        },
         "src/components/ragdiff/RagDiffLab.tsx",
-        { "path": "src/components/ProjectProof.tsx", "lineStart": 35, "lineEnd": 121 },
+        {
+          "path": "src/components/ProjectProof.tsx",
+          "lineStart": 35,
+          "lineEnd": 121
+        },
         "src/components/RagProof.tsx",
         "src/components/rag/RagManifestDriftLab.tsx",
         "public/case-studies/rag-quality-lab/claim-registry.json",
@@ -206,11 +501,29 @@
       ]
     },
     {
-      "route": "/ai/triage-router",
-      "label": { "en": "Triage Router", "zh": "Triage Router" },
-      "aliases": ["/ai/triage-router", "Triage Router", "complaint routing", "投诉分流", "cost accuracy", "成本 准确率", "CFPB", "tier cascade", "分层级联", "four caveats", "四条限制"],
+      "route": "/projects/triage-router",
+      "label": {
+        "en": "Triage Router",
+        "zh": "Triage Router"
+      },
+      "aliases": [
+        "/projects/triage-router",
+        "Triage Router",
+        "complaint routing",
+        "投诉分流",
+        "cost accuracy",
+        "成本 准确率",
+        "CFPB",
+        "tier cascade",
+        "分层级联",
+        "four caveats",
+        "四条限制"
+      ],
       "files": [
-        { "path": "src/lib/projects.ts", "projectSlug": "triage-router" },
+        {
+          "path": "src/lib/projects.ts",
+          "projectSlug": "triage-router"
+        },
         "src/components/triage/TriagePage.tsx",
         "src/components/triage/PolicyTerminal.tsx",
         "src/components/triage/KnownFailures.tsx",
@@ -230,11 +543,31 @@
       ]
     },
     {
-      "route": "/ai/privacy-preflight",
-      "label": { "en": "Privacy Preflight", "zh": "隐私预检" },
-      "aliases": ["/ai/privacy-preflight", "Privacy Preflight", "隐私预检", "browser-local", "浏览器本地", "redaction", "脱敏", "OCR", "19/19", "false positives", "误报", "fictional fixtures", "虚构夹具"],
+      "route": "/projects/privacy-preflight",
+      "label": {
+        "en": "Privacy Preflight",
+        "zh": "隐私预检"
+      },
+      "aliases": [
+        "/projects/privacy-preflight",
+        "Privacy Preflight",
+        "隐私预检",
+        "browser-local",
+        "浏览器本地",
+        "redaction",
+        "脱敏",
+        "OCR",
+        "19/19",
+        "false positives",
+        "误报",
+        "fictional fixtures",
+        "虚构夹具"
+      ],
       "files": [
-        { "path": "src/lib/projects.ts", "projectSlug": "privacy-preflight" },
+        {
+          "path": "src/lib/projects.ts",
+          "projectSlug": "privacy-preflight"
+        },
         "src/lib/privacy-localization.ts",
         "src/components/privacy/PrivacyPage.tsx",
         "src/components/privacy/PrivacyCompactPreview.tsx",
@@ -258,11 +591,30 @@
       ]
     },
     {
-      "route": "/engineering/exactly-once-drills",
-      "label": { "en": "Exactly-Once Drills", "zh": "Exactly-Once Drills" },
-      "aliases": ["/engineering/exactly-once-drills", "Exactly-Once Drills", "streaming reliability", "流式可靠性", "failure classes", "故障类型", "reconciliation", "对账", "zero snapshot diff", "零快照差异", "Flink", "Iceberg"],
+      "route": "/projects/exactly-once-drills",
+      "label": {
+        "en": "Exactly-Once Drills",
+        "zh": "Exactly-Once Drills"
+      },
+      "aliases": [
+        "/projects/exactly-once-drills",
+        "Exactly-Once Drills",
+        "streaming reliability",
+        "流式可靠性",
+        "failure classes",
+        "故障类型",
+        "reconciliation",
+        "对账",
+        "zero snapshot diff",
+        "零快照差异",
+        "Flink",
+        "Iceberg"
+      ],
       "files": [
-        { "path": "src/lib/projects.ts", "projectSlug": "exactly-once-drills" },
+        {
+          "path": "src/lib/projects.ts",
+          "projectSlug": "exactly-once-drills"
+        },
         "src/components/eod/EodPage.tsx",
         "src/components/eod/EodLog.tsx",
         "src/components/eod/eodLogData.ts",
@@ -281,12 +633,33 @@
       ]
     },
     {
-      "route": "/engineering/crossover-study",
-      "label": { "en": "Crossover Study", "zh": "Crossover Study" },
-      "aliases": ["/engineering/crossover-study", "Crossover Study", "ML-32M", "Amazon", "null result", "空结果", "crossover", "交叉点", "personalization", "个性化"],
+      "route": "/projects/crossover-study",
+      "label": {
+        "en": "Crossover Study",
+        "zh": "Crossover Study"
+      },
+      "aliases": [
+        "/projects/crossover-study",
+        "Crossover Study",
+        "ML-32M",
+        "Amazon",
+        "null result",
+        "空结果",
+        "crossover",
+        "交叉点",
+        "personalization",
+        "个性化"
+      ],
       "files": [
-        { "path": "src/lib/projects.ts", "projectSlug": "crossover-study" },
-        { "path": "src/components/ProjectProof.tsx", "lineStart": 35, "lineEnd": 121 },
+        {
+          "path": "src/lib/projects.ts",
+          "projectSlug": "crossover-study"
+        },
+        {
+          "path": "src/components/ProjectProof.tsx",
+          "lineStart": 35,
+          "lineEnd": 121
+        },
         "src/components/CrossoverProof.tsx",
         "src/components/crossover/CrossoverExhibit.tsx",
         "public/case-studies/crossover-study/exhibits.json",
@@ -297,13 +670,35 @@
       ]
     },
     {
-      "route": "/analytics/margin-control-tower",
-      "label": { "en": "Margin Control Tower", "zh": "Margin Control Tower" },
-      "aliases": ["/analytics/margin-control-tower", "Margin Control Tower", "contribution margin", "贡献毛利", "Olist", "promotion scenario", "促销情景", "elasticity", "弹性", "category manager", "品类经理"],
+      "route": "/projects/margin-control-tower",
+      "label": {
+        "en": "Margin Control Tower",
+        "zh": "Margin Control Tower"
+      },
+      "aliases": [
+        "/projects/margin-control-tower",
+        "Margin Control Tower",
+        "contribution margin",
+        "贡献毛利",
+        "Olist",
+        "promotion scenario",
+        "促销情景",
+        "elasticity",
+        "弹性",
+        "category manager",
+        "品类经理"
+      ],
       "files": [
-        { "path": "src/lib/projects.ts", "projectSlug": "margin-control-tower" },
+        {
+          "path": "src/lib/projects.ts",
+          "projectSlug": "margin-control-tower"
+        },
         "src/components/margin/MarginDetectionFigure.tsx",
-        { "path": "src/components/ProjectProof.tsx", "lineStart": 35, "lineEnd": 121 },
+        {
+          "path": "src/components/ProjectProof.tsx",
+          "lineStart": 35,
+          "lineEnd": 121
+        },
         "src/components/MarginProof.tsx",
         "src/components/analytics/MarginControlTower.tsx",
         "src/components/analytics/MarginWaterfall.tsx",
@@ -319,13 +714,37 @@
       ]
     },
     {
-      "route": "/analytics/credit-policy-desk",
-      "label": { "en": "Credit Policy Desk", "zh": "Credit Policy Desk" },
-      "aliases": ["/analytics/credit-policy-desk", "Credit Policy Desk", "credit policy", "信贷策略", "approval review decline", "批准 复核 拒绝", "thresholds", "阈值", "granted loans", "已授信样本", "backtest", "回测"],
+      "route": "/projects/credit-policy-desk",
+      "label": {
+        "en": "Credit Policy Desk",
+        "zh": "Credit Policy Desk"
+      },
+      "aliases": [
+        "/projects/credit-policy-desk",
+        "Credit Policy Desk",
+        "分数不是策略。",
+        "credit policy",
+        "信贷策略",
+        "approval review decline",
+        "批准 复核 拒绝",
+        "thresholds",
+        "阈值",
+        "granted loans",
+        "已授信样本",
+        "backtest",
+        "回测"
+      ],
       "files": [
-        { "path": "src/lib/projects.ts", "projectSlug": "credit-policy-desk" },
+        {
+          "path": "src/lib/projects.ts",
+          "projectSlug": "credit-policy-desk"
+        },
         "src/components/credit/CreditPolicyFrontier.tsx",
-        { "path": "src/components/ProjectProof.tsx", "lineStart": 35, "lineEnd": 121 },
+        {
+          "path": "src/components/ProjectProof.tsx",
+          "lineStart": 35,
+          "lineEnd": 121
+        },
         "src/components/CreditProof.tsx",
         "src/components/analytics/CreditPolicyLab.tsx",
         "src/components/analytics/SwapSetPanel.tsx",
@@ -337,14 +756,43 @@
       ]
     },
     {
-      "route": "/analytics/analytics-tandem",
-      "label": { "en": "Analytics Tandem", "zh": "Analytics Tandem" },
-      "aliases": ["/analytics/analytics-tandem", "Analytics Tandem", "legacy analytics", "旧版分析", "compatibility route", "兼容入口", "Tableau", "Streamlit", "synthetic inputs", "合成输入"],
+      "route": "/projects/analytics-tandem",
+      "label": {
+        "en": "Analytics Tandem",
+        "zh": "Analytics Tandem"
+      },
+      "aliases": [
+        "/projects/analytics-tandem",
+        "Analytics Tandem",
+        "legacy analytics",
+        "旧版分析",
+        "compatibility route",
+        "兼容入口",
+        "Tableau",
+        "Streamlit",
+        "synthetic inputs",
+        "合成输入"
+      ],
       "files": [
-        { "path": "src/lib/projects.ts", "projectSlug": "analytics-tandem" },
-        { "path": "src/components/CaseStudyBlock.tsx", "lineStart": 6, "lineEnd": 17 },
-        { "path": "src/components/ProjectProof.tsx", "lineStart": 22, "lineEnd": 33 },
-        { "path": "src/components/ProjectProof.tsx", "lineStart": 37, "lineEnd": 120 }
+        {
+          "path": "src/lib/projects.ts",
+          "projectSlug": "analytics-tandem"
+        },
+        {
+          "path": "src/components/CaseStudyBlock.tsx",
+          "lineStart": 6,
+          "lineEnd": 17
+        },
+        {
+          "path": "src/components/ProjectProof.tsx",
+          "lineStart": 22,
+          "lineEnd": 33
+        },
+        {
+          "path": "src/components/ProjectProof.tsx",
+          "lineStart": 37,
+          "lineEnd": 120
+        }
       ]
     }
   ]

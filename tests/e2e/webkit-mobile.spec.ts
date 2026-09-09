@@ -1,5 +1,27 @@
 import { expect, test } from "@playwright/test";
 import { SEL } from "./selectors";
+import { routableProjects } from "../../src/lib/projects";
+
+test("iPhone WebKit exposes every public project repository in both locales", async ({ page }) => {
+  test.setTimeout(90_000);
+  for (const project of routableProjects.filter((candidate) => !candidate.legacy)) {
+    for (const locale of ["en", "zh"] as const) {
+      await page.goto(`/projects/${project.slug}?lang=${locale}`, { waitUntil: "domcontentloaded" });
+      const entry = page.locator("[data-project-repository]");
+      await expect(entry).toHaveCount(1);
+      await expect(entry).toBeInViewport();
+      if (project.repository.status !== "public") throw new Error(`${project.slug}: expected its approved repository`);
+      const link = entry.getByRole("link");
+      await expect(link).toContainText(project.repository.label[locale]);
+      await expect(link).toHaveAttribute("href", project.repository.href);
+      await expect(link).toHaveAttribute("target", "_blank");
+      await expect(link).toHaveAttribute("rel", "noopener noreferrer");
+      const box = await link.boundingBox();
+      expect(box?.height).toBeGreaterThanOrEqual(44);
+      expect(box!.x + box!.width).toBeLessThanOrEqual(page.viewportSize()!.width);
+    }
+  }
+});
 
 // Task 1.2: the homepage's Round-1 LucisOrbit entrance mark is removed
 // (no decorative animated emblem fits the exhibition grammar). The
@@ -14,19 +36,19 @@ test("iPhone WebKit renders the homepage hero without an entrance overlay", asyn
 
 test("iPhone WebKit shows immediate feedback while a route is opening", async ({ page }) => {
   await page.goto("/", { waitUntil: "networkidle" });
-  await page.route("**/ai/release-guardian?*", async (route) => {
+  await page.route("**/projects/release-guardian?*", async (route) => {
     await new Promise((resolve) => setTimeout(resolve, 700));
     await route.continue();
   });
-  const navigation = page.locator(SEL.aHrefAiReleaseGuardian).first().click();
+  const navigation = page.locator(SEL.aHrefProjectsReleaseGuardian).first().click();
   await expect(page.getByTestId("navigation-pending")).toBeVisible();
   await navigation;
-  await expect(page).toHaveURL(/\/ai\/release-guardian/);
+  await expect(page).toHaveURL(/\/projects\/release-guardian/);
 });
 
 test("iPhone WebKit loads every bundled PDF with immediate local feedback", async ({ page }) => {
   await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "zh"));
-  await page.goto("/ai/privacy-preflight?lang=zh", { waitUntil: "networkidle" });
+  await page.goto("/projects/privacy-preflight?lang=zh", { waitUntil: "networkidle" });
   await page.getByRole("tab", { name: "PDF" }).click();
 
   for (const fixture of [
@@ -55,7 +77,7 @@ test("iPhone WebKit loads every bundled PDF when newer PDF.js platform APIs are 
     Object.defineProperty(ReadableStream.prototype, Symbol.asyncIterator, { configurable: true, value: undefined });
   });
   await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "zh"));
-  await page.goto("/ai/privacy-preflight?lang=zh", { waitUntil: "networkidle" });
+  await page.goto("/projects/privacy-preflight?lang=zh", { waitUntil: "networkidle" });
 
   const workerCompatibility = await page.evaluate(() => new Promise<string[]>((resolve, reject) => {
     const compatibilityUrl = new URL("/generated/privacy-pdf/pdf.worker.compat.mjs", window.location.origin).href;

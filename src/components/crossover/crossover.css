@@ -501,14 +501,6 @@
   align-items: center;
 }
 
-/* ---------- Report layer ---------- */
-
-.crossover-report-section {
-  max-width: 860px;
-  margin: 0 auto;
-  padding: clamp(48px, 8vw, 96px) clamp(20px, 5vw, 48px);
-}
-
 /* ---------- Mobile: two-column label:value fold for text-heavy result
    rows (spec: "mobile table grammar, two-column fold for text-heavy
    cells"). Horizontal scroll alone stays readable for narrow numeric

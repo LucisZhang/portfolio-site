@@ -117,7 +117,7 @@ function buildDocuments(projects: Project[], locale: Locale): SearchDocument[] {
     return {
       id: project.slug,
       track: project.track,
-      href: `/${project.track}/${project.slug}`,
+      href: `/projects/${project.slug}`,
       label: localized(project.title),
       context: localized(project.eyebrow),
       title: `${project.title.en} ${project.title.zh} ${project.slug}`,

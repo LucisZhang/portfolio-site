@@ -1,8 +1,10 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { resolveProjectIdentity } from "../src/lib/project-identities.ts";
 import {
   buildAuthoredAnswers,
+  buildCitationSections,
   verifyAuthoredBank,
 } from "./lib/ask-authored-answers.mjs";
 
@@ -27,15 +29,17 @@ const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url))
 const sourceUrl = new URL("../assistant-knowledge/question-bank.json", import.meta.url);
 const manifestUrl = new URL("../assistant-knowledge/manifest.json", import.meta.url);
 const outputUrl = new URL("../src/data/generated/ask-question-bank.json", import.meta.url);
+const sectionsOutputUrl = new URL("../src/data/generated/assistant-citation-sections.json", import.meta.url);
 const answersOutputUrl = new URL("../src/data/generated/ask-preset-answers.json", import.meta.url);
 const reviewDocUrl = new URL("../output/r3-align/b5b-authored-answers.md", import.meta.url);
 
 function questionBankProjection(bank) {
-  // The routed question bank (UI preset chips) keeps its pre-R14 shape:
-  // route -> { questions: [{id, q_en, q_zh}] }.
+  // Ship just route aliases beside the preset chips. Full name matching stays
+  // in the assistant chunk, outside the homepage's initial payload.
   const projection = {};
   for (const [route, entry] of Object.entries(bank)) {
     projection[route] = {
+      aliases: [...(resolveProjectIdentity(route)?.routeAliases ?? [])],
       questions: entry.questions.map(({ id, q_en, q_zh }) => ({ q_en, q_zh, id })),
     };
   }
@@ -98,9 +102,15 @@ const answersRecord = {
   mechanism: "authored preset answers (assistant-knowledge/question-bank.json) -- written by the author from the projects' committed evidence; every numeric claim is machine-verified against its named source file by the generator's grounding gate; citations are curated pinned destinations; no model call, no network request on click",
   answers,
 };
+const sectionsSerialized = `${JSON.stringify(buildCitationSections(repositoryRoot), null, 2)}\n`;
 const answersSerialized = `${JSON.stringify(answersRecord, null, 2)}\n`;
 
 if (process.argv.includes("--check")) {
+  const currentSections = await readFile(sectionsOutputUrl, "utf8").catch(() => "");
+  if (currentSections !== sectionsSerialized) {
+    console.error("Generated citation section labels are stale. Run npm run generate:ask-question-bank.");
+    process.exitCode = 1;
+  }
   const current = await readFile(outputUrl, "utf8").catch(() => "");
   if (current !== serialized) {
     console.error("Generated Ask Portfolio question bank is stale. Run npm run generate:ask-question-bank.");
@@ -115,11 +125,14 @@ if (process.argv.includes("--check")) {
     console.log(`Ask Portfolio authored bank verified: ${Object.keys(bank).length} routes, ${Object.keys(answers).length} presets, grounding gate green.`);
   }
 } else {
+  await writeFile(sectionsOutputUrl, sectionsSerialized, "utf8");
   await writeFile(outputUrl, serialized, "utf8");
   await writeFile(answersOutputUrl, answersSerialized, "utf8");
-  await mkdir(new URL(".", reviewDocUrl), { recursive: true });
-  await writeFile(reviewDocUrl, reviewDoc(bank, answers), "utf8");
-  console.log(`Wrote ${outputUrl.pathname}: ${Object.keys(bank).length} routes, ${Object.keys(bank).length * 3} questions`);
+  if (!process.argv.includes("--skip-review")) {
+    await mkdir(new URL(".", reviewDocUrl), { recursive: true });
+    await writeFile(reviewDocUrl, reviewDoc(bank, answers), "utf8");
+  }
+  console.log(`Wrote ${outputUrl.pathname}: ${Object.keys(bank).length} routes, ${Object.values(bank).reduce((total, entry) => total + entry.questions.length, 0)} questions`);
   console.log(`Wrote ${answersOutputUrl.pathname}: ${Object.keys(answers).length} presets × 2 locales, grounding gate green`);
-  console.log(`Wrote ${reviewDocUrl.pathname} (owner review artifact, gitignored)`);
+  if (!process.argv.includes("--skip-review")) console.log(`Wrote ${reviewDocUrl.pathname} (owner review artifact, gitignored)`);
 }

@@ -2,7 +2,8 @@
 
 import { useMemo } from "react";
 import { useI18n } from "@/lib/i18n";
-import { zhWrapNode } from "@/lib/zh-wrap";
+import ScrollRegion from "@/components/ScrollRegion";
+import { zhWrapDisplay } from "@/lib/zh-wrap";
 import { detectionReport, metricRegistry } from "./marginData";
 
 const RULER_WIDTH = 640;
@@ -29,13 +30,13 @@ export function MarginDecisionBoundary() {
     <section id="exhibit-02" className="exhibit margin-boundary" data-exhibit="02" data-bg="paper-alt" aria-labelledby="exhibit-02-title">
       <p className="exhibit-opening-row">
         <span className="exhibit-number" aria-hidden="true">02</span>
-        <span className="exhibit-eyebrow">{detectionReport.method.toUpperCase()} / {detectionReport.stl_period_weeks}-WEEK PERIOD</span>
+        <span className="exhibit-eyebrow">{detectionReport.method.toUpperCase()} · {detectionReport.stl_period_weeks}-WEEK PERIOD</span>
       </p>
       <h2 id="exhibit-02-title" className="exhibit-title">
         {locale === "en" ? (
           <>One number decides<br /><em>every alarm.</em></>
         ) : (
-          zhWrapNode(<>一个数字，<br /><em>决定每一次告警。</em></>)
+          zhWrapDisplay(<>一个数字，<br /><em>决定每一次告警。</em></>)
         )}
       </h2>
       <p className="exhibit-intro">
@@ -65,7 +66,7 @@ export function MarginDecisionBoundary() {
 
       <div className="margin-registry">
         <h3 className="margin-registry-title">{locale === "en" ? "Governed metric registry" : "受治理的指标注册表"}</h3>
-        <div className="margin-table-scroll">
+        <ScrollRegion className="margin-table-scroll" label={{ en: "Governed metric registry table", zh: "受治理指标注册表" }}>
           <table className="margin-registry-table">
             <thead>
               <tr>
@@ -93,7 +94,7 @@ export function MarginDecisionBoundary() {
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollRegion>
         <p className="margin-registry-note">
           {locale === "en" ? (
             <>{metricRegistry.metrics.length} metrics, one owner, one provenance line (<code>{metricRegistry.provenance}</code>). Nothing on this page computes a number outside this registry.</>

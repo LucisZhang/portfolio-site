@@ -19,7 +19,7 @@
 - 涉及 `public/case-studies/` 数据的改动必须同步 manifest 哈希（`verify:evidence` 会拦）；**严禁编造数据**，一切数字以源仓库 JSON 为准。
 - 文案一律使用 SPEC §5 的最终字符串，不得自行创作或"润色"；语言规则见 SPEC §4。
 - 每完成一个任务 commit 一次（`feat(site): …` / `chore(gh): …`）；**不 push、不 deploy**——遵守仓库 STATE.md 的人工发布 gate。
-- 本地仓库路径：站点 `/Users/hsiangkuochang/portfolio-site`；源仓库 `/Users/hsiangkuochang/{frontier-forge, crossover-study, exactly-once-drills, margin-control-tower}`。
+- 本地仓库路径：站点 `$SOURCE_ROOT/portfolio-site`；源仓库 `$SOURCE_ROOT/{frontier-forge, crossover-study, exactly-once-drills, margin-control-tower}`。
 - 人工 Gate G1–G5 定义见 SPEC §9；标注了 Gate 的任务完成后必须停下等用户确认，不得继续下一阶段。
 
 ---
@@ -78,7 +78,7 @@ gh api graphql -f query='mutation($ids:[ID!]!){ replacePinnedItems(input:{ownerI
 
 ### Task P0.5: 外链卫生（gpt-review 域名）
 
-- [ ] `rg -l 'gpt-review' /Users/hsiangkuochang/exactly-once-drills /Users/hsiangkuochang/portfolio-site` 找到全部出现点。
+- [ ] `rg -l 'gpt-review' $SOURCE_ROOT/exactly-once-drills $SOURCE_ROOT/portfolio-site` 找到全部出现点。
 - [ ] 替换为 `https://xiangguozhang.com/engineering/exactly-once-drills`（站内页已存在）。
 - [ ] Verify：两仓 `rg 'gpt-review'` 零命中。
 

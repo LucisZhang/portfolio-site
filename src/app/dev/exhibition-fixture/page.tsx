@@ -21,14 +21,13 @@ const rail: RailSpec = {
   wordmark: { lines: ["Xiangguo", "Zhang"], mark: "XGZ" },
   copy: { en: "AI agents. Measured systems.", zh: "有据可查的系统作品。" },
   nav: [
-    { id: "exhibit-00", num: "00", label: "Hero" },
-    { id: "exhibit-01", num: "01", label: "Ink section" },
-    { id: "exhibit-02", num: "02", label: "White section" },
-    { id: "exhibit-03", num: "03", label: "Paper-alt section" },
+    { id: "exhibit-00", num: "00", label: { en: "Hero", zh: "首页介绍" } },
+    { id: "exhibit-01", num: "01", label: { en: "Ink section", zh: "深色展区" } },
+    { id: "exhibit-02", num: "02", label: { en: "White section", zh: "白色展区" } },
+    { id: "exhibit-03", num: "03", label: { en: "Paper-alt section", zh: "备用底色展区" } },
   ],
   footer: [
-    { label: "SEARCH ⌘K", href: "#search" },
-    { label: "RESUME", href: "/resume.pdf" },
+    { label: { en: "SEARCH ⌘K", zh: "搜索 ⌘K" }, href: "#search" },
   ],
 };
 

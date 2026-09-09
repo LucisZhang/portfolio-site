@@ -231,6 +231,29 @@ export const ZH_ADJACENT_ALLOWLIST = new Set([
   // glyph renders from the system stack (which carries U+25CE) and does not
   // belong in the display serif subset.
   0x25ce,
+  // U+3B1 GREEK SMALL LETTER ALPHA and U+3C4 GREEK SMALL LETTER TAU (task
+  // B6 glyph-gate fix): inline math notation inside retrieved-chunk prose
+  // in src/data/assistant-knowledge.generated.json -- e.g. "叠了一层
+  // α=0.3 的 MiniLM 内容重排" (margin-detection chunk) and "其提交的 CAL
+  // grid 选出 τ=0.8484" (triage-router chunk). Confirmed via grep this is
+  // the ONLY place either codepoint appears in the corpus -- not in
+  // ask-preset-answers.json, ask-question-bank.json, evidence-links.json,
+  // or any citation-label string built by assistant-citation-index.ts
+  // (AssistantSourcesIndex's .ask-go-dest titles are assembled from a
+  // small fixed vocabulary -- project labels, fileDescriptor() phrases,
+  // zhCitationLabel() wrapping -- never the raw knowledge-chunk text).
+  // Same "never rendered through --display-serif-zh" situation as the
+  // U+1F52C microscope entry above: AskPage.tsx cites this file only via
+  // EvidenceFileLink (a link to the file, not its content inline);
+  // AssistantWidget's live chat bubbles use their own CSS-module classes
+  // (font-geist-mono only); globals.css wires --display-serif-zh solely
+  // to :lang(zh) h1 and one specific body-copy selector list, none of
+  // which this RAG-corpus text ever reaches. Greek letters are also
+  // outside a "Chinese serif" subset's actual remit (task F4 brief: CJK
+  // codepoints only) -- these fall back to the system stack correctly
+  // either way.
+  0x3b1,
+  0x3c4,
 ]);
 
 export function codepointsToText(codepoints) {

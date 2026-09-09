@@ -64,7 +64,9 @@ test("assistant widget code loads only after the launcher opens", async ({ page 
 // Task F12: the floating launcher comes from RootLayout (a sibling of
 // {children}, outside any per-route wrapper) so every route should render
 // and open it identically -- including the four routes that were pulled out
-// of the shared src/app/[track]/[project]/page.tsx into their own literal
+// of the shared src/app/[track]/[project]/page.tsx catch-all (its path at
+// the time; the catch-all is src/app/projects/[slug]/page.tsx today) into
+// their own literal
 // static routes for bundle-isolation reasons (see that file's git history /
 // ForgeForgeRoute's comment). An audit against this branch's HEAD (dev
 // server, a production `next build`+`next start`, desktop/mobile Chromium,
@@ -74,10 +76,10 @@ test("assistant widget code loads only after the launcher opens", async ({ page 
 test("the floating Ask Portfolio launcher is visible and opens on every standalone route", async ({ page }) => {
   for (const route of [
     "/",
-    "/ai/frontier-forge",
-    "/engineering/exactly-once-drills",
-    "/ai/triage-router",
-    "/ai/privacy-preflight",
+    "/projects/frontier-forge",
+    "/projects/exactly-once-drills",
+    "/projects/triage-router",
+    "/projects/privacy-preflight",
     "/artifact",
   ]) {
     await page.goto(route, { waitUntil: "networkidle" });
@@ -108,6 +110,8 @@ test("the floating Ask Portfolio launcher is visible and opens on every standalo
 // page.goto follows the redirect to the homepage, where the Ask Portfolio
 // launcher's presets are the "/" bank entries, not analytics-tandem's, so
 // `toHaveText(bankPrompts("/analytics/analytics-tandem"))` never matches).
+// (Every URL in this paragraph is the one that was live then; the project
+// URLs moved to /projects/<slug> later, on this branch.)
 // By this point every other project has also migrated to its own literal
 // route folder (see tests/e2e/portfolio.spec.ts's `routes` array comment
 // for the full list) -- there is no project left anywhere that still
@@ -118,7 +122,7 @@ test("the floating Ask Portfolio launcher is visible and opens on every standalo
 // banked route, home-fallback for an unbanked one) still cover the test's
 // core intent.
 test("assistant panel presets resolve per route from the verified question bank, with a home fallback for unbanked routes", async ({ page }) => {
-  const bankedRoutes = ["/ai/frontier-forge"];
+  const bankedRoutes = ["/projects/frontier-forge"];
   for (const route of bankedRoutes) {
     await page.goto(route, { waitUntil: "networkidle" });
     await page.getByRole("button", { name: "Ask Portfolio" }).click();
@@ -137,10 +141,10 @@ test("assistant panel presets resolve per route from the verified question bank,
 
 test("assistant panel presets stay locale-pure in Chinese for a banked route", async ({ page }) => {
   await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "zh"));
-  await page.goto("/ai/frontier-forge", { waitUntil: "networkidle" });
+  await page.goto("/projects/frontier-forge", { waitUntil: "networkidle" });
   await page.getByRole("button", { name: "询问作品集" }).click();
   const widget = page.getByTestId("assistant-widget");
-  await expect(widget.locator(SEL.classPromptsButton)).toHaveText(bankPrompts("/ai/frontier-forge", "zh"));
+  await expect(widget.locator(SEL.classPromptsButton)).toHaveText(bankPrompts("/projects/frontier-forge", "zh"));
 });
 
 test("assistant gives local bilingual guardrail replies without calling a model", async ({ page }) => {
@@ -219,7 +223,7 @@ test("assistant prompts follow the page context and typed project segments becom
   // segment -- so testing it has nothing left to exercise. Narrowed to
   // "/" alone, which still exercises the default-placeholder fallback
   // path; the project-specific placeholder path is separately covered
-  // below via "/ai/rag-quality-lab", a route this redirect closure did
+  // below via "/projects/rag-quality-lab", a route this redirect closure did
   // not touch.
   const contexts = [
     ["/", "Why is Xiangguo a strong Applied AI candidate?"],
@@ -257,16 +261,16 @@ test("assistant prompts follow the page context and typed project segments becom
       }),
     });
   });
-  await page.goto("/ai/rag-quality-lab", { waitUntil: "networkidle" });
+  await page.goto("/projects/rag-quality-lab", { waitUntil: "networkidle" });
   await page.getByRole("button", { name: "Ask Portfolio" }).click();
   const widget = page.getByTestId("assistant-widget");
   await expect(widget.getByPlaceholder("Ask how RAG Quality Lab demonstrates Xiangguo's strengths…")).toBeVisible();
   // Task R14 (owner ruling): a preset click renders its AUTHORED preset
   // answer instantly from the committed artifact -- no /api/assistant call,
   // no pending state -- labeled truthfully as a preset, never as retrieval.
-  const [ragOverviewPrompt] = bankPrompts("/ai/rag-quality-lab");
+  const [ragOverviewPrompt] = bankPrompts("/projects/rag-quality-lab");
   await widget.getByRole("button", { name: ragOverviewPrompt, exact: true }).click();
-  await expect(widget).toContainText("PRESET · authored answer · cited · no model call");
+  await expect(widget).toContainText("Preset answer");
   expect(contextualRequestBodies).toHaveLength(0);
 
   // A typed free-form question keeps the live path untouched. The recorded
@@ -277,17 +281,32 @@ test("assistant prompts follow the page context and typed project segments becom
   await widget.getByRole("button", { name: "Send", exact: true }).click();
   await expect.poll(() => contextualRequestBodies.length).toBe(1);
   expect(contextualRequestBodies[0].messages.at(-1)?.content).toBe(typedQuestion);
-  expect(contextualRequestBodies[0].messages[0]?.content).toContain("Portfolio question about Xiangguo Zhang on /ai/rag-quality-lab:");
+  expect(contextualRequestBodies[0].messages[0]?.content).toContain("Portfolio question about Xiangguo Zhang on /projects/rag-quality-lab:");
   await expect(widget.locator(SEL.i)).toHaveCount(3);
   await expect(widget).toContainText("Thinking");
   await expect(widget.getByRole("heading", { name: "Strongest match" })).toBeVisible();
   await expect(widget.locator(SEL.strong, { hasText: "RAG Quality Lab" })).toBeVisible();
-  // Task R11 (B5-b): the destination now legitimately appears as a link
-  // twice -- the answer's canonical inline project link and the recorded
-  // index's destination entry -- so each is asserted in its own region.
-  await expect(widget.locator("a:not(.ask-go-dest)", { hasText: "RAG Quality Lab" })).toHaveAttribute("href", "/ai/rag-quality-lab");
-  await expect(widget.locator("a.ask-go-dest", { hasText: "RAG Quality Lab" }).first()).toHaveAttribute("href", "/ai/rag-quality-lab");
+  // The live answer links to the project page; its preset evidence links
+  // directly to the project repository at a fixed commit.
+  await expect(widget.locator("a:not(.ask-go-dest)", { hasText: "RAG Quality Lab" })).toHaveAttribute("href", "/projects/rag-quality-lab");
+  await expect(widget.locator("a.ask-go-dest", { hasText: "RAG Quality Lab" }).first()).toHaveAttribute("href", /^https:\/\/github\.com\/LucisZhang\/rag-quality-lab\/blob\/[a-f0-9]{40}\/README\.md$/);
   await expect(widget).not.toContainText("**");
+});
+
+test("Credit Policy Desk uses its navigation label throughout the Chinese Ask Portfolio context", async ({ page }) => {
+  const route = "/projects/credit-policy-desk";
+  await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "zh"));
+  await page.goto(route, { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: "询问作品集", exact: true }).click();
+  const widget = page.getByTestId("assistant-widget");
+  const placeholder = "询问 Credit Policy Desk 如何体现章向国的优势……";
+  await expect(widget.locator("textarea")).toHaveAttribute("placeholder", placeholder);
+  const prompts = widget.locator(SEL.classPromptsButton);
+  const expected = bankPrompts(route, "zh");
+  await expect(prompts).toHaveText(expected);
+  for (const prompt of expected) expect(prompt).toContain("Credit Policy Desk");
+  expect(placeholder).not.toContain("分数不是策略");
+  for (const prompt of await prompts.allTextContents()) expect(prompt).not.toContain("分数不是策略");
 });
 
 test("assistant API rejects oversized input before any model request", async ({ request }) => {
@@ -372,4 +391,47 @@ test("assistant route discloses hybrid RAG mode on a local refusal", async ({ re
   await expect(response.json()).resolves.toEqual({
     reply: "I focus on Xiangguo Zhang's background, projects, skills, working style, and role fit. Ask me about any of those.",
   });
+});
+
+test("409×658 drawer keeps its compact intro, answer controls, and evidence destinations usable", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile", "This is the compact mobile drawer contract.");
+  await page.setViewportSize({ width: 409, height: 658 });
+  await page.goto("/", { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: "Ask Portfolio", exact: true }).click();
+
+  const widget = page.getByTestId("assistant-widget");
+  const panelBox = await widget.boundingBox();
+  expect(panelBox).not.toBeNull();
+  expect(panelBox!.y).toBeGreaterThanOrEqual(0);
+  expect(panelBox!.y + panelBox!.height).toBeLessThanOrEqual(658);
+
+  const intro = widget.locator('[class*="intro"]');
+  await expect(intro).toHaveText("Start with a question below, or write your own.");
+  expect((await intro.boundingBox())!.height).toBeLessThanOrEqual(28);
+
+  await widget.getByRole("button", { name: bankPrompts("/")[1], exact: true }).click();
+  await expect(intro).toHaveCount(0);
+  await expect(widget.locator("textarea")).toBeVisible();
+  await expect(widget.getByText("Your question is sent only to a zero-data-retention external AI service.", { exact: false })).toBeVisible();
+
+  const evidence = widget.getByTestId("ask-go-index");
+  await expect(evidence).toContainText("References and destinations");
+  await expect(evidence).toContainText("PROJECT HOME");
+  await expect(evidence.locator("a")).toHaveCount(4);
+  expect(await evidence.locator("a").evaluateAll(nodes=>nodes.map(node=>node.getAttribute("href"))))
+    .toEqual(["/projects/frontier-forge", "/projects/release-guardian", "/projects/triage-router", "/projects/exactly-once-drills"]);
+  await expect(evidence).not.toContainText("project page");
+  await expect(evidence).not.toContainText("github.com/");
+  await expect.poll(() => widget.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
+});
+
+// Task B6: spec §11 requires an inbound deep link to a citation's anchored
+// exhibit section to actually scroll there. Frontier Forge's rail is a plain
+// <a href="#exhibit-05"> (ExhibitShell.tsx railNavHref) and OverloadReplay.tsx
+// renders <section id="exhibit-05">, so native browser fragment navigation
+// on page load should already put it in view with no bespoke scroll handler.
+test("an inbound exhibit deep link scrolls to that section", async ({ page }) => {
+  await page.goto("/projects/frontier-forge#exhibit-05");
+  const section = page.locator("#exhibit-05");
+  await expect(section).toBeInViewport();
 });

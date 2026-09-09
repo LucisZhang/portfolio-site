@@ -4,7 +4,7 @@ import { bodyTextExcludingLanguageSwitcher, containsCJK, longestLatinWordRun } f
 import { assertNoHorizontalOverflow, assertTouchTarget } from "./mobileAudit";
 import ocrBenchmark from "../../public/case-studies/privacy-preflight/ocr-fixture-benchmark.json";
 
-const ROUTE = "/ai/privacy-preflight";
+const ROUTE = "/projects/privacy-preflight";
 // Task 3.2 (spec §6.4, "restraint-first reflow"): tesseract's WASM core /
 // language packs and the PDF.js runtime are the two heavy asset roots
 // (public/generated/privacy-ocr 16MB, public/generated/privacy-pdf 1.7MB,
@@ -192,9 +192,10 @@ test.describe("Privacy Preflight zero-hardcoded OCR digits (spec commandment #10
 });
 
 test("Privacy Preflight rail is a single project-state rail with the exhibit directory and back link", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== "desktop", "The fixed-rail contract only applies at desktop widths.");
+  test.skip(testInfo.project.name !== "desktop", "The desktop rail contract only applies at desktop widths.");
   await page.goto(ROUTE, { waitUntil: "networkidle" });
   await expect(page.locator(SEL.rail)).toHaveCount(1);
+  await expect(page.locator(".exhibit-shell")).toHaveAttribute("data-rail-mode", "auto");
   const navNums = await page.locator(SEL.rail).locator(".exhibit-rail-fixed .exhibit-rail-nav a .exhibit-rail-num").allTextContents();
   expect(navNums[0]).toBe("01");
   expect(navNums.at(-1)).toBeDefined();
@@ -202,6 +203,31 @@ test("Privacy Preflight rail is a single project-state rail with the exhibit dir
   const exhibitNums = await page.locator("main [data-exhibit]").evaluateAll((sections) => sections.map((section) => section.getAttribute("data-exhibit")));
   expect(exhibitNums).toEqual(navNums);
 });
+
+for (const reducedMotion of [false, true]) {
+  test(`Privacy Preflight retracts a revealed rail when focus returns to content${reducedMotion ? " with reduced motion" : ""}`, async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop", "The focus-driven rail mechanic is desktop-only.");
+    if (reducedMotion) await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto(ROUTE, { waitUntil: "networkidle" });
+
+    const shell = page.locator('.exhibit-shell[data-rail-mode="auto"]');
+    const hotzone = page.locator("[data-rail-hotzone]");
+    const contentControl = page.locator('[data-instrument][data-instrument-variant="full"] button:visible').first();
+
+    await page.mouse.wheel(0, 40);
+    await expect(shell).toHaveClass(/rail-collapsed/);
+    await hotzone.hover();
+    await expect(shell).not.toHaveClass(/rail-collapsed/);
+    await contentControl.focus();
+    await expect(contentControl).toBeFocused();
+    await expect(shell).toHaveClass(/rail-collapsed/, { timeout: reducedMotion ? 500 : 1_000 });
+    await expect(page.locator("main#main-content")).toHaveCSS("margin-left", "0px");
+    if (reducedMotion) {
+      await expect(page.locator("main#main-content")).toHaveCSS("transition-duration", "0s");
+      await expect(page.locator(".exhibit-rail-fixed")).toHaveCSS("transition-duration", "0s");
+    }
+  });
+}
 
 // Task F5 (locale purity, user's binding rule).
 test("en Privacy Preflight renders no Chinese (CJK) text anywhere on the page", async ({ page }) => {
@@ -255,7 +281,7 @@ test("Privacy Preflight report layer follows Architecture -> Results & negatives
     (nodes) => nodes.map((node) => node.getAttribute("data-project-section")),
   );
   expect(sections).toEqual(["how", "results", "limitations"]);
-  await expect(page.locator(SEL.linkListAHrefGithubComNotHref).or(page.locator('a[href="https://github.com/LucisZhang/privacy-preflight-web"]'))).toBeVisible();
+  await expect(page.locator(SEL.linkListAHrefGithubComNotHref).or(page.locator('a[href="https://github.com/LucisZhang/privacy-preflight"]'))).toBeVisible();
 });
 
 // Task F1 (comprehensive mobile adaptation pass, spec §2.5).

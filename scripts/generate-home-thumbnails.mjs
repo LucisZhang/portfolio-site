@@ -9,10 +9,10 @@ const outputDir = path.resolve("public/thumbs");
 const browserChannel = process.env.PLAYWRIGHT_CHANNEL || "chrome";
 const maxBytes = 60 * 1024;
 const captures = [
-  { slug: "release-guardian", route: "/ai/release-guardian", selector: '[data-testid="release-change-replay"]' },
-  { slug: "triage-router", route: "/ai/triage-router", selector: 'figure[aria-labelledby="triage-drift-title"]' },
-  { slug: "privacy-preflight", route: "/ai/privacy-preflight", selector: '[data-testid="privacy-preflight-lab"]' },
-  { slug: "exactly-once-drills", route: "/engineering/exactly-once-drills", selector: '[data-testid="p1-failure-replay"]' },
+  { slug: "release-guardian", route: "/projects/release-guardian", selector: '[data-testid="release-change-replay"]' },
+  { slug: "triage-router", route: "/projects/triage-router", selector: 'figure[aria-labelledby="triage-drift-title"]' },
+  { slug: "privacy-preflight", route: "/projects/privacy-preflight", selector: '[data-testid="privacy-preflight-lab"]' },
+  { slug: "exactly-once-drills", route: "/projects/exactly-once-drills", selector: '[data-testid="p1-failure-replay"]' },
 ];
 
 await mkdir(outputDir, { recursive: true });

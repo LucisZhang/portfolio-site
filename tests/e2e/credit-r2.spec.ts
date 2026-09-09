@@ -5,9 +5,9 @@ import { SEL } from "./selectors";
 import { bodyTextExcludingLanguageSwitcher, containsCJK, longestLatinWordRun } from "./localePurity";
 import { assertNoHorizontalOverflow } from "./mobileAudit";
 
-const ROUTE = "/analytics/credit-policy-desk";
+const ROUTE = "/projects/credit-policy-desk";
 
-// Task L4 [CLAUDE]: rebuild of /analytics/credit-policy-desk to the
+// Task L4 [CLAUDE]: rebuild of /projects/credit-policy-desk to the
 // user-approved chart-led Evidence page (spec §6.7 "Margin/Credit(归档)"),
 // mirroring tests/e2e/margin-r2.spec.ts's structure exactly. This file
 // replaces the credit-only coverage that used to live in
@@ -56,6 +56,17 @@ function isDuckDBHeavyRuntimeRequest(url: string) {
 }
 
 test.describe("Credit Policy Desk exhibit 01 (policy frontier, real data)", () => {
+  test("evidence metadata is an aligned slashless token list", async ({ page }) => {
+    await page.goto(ROUTE, { waitUntil: "networkidle" });
+    const meta = page.locator(SEL.exhibit("01")).locator(".exhibit-opening-row .exhibit-meta");
+    await expect(meta.locator("li")).toHaveText([
+      "CREDIT-BACKTEST-PARQUET-V1",
+      "CALIBRATED PD → POLICY",
+      /EVALUATED \d{4}-\d{2}-\d{2}/,
+    ]);
+    expect(await meta.innerText()).not.toContain("/");
+  });
+
   test("the stat band and frontier fallback table are read from the committed reports, not re-typed", async ({ page }) => {
     const frontier = loadPolicyFrontierReport();
     const backtest = loadBacktestReport();
@@ -139,6 +150,7 @@ test.describe("Credit Policy Desk exhibit 04 (click-gated DuckDB receipts)", () 
     expect(heavyRuntimeRequests).toEqual([]);
     expect(parquetRequests).toBe(0);
 
+    await page.locator("[data-evidence=credit] > details > summary").click();
     const verify = page.locator(".credit-verify");
     await expect(verify).toHaveAttribute("data-verify-status", "idle");
     await verify.getByRole("button").click();
@@ -160,7 +172,8 @@ test("Credit Policy Desk renders with no JavaScript: exhibits 01-04 show real st
   await expect(page.locator(SEL.exhibit("02")).locator(".credit-threshold-table-inner tbody tr")).toHaveCount(3);
   await expect(page.locator(SEL.exhibit("03")).locator(".exhibit-finding")).toHaveCount(2);
   await expect(page.locator(SEL.exhibit("04")).locator(".credit-receipts-dl > div")).toHaveCount(5);
-  // The verify button is present but inert without JS -- must not vanish.
+  // Native disclosure remains operable without JS; the verify action is still present.
+  await page.locator("[data-evidence=credit] > details > summary").click();
   await expect(page.locator(".credit-verify-button")).toBeVisible();
 
   await context.close();
@@ -189,6 +202,9 @@ test("en Credit Policy Desk renders no Chinese (CJK) text anywhere on the page",
 test("zh Credit Policy Desk carries independently-written zh copy with no long English run", async ({ page }) => {
   await page.addInitScript(() => window.localStorage.setItem("portfolio-locale", "zh"));
   await page.goto(ROUTE, { waitUntil: "networkidle" });
+
+  await expect(page.locator(SEL.exhibit("01")).locator(".exhibit-title")).toHaveText("分数不是策略。");
+  await expect(page).toHaveTitle("Credit Policy Desk | 章向国");
 
   const gloss = page.locator(SEL.cnGloss).first();
   await expect(gloss).toHaveCount(1);

@@ -42,7 +42,7 @@ export function ServingBoundary() {
     <Exhibit
       id="exhibit-04"
       num="04"
-      eyebrow="0.25–4.00 QPS / NATIVE MTP"
+      eyebrow="0.25–4.00 QPS · NATIVE MTP"
       bg="white"
       title={locale === "en" ? <>Serving is a boundary,<br /><em>not a badge.</em></> : <>服务是一条边界，<em>不是一枚徽章。</em></>}
       intro={locale === "en"

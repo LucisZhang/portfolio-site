@@ -500,48 +500,115 @@
 
 .guardian-install {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: clamp(20px, 3vw, 40px);
+  gap: 32px;
+  max-width: min(100%, 880px);
 }
 
 .guardian-install-block {
-  border-top: 2px solid var(--ink);
-  padding-top: 14px;
+  min-width: 0;
+  padding: 24px 0;
+  border-top: 1px solid var(--hairline);
+  color: var(--muted);
+  transform: scale(.98);
+  transform-origin: left center;
+  transition: transform 180ms ease, color 180ms ease;
 }
 
-.guardian-install-block[data-pending="true"] {
-  border-top-color: var(--muted);
+.guardian-install-title {
+  margin: 0 0 16px;
+  font-family: var(--mono);
+  font-size: 24px;
+  font-weight: 500;
+  color: inherit;
+}
+
+.guardian-install-block:focus-visible,
+.guardian-install-block:has(:focus-visible) {
+  color: #000;
+  transform: scale(1);
+}
+
+.guardian-install-block:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .guardian-install-block:hover {
+    color: #000;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guardian-install-block {
+    transition: none;
+  }
+}
+
+.guardian-install-block .guardian-flab {
+  font-size: 11px;
+  color: inherit;
+}
+
+.guardian-connection-details {
+  margin: 20px 0 0;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.guardian-connection-details > div {
+  display: grid;
+  grid-template-columns: minmax(110px, 1fr) minmax(0, 3fr);
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.guardian-connection-details dt {
+  color: inherit;
+}
+
+.guardian-connection-details dd {
+  margin: 0;
+  overflow-wrap: anywhere;
 }
 
 .guardian-command {
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   overflow-x: auto;
 }
 
 .guardian-command code {
   font-family: var(--mono);
-  font-size: 13px;
+  /* The command is the payoff of the whole exhibit; 13px was a footnote
+     size. 21px caps below .exhibit-title so it reads as the second voice on
+     the page, and the 43-character docker line still fits the 880px measure
+     at that size. Anything wider than the measure keeps scrolling inside the
+     existing ScrollRegion (which grants tabindex/role only when it really
+     overflows), so no viewport gains horizontal page overflow. */
+  font-size: clamp(15px, 1.35vw, 21px);
   font-weight: 650;
+  letter-spacing: -.01em;
   white-space: pre;
-  color: var(--ink);
-}
-
-.guardian-command-pending code {
-  color: var(--muted);
+  color: inherit;
 }
 
 .guardian-install-note {
-  margin-top: 10px;
-  max-width: 46ch;
-  font-size: 12px;
-  line-height: 1.6;
-  color: var(--muted);
+  margin-top: 12px;
+  max-width: 58ch;
+  font-size: 13px;
+  line-height: 1.65;
+  color: inherit;
 }
 
-.guardian-receipts {
-  margin-top: clamp(30px, 4vw, 48px);
-  border-top: 1px solid var(--hairline);
-  padding-top: clamp(20px, 3vw, 32px);
+/* Receipts are now the only child of the evidence disclosure, which already
+   supplies the rule (.evidence-details border-block) and the padding
+   (.evidence-technical padding-block). Doubling either would print a second
+   line one row under the summary. .exhibit-body is co-classed on the same
+   div, hence the two-class selector to beat its margin-top. */
+.exhibit-body.guardian-receipts {
+  margin-top: 0;
 }
 
 .guardian-receipts-dl {
@@ -573,37 +640,6 @@
   align-items: center;
   min-height: 44px;
   color: var(--accent);
-}
-
-/* ---------- Report layer (Architecture / Results / Limitations) ---------- */
-
-.guardian-report-section {
-  max-width: 860px;
-  margin: 0 auto;
-  padding: clamp(48px, 8vw, 96px) clamp(20px, 5vw, 48px);
-}
-
-.guardian-architecture-flow {
-  list-style: none;
-  margin: 24px 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.guardian-architecture-flow li {
-  display: grid;
-  /* minmax(0, 1fr) -- see .guardian-doc's comment above. */
-  grid-template-columns: 40px minmax(0, 1fr);
-  gap: 12px;
-  border-top: 1px solid var(--hairline);
-  padding-top: 14px;
-}
-
-.guardian-architecture-flow li span {
-  font-family: var(--mono);
-  color: var(--muted);
 }
 
 /* ---------- Mobile fold (767.98px, matching triage.css/exhibition.css) ---------- */
@@ -654,8 +690,27 @@
   .metric-table > div > strong:nth-child(3) {
     display: none;
   }
-
-  .guardian-install {
-    grid-template-columns: minmax(0, 1fr);
-  }
 }
+
+/* Keep the app handoff visibly actionable alongside the connection details. */
+.guardian-connect-action { margin: 20px 0 0; }
+.guardian-connect-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 50px;
+  max-width: 100%;
+  padding: 12px 18px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-decoration: none;
+  cursor: pointer;
+}
+.guardian-connect-button svg { flex-shrink: 0; }
+.guardian-connect-button:hover { background: var(--paper); color: var(--ink); }
+.guardian-connect-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }

@@ -1,0 +1,234 @@
+/* ==========================================================================
+   SOURCE / RECEIPTS -- the evidence layer that closes all eleven exhibits.
+
+   COLOUR CONTRACT. This block lands on .exhibit[data-bg="paper" | "paper-alt"
+   | "white"] (dark ink on light) AND on .exhibit[data-bg="ink"] (light on
+   dark). --muted and --hairline are fixed light-surface tokens: globals.css
+   never re-declares them under [data-bg="ink"], which is why every dark
+   surface in this repo overrides them by hand (exhibition.css .exhibit-eyebrow,
+   privacy-page.css .galley-label, crossover.css .crossover-receipt). A shared
+   component cannot fork per page, so every value below is mixed out of
+   currentColor and inverts for free. The two grounds are near-mirrors --
+   --paper and --ink-invert-fg are the same #f5f1e8 -- so a single percentage
+   reads the same on both: currentColor at 68% over --paper resolves to
+   ~rgb(92 99 104), the --muted (#5a6472) register, and the same 68% over
+   --ink-invert clears 7:1.
+   ========================================================================== */
+
+.evidence-layer {
+  --evidence-rule: color-mix(in srgb, currentColor 22%, transparent);
+  --evidence-label: color-mix(in srgb, currentColor 68%, transparent);
+  --evidence-caveat: color-mix(in srgb, currentColor 76%, transparent);
+  /* Wide enough for the longest single word in either locale (BOUNDARY /
+     VERIFIED at 11px mono + .14em, 验证了什么 at 11px + .04em) so no label
+     ever breaks mid-word, narrow enough to read as a margin, not a column. */
+  --evidence-label-col: 78px;
+  min-width: 0;
+  margin-block: 24px;
+}
+
+/* Hanging marginal labels. Three identical dt-over-dd stacks on one rhythm is
+   the signature of generated markup; this is a colophon instead -- the mono
+   microlabel hangs outside the text column and all three prose blocks share a
+   single left edge and a single measure. Same convention as the report
+   layer's hanging 01/02/03 numerals (ProjectReport.module.css .architecture >
+   li, .findings > li), which is where a reader has already met it on this page. */
+.evidence-overview {
+  --evidence-prose: 16px;
+  max-width: 76ch;
+  margin: 0 0 28px;
+}
+
+.evidence-overview > div {
+  display: grid;
+  grid-template-columns: var(--evidence-label-col) minmax(0, 1fr);
+  gap: 0 22px;
+  align-items: baseline;
+  margin: 0;
+}
+
+.evidence-overview > div + div { margin-block-start: 20px; }
+
+/* The site's mono microlabel register: .exhibit-eyebrow (exhibition.css) and
+   .guardian-flab (guardian.css) -- mono, 650, .14em, uppercase, muted. */
+.evidence-overview dt {
+  color: var(--evidence-label);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.5;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+/* :lang(zh) is how this codebase scopes locale in CSS (globals.css; the
+   toggle flips html[lang] to zh-CN). uppercase is a no-op on han, and .14em
+   pulls a four-character label apart, so the zh label keeps the register but
+   drops to the site's tight tracking -- the same .04em used by .search-button
+   and .language-switcher. */
+:lang(zh) .evidence-overview dt {
+  letter-spacing: .04em;
+  text-transform: none;
+}
+
+.evidence-overview dd {
+  margin: 0;
+  font-size: var(--evidence-prose);
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+/* The boundary is not a third equal fact -- it is the caveat that qualifies
+   the two above it. It gets a footnote rule (short, hung at the left edge,
+   set the way a printed footnote separator is) and a quieter register. A
+   border-inline-start bar would only be the UI-kit callout again. */
+.evidence-overview > [data-evidence-summary="boundary"] {
+  position: relative;
+  margin-block-start: 30px;
+  padding-block-start: 22px;
+}
+
+.evidence-overview > [data-evidence-summary="boundary"]::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  width: calc(var(--evidence-label-col) + 34px);
+  height: 1px;
+  /* A short rule needs more weight than a full one to read at the same
+     optical value, hence 30% against --evidence-rule's 22%. */
+  background: color-mix(in srgb, currentColor 30%, transparent);
+}
+
+.evidence-overview > [data-evidence-summary="boundary"] dd {
+  color: var(--evidence-caveat);
+  font-size: calc(var(--evidence-prose) - 1px);
+}
+
+/* A designed disclosure in the family of .crossover-receipt summary
+   (crossover.css): small mono, hairline-ruled, >= 44px of vertical target,
+   native triangle suppressed, typographic indicator instead.
+
+   The indicator is LEADING, one measured gap from the label. On the trailing
+   edge it sat at the end of a ~978px full-measure row, hundreds of pixels of
+   empty space away from the words it belongs to, and read as decoration
+   rather than as the control's own affordance.
+
+   Still deliberately NOT display:flex or grid, unlike .crossover-receipt
+   summary: this summary's only child is a localized text run, and the zh
+   line-breaking markers (zh-run / zh-seg, globals.css) are cheapest to reason
+   about in normal inline flow rather than blockified into flex/grid items.
+   The marker therefore hangs by padding-inline-start plus an equal negative
+   text-indent -- a real hanging marker, so the zh label's second line at
+   390px returns to the first line's left edge instead of raggedly starting
+   under the marker. That is the same hanging convention the block already
+   uses twice (the .evidence-overview dt margin, ProjectReport's 01/02/03). */
+.evidence-details { border-block: 1px solid var(--evidence-rule); }
+
+.evidence-details > summary {
+  /* The hang must equal the marker box plus its gap exactly or every wrapped
+     line misses the first line's left edge, so the marker's advance is
+     measured here rather than left to whatever width the mono "+" happens to
+     resolve to under Geist Mono. */
+  --evidence-marker: 15px;
+  --evidence-marker-gap: 9px;
+  --evidence-marker-hang: calc(var(--evidence-marker) + var(--evidence-marker-gap));
+  /* The row is full-bleed, so its focus ring is drawn inside its own box
+     (outline-offset: -4px below). Content flush against the box edge is
+     therefore struck through by the ring -- true of the old flush label too,
+     now more visible because the marker is the leading glyph. 8px clears the
+     ring and its 2px stroke and still reads as flush against the rules. */
+  --evidence-marker-inset: 8px;
+  display: block;
+  min-height: 44px;
+  padding-block: 14px;
+  padding-inline: calc(var(--evidence-marker-inset) + var(--evidence-marker-hang)) 0;
+  text-indent: calc(-1 * var(--evidence-marker-hang));
+  color: var(--evidence-caveat);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: .78rem;
+  line-height: 1.6;
+  letter-spacing: .02em;
+  list-style: none;
+  /* Resting affordance, not hover-only. A hover-only underline is invisible
+     to a reader who has not yet moved a mouse onto the row -- which is every
+     touch reader and every reader on first sight -- so the row carries the
+     site's underline-with-offset idiom (.evidence-file-link, .search-button,
+     .language-switcher) at rest. Held under the text's own weight via
+     text-decoration-color so it stays a promise rather than a filled button;
+     hover/focus takes both to full strength below. 66% of a 76% text colour
+     is .50 alpha, which is the floor that keeps the resting indicator at
+     3:1 against the lighter of the two grounds (3.08:1 over --paper,
+     4.6:1 over --ink-invert) -- below that the affordance the whole change
+     exists to add is the one part of the row that fails 1.4.11. */
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  text-decoration-color: color-mix(in srgb, currentColor 66%, transparent);
+}
+
+:lang(zh) .evidence-details > summary {
+  font-size: .82rem;
+  letter-spacing: 0;
+}
+
+.evidence-details > summary::-webkit-details-marker { display: none; }
+
+/* inline-block, not inline, for two reasons: an atomic inline keeps the row's
+   underline from being drawn through the marker, and it pins the marker's
+   advance to --evidence-marker in both locales' font sizes so the hang math
+   above holds. text-indent inherits into it (it is a block container), hence
+   the reset -- otherwise the glyph is dragged back out of its own box. Set at
+   15px against a .78rem/.82rem label (was 13px on the trailing edge) so the
+   marker reads as a control at a glance and not as punctuation dropped in
+   front of the words; the box and the type size are the same measure, which
+   leaves the ~0.6em mono advance optically centred in it. */
+.evidence-details > summary::before {
+  content: "+";
+  display: inline-block;
+  inline-size: var(--evidence-marker);
+  margin-inline-end: var(--evidence-marker-gap);
+  text-indent: 0;
+  font-size: var(--evidence-marker);
+  font-weight: 650;
+  line-height: 1;
+  text-align: center;
+}
+
+.evidence-details[open] > summary::before { content: "\2212"; }
+
+/* The state change survives: at rest the label is caveat-weight text under a
+   66%-of-that underline, on hover/focus both go to full currentColor. Still
+   no fill and no box, the same escalation .search-button makes. */
+.evidence-details > summary:is(:hover, :focus-visible) {
+  color: inherit;
+  text-decoration-color: currentColor;
+}
+
+/* Inset so a full-bleed row's focus ring cannot push past the measure. */
+.evidence-details > summary:focus-visible { outline: 2px solid currentColor; outline-offset: -4px; }
+.evidence-file-link:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+
+.evidence-technical { min-width: 0; padding-block: 18px 24px; }
+.evidence-technical code, .evidence-technical dd, .evidence-technical a { overflow-wrap: anywhere; word-break: normal; }
+.evidence-technical pre { max-width: 100%; white-space: pre-wrap; overflow-wrap: anywhere; }
+.evidence-file-link { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.evidence-file-note { display: block; margin-block-start: 4px; font-size: 12px; line-height: 1.6; }
+.evidence-file-note code { font-size: inherit; }
+
+/* Below the reading column's two-column width the margin has nowhere to live:
+   the label returns above its prose. The footnote rule and the quieter caveat
+   register survive the collapse -- they carry the meaning, not the layout.
+   699.98px is the breakpoint exhibition.css already uses. */
+@media (max-width: 699.98px) {
+  .evidence-overview > div { grid-template-columns: minmax(0, 1fr); gap: 5px 0; }
+  .evidence-overview > [data-evidence-summary="boundary"] { margin-block-start: 26px; padding-block-start: 18px; }
+  .evidence-overview > [data-evidence-summary="boundary"]::before { width: 96px; }
+}
+
+@media (max-width: 600px) {
+  .evidence-technical dl { grid-template-columns: minmax(0, 1fr); }
+  .evidence-technical dl > div { min-width: 0; }
+  .evidence-overview { --evidence-prose: 15px; }
+}

@@ -1,17 +1,16 @@
-import { execFileSync } from "node:child_process";
-import { resolve } from "node:path";
 import { expect, test } from "@playwright/test";
 import { SEL } from "./selectors";
 import { bodyTextExcludingLanguageSwitcher, containsCJK, longestLatinWordRun } from "./localePurity";
 import { assertNoHorizontalOverflow, assertTouchTarget } from "./mobileAudit";
+import { frontierProjectDetail } from "../../src/lib/frontier-project-detail";
 
-const ROUTE = "/ai/frontier-forge";
+const ROUTE = "/projects/frontier-forge";
 const HEAVY_ASSET_PATTERN = /\.(onnx|wasm|gguf)(\?|$)/i;
 const OVERLOAD_RECEIPT_PATTERN = /phase7_1_sustained_gateway_bench\.json/;
 
 for (const locale of ["en", "zh"] as const) {
-  test(`${locale} Frontier Forge instrument is prefilled in the first viewport with zero clicks`, async ({ page }, testInfo) => {
-    test.skip(testInfo.project.name !== "desktop", "The instrument-first contract only needs one browser size.");
+  test(`${locale} Frontier Forge exhibit 01 instrument is prefilled with zero clicks`, async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop", "The prefilled-instrument contract only needs one browser size.");
     await page.addInitScript((selectedLocale) => {
       window.localStorage.setItem("portfolio-locale", selectedLocale);
     }, locale);
@@ -19,12 +18,19 @@ for (const locale of ["en", "zh"] as const) {
     const response = await page.goto(ROUTE, { waitUntil: "networkidle" });
     expect(response?.status()).toBe(200);
 
-    // (a) data-instrument present in first viewport, prefilled, zero clicks.
+    const heroMeta = page.locator(".forge-hero .exhibit-meta");
+    await expect(heroMeta.locator("li")).toHaveText(locale === "en" ? ["RECORDED EVALUATION", "OFFLINE REPLAY"] : ["历史评测", "离线回放"]);
+    expect(await heroMeta.innerText()).not.toContain("/");
+    const exhibitMeta = page.locator(SEL.exhibit("01")).locator(".exhibit-opening-row .exhibit-meta");
+    await expect(exhibitMeta.locator("li")).toHaveText(locale === "en"
+      ? ["FULL INSTRUMENT", "RECORDED SERVING RUNS"]
+      : ["完整仪器", "已记录的推理运行"]);
+    expect(await exhibitMeta.innerText()).not.toContain("/");
+
+    // Exhibit 01 is a complete, prefilled operating surface before any
+    // interaction; its vertical placement is governed by the hero rhythm.
     const instrument = page.locator(SEL.instrument).first();
     await expect(instrument).toBeVisible();
-    const instrumentBox = await instrument.boundingBox();
-    expect(instrumentBox).not.toBeNull();
-    expect(instrumentBox!.y).toBeLessThan((page.viewportSize()?.height ?? 900) + 40);
 
     const readout = instrument.locator("[data-readout]");
     await expect(readout).toBeVisible();
@@ -38,12 +44,36 @@ for (const locale of ["en", "zh"] as const) {
     const selectedChip = instrument.locator('[data-forge-chip][aria-selected="true"]');
     await expect(selectedChip).toHaveCount(1);
 
-    await expect(instrument.locator("textarea, input")).toHaveCount(0);
-    await expect(page.locator("body")).not.toContainText("LIVE TRIAGE");
+    await expect(instrument.locator("[data-forge-input]")).toHaveCount(0);
+    await expect(instrument).not.toContainText("/api/triage");
   });
 }
 
-test("Frontier Forge live slot renders the closed state one-liner", async ({ page }) => {
+test("Frontier Forge exhibit 01 is an open two-column operating surface", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "The wide operating-surface geometry only needs one desktop run.");
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(ROUTE, { waitUntil: "networkidle" });
+
+  const instrument = page.locator('[data-instrument][data-instrument-variant="full"]');
+  const surface = await instrument.evaluate((node) => {
+    const style = getComputedStyle(node);
+    return { borderTop: style.borderTopWidth, borderRight: style.borderRightWidth, background: style.backgroundColor, padding: style.padding };
+  });
+  expect(surface.borderTop).toBe("0px");
+  expect(surface.borderRight).toBe("0px");
+  expect(surface.background).toBe("rgba(0, 0, 0, 0)");
+  expect(surface.padding).toBe("0px");
+  const columns = instrument.locator(".forge-console > div");
+  await expect(columns).toHaveCount(2);
+  const [runBox, requestBox] = await Promise.all([columns.nth(0).boundingBox(), columns.nth(1).boundingBox()]);
+  expect(runBox && requestBox).toBeTruthy();
+  expect(runBox!.x + runBox!.width).toBeLessThan(requestBox!.x);
+  await expect(columns.nth(1)).toHaveCSS("border-left-width", "1px");
+  await expect(instrument.locator("textarea")).toHaveCount(0);
+  await expect(instrument.locator("pre")).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+});
+
+test("Frontier Forge labels the recorded evaluation and offline replay", async ({ page }) => {
   await page.goto(ROUTE, { waitUntil: "networkidle" });
   // (b) live slot closed-state text, exact.
   const liveSlots = page.locator("[data-live-slot]");
@@ -54,7 +84,7 @@ test("Frontier Forge live slot renders the closed state one-liner", async ({ pag
   }
 });
 
-test("Frontier Forge archive tabs read recorded evidence across cURL/Python/JSON", async ({ page }) => {
+test("Frontier Forge archive tabs expose static evidence across cURL/Python/JSON", async ({ page }) => {
   await page.goto(ROUTE, { waitUntil: "networkidle" });
   const instrument = page.locator('[data-instrument][data-instrument-variant="full"]');
   const tabs = instrument.locator(".forge-console-tabs button");
@@ -62,8 +92,55 @@ test("Frontier Forge archive tabs read recorded evidence across cURL/Python/JSON
   await expect(instrument.locator("[data-forge-request-tab]")).toContainText("run_id");
   await tabs.nth(1).click();
   await expect(instrument.locator('[data-forge-request-tab="python"]')).toContainText("json.load");
+  const python = await instrument.locator('[data-forge-request-tab="python"]').innerText();
+  expect(python).toContain("import json\n\nwith open");
+  expect(python).not.toContain("\\n");
   await tabs.nth(2).click();
   await expect(instrument.locator('[data-forge-request-tab="json"]')).toContainText("complaint_narrative");
+});
+
+test("Frontier Forge run and request tabs are compact, 44px, and keyboard navigable", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop", "The wide-screen geometry contract only needs one browser size.");
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  await page.goto(ROUTE, { waitUntil: "networkidle" });
+  const instrument = page.locator('[data-instrument][data-instrument-variant="full"]');
+  const instrumentBox = await instrument.boundingBox();
+  const runTabs = instrument.locator(".forge-console-chips");
+  const requestTabs = instrument.locator(".forge-console-tabs");
+  const [runBox, requestBox] = await Promise.all([runTabs.boundingBox(), requestTabs.boundingBox()]);
+  expect(instrumentBox).not.toBeNull();
+  expect(runBox).not.toBeNull();
+  expect(requestBox).not.toBeNull();
+  expect(runBox!.width).toBeLessThan(instrumentBox!.width * .6);
+  expect(requestBox!.width).toBeLessThan(instrumentBox!.width * .4);
+
+  for (const tabs of [runTabs, requestTabs]) {
+    await expect(tabs).toHaveAttribute("role", "tablist");
+    const buttons = tabs.getByRole("tab");
+    for (const button of await buttons.all()) {
+      const box = await button.boundingBox();
+      expect(box).not.toBeNull();
+      expect(box!.height).toBeGreaterThanOrEqual(44);
+      await expect(button).toHaveAttribute("aria-controls", /forge-.+-panel-full/);
+    }
+    await expect(tabs.locator('[role="tab"][aria-selected="true"]')).toHaveCount(1);
+  }
+
+  const runButtons = runTabs.getByRole("tab");
+  const selectedRunIndex = await runButtons.evaluateAll((buttons) => buttons.findIndex((button) => button.getAttribute("aria-selected") === "true"));
+  const nextRunIndex = (selectedRunIndex + 1) % await runButtons.count();
+  await runTabs.locator('[role="tab"][aria-selected="true"]').focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(runButtons.nth(nextRunIndex)).toBeFocused();
+  await expect(runButtons.nth(nextRunIndex)).toHaveAttribute("aria-selected", "true");
+  await expect(instrument.locator("[data-readout]")).toHaveAttribute("aria-labelledby", await runButtons.nth(nextRunIndex).getAttribute("id") ?? "");
+
+  const requestButtons = requestTabs.getByRole("tab");
+  await requestButtons.first().focus();
+  await page.keyboard.press("End");
+  await expect(requestButtons.last()).toBeFocused();
+  await expect(requestButtons.last()).toHaveAttribute("aria-selected", "true");
+  await expect(instrument.locator(".forge-console-request-panel")).toHaveAttribute("aria-labelledby", await requestButtons.last().getAttribute("id") ?? "");
 });
 
 test("Frontier Forge renders with no JavaScript: exhibits 01-05 have static server-rendered content", async ({ browser }) => {
@@ -76,6 +153,7 @@ test("Frontier Forge renders with no JavaScript: exhibits 01-05 have static serv
 
   // 01: instrument readout has a real value.
   await expect(page.locator(SEL.exhibit("01")).locator("[data-readout] strong")).toHaveText(/^\d+\.\d+s$/);
+  await expect(page.locator(SEL.exhibit("01")).locator("[data-forge-input]")).toHaveCount(0);
   // 02: evidence claim table has rows.
   await expect(page.getByTestId("forge-evidence-explorer").locator(SEL.tbodyTr)).toHaveCount(10);
   // 03: training ladder has all seven rungs.
@@ -95,6 +173,7 @@ test("Frontier Forge initial load requests no heavy asset (onnx/wasm/gguf)", asy
   await page.goto(ROUTE, { waitUntil: "networkidle" });
   const heavy = requests.filter((url) => HEAVY_ASSET_PATTERN.test(url));
   expect(heavy).toEqual([]);
+  expect(requests.filter((url) => /\/api\/(?:triage|status|wake|counter)(?:[/?]|$)/.test(url))).toEqual([]);
   // The overload receipt itself must not be part of the initial load either.
   const overloadRequestsBeforeClick = requests.filter((url) => OVERLOAD_RECEIPT_PATTERN.test(url));
   expect(overloadRequestsBeforeClick).toEqual([]);
@@ -170,6 +249,22 @@ for (const locale of ["en", "zh"] as const) {
     const noCount = await matrix.locator('[data-capability="no"]').count();
     expect(noCount).toBeGreaterThanOrEqual(yesCount);
     await expect(page.locator(SEL.exhibit("06")).locator(".forge-not-recorded")).toContainText(locale === "en" ? "NOT RECORDED" : "未记录");
+    // Task D-02: exhibit 06 stays on model suitability — its former
+    // LIMITATION block (a verbatim copy of boundaries[0]) now lives only in
+    // the Limitations section, which lists every boundary exactly once.
+    await expect(page.locator(SEL.exhibit("06")).locator('[data-finding="limitation"]')).toHaveCount(0);
+    const limitationItems = page.locator('[data-project-section="limitations"] [data-limitations] li');
+    await expect(limitationItems).toHaveCount(frontierProjectDetail.boundaries.length);
+    for (const [index, boundary] of frontierProjectDetail.boundaries.entries()) {
+      await expect(limitationItems.nth(index)).toContainText(boundary[locale]);
+    }
+    // Task D-02 de-box: the hero metric band is a ruled typographic row, not
+    // a framed checkerboard.
+    const heroBand = await page.locator("#hero .forge-hero-metrics").evaluate((band) => {
+      const style = getComputedStyle(band);
+      return { left: style.borderLeftWidth, right: style.borderRightWidth, bottom: style.borderBottomWidth, top: style.borderTopWidth };
+    });
+    expect(heroBand).toEqual({ left: "0px", right: "0px", bottom: "0px", top: "1px" });
 
     // Report layer: Architecture -> Results & negatives -> Limitations.
     expect(await page.locator('[data-project-section="how"], [data-project-section="results"], [data-project-section="limitations"]').evaluateAll(
@@ -346,41 +441,3 @@ test.describe("F7 mobile table grammar — Frontier Forge", () => {
     await expect(page.getByTestId("forge-claim-cards")).toBeHidden();
   });
 });
-
-for (const locale of ["en", "zh"] as const) {
-  test(`${locale} archived Forge controls remain keyboard usable without inference calls`, async ({ page }) => {
-    const calls: string[] = [];
-    page.on("request", request => {
-      if (/\/api\/(triage|forge)/.test(request.url())) calls.push(request.url());
-    });
-    await page.addInitScript(value => localStorage.setItem("portfolio-locale", value), locale);
-    await page.goto(ROUTE, { waitUntil: "networkidle" });
-    await expect(page.locator("[data-forge-input]")).toHaveCount(0);
-    await expect(page.locator("body")).not.toContainText("LIVE TRIAGE");
-    const instrument = page.locator('[data-instrument-variant="full"]');
-    const chips = instrument.locator("[data-forge-chip]");
-    await chips.first().focus();
-    await page.keyboard.press("Enter");
-    await expect(chips.first()).toHaveAttribute("aria-selected", "true");
-    const tabs = instrument.locator(".forge-console-tabs button");
-    await tabs.nth(1).focus();
-    await page.keyboard.press("Enter");
-    await expect(instrument.locator("[data-forge-request-tab]")).toContainText("json.load");
-    await expect(instrument.locator("[data-forge-request-tab]")).not.toContainText("requests.post");
-    const snippet = await instrument.locator("[data-forge-request-tab]").innerText();
-    expect(snippet).toContain("\n");
-    expect(snippet).not.toContain("\\n");
-    const output = execFileSync("python3", ["-c", "import ast, sys; text = sys.stdin.read(); ast.parse(text); exec(compile(text, '<archive-example>', 'exec'))"], {
-      input: snippet,
-      cwd: resolve("public/case-studies/frontier-forge"),
-      encoding: "utf8",
-    });
-    expect(JSON.parse(output).run_id).toContain("phase4_");
-    const railLabels = page.locator('.exhibit-rail-label').filter({ hasText: locale === "zh" ? "历史推理评测" : "Recorded serving" });
-    expect(await railLabels.count()).toBeGreaterThan(0);
-    await tabs.nth(2).focus();
-    await page.keyboard.press("Enter");
-    await expect(instrument.locator("[data-forge-request-tab]")).toContainText("release.json");
-    expect(calls).toEqual([]);
-  });
-}

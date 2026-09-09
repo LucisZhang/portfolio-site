@@ -14,12 +14,15 @@ const finalRepositoryCommits = new Map([
   ["LucisZhang/release-guardian", "bc7e7fdc6125019ceb6c7aa6e8a7af1084e775fc"],
   ["LucisZhang/rag-quality-lab", "6e3d6a2b040cc9fe4acb7dd4a61295405138f296"],
   ["LucisZhang/privacy-preflight", "510454c2393d274168be0d605d938a8abeb7862d"],
-  ["LucisZhang/streaming-reliability-lab", "f323090c36e6b3f84e8cf8e5a1152addedde3410"],
+  ["LucisZhang/exactly-once-drills", "f323090c36e6b3f84e8cf8e5a1152addedde3410"],
   ["LucisZhang/margin-control-tower", "c84559f1f141bc86b728d5a8133b926ad8529273"],
   ["LucisZhang/credit-policy-desk", "bbad7e0dbf997d7fb64caad5ed3c8bf09e74658e"],
   ["LucisZhang/Voice-in-Security", "81a40142d0f79e8bd8f90db150cd4ffbd4c1a1d8"],
+  ["LucisZhang/frontier-forge", "06de6e5c1d026dfce8b59c39a83658289925a55e"],
+  ["LucisZhang/triage-router", "b2734bbcbd75aef1f83b872f31de0212a7926b7f"],
+  ["LucisZhang/crossover-study", "bd8ddb12ccaa99adafa0679cda664fc1fca08caa"],
 ]);
-const siteCommit = "346b8a81cbf9a238081ef179eb622ea8f0614466";
+const siteCommit = "b7a57776c9b9315ed328cbaa65e8be1e5c6d8a1d";
 
 test("generated public knowledge is pinned to final releases and the R2 site revision", () => {
   const snapshot = JSON.parse(readFileSync("src/data/assistant-knowledge.generated.json", "utf8"));
@@ -39,31 +42,31 @@ test("generated public knowledge is pinned to final releases and the R2 site rev
   assert.ok(siteFiles.every((file) => file.commit === siteCommit));
   for (const route of [
     "/",
-    "/ai/frontier-forge",
-    "/ai/privacy-preflight",
-    "/ai/rag-quality-lab",
-    "/ai/release-guardian",
-    "/ai/triage-router",
-    "/analytics/analytics-tandem",
-    "/analytics/credit-policy-desk",
-    "/analytics/margin-control-tower",
-    "/engineering/crossover-study",
-    "/engineering/exactly-once-drills",
+    "/projects/frontier-forge",
+    "/projects/privacy-preflight",
+    "/projects/rag-quality-lab",
+    "/projects/release-guardian",
+    "/projects/triage-router",
+    "/projects/analytics-tandem",
+    "/projects/credit-policy-desk",
+    "/projects/margin-control-tower",
+    "/projects/crossover-study",
+    "/projects/exactly-once-drills",
   ]) {
     assert.ok(snapshot.chunks.some((chunk) => chunk.repository === "LucisZhang/portfolio-site" && chunk.aliases.includes(route)), route);
   }
   for (const [route, sourcePath] of [
     ["/", "src/lib/home-stats.ts"],
     ["/", "src/lib/i18n.ts"],
-    ["/ai/frontier-forge", "src/lib/frontier-project-detail.ts"],
-    ["/ai/release-guardian", "src/components/guardian/GuardianPage.tsx"],
-    ["/ai/release-guardian", "public/case-studies/release-guardian/replay/synthetic-scenarios.json"],
-    ["/ai/rag-quality-lab", "src/components/ragdiff/RagDiffLab.tsx"],
-    ["/ai/privacy-preflight", "src/lib/privacy-localization.ts"],
-    ["/analytics/margin-control-tower", "src/components/margin/MarginDetectionFigure.tsx"],
-    ["/analytics/credit-policy-desk", "src/components/analytics/AnalyticsMethods.tsx"],
-    ["/analytics/credit-policy-desk", "src/components/credit/CreditPolicyFrontier.tsx"],
-    ["/analytics/analytics-tandem", "src/components/CaseStudyBlock.tsx"],
+    ["/projects/frontier-forge", "src/lib/frontier-project-detail.ts"],
+    ["/projects/release-guardian", "src/components/guardian/GuardianPage.tsx"],
+    ["/projects/release-guardian", "public/case-studies/release-guardian/replay/synthetic-scenarios.json"],
+    ["/projects/rag-quality-lab", "src/components/ragdiff/RagDiffLab.tsx"],
+    ["/projects/privacy-preflight", "src/lib/privacy-localization.ts"],
+    ["/projects/margin-control-tower", "src/components/margin/MarginDetectionFigure.tsx"],
+    ["/projects/credit-policy-desk", "src/components/analytics/AnalyticsMethods.tsx"],
+    ["/projects/credit-policy-desk", "src/components/credit/CreditPolicyFrontier.tsx"],
+    ["/projects/analytics-tandem", "src/components/CaseStudyBlock.tsx"],
   ]) {
     assert.ok(snapshot.chunks.some((chunk) => (
       chunk.repository === "LucisZhang/portfolio-site"
@@ -76,9 +79,9 @@ test("generated public knowledge is pinned to final releases and the R2 site rev
     && chunk.content.includes("Analytics Tandem has been split")
   ));
   assert.ok(tandemMigrationChunks.length > 0);
-  assert.ok(tandemMigrationChunks.every((chunk) => chunk.aliases.includes("/analytics/analytics-tandem")));
+  assert.ok(tandemMigrationChunks.every((chunk) => chunk.aliases.includes("/projects/analytics-tandem")));
   assert.ok(tandemMigrationChunks.every((chunk) => !chunk.aliases.some((alias) => (
-    alias.startsWith("/") && alias !== "/analytics/analytics-tandem"
+    alias.startsWith("/") && alias !== "/projects/analytics-tandem"
   ))));
   assert.deepEqual(
     [...new Set(siteFiles.map((file) => file.path).filter((file) => /^docs\/evidence\/digits-[a-z-]+\.md$/u.test(file)))].sort(),
@@ -138,13 +141,20 @@ test("site identity grounding excludes private contact values", () => {
   }
 });
 
+test("generated public knowledge excludes machine-specific workspace paths", () => {
+  const snapshot = JSON.parse(readFileSync("src/data/assistant-knowledge.generated.json", "utf8"));
+  const publicContent = snapshot.chunks.map((chunk) => chunk.content).join("\n");
+  assert.doesNotMatch(publicContent, /\/Users\/[A-Za-z0-9._-]+\//u);
+  assert.doesNotMatch(publicContent, /\/private\/tmp\//u);
+});
+
 test("offline assistant cache fails closed on identity and manifest tampering", () => {
   const result = spawnSync(process.execPath, ["scripts/build-assistant-knowledge.mjs", "--self-test-cache"], {
     cwd: process.cwd(),
     encoding: "utf8",
   });
   assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
-  assert.match(result.stdout, /assistant knowledge cache self-test passed: 52 files, 496 chunks/u);
+  assert.match(result.stdout, /assistant knowledge cache self-test passed: 75 files, 738 chunks/u);
 });
 
 test("generated public knowledge has globally unique chunk IDs", () => {
@@ -230,6 +240,28 @@ test("retrieval handles English and Chinese project questions with pinned GitHub
       assert.doesNotMatch(chunk.citation.url, /\/blob\/main\//u);
     }
   }
+});
+
+test("a question naming a metric prefers repo chunks over site chunks", () => {
+  const result = retrieveAssistantKnowledge("Frontier Forge 的 p95 是多少？");
+  assert.ok(result);
+  const first = result.chunks[0];
+  assert.notEqual(first.repository, "LucisZhang/portfolio-site",
+    "a metric question should surface the pinned repo evidence first");
+});
+
+test("a question naming a specific file prefers repo chunks over site chunks", () => {
+  const result = retrieveAssistantKnowledge("Frontier Forge 的 phase5_gateway_report.md 里写了什么？");
+  assert.ok(result);
+  const first = result.chunks[0];
+  assert.notEqual(first.repository, "LucisZhang/portfolio-site",
+    "a file-naming question should surface the pinned repo evidence first");
+});
+
+test("a plain question about a project still prefers the site page", () => {
+  const result = retrieveAssistantKnowledge("Frontier Forge 是做什么的？");
+  assert.ok(result);
+  assert.equal(result.chunks[0].repository, "LucisZhang/portfolio-site");
 });
 
 test("retrieval refuses unrelated questions and citation mapping accepts only retrieved IDs", () => {

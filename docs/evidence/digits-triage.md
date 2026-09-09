@@ -65,9 +65,9 @@ convention as `ForgeConsole.tsx`'s `SERVING_HARDWARE_LABEL` constant:
 
 | Number | Source (outside this task's registered payloads) | Field |
 | --- | --- | --- |
-| `86,972` | `/Users/hsiangkuochang/nlp-eval-lab/demo/data/calibration.json` | `$.exhibits[0].n` (`label`: "Tier A LogReg — raw probabilities (CAL)", `slice`: `"cal"`) — the calibration-slice size the threshold sweep behind `policies.compact.json` (task 3.0's `a_to_human__full_cal__…` source, registered in `r2-source-map.md` row 11) was fit on |
+| `86,972` | `$SOURCE_ROOT/nlp-eval-lab/demo/data/calibration.json` | `$.exhibits[0].n` (`label`: "Tier A LogReg — raw probabilities (CAL)", `slice`: `"cal"`) — the calibration-slice size the threshold sweep behind `policies.compact.json` (task 3.0's `a_to_human__full_cal__…` source, registered in `r2-source-map.md` row 11) was fit on |
 | `104,443` | same file | `$.exhibits[2].n` (`slice`: `"test_iid"`) — corroborated independently in `frontier.json`, `case_study.json`, and `drift.json`'s own TEST-IID slice counts; this is what per-threshold macro-F1 would need to be computed on the full sweep instead of the 200-sample curated proxy this page actually uses |
-| `2026-08-12` | `/Users/hsiangkuochang/nlp-eval-lab/demo/data/meta.json` `$.headline_router.note` ("Owner decision 2026-08-12") and `drift.json`'s own `$.generated_at` (`2026-08-12T12:21:24.484273Z`) | same evidence-generation batch as the grid |
+| `2026-08-12` | `$SOURCE_ROOT/nlp-eval-lab/demo/data/meta.json` `$.headline_router.note` ("Owner decision 2026-08-12") and `drift.json`'s own `$.generated_at` (`2026-08-12T12:21:24.484273Z`) | same evidence-generation batch as the grid |
 
 ## 02 — Known misroutes table
 
@@ -160,7 +160,7 @@ fetch, or fetches without a progress bar):
 
 These seven files are **gitignored** (`.gitignore`'s new `/public/models/`
 entry) and never enter git — they are copied by hand from
-`/Users/hsiangkuochang/nlp-eval-lab/demo/live/tier_b2/` (the four
+`$SOURCE_ROOT/nlp-eval-lab/demo/live/tier_b2/` (the four
 model/tokenizer/config files) and by `scripts/sync-triage-ort-assets.mjs`
 (the three onnxruntime-web files, wired into `predev`/`prebuild`) into
 `public/models/triage-tier-b2/`. **The release archive does not yet provision
@@ -224,16 +224,13 @@ file, not a truncated/cached stub).
    complaints per 1,000/month that reach a human reviewer
    (`Math.round(escalatePct / 100 * 1000)`), which is the closest concrete,
    non-fabricated translation of the same field. No FTE number is claimed.
-2. **`misrouteCostCny`/`monthlyCostCny` naming vs. disclosed USD basis.**
-   `strategy-cards.json`'s own `copyEn`/`copyZh` templates literally say
-   "CNY {monthlyCostCny}" (frozen task-3.0 content, rendered verbatim per
-   this task's "strategy-card copy comes from the payload" instruction).
-   The page's own disclosure paragraph — required, exact-wording content
-   per this task's brief — states plainly that these are recorded USD
-   sensitivity values, not converted CNY. The two coexist on the page
-   deliberately: the strategy card is rendered as authored by the data
-   task; the disclosure is what corrects the reader's understanding of
-   what the number actually is.
+2. **RESOLVED: legacy CNY field names vs. recorded USD basis.**
+   The frozen task-3.0 payload retains the legacy `misrouteCostCny` and
+   `monthlyCostCny` keys and old card templates for compatibility. The UI
+   now normalizes those keys and templates at the payload boundary, without
+   changing numeric values, and consistently labels both misroute sensitivity
+   and normalized monthly cost as recorded USD values. New internal names use
+   the `Usd` suffix; no currency conversion is claimed or performed.
 3. **Case study/agreement remains out of scope.** `case_study.json` is
    still a `TBD` row in `r2-source-map.md` and has no exhibit on this page
    — drift (originally grouped with it under one deferred note) now has

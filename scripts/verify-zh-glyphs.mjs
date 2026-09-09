@@ -14,8 +14,10 @@
 //
 // Requires `fonttools` on PATH (pip install fonttools).
 import { spawnSync } from "node:child_process";
+import { stat } from "node:fs/promises";
 import path from "node:path";
 import { extractRequiredCodepoints, readCorpusText, repositoryRoot, ZH_ADJACENT_ALLOWLIST } from "./lib/zh-glyph-corpus.mjs";
+import { HOME_ZH_FONT_BYTE_CEILING, HOME_ZH_FONT_PATH, readHomeHeroRequiredCodepoints } from "./lib/zh-home-font.mjs";
 
 const FONT_PATH = path.join(repositoryRoot, "public/fonts/display-serif-zh.woff2");
 
@@ -72,6 +74,24 @@ async function main() {
   }
 
   console.log("PASS: every required codepoint in use is present in the shipped subset.");
+
+  const homeRequired = await readHomeHeroRequiredCodepoints();
+  const homeShipped = readCmapCodepoints(HOME_ZH_FONT_PATH);
+  const homeMissing = Array.from(homeRequired).filter((cp) => !homeShipped.has(cp)).sort((a, b) => a - b);
+  if (homeMissing.length > 0) {
+    const sample = homeMissing.map((cp) => `U+${cp.toString(16).toUpperCase()} (${String.fromCodePoint(cp)})`).join(", ");
+    throw new Error(
+      `Homepage Chinese narrative font is missing ${homeMissing.length} required codepoint(s): ${sample}. `
+      + "Run npm run generate:zh-home-serif-subset.",
+    );
+  }
+  const { size: homeSize } = await stat(HOME_ZH_FONT_PATH);
+  if (homeSize > HOME_ZH_FONT_BYTE_CEILING) {
+    throw new Error(`Homepage Chinese narrative font is ${homeSize} bytes; ceiling is ${HOME_ZH_FONT_BYTE_CEILING}.`);
+  }
+  console.log(
+    `PASS: homepage zh critical subset carries ${homeRequired.size} required codepoints in ${homeSize} bytes (ceiling ${HOME_ZH_FONT_BYTE_CEILING}).`,
+  );
 }
 
 main().catch((error) => {

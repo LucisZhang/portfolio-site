@@ -1,4 +1,4 @@
-import type { RailSpec } from "@/components/exhibition/ExhibitShell";
+import { navigationCopy, projectRailFooter, type RailSpec } from "@/lib/navigation";
 import { getProject } from "@/lib/projects";
 
 // Frontier Forge project-page rail (spec §2.1 "项目页" state, §6.0 template):
@@ -31,15 +31,15 @@ export const forgeRail: RailSpec = {
   wordmark: { lines: ["Frontier", "Forge"], mark: "FF", markBoxed: true },
   copy: frontierForge ? { en: "SFT fine-tuning, taken through to a running vLLM release.", zh: frontierForge.glossZh } : undefined,
   nav: [
-    { id: "exhibit-01", num: "01", label: "Recorded serving", labelZh: "历史推理评测" },
-    { id: "exhibit-02", num: "02", label: "Evidence explorer" },
-    { id: "exhibit-03", num: "03", label: "Training ladder" },
-    { id: "exhibit-04", num: "04", label: "Serving boundary" },
-    { id: "exhibit-05", num: "05", label: "Overload replay" },
-    { id: "exhibit-06", num: "06", label: "Model boundary" },
-    { id: "exhibit-07", num: "07", label: "Source & receipts" },
+    { id: "exhibit-01", num: "01", label: { en: "Recorded serving", zh: "历史推理评测" } },
+    { id: "exhibit-02", num: "02", label: { en: "Evidence explorer", zh: "证据浏览器" } },
+    { id: "exhibit-03", num: "03", label: { en: "Training ladder", zh: "训练阶梯" } },
+    { id: "exhibit-04", num: "04", label: { en: "Serving boundary", zh: "服务边界" } },
+    { id: "exhibit-05", num: "05", label: { en: "Overload replay", zh: "过载回放" } },
+    { id: "exhibit-06", num: "06", label: { en: "Model boundary", zh: "模型边界" } },
+    { id: "exhibit-07", num: "07", label: navigationCopy.sourceReceipts },
   ],
-  footer: [{ label: "← ALL WORK", href: "/" }],
+  footer: projectRailFooter,
   // The page presents archived evaluations and offline replay.
-  stamp: { label: "RECORDED ARTIFACT", tone: "offline" },
+  stamp: { label: navigationCopy.recordedArtifact, tone: "offline" },
 };

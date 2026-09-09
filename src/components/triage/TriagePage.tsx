@@ -1,12 +1,15 @@
 "use client";
 
-import { Finding } from "@/components/exhibition/Finding";
+import { EvidenceDisclosure } from "@/components/exhibition/EvidenceDisclosure";
+import { EvidenceFileLink } from "@/components/exhibition/EvidenceFileLink";
 import { StatGrid } from "@/components/exhibition/StatGrid";
+import { ProjectReport } from "@/components/report/ProjectReport";
 import LocaleDocumentMetadata from "@/components/LocaleDocumentMetadata";
+import ScrollRegion from "@/components/ScrollRegion";
 import { useI18n } from "@/lib/i18n";
 import type { Project } from "@/lib/projects";
 import { siteIdentity } from "@/lib/site-config";
-import { zhWrapNode, zhWrapText } from "@/lib/zh-wrap";
+import { zhGroup, zhWrapDisplay } from "@/lib/zh-wrap";
 import "./triage.css";
 import { DriftChart } from "./DriftChart";
 import { FrontierPareto } from "./FrontierPareto";
@@ -44,10 +47,9 @@ export default function TriagePage({ project }: { project: Project }) {
         title={{ en: `${project.title.en} | ${siteIdentity.name}`, zh: `${project.title.zh} | ${siteIdentity.chineseName}` }}
         description={project.summary}
       />
-
       <section id="hero" data-project-section="hero" className="exhibit triage-hero" data-bg="paper">
         <p className="exhibit-opening-row">
-          <span className="exhibit-eyebrow">COST-ACCURACY CASCADE / OFFLINE REPLAY</span>
+          <span className="exhibit-eyebrow">COST-ACCURACY CASCADE · OFFLINE REPLAY</span>
         </p>
         <div className="triage-hero-grid">
           <div className="triage-hero-copy">
@@ -55,10 +57,10 @@ export default function TriagePage({ project }: { project: Project }) {
               {locale === "en" ? (
                 <>The expensive model<br /><em>was the wrong default.</em></>
               ) : (
-                zhWrapNode(<>贵的模型，<em>本就不该是默认选项。</em></>)
+                zhWrapDisplay(<>贵的模型，<br /><em>{zhGroup("本就不该是", "默认选项。")}</em></>)
               )}
             </h1>
-            {locale === "zh" ? <p className="cn-gloss" lang="zh">{zhWrapText(project.glossZh)}</p> : null}
+            {locale === "zh" ? <p className="cn-gloss" lang="zh">{zhWrapDisplay(project.glossZh)}</p> : null}
             <p className="exhibit-intro">{locale === "en" ? project.summary.en : project.summary.zh}</p>
             <StatGrid items={metricCells} />
           </div>
@@ -74,40 +76,7 @@ export default function TriagePage({ project }: { project: Project }) {
       <DriftChart />
       <SourceReceipts />
 
-      <section data-project-section="how" className="triage-report-section">
-        <h2>{locale === "en" ? "Architecture" : "架构"}</h2>
-        <p>{locale === "en" ? project.role.en : project.role.zh}</p>
-        <ol className="triage-architecture-flow">
-          {project.architecture.map((step, index) => (
-            <li key={step.label.en}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <div>
-                <strong>{locale === "en" ? step.label.en : step.label.zh}</strong>
-                <p>{locale === "en" ? step.detail.en : step.detail.zh}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section data-project-section="results" className="triage-report-section">
-        <h2>{locale === "en" ? "Results & negatives" : "结果与负结果"}</h2>
-        <p className="project-outcome">{locale === "en" ? project.outcome.en : project.outcome.zh}</p>
-        {project.fieldNotes?.map((note) => (
-          <Finding kind="negative" key={note.en}>
-            {locale === "en" ? note.en : note.zh}
-          </Finding>
-        ))}
-      </section>
-
-      <section data-project-section="limitations" className="triage-report-section">
-        <h2>{locale === "en" ? "Limitations" : "局限与边界"}</h2>
-        {project.boundaries.map((boundary) => (
-          <Finding kind="limitation" key={boundary.en}>
-            {locale === "en" ? boundary.en : boundary.zh}
-          </Finding>
-        ))}
-      </section>
+      <ProjectReport project={project} />
     </div>
   );
 }
@@ -118,13 +87,13 @@ function TriageFullInstrument() {
     <section id="exhibit-01" className="exhibit" data-exhibit="01" data-bg="paper" aria-labelledby="exhibit-01-title">
       <p className="exhibit-opening-row">
         <span className="exhibit-number" aria-hidden="true">01</span>
-        <span className="exhibit-eyebrow">MISROUTE COST / CONFIDENCE THRESHOLD / PRECOMPUTED GRID</span>
+        <span className="exhibit-eyebrow">MISROUTE COST · CONFIDENCE THRESHOLD · PRECOMPUTED GRID</span>
       </p>
       <h2 id="exhibit-01-title" className="exhibit-title">
         {locale === "en" ? (
           <>Move the sliders.<br /><em>The strategy rewrites itself.</em></>
         ) : (
-          zhWrapNode(<>拖动滑块，<em>策略当场重写。</em></>)
+          zhWrapDisplay(<>拖动滑块，<br /><em>策略当场重写。</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -140,37 +109,34 @@ function SourceReceipts() {
     <section id="exhibit-05" className="exhibit" data-exhibit="05" data-bg="ink" aria-labelledby="exhibit-05-title">
       <p className="exhibit-opening-row">
         <span className="exhibit-number" aria-hidden="true">05</span>
-        <span className="exhibit-eyebrow">SOURCE / RECEIPTS</span>
+        <span className="exhibit-eyebrow">SOURCE · RECEIPTS</span>
       </p>
       <h2 id="exhibit-05-title" className="exhibit-title">
         {locale === "en" ? (
           <>Every number opens<br /><em>the same file.</em></>
         ) : (
-          zhWrapNode(<>每个数字，<em>都能点开同一份文件。</em></>)
+          zhWrapDisplay(<>每个数字，<br /><em>{zhGroup("都能点开", "同一份文件。")}</em></>)
         )}
       </h2>
       <div className="exhibit-body">
+        <EvidenceDisclosure project="triage">
         <dl className="triage-receipts-dl">
           {Object.entries(TRIAGE_RECEIPTS).map(([key, receipt]) => (
             <div key={key}>
-              <dt><code>{receipt.path}</code></dt>
+              <dt><EvidenceFileLink source={receipt.path} /></dt>
               <dd><code>sha256:{receipt.sha256}</code></dd>
             </div>
           ))}
         </dl>
         <p>
           {locale === "en"
-            ? "The compact payloads above are built from real recorded triage runs by nlp-eval-lab's export_site_payloads.py; the model file is copied on-site and never enters git. docs/evidence/r2-source-map.md pins every path and hash; npm run verify:r2-sources re-checks them on every run."
-            : "以上精简数据均由 nlp-eval-lab 的 export_site_payloads.py 从真实录得的分流运行构建；模型文件另行拷贝到站内，不进入 git。docs/evidence/r2-source-map.md 固定了每个路径与哈希，npm run verify:r2-sources 每次都会复核。"}
+            ? "The compact payloads above are built by Triage Router's export_site_payloads.py from real recorded triage runs; the model file is copied on-site and never enters git. docs/evidence/r2-source-map.md pins every path and hash; npm run verify:r2-sources re-checks them on every run."
+            : "以上精简数据均由 Triage Router 项目的 export_site_payloads.py 从真实录得的分流运行构建；模型文件另行拷贝到站内，不进入 git。docs/evidence/r2-source-map.md 固定了每个路径与哈希，npm run verify:r2-sources 每次都会复核。"}
         </p>
-        <p className="triage-reproduce-command">
+        <ScrollRegion as="p" className="triage-reproduce-command" label={{ en: "Reproduce command", zh: "复现命令" }}>
           <code>{TRIAGE_REPRODUCE_COMMAND}</code>
-        </p>
-        <p className="triage-repo-link">
-          <a href="https://github.com/LucisZhang/triage-router" target="_blank" rel="noreferrer noopener">
-            {locale === "en" ? "GitHub repository" : "GitHub 仓库"}
-          </a>
-        </p>
+        </ScrollRegion>
+        </EvidenceDisclosure>
       </div>
     </section>
   );

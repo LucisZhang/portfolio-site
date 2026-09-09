@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import policiesJson from "../../../public/case-studies/triage-router/policies.compact.json";
 import strategyCardsJson from "../../../public/case-studies/triage-router/strategy-cards.json";
-import { buildPolicyMatrix, cardForThreshold, fillCardTokens, nearestIndex, type PolicyRow, type StrategyCardRange } from "./policyGrid";
+import { buildPolicyMatrix, cardForThreshold, fillCardTokens, nearestIndex, normalizeStrategyCards, type PolicyRowPayload, type StrategyCardRangePayload } from "./policyGrid";
 
 // Shared frontier-curve data + chart internals for the Triage Router page.
 // Both PolicyTerminal (the interactive "market terminal", exhibit 01's full
@@ -12,8 +12,8 @@ import { buildPolicyMatrix, cardForThreshold, fillCardTokens, nearestIndex, type
 // module is the single place that reshapes the grid, derives the default
 // operating point, and does the cost/macro-F1 -> SVG-coordinate math, so
 // neither caller re-derives or forks that logic.
-export const matrix = buildPolicyMatrix((policiesJson as { grid: PolicyRow[] }).grid);
-export const cards = (strategyCardsJson as { ranges: StrategyCardRange[] }).ranges;
+export const matrix = buildPolicyMatrix((policiesJson as { grid: PolicyRowPayload[] }).grid);
+export const cards = normalizeStrategyCards((strategyCardsJson as { ranges: StrategyCardRangePayload[] }).ranges);
 
 export { cardForThreshold, fillCardTokens };
 
@@ -31,33 +31,51 @@ export const CHART_WIDTH = 560;
 export const CHART_HEIGHT = 200;
 export const CHART_PAD = 28;
 
-export function useFrontierGeometry(misrouteIndex: number) {
-  return useMemo(() => {
-    const rows = matrix.rows[misrouteIndex];
-    const costs = rows.map((row) => row.monthlyCostCny);
-    const ciLows = rows.map((row) => row.ci[0]);
-    const ciHighs = rows.map((row) => row.ci[1]);
-    const xMin = Math.min(...costs);
-    const xMax = Math.max(...costs);
-    const yMin = Math.min(...ciLows);
-    const yMax = Math.max(...ciHighs);
-    const xSpan = xMax - xMin || 1;
-    const ySpan = yMax - yMin || 1;
-    const toX = (cost: number) => CHART_PAD + ((cost - xMin) / xSpan) * (CHART_WIDTH - CHART_PAD * 2);
-    const toY = (value: number) => CHART_HEIGHT - CHART_PAD - ((value - yMin) / ySpan) * (CHART_HEIGHT - CHART_PAD * 2);
-    const points = rows.map((row) => ({
-      row,
-      x: toX(row.monthlyCostCny),
-      y: toY(row.macroF1),
-      ciTopY: toY(row.ci[1]),
-      ciBottomY: toY(row.ci[0]),
-    }));
-    return { points, toX, toY };
-  }, [misrouteIndex]);
+function geometryForIndex(misrouteIndex: number) {
+  const rows = matrix.rows[misrouteIndex];
+  const costs = rows.map((row) => row.monthlyCostUsd);
+  const ciLows = rows.map((row) => row.ci[0]);
+  const ciHighs = rows.map((row) => row.ci[1]);
+  const xMin = Math.min(...costs);
+  const xMax = Math.max(...costs);
+  const yMin = Math.min(...ciLows);
+  const yMax = Math.max(...ciHighs);
+  const xSpan = xMax - xMin || 1;
+  const ySpan = yMax - yMin || 1;
+  const toX = (cost: number) => CHART_PAD + ((cost - xMin) / xSpan) * (CHART_WIDTH - CHART_PAD * 2);
+  const toY = (value: number) => CHART_HEIGHT - CHART_PAD - ((value - yMin) / ySpan) * (CHART_HEIGHT - CHART_PAD * 2);
+  return rows.map((row) => ({
+    row,
+    x: toX(row.monthlyCostUsd),
+    y: toY(row.macroF1),
+    ciTopY: toY(row.ci[1]),
+    ciBottomY: toY(row.ci[0]),
+  }));
 }
 
-export function FrontierChart({ misrouteIndex, thresholdIndex }: { misrouteIndex: number; thresholdIndex: number }) {
-  const { points } = useFrontierGeometry(misrouteIndex);
+export function useFrontierGeometry(misroutePosition: number) {
+  return useMemo(() => {
+    const clamped = Math.max(0, Math.min(matrix.misrouteCosts.length - 1, misroutePosition));
+    const lowerIndex = Math.floor(clamped);
+    const upperIndex = Math.ceil(clamped);
+    const progress = clamped - lowerIndex;
+    const lower = geometryForIndex(lowerIndex);
+    const upper = geometryForIndex(upperIndex);
+    const displayRows = matrix.rows[Math.round(clamped)];
+    const lerp = (from: number, to: number) => from + (to - from) * progress;
+    const points = lower.map((point, index) => ({
+      row: displayRows[index],
+      x: lerp(point.x, upper[index].x),
+      y: lerp(point.y, upper[index].y),
+      ciTopY: lerp(point.ciTopY, upper[index].ciTopY),
+      ciBottomY: lerp(point.ciBottomY, upper[index].ciBottomY),
+    }));
+    return { points };
+  }, [misroutePosition]);
+}
+
+export function FrontierChart({ misroutePosition, thresholdIndex }: { misroutePosition: number; thresholdIndex: number }) {
+  const { points } = useFrontierGeometry(misroutePosition);
   const current = points[thresholdIndex];
   const path = points.map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(" ");
 

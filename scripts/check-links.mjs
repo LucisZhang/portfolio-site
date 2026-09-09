@@ -14,7 +14,10 @@ function option(name, fallback = "") {
 const baseUrl = new URL(option("--url", process.env.PORTFOLIO_URL || "http://127.0.0.1:4173"));
 const vercelShareToken = process.env.VERCEL_SHARE_TOKEN || "";
 const output = option("--output");
-const routeQueue = ["/", "/analytics/analytics-tandem"];
+// The tandem compatibility page is seeded explicitly: it is reachable from
+// the home archive shelf, but it is noindex and absent from the sitemap, so a
+// crawl that only followed indexed surfaces would skip it.
+const routeQueue = ["/", "/projects/analytics-tandem"];
 const visitedRoutes = new Set();
 const internalTargets = new Map();
 const externalTargets = new Set();
@@ -162,7 +165,7 @@ try {
   await browser.close();
 }
 
-if (!visitedRoutes.has("/analytics/analytics-tandem")) addFinding("error", "legacy route", "/analytics/analytics-tandem", "Legacy route was not checked.");
+if (!visitedRoutes.has("/projects/analytics-tandem")) addFinding("error", "legacy route", "/projects/analytics-tandem", "Legacy route was not checked.");
 
 const report = {
   generatedAt: new Date().toISOString(),

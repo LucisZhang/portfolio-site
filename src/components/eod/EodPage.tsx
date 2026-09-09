@@ -1,10 +1,14 @@
 "use client";
 
+import { EvidenceDisclosure } from "@/components/exhibition/EvidenceDisclosure";
+import { EvidenceFileLink } from "@/components/exhibition/EvidenceFileLink";
+
 import { Finding } from "@/components/exhibition/Finding";
+import { ProjectReport } from "@/components/report/ProjectReport";
 import LocaleDocumentMetadata from "@/components/LocaleDocumentMetadata";
-import OptionalMedia from "@/components/OptionalMedia";
+import ScrollRegion from "@/components/ScrollRegion";
 import { useI18n } from "@/lib/i18n";
-import { zhWrapNode, zhWrapText } from "@/lib/zh-wrap";
+import { zhGroup, zhWrapDisplay, zhWrapText } from "@/lib/zh-wrap";
 import type { Project } from "@/lib/projects";
 import { siteIdentity } from "@/lib/site-config";
 import brokerParityJson from "../../../public/case-studies/exactly-once-drills/results/broker_parity.json";
@@ -23,21 +27,58 @@ const brokerParity = brokerParityJson as {
 const checkpointMetrics = checkpointMetricsJson as {
   summary: {
     baseline: { max_checkpoint_duration_ms: number };
-    under_backpressure: { max_checkpoint_duration_ms: number; max_iceberg_commit_lag_events: number };
+    under_backpressure: { max_checkpoint_duration_ms: number; max_iceberg_commit_lag_events: number; max_backpressure_indicator: number };
     final: { checkpoint_failure_count: number; iceberg_commit_lag_events: number };
     passed: boolean;
   };
   run_id: string;
+  time_series: Array<{
+    sample_index: number;
+    elapsed_ms: number;
+    phase: string;
+    checkpoint: {
+      duration_ms: number;
+      alignment_time_ms: number;
+      latest_completed_id: number;
+    };
+    backpressure: { indicator: number };
+    iceberg_commit_lag: { lag_events: number };
+  }>;
 };
 
-// Exactly-Once Drills — the "fault chessboard" standard-scroll rebuild
-// (spec §6.5, task 2.3). Hero -> instrument full (01) -> verification
-// proposition (02) -> dual-path parity (03) -> checkpoint pressure (04) ->
-// SOURCE/RECEIPTS (05) -> report layer. Every number below is read from
-// public/case-studies/exactly-once-drills/* or the generated receipts file
-// at import time — see docs/evidence/digits-eod.md.
+const PRESSURE_WIDTH = 960;
+const PRESSURE_HEIGHT = 300;
+const PRESSURE_LEFT = 74;
+const PRESSURE_RIGHT = 28;
+const DURATION_TOP = 32;
+const DURATION_BOTTOM = 126;
+const LAG_TOP = 158;
+const LAG_BOTTOM = 226;
+
+function pressureX(index: number, sampleCount: number) {
+  return PRESSURE_LEFT + (index / Math.max(1, sampleCount - 1)) * (PRESSURE_WIDTH - PRESSURE_LEFT - PRESSURE_RIGHT);
+}
+
+function durationY(durationMs: number, maximumDurationMs: number) {
+  const minLog = 1;
+  const maxLog = Math.log10(Math.max(100, maximumDurationMs * 1.25));
+  const normalized = (Math.log10(Math.max(10, durationMs)) - minLog) / (maxLog - minLog);
+  return DURATION_BOTTOM - normalized * (DURATION_BOTTOM - DURATION_TOP);
+}
+
+function lagY(lagEvents: number, maximumLagEvents: number) {
+  return LAG_BOTTOM - (lagEvents / Math.max(1, maximumLagEvents)) * (LAG_BOTTOM - LAG_TOP);
+}
+
+function stepPath(points: Array<{ x: number; y: number }>) {
+  if (!points.length) return "";
+  return points.slice(1).reduce((path, point) => `${path} H ${point.x.toFixed(1)} V ${point.y.toFixed(1)}`, `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`);
+}
+
+// Exactly-Once Drills: duty log -> verification proposition -> dual-path
+// parity -> recorded checkpoint trace -> sources/receipts -> report. Every
+// displayed measurement is read from committed case-study data at import.
 export default function EodPage({ project }: { project: Project }) {
-  const { locale } = useI18n();
 
   return (
     <div className="eod-page">
@@ -45,52 +86,14 @@ export default function EodPage({ project }: { project: Project }) {
         title={{ en: `${project.title.en} | ${siteIdentity.name}`, zh: `${project.title.zh} | ${siteIdentity.chineseName}` }}
         description={project.summary}
       />
-
-      {/* Task F9: the hero and the old exhibit-01 fault chessboard merge
-          into one first screen, the Duty Logbook (EodLog.tsx) — see
-          output/design-align-r2/concept-a-logbook.html for the approved
-          mock this replaces DrillBoard + PipelineMap + ThroughputStrip +
-          Scrubber with. */}
+      {/* The Duty Logbook is the first project surface. */}
       <EodLog glossZh={project.glossZh} />
       <VerificationProposition />
       <DualPathParity />
       <CheckpointPressure />
       <SourceReceipts />
 
-      <section data-project-section="how" className="eod-report-section">
-        <h2>{locale === "en" ? "Architecture" : "架构"}</h2>
-        <p>{locale === "en" ? project.role?.en : project.role?.zh}</p>
-        <ol className="eod-architecture-flow">
-          {project.architecture.map((step, index) => (
-            <li key={step.label.en}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <div>
-                <strong>{locale === "en" ? step.label.en : step.label.zh}</strong>
-                <p>{locale === "en" ? step.detail.en : step.detail.zh}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <section data-project-section="results" className="eod-report-section">
-        <h2>{locale === "en" ? "Results & negatives" : "结果与负结果"}</h2>
-        <p className="project-outcome">{locale === "en" ? project.outcome?.en : project.outcome?.zh}</p>
-        {project.fieldNotes?.map((note) => (
-          <Finding kind="negative" key={note.en}>
-            {locale === "en" ? note.en : note.zh}
-          </Finding>
-        ))}
-      </section>
-
-      <section data-project-section="limitations" className="eod-report-section">
-        <h2>{locale === "en" ? "Limitations" : "局限与边界"}</h2>
-        {project.boundaries.map((boundary) => (
-          <Finding kind="limitation" key={boundary.en}>
-            {locale === "en" ? boundary.en : boundary.zh}
-          </Finding>
-        ))}
-      </section>
+      <ProjectReport project={project} />
     </div>
   );
 }
@@ -107,14 +110,14 @@ function VerificationProposition() {
         {locale === "en" ? (
           <>Exactly-once ends<br /><em>at reconciliation.</em></>
         ) : (
-          zhWrapNode(<>Exactly-once 的终点，<em>是对账。</em></>)
+          zhWrapDisplay(<>Exactly-once 的终点，<br /><em>是对账。</em></>)
         )}
       </h2>
       <div className="exhibit-body">
         <p className="eod-proposition" data-eod-proposition>
           ∀ drill ∈ {eodReceiptsData.drillCount} faults: iceberg_snapshot(path_A) ≡ iceberg_snapshot(path_B)
         </p>
-        <div className="eod-pass-table" role="table" aria-label="Per-drill verification verdict" data-eod-pass-table>
+        <div className="eod-pass-table" role="table" aria-label={locale === "en" ? "Per-drill verification verdict" : "逐项演练验证结论"} data-eod-pass-table>
           <div className="eod-pass-row eod-pass-head" role="row">
             <span role="columnheader">drill</span>
             <span role="columnheader">diff</span>
@@ -149,13 +152,13 @@ function DualPathParity() {
     <section id="exhibit-03" className="exhibit" data-exhibit="03" data-bg="paper-alt" aria-labelledby="exhibit-03-title">
       <p className="exhibit-opening-row">
         <span className="exhibit-number" aria-hidden="true">03</span>
-        <span className="exhibit-eyebrow">PATH A / PATH B · {brokerParity.scenario.events} EVENTS</span>
+        <span className="exhibit-eyebrow">PATH A · PATH B · {brokerParity.scenario.events} EVENTS</span>
       </p>
       <h2 id="exhibit-03-title" className="exhibit-title">
         {locale === "en" ? (
           <>Two delivery paths<br /><em>must land on the same state.</em></>
         ) : (
-          zhWrapNode(<>两条投递路径，<em>必须落到同一个状态。</em></>)
+          zhWrapDisplay(<>两条投递路径，<br /><em>{zhGroup("必须落到", "同一个状态。")}</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -186,6 +189,26 @@ function DualPathParity() {
 function CheckpointPressure() {
   const { locale } = useI18n();
   const s = checkpointMetrics.summary;
+  const samples = checkpointMetrics.time_series;
+  const maximumDuration = s.under_backpressure.max_checkpoint_duration_ms;
+  const maximumLag = s.under_backpressure.max_iceberg_commit_lag_events;
+  const durationPoints = samples.map((sample, index) => ({ x: pressureX(index, samples.length), y: durationY(sample.checkpoint.duration_ms, maximumDuration) }));
+  const lagPoints = samples.map((sample, index) => ({ x: pressureX(index, samples.length), y: lagY(sample.iceberg_commit_lag.lag_events, maximumLag) }));
+  const lagArea = `${stepPath(lagPoints)} L ${lagPoints.at(-1)!.x.toFixed(1)} ${LAG_BOTTOM} L ${lagPoints[0].x.toFixed(1)} ${LAG_BOTTOM} Z`;
+  const phaseBands = samples.reduce<Array<{ phase: string; start: number; end: number }>>((bands, sample, index) => {
+    const current = bands.at(-1);
+    if (current?.phase === sample.phase) current.end = index;
+    else bands.push({ phase: sample.phase, start: index, end: index });
+    return bands;
+  }, []);
+  const baselineIndex = Math.max(0, samples.findIndex((sample) => sample.checkpoint.duration_ms === s.baseline.max_checkpoint_duration_ms));
+  const spikeIndex = Math.max(0, samples.findIndex((sample) => sample.checkpoint.duration_ms === maximumDuration));
+  const lagPeakIndex = Math.max(0, samples.findIndex((sample) => sample.iceberg_commit_lag.lag_events === maximumLag));
+  const lagRecoveryCandidate = samples.findIndex((sample, index) => index > lagPeakIndex && sample.iceberg_commit_lag.lag_events === s.final.iceberg_commit_lag_events);
+  const lagRecoveryIndex = lagRecoveryCandidate >= 0 ? lagRecoveryCandidate : samples.length - 1;
+  const indicatorIndex = Math.max(0, samples.findIndex((sample) => sample.backpressure.indicator === s.under_backpressure.max_backpressure_indicator));
+  const phaseLabelsZh: Record<string, string> = { baseline: "基线", backpressure: "背压", recovery: "恢复" };
+  const phaseLabel = (phase: string) => locale === "en" ? phase : (phaseLabelsZh[phase] ?? phase);
   return (
     <section id="exhibit-04" className="exhibit" data-exhibit="04" data-bg="white" aria-labelledby="exhibit-04-title">
       <p className="exhibit-opening-row">
@@ -196,10 +219,82 @@ function CheckpointPressure() {
         {locale === "en" ? (
           <>Recovery has<br /><em>ten different failure shapes.</em></>
         ) : (
-          zhWrapNode(<>十种故障，<em>十种不同的恢复形状。</em></>)
+          zhWrapDisplay(<>十种故障，<br /><em>{zhGroup("十种不同的", "恢复形状。")}</em></>)
         )}
       </h2>
       <div className="exhibit-body">
+        <figure className="eod-pressure-trace" data-eod-pressure-trace>
+          <svg
+            viewBox={`0 0 ${PRESSURE_WIDTH} ${PRESSURE_HEIGHT}`}
+            role="img"
+            aria-label={locale === "en" ? `Recorded checkpoint duration, Iceberg commit lag and backpressure across ${samples.length} samples` : `${samples.length} 个采样点的检查点时长、Iceberg 提交延迟与背压记录`}
+          >
+            <title>{locale === "en" ? "Checkpoint pressure recorded-run trace" : "检查点压力运行轨迹"}</title>
+
+            {[10, 100, 1_000, 10_000].map((tick) => {
+              const y = durationY(tick, maximumDuration);
+              return (
+                <g key={tick}>
+                  <line className="eod-pressure-gridline" x1={PRESSURE_LEFT} x2={PRESSURE_WIDTH - PRESSURE_RIGHT} y1={y} y2={y} />
+                  <text className="eod-pressure-axis-label" x={PRESSURE_LEFT - 10} y={y + 3} textAnchor="end">{tick >= 1_000 ? `${tick / 1_000}k` : tick} ms</text>
+                </g>
+              );
+            })}
+            <text className="eod-pressure-lane-label" x={PRESSURE_LEFT} y={22}>{locale === "en" ? "CHECKPOINT DURATION · LOG SCALE" : "检查点时长 · 对数刻度"}</text>
+            {samples.map((sample, index) => (
+              <text key={`checkpoint-${sample.sample_index}`} className="eod-pressure-checkpoint-id" x={pressureX(index, samples.length)} y={138} textAnchor="middle">
+                ckpt {sample.checkpoint.latest_completed_id}
+              </text>
+            ))}
+            <path className="eod-pressure-duration-line" d={stepPath(durationPoints)} />
+            {durationPoints.map((point, index) => <circle key={`duration-${samples[index].sample_index}`} className="eod-pressure-duration-dot" cx={point.x} cy={point.y} r={3.5} />)}
+            <text className="eod-pressure-callout" x={durationPoints[baselineIndex].x + 8} y={durationPoints[baselineIndex].y - 8}>{s.baseline.max_checkpoint_duration_ms.toLocaleString("en-US")} ms</text>
+            <line className="eod-pressure-spike" x1={durationPoints[spikeIndex].x} x2={durationPoints[spikeIndex].x} y1={DURATION_TOP} y2={LAG_BOTTOM} />
+            <text className="eod-pressure-spike-label" x={durationPoints[spikeIndex].x + 8} y={DURATION_TOP + 12}>{locale === "en" ? "checkpoint" : "检查点"} {samples[spikeIndex].checkpoint.latest_completed_id}</text>
+            <text className="eod-pressure-callout" x={durationPoints[spikeIndex].x} y={durationPoints[spikeIndex].y - 9} textAnchor="middle">{maximumDuration.toLocaleString("en-US")} ms</text>
+
+            {[0, maximumLag / 2, maximumLag].map((tick) => {
+              const y = lagY(tick, maximumLag);
+              return (
+                <g key={tick}>
+                  <line className="eod-pressure-gridline" x1={PRESSURE_LEFT} x2={PRESSURE_WIDTH - PRESSURE_RIGHT} y1={y} y2={y} />
+                  <text className="eod-pressure-axis-label" x={PRESSURE_LEFT - 10} y={y + 3} textAnchor="end">{tick}</text>
+                </g>
+              );
+            })}
+            <text className="eod-pressure-lane-label" x={PRESSURE_LEFT} y={LAG_TOP - 10}>{locale === "en" ? "ICEBERG COMMIT LAG · EVENTS" : "ICEBERG 提交延迟 · 事件数"}</text>
+            <path className="eod-pressure-lag-area" d={lagArea} />
+            <path className="eod-pressure-lag-line" d={stepPath(lagPoints)} />
+            <text className="eod-pressure-callout" x={lagPoints[lagPeakIndex].x + 7} y={lagPoints[lagPeakIndex].y - 8}>{maximumLag.toLocaleString("en-US")}</text>
+            <text className="eod-pressure-callout" x={lagPoints[lagRecoveryIndex].x + 7} y={lagPoints[lagRecoveryIndex].y - 8}>{s.final.iceberg_commit_lag_events.toLocaleString("en-US")}</text>
+
+            <line className="eod-pressure-indicator-base" x1={PRESSURE_LEFT} x2={PRESSURE_WIDTH - PRESSURE_RIGHT} y1={256} y2={256} />
+            {samples.map((sample, index) => {
+              const x = pressureX(index, samples.length);
+              const height = Math.max(1, sample.backpressure.indicator * 18);
+              return <line key={`bp-${sample.sample_index}`} className="eod-pressure-indicator" x1={x} x2={x} y1={256} y2={256 - height} />;
+            })}
+            <text className="eod-pressure-axis-label" x={PRESSURE_LEFT} y={270}>{locale === "en" ? "BACKPRESSURE INDICATOR" : "背压指标"}</text>
+            <text className="eod-pressure-callout" x={pressureX(indicatorIndex, samples.length)} y={244} textAnchor="middle">{s.under_backpressure.max_backpressure_indicator.toFixed(3)}</text>
+
+            {phaseBands.map((band) => {
+              const start = pressureX(band.start, samples.length);
+              const end = pressureX(band.end, samples.length);
+              return (
+                <g key={band.phase}>
+                  <line className="eod-pressure-phase-line" x1={start} x2={end} y1={282} y2={282} />
+                  <text className="eod-pressure-phase-label" x={(start + end) / 2} y={296} textAnchor="middle">{phaseLabel(band.phase)}</text>
+                </g>
+              );
+            })}
+          </svg>
+          <figcaption>
+            {locale === "en"
+              ? `${samples.length} recorded samples show the checkpoint spike, commit-lag backlog and recovery in one shared timeline.`
+              : `${samples.length} 个已记录采样点，把检查点尖峰、提交积压与恢复放在同一条时间线上。`}
+          </figcaption>
+        </figure>
+
         <div className="eod-pressure-evidence" data-eod-pressure>
           <div>
             <span>{locale === "en" ? "Maximum checkpoint duration" : "最大检查点时长"}</span>
@@ -217,15 +312,32 @@ function CheckpointPressure() {
             <small>{locale === "en" ? "captured in the run record" : "已写入运行记录"}</small>
           </div>
         </div>
-        <OptionalMedia
-          candidates={[
-            {
-              src: { en: "/case-studies/exactly-once-drills/media/phase-2.2-small-file-rewrite.svg", zh: "/case-studies/exactly-once-drills/media/phase-2.2-small-file-rewrite-zh.svg" },
-              alt: { en: "Historical Iceberg small-file rewrite evidence", zh: "历史 Iceberg 小文件重写证据" },
-              caption: { en: "The maintenance view shows how Iceberg data files were compacted while preserving table state.", zh: "维护视图展示 Iceberg 数据文件如何在保持表状态的同时完成合并压缩。" },
-            },
-          ]}
-        />
+        <ScrollRegion className="eod-pressure-table-scroll" label={{ en: "Recorded checkpoint samples", zh: "检查点采样记录" }}>
+          <table className="eod-pressure-table" data-eod-pressure-table>
+            <thead>
+              <tr>
+                <th>{locale === "en" ? "Sample" : "采样"}</th>
+                <th>{locale === "en" ? "Phase" : "阶段"}</th>
+                <th>{locale === "en" ? "Checkpoint" : "检查点"}</th>
+                <th>{locale === "en" ? "Duration" : "时长"}</th>
+                <th>{locale === "en" ? "Commit lag" : "提交延迟"}</th>
+                <th>{locale === "en" ? "Backpressure" : "背压"}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {samples.map((sample) => (
+                <tr key={sample.sample_index}>
+                  <td>{sample.sample_index}</td>
+                  <td>{phaseLabel(sample.phase)}</td>
+                  <td>{sample.checkpoint.latest_completed_id}</td>
+                  <td>{sample.checkpoint.duration_ms.toLocaleString("en-US")} ms</td>
+                  <td>{sample.iceberg_commit_lag.lag_events}</td>
+                  <td>{sample.backpressure.indicator.toFixed(3)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </ScrollRegion>
       </div>
     </section>
   );
@@ -243,16 +355,17 @@ function SourceReceipts() {
         {locale === "en" ? (
           <>Every drill opens<br /><em>the same raw file.</em></>
         ) : (
-          zhWrapNode(<>每场演练，<em>都能打开同一份原始记录。</em></>)
+          zhWrapDisplay(<>每场演练，<br /><em>{zhGroup("都能打开同一份", "原始记录。")}</em></>)
         )}
       </h2>
       <div className="exhibit-body">
+        <EvidenceDisclosure project="eod">
         <dl className="eod-receipts-dl">
-          <dt>index.summary.json</dt>
+          <dt><EvidenceFileLink source="public/case-studies/exactly-once-drills/index.summary.json">index.summary.json</EvidenceFileLink></dt>
           <dd><code>sha256:{eodReceiptsData.summary.sha256}</code></dd>
-          <dt>broker_slo.json</dt>
+          <dt><EvidenceFileLink source="public/case-studies/exactly-once-drills/results/broker_slo.json">broker_slo.json</EvidenceFileLink></dt>
           <dd><code>sha256:{eodReceiptsData.brokerSlo.sha256}</code></dd>
-          <dt>{locale === "en" ? "Result manifest" : "结果清单"}</dt>
+          <dt><EvidenceFileLink source="public/case-studies/exactly-once-drills/results/manifest.json">{locale === "en" ? "Result manifest" : "结果清单"}</EvidenceFileLink></dt>
           <dd><code>sha256:{eodReceiptsData.manifest.sha256}</code></dd>
           <dt>{locale === "en" ? "Generated" : "生成时间"}</dt>
           <dd>{eodReceiptsData.generatedAt}</dd>
@@ -267,11 +380,7 @@ function SourceReceipts() {
             ? "This page proves that these ten fault classes recover with zero snapshot diff. It does not prove that no other fault class exists, or that every possible failure in a MySQL → Kafka → Flink → Iceberg pipeline has been drilled."
             : "这页证明的是：这十类故障能够零差异恢复。它不能证明不存在其他故障类别，也不能证明 MySQL → Kafka → Flink → Iceberg 这条链路上所有可能的失败都已经被演练过。"}
         </Finding>
-        <p className="eod-repo-link">
-          <a href="https://github.com/LucisZhang/exactly-once-drills" target="_blank" rel="noreferrer noopener">
-            {locale === "en" ? "GitHub repository" : "GitHub 仓库"}
-          </a>
-        </p>
+        </EvidenceDisclosure>
       </div>
     </section>
   );

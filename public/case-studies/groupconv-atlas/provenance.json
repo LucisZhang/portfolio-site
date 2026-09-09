@@ -1,0 +1,27 @@
+{
+  "evidence_class": "measured_derived_separate_sessions",
+  "session": "RTX4090-20260908-vast-03 and historical RTX4090D-20260908",
+  "source": "sanitized GroupConv Atlas public candidate",
+  "files": {
+    "atlas.json": "ba505546a2568d8251a19b7f549fe66197f8ccc9428ea126f74b7c8a60a33d27",
+    "rtx4090-atlas.json": "098a722a9cc72563f75d6a285e4953b6c57e972432b9a86ef4873585c7da79cd",
+    "current-evidence.md": "c13925190954b6be27139f3fb83f36983114c195e06dd0022e07a200d8f8d961",
+    "rtx4090-shapes.json": "904644af9daa5ea9bb5e9c32a53b24f1981618f9bc8baf14957d17f684a0ba18",
+    "map-details.json": "b3e2358b855add84420521efde20e2ec7402ae60b6b8b4cea2466fa8d49863a4"
+  },
+  "regeneration": "scripts/generate-groupconv-summary.mjs",
+  "license": "CC-BY-4.0 for data and figures; project code MIT. Owner authorized 8 September 2026.",
+  "limits": [
+    "Separate RTX 4090 and historical RTX 4090 D environments",
+    "Graph events and synchronized eager API remain separate",
+    "No whole-model speedup or accuracy claim",
+    "Roofline NOT_ASSESSED; sustainable peak not established"
+  ],
+  "sessions": {
+    "atlas.json": "Historical RTX 4090 D: five batches, descriptive",
+    "rtx4090-atlas.json": "RTX 4090 session-20260908-vast-03: ten batches; paired bootstrap",
+    "rtx4090-shapes.json": "RTX 4090 session-20260908-vast-03: 80 shape geometries",
+    "map-details.json": "Derived from current RTX 4090 comparisons; omits batch arrays; retains ratio, CI and classification"
+  },
+  "geometry_source": "RTX4090 session-20260908-vast-03 complete-evidence/results/atlas-confirmation/atlas/shapes: shape geometry only, exact analysis binding.shapes closure"
+}

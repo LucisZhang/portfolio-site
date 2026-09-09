@@ -7,7 +7,8 @@ import { prefetchPresetAnswers } from "@/lib/ask-preset-answers";
 import { useI18n } from "@/lib/i18n";
 import { getTrack, projects } from "@/lib/projects";
 import { useAssistantConversation } from "@/lib/use-assistant-conversation";
-import { zhWrapText } from "@/lib/zh-wrap";
+import ProjectMentionText from "./ProjectMentionText";
+import EvidenceMarker from "./EvidenceMarker";
 import AssistantRichAnswer from "./AssistantRichAnswer";
 import AssistantSourcesIndex from "./AssistantSourcesIndex";
 import styles from "./AssistantWidget.module.css";
@@ -18,7 +19,7 @@ const copy = {
   en: {
     eyebrow: "AI portfolio guide",
     title: "Ask about Xiangguo",
-    intro: "Ask about Xiangguo Zhang's background, projects, strengths, working style, or fit for a role.",
+    intro: "Start with a question below, or write your own.",
     placeholder: "Why is Xiangguo a strong Applied AI candidate?",
     send: "Send",
     sending: "Thinking",
@@ -29,12 +30,12 @@ const copy = {
     disclosure: "Your question is sent only to a zero-data-retention external AI service. Do not enter credentials or private contact details.",
     user: "You",
     assistant: "Portfolio guide",
-    presetLabel: "PRESET · authored answer · cited · no model call",
+    presetLabel: "Preset answer",
   },
   zh: {
     eyebrow: "AI 作品集向导",
     title: "询问作品集",
-    intro: "可以询问章向国的背景、项目、优势、工作方式，或与某个岗位的匹配度等问题。",
+    intro: "从下面的问题开始，也可以直接提问。",
     placeholder: "为什么章向国适合 AI 应用岗位？",
     send: "发送",
     sending: "正在思考",
@@ -45,17 +46,27 @@ const copy = {
     disclosure: "你的问题仅会发送到采用零数据保留策略的外部 AI 服务。请勿输入凭据或私人联系方式。",
     user: "你",
     assistant: "作品集向导",
-    presetLabel: "预置回答 · 附引用 · 未调用模型",
+    presetLabel: "预置回答",
   },
 } as const;
 
 function contextualCopy(pathname: string, locale: "en" | "zh", defaults: typeof copy.en | typeof copy.zh) {
   const segments = pathname.split("/").filter(Boolean);
   const prompts = getRouteQuestions(pathname, locale);
-  const project = segments.length >= 2 ? projects.find((item) => item.track === segments[0] && item.slug === segments[1]) : undefined;
+  // Project pages are served flat at /projects/<slug> (Task A2), so the slug
+  // is the second segment and the first is the literal "projects" -- matching
+  // on a track segment here would silently stop resolving every project page.
+  const project = segments[0] === "projects" && segments[1] ? projects.find((item) => item.slug === segments[1]) : undefined;
   if (project) {
-    const title = project.title[locale];
-    return { placeholder: locale === "en" ? `Ask how ${title} demonstrates Xiangguo's strengths…` : `询问${title}如何体现章向国的优势……`, prompts };
+    const title = project.navigationLabel?.[locale] ?? project.title[locale];
+    return {
+      placeholder: locale === "en"
+        ? `Ask how ${title} demonstrates Xiangguo's strengths…`
+        : project.navigationLabel
+          ? `询问 ${title} 如何体现章向国的优势……`
+          : `询问${title}如何体现章向国的优势……`,
+      prompts,
+    };
   }
   const track = segments.length === 1 ? getTrack(segments[0]) : undefined;
   if (track) {
@@ -150,7 +161,7 @@ export default function AssistantWidget({ onClose, initialPrompt }: { onClose: (
       </header>
 
       <div className={styles.log} ref={logRef} role="log" aria-live="polite" aria-relevant="additions">
-        <div className={styles.intro}>{labels.intro}</div>
+        {messages.length === 0 ? <div className={styles.intro}>{labels.intro}</div> : null}
         {messages.map((message) => (
           <article key={message.id} className={message.role === "user" ? styles.userMessage : styles.assistantMessage}>
             <strong>{message.role === "user" ? labels.user : labels.assistant}</strong>
@@ -160,16 +171,15 @@ export default function AssistantWidget({ onClose, initialPrompt }: { onClose: (
                 superscripts into the citation index below. */}
             {message.role === "assistant" && message.presetSegments ? (
               <>
-                <p className={styles.presetTag}>{labels.presetLabel}</p>
-                <p>
-                  {message.presetSegments.map((segment, index) => (
-                    <span key={segment.ref}>
-                      {index > 0 ? " " : null}
-                      <em>{locale === "zh" ? zhWrapText(segment.text) : segment.text}</em>
-                      <sup>{segment.ref}</sup>
-                    </span>
+                <div className={styles.presetAnswer}>
+                  {message.presetSegments.map((segment) => (
+                    <p className={styles.presetSegment} key={segment.ref}>
+                      <em><ProjectMentionText text={segment.text} locale={locale} /></em>
+                      <EvidenceMarker refNumber={segment.ref} locale={locale} />
+                    </p>
                   ))}
-                </p>
+                </div>
+                <p className={styles.presetTag}>{labels.presetLabel}</p>
               </>
             ) : message.role === "assistant"
               ? message.blocks
@@ -177,7 +187,7 @@ export default function AssistantWidget({ onClose, initialPrompt }: { onClose: (
                 : <p>{message.content}</p>
               : <p>{message.content}</p>}
             {message.role === "assistant" && message.sources?.length ? (
-              <AssistantSourcesIndex citations={message.sources} locale={locale} variant="compact" />
+              <AssistantSourcesIndex citations={message.sources} question={message.question} locale={locale} variant="compact" />
             ) : null}
             {message.role === "assistant" && message.retryable ? (
               <button className={styles.retry} type="button" onClick={() => retry(message)} disabled={busy}>{labels.retry}</button>
@@ -216,7 +226,7 @@ export default function AssistantWidget({ onClose, initialPrompt }: { onClose: (
           ref={inputRef}
           value={draft}
           maxLength={MAX_INPUT_CHARACTERS}
-          rows={3}
+          rows={2}
           placeholder={context.placeholder}
           disabled={busy}
           onChange={(event) => setDraft(event.target.value)}

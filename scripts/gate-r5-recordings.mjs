@@ -162,7 +162,7 @@ async function captureRecording(browser, { url, viewport, outName, setup, run })
 // toggle (aria-pressed + data-branch/data-chosen/data-ghost), not a modal.
 async function recordGuardian(browser) {
   await captureRecording(browser, {
-    url: `${BASE_URL}/ai/release-guardian`,
+    url: `${BASE_URL}/projects/release-guardian`,
     viewport: DESKTOP,
     outName: "rg-desktop",
     run: async (page) => {
@@ -182,7 +182,7 @@ async function recordGuardian(browser) {
 // faking a value-set.
 async function recordRag(browser) {
   await captureRecording(browser, {
-    url: `${BASE_URL}/ai/rag-quality-lab`,
+    url: `${BASE_URL}/projects/rag-quality-lab`,
     viewport: DESKTOP,
     outName: "rag-desktop",
     run: async (page) => {
@@ -203,7 +203,7 @@ async function recordRag(browser) {
 async function recordAsk(browser, locale = "en") {
   const outName = locale === "en" ? "ask-desktop" : "ask-desktop-zh";
   await captureRecording(browser, {
-    url: locale === "en" ? `${BASE_URL}/ai/ask-portfolio` : `${BASE_URL}/ai/ask-portfolio?lang=zh`,
+    url: locale === "en" ? `${BASE_URL}/projects/ask-portfolio` : `${BASE_URL}/projects/ask-portfolio?lang=zh`,
     viewport: DESKTOP,
     outName,
     run: async (page) => {
@@ -220,7 +220,7 @@ async function recordAsk(browser, locale = "en") {
 async function recordCrossover(browser, locale = "en") {
   const outName = locale === "en" ? "crossover-desktop" : "crossover-desktop-zh";
   await captureRecording(browser, {
-    url: locale === "en" ? `${BASE_URL}/engineering/crossover-study` : `${BASE_URL}/engineering/crossover-study?lang=zh`,
+    url: locale === "en" ? `${BASE_URL}/projects/crossover-study` : `${BASE_URL}/projects/crossover-study?lang=zh`,
     viewport: DESKTOP,
     outName,
     run: async (page) => {
@@ -252,7 +252,7 @@ async function recordFirstScreenOnly(browser, { url, outName }) {
 
 async function recordForge(browser) {
   await captureRecording(browser, {
-    url: `${BASE_URL}/ai/frontier-forge`,
+    url: `${BASE_URL}/projects/frontier-forge`,
     viewport: DESKTOP,
     outName: "forge-desktop",
     run: async (page) => {
@@ -268,7 +268,7 @@ async function recordForge(browser) {
 
 async function recordEod(browser) {
   await captureRecording(browser, {
-    url: `${BASE_URL}/engineering/exactly-once-drills`,
+    url: `${BASE_URL}/projects/exactly-once-drills`,
     viewport: DESKTOP,
     outName: "eod-desktop",
     setup: async (page) => page.emulateMedia({ reducedMotion: "no-preference" }),
@@ -284,7 +284,7 @@ async function recordEod(browser) {
 
 async function recordTriage(browser) {
   await captureRecording(browser, {
-    url: `${BASE_URL}/ai/triage-router`,
+    url: `${BASE_URL}/projects/triage-router`,
     viewport: DESKTOP,
     outName: "triage-desktop",
     run: async (page) => {
@@ -309,8 +309,8 @@ async function main() {
     await recordAsk(browser, "zh");
     await recordCrossover(browser, "en");
     await recordCrossover(browser, "zh");
-    await recordFirstScreenOnly(browser, { url: `${BASE_URL}/analytics/margin-control-tower`, outName: "margin-desktop" });
-    await recordFirstScreenOnly(browser, { url: `${BASE_URL}/analytics/credit-policy-desk`, outName: "credit-desktop" });
+    await recordFirstScreenOnly(browser, { url: `${BASE_URL}/projects/margin-control-tower`, outName: "margin-desktop" });
+    await recordFirstScreenOnly(browser, { url: `${BASE_URL}/projects/credit-policy-desk`, outName: "credit-desktop" });
     await recordForge(browser);
     await recordEod(browser);
     await recordTriage(browser);

@@ -7,6 +7,8 @@ const DEFAULT_FILES = [
   "src/lib/projects.ts",
   "src/lib/site-config.ts",
   "src/lib/i18n.ts",
+  "src/lib/navigation.ts",
+  "src/lib/site-circuit.ts",
 ];
 const DEFAULT_DIRECTORIES = ["src/components"];
 

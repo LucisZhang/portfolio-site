@@ -16,8 +16,24 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_RESUME_AVAILABLE: String(existsSync(join(process.cwd(), "public", "resume.pdf"))),
   },
+  // Next's webpack filesystem cache does not currently track tsconfig.json on this path. The
+  // Chinese lineation layer is selected through jsxImportSource, so a branch switch that changes
+  // that compiler option must invalidate every cached module instead of leaving one page with a
+  // mixture of React's default JSX runtime and the phrase-aware runtime.
+  webpack(config) {
+    if (config.cache && typeof config.cache === "object" && config.cache.type === "filesystem") {
+      const dependencyKey = "portfolio-tsconfig";
+      const prior = config.cache.buildDependencies?.[dependencyKey] ?? [];
+      config.cache.buildDependencies = {
+        ...config.cache.buildDependencies,
+        [dependencyKey]: Array.from(new Set([...prior, join(process.cwd(), "tsconfig.json")])),
+      };
+    }
+    return config;
+  },
   async redirects() {
     return [
+      // Track-index anchors: the three retired taxonomy roots.
       {
         source: "/ai",
         destination: "/#agent-systems",
@@ -33,24 +49,83 @@ const nextConfig: NextConfig = {
         destination: "/#archive",
         permanent: true,
       },
+      // Direct project moves: retired /ai, /engineering, /analytics routes
+      // to their flat /projects/<slug> destination (Task A2).
       {
-        source: "/analytics/analytics-tandem",
-        destination: "/#archive",
+        source: "/ai/frontier-forge",
+        destination: "/projects/frontier-forge",
         permanent: true,
       },
       {
+        source: "/ai/release-guardian",
+        destination: "/projects/release-guardian",
+        permanent: true,
+      },
+      {
+        source: "/ai/rag-quality-lab",
+        destination: "/projects/rag-quality-lab",
+        permanent: true,
+      },
+      {
+        source: "/ai/triage-router",
+        destination: "/projects/triage-router",
+        permanent: true,
+      },
+      {
+        source: "/ai/privacy-preflight",
+        destination: "/projects/privacy-preflight",
+        permanent: true,
+      },
+      {
+        source: "/ai/ask-portfolio",
+        destination: "/projects/ask-portfolio",
+        permanent: true,
+      },
+      {
+        source: "/engineering/exactly-once-drills",
+        destination: "/projects/exactly-once-drills",
+        permanent: true,
+      },
+      {
+        source: "/engineering/crossover-study",
+        destination: "/projects/crossover-study",
+        permanent: true,
+      },
+      {
+        source: "/analytics/margin-control-tower",
+        destination: "/projects/margin-control-tower",
+        permanent: true,
+      },
+      {
+        source: "/analytics/credit-policy-desk",
+        destination: "/projects/credit-policy-desk",
+        permanent: true,
+      },
+      // Historical renames: these already pointed past their old slug to a
+      // sibling old route. They now point straight at the flat destination
+      // so a single hop reaches the live page (no redirect chains).
+      {
         source: "/engineering/p1-reliability-lab",
-        destination: "/engineering/exactly-once-drills",
+        destination: "/projects/exactly-once-drills",
         permanent: true,
       },
       {
         source: "/analytics/credit-policy-lab",
-        destination: "/analytics/credit-policy-desk",
+        destination: "/projects/credit-policy-desk",
         permanent: true,
       },
       {
         source: "/ai/privacy-preflight-mac",
-        destination: "/ai/privacy-preflight",
+        destination: "/projects/privacy-preflight",
+        permanent: true,
+      },
+      // analytics-tandem's route moved to /projects/analytics-tandem (Task A1);
+      // the page is genuinely served (a noindex ExhibitShell), so its old URL
+      // follows the route, not the archive-shelf href. See Q3 in
+      // .superpowers/sdd/2026-09-07-flat-project-urls-and-citation-targets/plan-amendments.md.
+      {
+        source: "/analytics/analytics-tandem",
+        destination: "/projects/analytics-tandem",
         permanent: true,
       },
     ];

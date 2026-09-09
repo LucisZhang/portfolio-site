@@ -1,0 +1,363 @@
+{
+  "public/case-studies/triage-router/frontier.compact.json": {
+    "status": "public",
+    "repository": "LucisZhang/portfolio-site",
+    "revision": "acf05ae78859d95be2a3f68920f0bc08ea31f5d8",
+    "path": "public/case-studies/triage-router/frontier.compact.json",
+    "sha256": "c7e6555d3b03d988da30403f6052abf5e0be778e17f26b6eaa9c6696fc5eefcc",
+    "href": "https://github.com/LucisZhang/portfolio-site/blob/acf05ae78859d95be2a3f68920f0bc08ea31f5d8/public/case-studies/triage-router/frontier.compact.json"
+  },
+  "public/case-studies/triage-router/policies.compact.json": {
+    "status": "public",
+    "repository": "LucisZhang/portfolio-site",
+    "revision": "acf05ae78859d95be2a3f68920f0bc08ea31f5d8",
+    "path": "public/case-studies/triage-router/policies.compact.json",
+    "sha256": "9c2992c53dd62c7412a396e5c175e68068235a37548f74898b5858f258dc5c12",
+    "href": "https://github.com/LucisZhang/portfolio-site/blob/acf05ae78859d95be2a3f68920f0bc08ea31f5d8/public/case-studies/triage-router/policies.compact.json"
+  },
+  "public/case-studies/triage-router/strategy-cards.json": {
+    "status": "public",
+    "repository": "LucisZhang/portfolio-site",
+    "revision": "acf05ae78859d95be2a3f68920f0bc08ea31f5d8",
+    "path": "public/case-studies/triage-router/strategy-cards.json",
+    "sha256": "a26dd35e2c911aed93894bf7044be9c3a167ff9ea874cfbd4b432570ca6a868a",
+    "href": "https://github.com/LucisZhang/portfolio-site/blob/acf05ae78859d95be2a3f68920f0bc08ea31f5d8/public/case-studies/triage-router/strategy-cards.json"
+  },
+  "public/case-studies/triage-router/drift.compact.json": {
+    "status": "public",
+    "repository": "LucisZhang/portfolio-site",
+    "revision": "acf05ae78859d95be2a3f68920f0bc08ea31f5d8",
+    "path": "public/case-studies/triage-router/drift.compact.json",
+    "sha256": "ea70d32187602f644e895a151e3320991dd1dfc187441bf101c2e49587dc307f",
+    "href": "https://github.com/LucisZhang/portfolio-site/blob/acf05ae78859d95be2a3f68920f0bc08ea31f5d8/public/case-studies/triage-router/drift.compact.json"
+  },
+  "public/case-studies/triage-router/known-failures.json": {
+    "status": "public",
+    "repository": "LucisZhang/portfolio-site",
+    "revision": "acf05ae78859d95be2a3f68920f0bc08ea31f5d8",
+    "path": "public/case-studies/triage-router/known-failures.json",
+    "sha256": "fdcadaafa15e885890984cbab4b5320b46eadf6a3f374f2dcb7d76bf70e35218",
+    "href": "https://github.com/LucisZhang/portfolio-site/blob/acf05ae78859d95be2a3f68920f0bc08ea31f5d8/public/case-studies/triage-router/known-failures.json"
+  },
+  "public/case-studies/triage-router/samples.curated.json": {
+    "status": "public",
+    "repository": "LucisZhang/portfolio-site",
+    "revision": "acf05ae78859d95be2a3f68920f0bc08ea31f5d8",
+    "path": "public/case-studies/triage-router/samples.curated.json",
+    "sha256": "3c6771b65f44c567082857acd4db08a30004be2c4dc562974bef7a80cb386e4b",
+    "href": "https://github.com/LucisZhang/portfolio-site/blob/acf05ae78859d95be2a3f68920f0bc08ea31f5d8/public/case-studies/triage-router/samples.curated.json"
+  },
+  "public/case-studies/triage-router/python_int8_curated.json": {
+    "status": "public",
+    "repository": "LucisZhang/triage-router",
+    "revision": "b2734bbcbd75aef1f83b872f31de0212a7926b7f",
+    "path": "demo/live/tier_b2/python_int8_curated.json",
+    "sha256": "484b21fab582af7a8b00c98abd89ecb575a5b1330dc7af791bde333b59953486",
+    "href": "https://github.com/LucisZhang/triage-router/blob/b2734bbcbd75aef1f83b872f31de0212a7926b7f/demo/live/tier_b2/python_int8_curated.json"
+  },
+  "public/case-studies/margin-control-tower/detection-report.json": {
+    "status": "public",
+    "repository": "LucisZhang/margin-control-tower",
+    "revision": "c84559f1f141bc86b728d5a8133b926ad8529273",
+    "path": "public/case-studies/margin-control-tower/detection-report.json",
+    "sha256": "71f9a444f3cc916056142f3ef128174cf7c0f0f8d598eedd9e1a8393e4653580",
+    "href": "https://github.com/LucisZhang/margin-control-tower/blob/c84559f1f141bc86b728d5a8133b926ad8529273/public/case-studies/margin-control-tower/detection-report.json"
+  },
+  "public/case-studies/margin-control-tower/elasticity-report.json": {
+    "status": "public",
+    "repository": "LucisZhang/margin-control-tower",
+    "revision": "c84559f1f141bc86b728d5a8133b926ad8529273",
+    "path": "public/case-studies/margin-control-tower/elasticity-report.json",
+    "sha256": "8f5cf741575d5dfe290ecb7422f304eaf7065f6157b664b4ac36b367dcc4c10d",
+    "href": "https://github.com/LucisZhang/margin-control-tower/blob/c84559f1f141bc86b728d5a8133b926ad8529273/public/case-studies/margin-control-tower/elasticity-report.json"
+  },
+  "public/case-studies/margin-control-tower/metric-registry.json": {
+    "status": "public",
+    "repository": "LucisZhang/portfolio-site",
+    "revision": "acf05ae78859d95be2a3f68920f0bc08ea31f5d8",
+    "path": "public/case-studies/margin-control-tower/metric-registry.json",
+    "sha256": "4eada1504cd4088a7986283c68a5f02a75b298305e423de467f326d916640ae9",
+    "href": "https://github.com/LucisZhang/portfolio-site/blob/acf05ae78859d95be2a3f68920f0bc08ea31f5d8/public/case-studies/margin-control-tower/metric-registry.json"
+  },
+  "public/case-studies/margin-control-tower/olist-margin.parquet": {
+    "status": "public",
+    "repository": "LucisZhang/margin-control-tower",
+    "revision": "c84559f1f141bc86b728d5a8133b926ad8529273",
+    "path": "public/case-studies/margin-control-tower/olist-margin.parquet",
+    "sha256": "6921b7ed790367fe9d9ade878a7b97e6d7c2879b9488eef51b326ad9775722fb",
+    "href": "https://github.com/LucisZhang/margin-control-tower/blob/c84559f1f141bc86b728d5a8133b926ad8529273/public/case-studies/margin-control-tower/olist-margin.parquet"
+  },
+  "public/case-studies/credit-policy-desk/backtest-report.json": {
+    "status": "public",
+    "repository": "LucisZhang/credit-policy-desk",
+    "revision": "bbad7e0dbf997d7fb64caad5ed3c8bf09e74658e",
+    "path": "public/case-studies/credit-policy-lab/backtest-report.json",
+    "sha256": "615db22426cb120e40b2eaf8cd4f7ffef61eac59ae46e408ed39e316f0ffffb2",
+    "href": "https://github.com/LucisZhang/credit-policy-desk/blob/bbad7e0dbf997d7fb64caad5ed3c8bf09e74658e/public/case-studies/credit-policy-lab/backtest-report.json"
+  },
+  "public/case-studies/credit-policy-desk/methods-evidence.json": {
+    "status": "public",
+    "repository": "LucisZhang/credit-policy-desk",
+    "revision": "bbad7e0dbf997d7fb64caad5ed3c8bf09e74658e",
+    "path": "public/case-studies/credit-policy-lab/methods-evidence.json",
+    "sha256": "aed9bf83bfd71a914fd0da70a3425180ac468e437d0e50ff6a778aa9e7c54f0b",
+    "href": "https://github.com/LucisZhang/credit-policy-desk/blob/bbad7e0dbf997d7fb64caad5ed3c8bf09e74658e/public/case-studies/credit-policy-lab/methods-evidence.json"
+  },
+  "public/case-studies/credit-policy-desk/credit-backtest-compact.json": {
+    "status": "public",
+    "repository": "LucisZhang/portfolio-site",
+    "revision": "acf05ae78859d95be2a3f68920f0bc08ea31f5d8",
+    "path": "public/case-studies/credit-policy-desk/credit-backtest-compact.json",
+    "sha256": "77637de537299d3e19dbfb8fecc8ac644aaa13f253a46f71f63418ca6843d3b6",
+    "href": "https://github.com/LucisZhang/portfolio-site/blob/acf05ae78859d95be2a3f68920f0bc08ea31f5d8/public/case-studies/credit-policy-desk/credit-backtest-compact.json"
+  },
+  "public/case-studies/credit-policy-desk/policy-frontier-report.json": {
+    "status": "public",
+    "repository": "LucisZhang/portfolio-site",
+    "revision": "acf05ae78859d95be2a3f68920f0bc08ea31f5d8",
+    "path": "public/case-studies/credit-policy-desk/policy-frontier-report.json",
+    "sha256": "bba03c36b0b2923bc9c6250593eeb695a7e25eaae2c2c093005eb779b4c230cb",
+    "href": "https://github.com/LucisZhang/portfolio-site/blob/acf05ae78859d95be2a3f68920f0bc08ea31f5d8/public/case-studies/credit-policy-desk/policy-frontier-report.json"
+  },
+  "public/case-studies/credit-policy-desk/scored-backtest.parquet": {
+    "status": "public",
+    "repository": "LucisZhang/credit-policy-desk",
+    "revision": "bbad7e0dbf997d7fb64caad5ed3c8bf09e74658e",
+    "path": "public/case-studies/credit-policy-lab/scored-backtest.parquet",
+    "sha256": "2bbc97350d28123a1b056e4d475cdc90000954df1e6226d54d4fa35f2e7e0b95",
+    "href": "https://github.com/LucisZhang/credit-policy-desk/blob/bbad7e0dbf997d7fb64caad5ed3c8bf09e74658e/public/case-studies/credit-policy-lab/scored-backtest.parquet"
+  },
+  "public/case-studies/privacy-preflight/ocr-fixture-benchmark.json": {
+    "status": "public",
+    "repository": "LucisZhang/portfolio-site",
+    "revision": "acf05ae78859d95be2a3f68920f0bc08ea31f5d8",
+    "path": "public/case-studies/privacy-preflight/ocr-fixture-benchmark.json",
+    "sha256": "a783351c3262b70b65a59daf04df0531e8d3756aa6b9f79e7a0f10baad52aeb9",
+    "href": "https://github.com/LucisZhang/portfolio-site/blob/acf05ae78859d95be2a3f68920f0bc08ea31f5d8/public/case-studies/privacy-preflight/ocr-fixture-benchmark.json"
+  },
+  "public/case-studies/privacy-preflight/worker-tests-goal-candidate.json": {
+    "status": "public",
+    "repository": "LucisZhang/portfolio-site",
+    "revision": "acf05ae78859d95be2a3f68920f0bc08ea31f5d8",
+    "path": "public/case-studies/privacy-preflight/worker-tests-goal-candidate.json",
+    "sha256": "97b66536d10ae24186fffe4725e7f10809d0473bd87a486c8068b560ade626c4",
+    "href": "https://github.com/LucisZhang/portfolio-site/blob/acf05ae78859d95be2a3f68920f0bc08ea31f5d8/public/case-studies/privacy-preflight/worker-tests-goal-candidate.json"
+  },
+  "public/case-studies/privacy-preflight/goal-candidate-e2e.json": {
+    "status": "public",
+    "repository": "LucisZhang/portfolio-site",
+    "revision": "acf05ae78859d95be2a3f68920f0bc08ea31f5d8",
+    "path": "public/case-studies/privacy-preflight/goal-candidate-e2e.json",
+    "sha256": "81be1ab28f2d0df8f01cc3df36a423546191334d3b1a0dc908b36da83d9d6c7a",
+    "href": "https://github.com/LucisZhang/portfolio-site/blob/acf05ae78859d95be2a3f68920f0bc08ea31f5d8/public/case-studies/privacy-preflight/goal-candidate-e2e.json"
+  },
+  "public/case-studies/privacy-preflight/manifest.json": {
+    "status": "public",
+    "repository": "LucisZhang/portfolio-site",
+    "revision": "acf05ae78859d95be2a3f68920f0bc08ea31f5d8",
+    "path": "public/case-studies/privacy-preflight/manifest.json",
+    "sha256": "cfa56cd3ba453227863bb997c937bfcb41cd6e01e339cf806ac00689eac3aebe",
+    "href": "https://github.com/LucisZhang/portfolio-site/blob/acf05ae78859d95be2a3f68920f0bc08ea31f5d8/public/case-studies/privacy-preflight/manifest.json"
+  },
+  "public/case-studies/rag-quality-lab/claim-registry.json": {
+    "status": "public",
+    "repository": "LucisZhang/portfolio-site",
+    "revision": "acf05ae78859d95be2a3f68920f0bc08ea31f5d8",
+    "path": "public/case-studies/rag-quality-lab/claim-registry.json",
+    "sha256": "95b3380728df1c2de4df7bb69a1c525c10f0e8818f79577ab336c1c5ebc544ba",
+    "href": "https://github.com/LucisZhang/portfolio-site/blob/acf05ae78859d95be2a3f68920f0bc08ea31f5d8/public/case-studies/rag-quality-lab/claim-registry.json"
+  },
+  "public/case-studies/rag-quality-lab/c3-timebox/dependency-preflight.json": {
+    "status": "public",
+    "repository": "LucisZhang/rag-quality-lab",
+    "revision": "6e3d6a2b040cc9fe4acb7dd4a61295405138f296",
+    "path": "evidence/c3-s1-ab-20260712/dependency-preflight.json",
+    "sha256": "78ab99f3c9d40c1e96f272dad9992acda2035e5af7750c401e46dd70f563418e",
+    "href": "https://github.com/LucisZhang/rag-quality-lab/blob/6e3d6a2b040cc9fe4acb7dd4a61295405138f296/evidence/c3-s1-ab-20260712/dependency-preflight.json"
+  },
+  "public/case-studies/rag-quality-lab/c3-timebox/README.md": {
+    "status": "public",
+    "repository": "LucisZhang/rag-quality-lab",
+    "revision": "6e3d6a2b040cc9fe4acb7dd4a61295405138f296",
+    "path": "evidence/c3-s1-ab-20260712/README.md",
+    "sha256": "beecb175221d299f3a5513a880244b74d37017a9d7a34d37014c87b2212c9047",
+    "href": "https://github.com/LucisZhang/rag-quality-lab/blob/6e3d6a2b040cc9fe4acb7dd4a61295405138f296/evidence/c3-s1-ab-20260712/README.md"
+  },
+  "public/case-studies/release-guardian/recorded-stub-runs.json": {
+    "status": "public",
+    "repository": "LucisZhang/portfolio-site",
+    "revision": "acf05ae78859d95be2a3f68920f0bc08ea31f5d8",
+    "path": "public/case-studies/release-guardian/recorded-stub-runs.json",
+    "sha256": "e435951a17bd6017207cd739bce512c625a39dd0cdee7e55fea0a60efe392a69",
+    "href": "https://github.com/LucisZhang/portfolio-site/blob/acf05ae78859d95be2a3f68920f0bc08ea31f5d8/public/case-studies/release-guardian/recorded-stub-runs.json"
+  },
+  "public/case-studies/release-guardian/manifest.json": {
+    "status": "public",
+    "repository": "LucisZhang/portfolio-site",
+    "revision": "acf05ae78859d95be2a3f68920f0bc08ea31f5d8",
+    "path": "public/case-studies/release-guardian/manifest.json",
+    "sha256": "f37967289db4816cfd5f23bdad7ca281b979f52420c4bf65b34b0383a6796eb8",
+    "href": "https://github.com/LucisZhang/portfolio-site/blob/acf05ae78859d95be2a3f68920f0bc08ea31f5d8/public/case-studies/release-guardian/manifest.json"
+  },
+  "public/case-studies/frontier-forge/release.json": {
+    "status": "public",
+    "repository": "LucisZhang/frontier-forge",
+    "revision": "06de6e5c1d026dfce8b59c39a83658289925a55e",
+    "path": "demo/data/release.json",
+    "sha256": "9e547b3418ce1f633914e8dfe7b818fa6f7e064a891cee8e4c73837e6ce45f4d",
+    "href": "https://github.com/LucisZhang/frontier-forge/blob/06de6e5c1d026dfce8b59c39a83658289925a55e/demo/data/release.json"
+  },
+  "public/case-studies/frontier-forge/phase7_1_sustained_gateway_bench.json": {
+    "status": "public",
+    "repository": "LucisZhang/frontier-forge",
+    "revision": "06de6e5c1d026dfce8b59c39a83658289925a55e",
+    "path": "results/phase7_1/raw/phase7_1_sustained_gateway_bench.json",
+    "sha256": "d132ebece698c98ab996b154067679ea1d74b52e9528834ed19a21a132137929",
+    "href": "https://github.com/LucisZhang/frontier-forge/blob/06de6e5c1d026dfce8b59c39a83658289925a55e/results/phase7_1/raw/phase7_1_sustained_gateway_bench.json"
+  },
+  "public/case-studies/exactly-once-drills/index.summary.json": {
+    "status": "public",
+    "repository": "LucisZhang/portfolio-site",
+    "revision": "acf05ae78859d95be2a3f68920f0bc08ea31f5d8",
+    "path": "public/case-studies/exactly-once-drills/index.summary.json",
+    "sha256": "c008972eaf6da3e53c1b5419177b608e46b6dd4f31dd1629ca1a0af2308008ee",
+    "href": "https://github.com/LucisZhang/portfolio-site/blob/acf05ae78859d95be2a3f68920f0bc08ea31f5d8/public/case-studies/exactly-once-drills/index.summary.json"
+  },
+  "public/case-studies/exactly-once-drills/results/broker_slo.json": {
+    "status": "public",
+    "repository": "LucisZhang/exactly-once-drills",
+    "revision": "50d88bb4cc9b6e4e6e64cc2d643cdf90ed75e103",
+    "path": "dashboard/public/results/broker_slo.json",
+    "sha256": "5176dd0ac38d977813693de85fa2a6fc3fcfb9307048cc149b0408237488e200",
+    "href": "https://github.com/LucisZhang/exactly-once-drills/blob/50d88bb4cc9b6e4e6e64cc2d643cdf90ed75e103/dashboard/public/results/broker_slo.json"
+  },
+  "public/case-studies/exactly-once-drills/results/manifest.json": {
+    "status": "public",
+    "repository": "LucisZhang/portfolio-site",
+    "revision": "acf05ae78859d95be2a3f68920f0bc08ea31f5d8",
+    "path": "public/case-studies/exactly-once-drills/results/manifest.json",
+    "sha256": "7867fb1ec1f91787ada2bb9141426b29273324f8d84b3eac6968572085120d32",
+    "href": "https://github.com/LucisZhang/portfolio-site/blob/acf05ae78859d95be2a3f68920f0bc08ea31f5d8/public/case-studies/exactly-once-drills/results/manifest.json"
+  },
+  "public/case-studies/crossover-study/exhibits.json": {
+    "status": "public",
+    "repository": "LucisZhang/portfolio-site",
+    "revision": "acf05ae78859d95be2a3f68920f0bc08ea31f5d8",
+    "path": "public/case-studies/crossover-study/exhibits.json",
+    "sha256": "f99a5827046edfee5b6bc7a4f2dc7fb5550eefdcfc6757361148c28b781f78aa",
+    "href": "https://github.com/LucisZhang/portfolio-site/blob/acf05ae78859d95be2a3f68920f0bc08ea31f5d8/public/case-studies/crossover-study/exhibits.json"
+  },
+  "src/lib/assistant-retrieval.ts": {
+    "status": "local",
+    "path": "src/lib/assistant-retrieval.ts",
+    "sha256": "c19d401e030e52604045745c384ebd4584ab8c93f5f0d46fc6d8377112658f04"
+  },
+  "src/data/assistant-knowledge.generated.json": {
+    "status": "local",
+    "path": "src/data/assistant-knowledge.generated.json",
+    "sha256": "f56a746fa40331c2008d5d1dd52e05778a710c043ecec20ac009358a028d24e7"
+  },
+  "scripts/generate-ask-recorded-example.mjs": {
+    "status": "public",
+    "repository": "LucisZhang/portfolio-site",
+    "revision": "acf05ae78859d95be2a3f68920f0bc08ea31f5d8",
+    "path": "scripts/generate-ask-recorded-example.mjs",
+    "sha256": "1c100496ed83d18638e7c522265295a0050f829be712888c97171f3afed57ac0",
+    "href": "https://github.com/LucisZhang/portfolio-site/blob/acf05ae78859d95be2a3f68920f0bc08ea31f5d8/scripts/generate-ask-recorded-example.mjs"
+  },
+  "scripts/generate-ask-question-bank.mjs": {
+    "status": "local",
+    "path": "scripts/generate-ask-question-bank.mjs",
+    "sha256": "0cbf6fe389e22dfb3044e0ff42d0222fe385443653b48cf9cca5b00947f0b24c"
+  },
+  "public/case-studies/margin-control-tower/methods-evidence.json": {
+    "status": "public",
+    "repository": "LucisZhang/margin-control-tower",
+    "revision": "c84559f1f141bc86b728d5a8133b926ad8529273",
+    "path": "public/case-studies/margin-control-tower/methods-evidence.json",
+    "sha256": "d49b35e90c592dd5864248cab098c1f39663f82d1c530118c6ce71e767a78805",
+    "href": "https://github.com/LucisZhang/margin-control-tower/blob/c84559f1f141bc86b728d5a8133b926ad8529273/public/case-studies/margin-control-tower/methods-evidence.json"
+  },
+  "public/models/triage-tier-b2/model.int8.onnx": {
+    "status": "unavailable",
+    "reason": "untracked-model"
+  },
+  "crossover:20260805T172047Z-035042b": {
+    "status": "public",
+    "repository": "LucisZhang/crossover-study",
+    "revision": "035042bbc4ce5284a4b7afd46f5dca574b5ddee4",
+    "path": "configs/eval_pop_t12m_test.yaml",
+    "sha256": "1e60f2621f29dda053119282bfd8dbc3c824df0af7d95b8d9aeca2f86a1500ed",
+    "href": "https://github.com/LucisZhang/crossover-study/blob/035042bbc4ce5284a4b7afd46f5dca574b5ddee4/configs/eval_pop_t12m_test.yaml"
+  },
+  "crossover:20260806T082441Z-2f2f26d": {
+    "status": "public",
+    "repository": "LucisZhang/crossover-study",
+    "revision": "2f2f26d55129eabadfd84012146c8a202d61e1c2",
+    "path": "configs/eval_als_test_seed1.yaml",
+    "sha256": "c50679bf1b89ed1bb82d7914b089a887a6ff91332c228b5ff67724966606d31e",
+    "href": "https://github.com/LucisZhang/crossover-study/blob/2f2f26d55129eabadfd84012146c8a202d61e1c2/configs/eval_als_test_seed1.yaml"
+  },
+  "crossover:20260817T095926Z-633d454": {
+    "status": "public",
+    "repository": "LucisZhang/crossover-study",
+    "revision": "633d4543605b68e03a6e770ade46764f598dd5e9",
+    "path": "configs/regime_map_test.yaml",
+    "sha256": "32c1c06a860eeb62ae42fe0c1c8e5c7d2b528aeb65d1a0fcf59adffbf0366806",
+    "href": "https://github.com/LucisZhang/crossover-study/blob/633d4543605b68e03a6e770ade46764f598dd5e9/configs/regime_map_test.yaml"
+  },
+  "crossover:20260820T134403Z-e2263d2": {
+    "status": "public",
+    "repository": "LucisZhang/crossover-study",
+    "revision": "e2263d24e03a0a61d2743314f60cdd21c289dadb",
+    "path": "configs/churn_contrast_ml32m.yaml",
+    "sha256": "682d2e89e2c86cd71d46c43b844b70fd54f5f6b3a92ec7cd1285a6599cf3505f",
+    "href": "https://github.com/LucisZhang/crossover-study/blob/e2263d24e03a0a61d2743314f60cdd21c289dadb/configs/churn_contrast_ml32m.yaml"
+  },
+  "crossover:20260820T221055Z-20d8ff9": {
+    "status": "public",
+    "repository": "LucisZhang/crossover-study",
+    "revision": "20d8ff995f4baceda31a9eedfc78effd632099ce",
+    "path": "configs/eval_pop_t12m_ml32m_test.yaml",
+    "sha256": "0e8c7581986745417dfc534edfc0132a547303c80dbe8d90c9989002d31ee9b0",
+    "href": "https://github.com/LucisZhang/crossover-study/blob/20d8ff995f4baceda31a9eedfc78effd632099ce/configs/eval_pop_t12m_ml32m_test.yaml"
+  },
+  "crossover:20260820T221701Z-20d8ff9": {
+    "status": "public",
+    "repository": "LucisZhang/crossover-study",
+    "revision": "20d8ff995f4baceda31a9eedfc78effd632099ce",
+    "path": "configs/eval_itemknn_t12m_ml32m_test.yaml",
+    "sha256": "21212ee94a62fb72e684abc3a6d83355c96be6f257603996ca0e40c118d15d9a",
+    "href": "https://github.com/LucisZhang/crossover-study/blob/20d8ff995f4baceda31a9eedfc78effd632099ce/configs/eval_itemknn_t12m_ml32m_test.yaml"
+  },
+  "public/case-studies/groupconv-atlas/atlas.json": {
+    "status": "local",
+    "path": "public/case-studies/groupconv-atlas/atlas.json",
+    "sha256": "ba505546a2568d8251a19b7f549fe66197f8ccc9428ea126f74b7c8a60a33d27"
+  },
+  "public/case-studies/groupconv-atlas/rtx4090-atlas.json": {
+    "status": "local",
+    "path": "public/case-studies/groupconv-atlas/rtx4090-atlas.json",
+    "sha256": "098a722a9cc72563f75d6a285e4953b6c57e972432b9a86ef4873585c7da79cd"
+  },
+  "public/case-studies/groupconv-atlas/current-evidence.md": {
+    "status": "local",
+    "path": "public/case-studies/groupconv-atlas/current-evidence.md",
+    "sha256": "c13925190954b6be27139f3fb83f36983114c195e06dd0022e07a200d8f8d961"
+  },
+  "public/case-studies/groupconv-atlas/provenance.json": {
+    "status": "local",
+    "path": "public/case-studies/groupconv-atlas/provenance.json",
+    "sha256": "317e77a65c3154902ca72e725c9517ee8793c326c7ba1f7da2403cbf94de6742"
+  },
+  "public/case-studies/groupconv-atlas/rtx4090-shapes.json": {
+    "status": "local",
+    "path": "public/case-studies/groupconv-atlas/rtx4090-shapes.json",
+    "sha256": "904644af9daa5ea9bb5e9c32a53b24f1981618f9bc8baf14957d17f684a0ba18"
+  },
+  "public/case-studies/groupconv-atlas/map-details.json": {
+    "status": "local",
+    "path": "public/case-studies/groupconv-atlas/map-details.json",
+    "sha256": "b3e2358b855add84420521efde20e2ec7402ae60b6b8b4cea2466fa8d49863a4"
+  }
+}

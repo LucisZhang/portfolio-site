@@ -1,44 +1,15 @@
 import type { CSSProperties, ReactNode } from "react";
+import LocaleLink from "@/components/LocaleLink";
+import { LocalizedText } from "@/lib/i18n";
+import { navigationCopy, navigationNumber, navigationPosition, type RailSpec } from "@/lib/navigation";
 import RailCopy from "./RailCopy";
-import RailLocalizedLabel from "./RailLocalizedLabel";
 import RailSpy from "./RailSpy";
 import RailAuto from "./RailAuto";
 import CircuitNav from "./CircuitNav";
 import "./exhibition.css";
 
-// Frozen interface (Round-2 spec §2.1): every page passes its own rail spec
-// as a prop into this server component. Rail markup is rendered exactly
-// once per page and never lives inside RootLayout, so the shell itself
-// never becomes a client boundary — RailSpy/RailAuto/RailCopy/CircuitNav
-// are the only "use client" files in this directory.
-export type RailSpec = {
-  wordmark: {
-    lines: [string, string];
-    mark?: string;
-    // Task W3 (RAIL-SCOPE.md §FORGE-DIFF 1.7): the reference demo's rail
-    // wordmark shows the mark glyph in a bordered mono box. User-endorsed
-    // reference element, but only Forge opts in (page-scoped exception,
-    // see forgeRail.ts) — every other page's `mark` keeps rendering as
-    // plain unboxed text, unaffected by this flag's existence.
-    markBoxed?: boolean;
-  };
-  copy?: { en?: string; zh?: string };
-  nav: { id: string; num: string; label: string; labelZh?: string }[];
-  footer: { label: string; href: string }[];
-  // Task W3: optional bottom-of-rail status slot, ported from the same
-  // FORGE-DIFF reference ("绿点 + offline artifact"). RailSpec-driven and
-  // opt-in — undefined on every rail except Forge's, which supplies
-  // "RECORDED ARTIFACT" / tone "offline" (see forgeRail.ts for why —
-  // ground truth is LiveSlot.tsx's own declared live-layer state, not the
-  // reference screenshot). The slot takes a caller-supplied label/tone
-  // rather than hardcoding either the reference's copy or a fixed tone,
-  // so a page's own actual state always wins. The reference's dot glyph
-  // is dropped: this codebase's box-grammar ruling (task F8) is "hue x
-  // line-weight x label word carry all semantics", zero icons — tone is
-  // carried by color on the label
-  // text alone.
-  stamp?: { label: string; tone: "live" | "offline" };
-};
+// The shell remains a server component; each page supplies its own exhibits.
+export type { RailSpec } from "@/lib/navigation";
 
 // Nav ids are normally in-page exhibit anchors ("exhibit-00"), but task 0.5's
 // temporary legacy re-shelling needs the rail nav to link across real routes
@@ -64,8 +35,8 @@ function RailNavList({ nav, cascade }: { nav: RailSpec["nav"]; cascade?: boolean
           style={cascade ? ({ "--rail-cascade-delay": `${96 + index * 18}ms` } as CSSProperties) : undefined}
         >
           <a href={railNavHref(item.id)}>
-            <span className="exhibit-rail-num">{item.num}</span>
-            <span className="exhibit-rail-label">{item.labelZh ? <RailLocalizedLabel en={item.label} zh={item.labelZh} /> : item.label}</span>
+            <span className="exhibit-rail-num">{navigationNumber(item.num)}</span>
+            <LocalizedText className="exhibit-rail-label" text={item.label} />
           </a>
         </li>
       ))}
@@ -77,9 +48,9 @@ function RailFooterList({ footer, cascadeDelay }: { footer: RailSpec["footer"]; 
   return (
     <div className="exhibit-rail-footer" style={cascadeDelay ? ({ "--rail-cascade-delay": cascadeDelay } as CSSProperties) : undefined}>
       {footer.map((item) => (
-        <a key={item.href} href={item.href}>
-          {item.label}
-        </a>
+        <LocaleLink key={item.href} href={item.href}>
+          <LocalizedText text={item.label} />
+        </LocaleLink>
       ))}
     </div>
   );
@@ -88,7 +59,7 @@ function RailFooterList({ footer, cascadeDelay }: { footer: RailSpec["footer"]; 
 function RailStamp({ stamp }: { stamp: NonNullable<RailSpec["stamp"]> }) {
   return (
     <div className="exhibit-rail-stamp" data-tone={stamp.tone}>
-      {stamp.label}
+      <LocalizedText text={stamp.label} />
     </div>
   );
 }
@@ -96,6 +67,7 @@ function RailStamp({ stamp }: { stamp: NonNullable<RailSpec["stamp"]> }) {
 export function ExhibitShell({
   rail,
   railTools,
+  repositoryEntry,
   mode = "fixed",
   children,
 }: {
@@ -107,6 +79,8 @@ export function ExhibitShell({
   // mobile split — because these islands own global listeners (e.g.
   // CommandPaletteLauncher's window ⌘K handler) that must not double-fire.
   railTools?: ReactNode;
+  // Project-only entry supplied by each static route, beside the circuit breadcrumb.
+  repositoryEntry?: ReactNode;
   // Task W3 (auto-rail v3, RAIL-SCOPE.md): "fixed" (default) is the
   // untouched pre-existing behavior — the sidebar is always visible,
   // nothing here renders, nothing new in exhibition.css matches. "auto"
@@ -119,8 +93,8 @@ export function ExhibitShell({
   mode?: "fixed" | "auto";
   children: ReactNode;
 }) {
-  const total = String(rail.nav.length).padStart(2, "0");
-  const firstNum = rail.nav[0]?.num ?? "00";
+  const total = navigationNumber(rail.nav.length);
+  const firstNum = navigationNumber(rail.nav[0]?.num ?? "00");
   const isAuto = mode === "auto";
   // Cascade stagger (task W3 choreography table): wordmark leads at 60ms,
   // nav rows follow 96ms + 18ms/row (computed per-row in RailNavList), the
@@ -141,7 +115,7 @@ export function ExhibitShell({
               over the unrelated mobile sticky bar. */}
           <div className="exhibit-rail-affordance" aria-hidden="true" />
           <div className="exhibit-rail-tab" aria-hidden="true">
-            {`INDEX · ${firstNum}/${total}`}
+            <LocalizedText text={navigationCopy.index} /> · <span data-rail-current data-rail-total={total}>{navigationPosition(firstNum, total)}</span>
           </div>
           {/* 24px left-edge hot zone: the actual reveal trigger. Separate
               from the decorative affordance above so hit-testing never
@@ -154,7 +128,8 @@ export function ExhibitShell({
           mobile sticky bar both live in this single <nav>; only CSS decides
           which is visible at a given viewport, so no JavaScript or
           server-side device detection is needed to pick the right one. */}
-      <nav className="exhibit-rail" data-exhibition-rail aria-label="Exhibition index">
+      <nav className="exhibit-rail" data-exhibition-rail aria-labelledby="exhibition-index-label">
+        <span id="exhibition-index-label" className="sr-only"><LocalizedText text={navigationCopy.exhibitionIndex} /></span>
         <div className="exhibit-rail-fixed">
           <div className="exhibit-rail-wordmark">
             {rail.wordmark.mark ? (
@@ -189,12 +164,12 @@ export function ExhibitShell({
               /
             </span>
             <span data-rail-current data-rail-total={total}>
-              {firstNum} OF {total}
+              {navigationPosition(firstNum, total)}
             </span>
             <span className="exhibit-rail-mobile-sep" aria-hidden="true">
               /
             </span>
-            <span className="exhibit-rail-mobile-index-label">INDEX</span>
+            <LocalizedText className="exhibit-rail-mobile-index-label" text={navigationCopy.index} />
           </summary>
           <div className="exhibit-rail-mobile-panel">
             <RailNavList nav={rail.nav} />
@@ -212,7 +187,7 @@ export function ExhibitShell({
           pathname-gated and renders null on every non-circuit route (home,
           /artifact, the dev fixture). */}
       <main id="main-content">
-        <CircuitNav slot="top" />
+        <CircuitNav slot="top" repositoryEntry={repositoryEntry} />
         {children}
         <CircuitNav slot="bottom" />
       </main>

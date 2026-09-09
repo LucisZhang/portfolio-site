@@ -4,6 +4,7 @@ import Link, { useLinkStatus } from "next/link";
 import type { ComponentProps } from "react";
 import { createPortal } from "react-dom";
 import { localeHref, useI18n } from "@/lib/i18n";
+import { zhWrapNode } from "@/lib/zh-wrap";
 
 function NavigationPending({ locale }: { locale: "en" | "zh" }) {
   const { pending } = useLinkStatus();
@@ -29,7 +30,9 @@ export default function LocaleLink({ href, children, ...props }: ComponentProps<
   const localizedHref = typeof href === "string" ? localeHref(href, locale) : href;
   return (
     <Link href={localizedHref} prefetch={false} {...props}>
-      {children}
+      {/* next/link renders its <a> with React's own runtime, so zh link text
+          is word-tiered here (Task D05; a no-op for en strings). */}
+      {zhWrapNode(children)}
       <NavigationPending locale={locale} />
     </Link>
   );

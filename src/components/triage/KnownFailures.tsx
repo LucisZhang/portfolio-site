@@ -1,7 +1,8 @@
 "use client";
 
 import { useI18n, type Locale } from "@/lib/i18n";
-import { zhWrapNode } from "@/lib/zh-wrap";
+import ScrollRegion from "@/components/ScrollRegion";
+import { zhGroup, zhWrapDisplay } from "@/lib/zh-wrap";
 import knownFailuresJson from "../../../public/case-studies/triage-router/known-failures.json";
 
 type KnownFailure = {
@@ -46,13 +47,13 @@ export function KnownFailures() {
     <section id="exhibit-02" className="exhibit" data-exhibit="02" data-bg="paper-alt" aria-labelledby="exhibit-02-title">
       <p className="exhibit-opening-row">
         <span className="exhibit-number" aria-hidden="true">02</span>
-        <span className="exhibit-eyebrow">RECORDED MISROUTES / A_TO_B</span>
+        <span className="exhibit-eyebrow">RECORDED MISROUTES · A_TO_B</span>
       </p>
       <h2 id="exhibit-02-title" className="exhibit-title">
         {locale === "en" ? (
           <>Eight real complaints,<br /><em>the cascade sent the wrong way.</em></>
         ) : (
-          zhWrapNode(<>八条真实工单，<em>级联把它们送错了地方。</em></>)
+          zhWrapDisplay(<>八条真实工单，<br /><em>{zhGroup("级联把它们", "送错了地方。")}</em></>)
         )}
       </h2>
       <div className="exhibit-body">
@@ -68,7 +69,7 @@ export function KnownFailures() {
             horizontal-scroll table is no longer an acceptable mobile
             pattern under direction B, so this wrapper is display:none
             under 768px instead of being asked to scroll. */}
-        <div className="triage-table-scroll">
+        <ScrollRegion className="triage-table-scroll" label={{ en: "Known failures table", zh: "已知失败案例表" }}>
           <table className="triage-known-failures-table" data-known-failures>
             <thead>
               <tr>
@@ -91,7 +92,7 @@ export function KnownFailures() {
               ))}
             </tbody>
           </table>
-        </div>
+        </ScrollRegion>
         {/* Task F7 (direction B, approved mock output/design-align/
             direction-mobile-table-b.html): mobile-only aligned two-column
             ledger. Predicted/truth are the two values every reader

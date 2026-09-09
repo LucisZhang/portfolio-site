@@ -7,6 +7,8 @@ import { featuredProjects, tracks } from "../../src/lib/projects";
 import type { Locale } from "../../src/lib/i18n";
 
 const cases: Array<{ query: string; locale: Locale; first: string; includes?: string[] }> = [
+  { query: "CUDA grouped convolution", locale: "en", first: "groupconv-atlas" },
+  { query: "分组卷积", locale: "zh", first: "groupconv-atlas" },
   { query: "vLLM token-aware gateway", locale: "en", first: "frontier-forge" },
   { query: "大模型微调推理网关", locale: "zh", first: "frontier-forge" },
   { query: "agent", locale: "en", first: "release-guardian", includes: ["rag-quality-lab"] },
@@ -143,7 +145,7 @@ test("search history stays local, bounded, persistent, and isolated by browser c
   await page.getByRole("button", { name: /Search/ }).click();
   await page.getByPlaceholder("Search projects, systems, or tools").fill("credit default risk");
   await page.locator(SEL.cmdkItem).filter({ hasText: "Credit Policy Desk" }).first().click();
-  await expect(page).toHaveURL(/\/analytics\/credit-policy-desk/);
+  await expect(page).toHaveURL(/\/projects\/credit-policy-desk/);
   const stored = await page.evaluate(() => JSON.parse(window.localStorage.getItem("portfolio-search-history-v2") ?? "[]") as unknown[]);
   expect(stored).toHaveLength(20);
   expect(JSON.stringify(outboundBodies)).not.toContain("credit default risk");
@@ -176,7 +178,7 @@ test("every primary recruiter route exposes four distinct bilingual questions", 
   const expectedRoutes = new Set([
     "/",
     ...tracks.map((track) => `/${track.id}`),
-    ...featuredProjects.map((project) => `/${project.track}/${project.slug}`),
+    ...featuredProjects.map((project) => `/projects/${project.slug}`),
   ]);
   expect(new Set(Object.keys(recruiterQuestionsByRoute))).toEqual(expectedRoutes);
   for (const [route, questions] of Object.entries(recruiterQuestionsByRoute)) {
