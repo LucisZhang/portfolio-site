@@ -2,7 +2,7 @@
 
 ## 2026-09-09 accepted preview release authorization
 
-The owner accepted the latest website preview and authorized full publication after making the Guardian MCP installation link clearly actionable. This release includes the accepted project layouts, flat project routes, GroupConv case study, citation and navigation corrections, hosted Guardian connection, and paused Forge hosting. The Guardian action now has button styling and bilingual app-opening guidance. Production dependencies are updated to patched versions before release verification. The existing normal public PR and exact-commit deployment process applies. Deployment verification remains pending.
+The owner accepted the latest website preview and authorized full publication after making the Guardian MCP installation link clearly actionable. This release includes the accepted project layouts, flat project routes, GroupConv case study, citation and navigation corrections, hosted Guardian connection, and paused Forge hosting. The Guardian action now has button styling and bilingual app-opening guidance. Production dependencies are updated to patched versions before release verification. Public PR #24 is merged and the canonical site serves exact runtime `ce6e3c6a7ff4e77990db6f3380edf70b9acfafe9`. The Vercel fallback also includes build-provisioning PR #25 at `43f1d7d36540d801769449613a235c49492d0577`; the accepted page implementation and model bytes are identical. Canonical bilingual desktop/mobile button checks and service health passed. See [the release receipt](docs/releases/2026-09-09-accepted-preview.md) for verification and deployment evidence.
 
 ## 2026-09-08 Forge online-content withdrawal authorization
 
