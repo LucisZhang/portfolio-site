@@ -127,7 +127,7 @@ promote any of them beyond what their source artifacts state.
 ## Rights
 
 No open-source license is granted for this repository or its portfolio content. See
-[`NOTICE.md`](NOTICE.md) and the approved public scope in [`PUBLICATION.md`](PUBLICATION.md);
-linked external repositories retain their own terms.
+[`NOTICE.md`](NOTICE.md), including its third-party data licenses; linked external repositories
+retain their own terms.
 
-> 本仓库及其作品集内容不授予开源许可，公开范围见 [`NOTICE.md`](NOTICE.md) 与 [`PUBLICATION.md`](PUBLICATION.md)；外链仓库各自保留其条款。
+> 本仓库及其作品集内容不授予开源许可，详见 [`NOTICE.md`](NOTICE.md)（含第三方数据许可）；外链仓库各自保留其条款。
