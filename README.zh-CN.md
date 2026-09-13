@@ -97,5 +97,5 @@ npx playwright test
 
 ## 版权
 
-本仓库及其作品集内容不授予开源许可，公开范围见 [`NOTICE.md`](NOTICE.md) 与
-[`PUBLICATION.md`](PUBLICATION.md)；外链仓库各自保留其条款。
+本仓库及其作品集内容不授予开源许可，详见 [`NOTICE.md`](NOTICE.md)（含第三方数据许可）；
+外链仓库各自保留其条款。

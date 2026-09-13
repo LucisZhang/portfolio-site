@@ -14,7 +14,6 @@
 /coverage
 /playwright-report
 /test-results
-/docs/phase2-public-review-artifacts/goal2-final/playwright-raw.json
 
 # next.js
 /.next/
@@ -67,3 +66,8 @@ next-env.d.ts
 
 # Local candidate review evidence
 /.candidate-review/
+
+# local scratch, review output, and code-context bundles (never commit)
+/tmp/
+/output/
+website-code-context.zip
