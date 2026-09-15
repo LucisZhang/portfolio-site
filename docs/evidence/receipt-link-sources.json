@@ -290,7 +290,7 @@
       "id": "src/data/assistant-knowledge.generated.json",
       "status": "local",
       "localPath": "src/data/assistant-knowledge.generated.json",
-      "sha256": "c5a5bf379cff8353105b208b26160d0985b777d2eeb22fbea79409eb38c538a6"
+      "sha256": "b87af650028a27436020c9df14bd4b9ef58ceaa857efab9c13fd2b884a36565e"
     },
     {
       "id": "scripts/generate-ask-recorded-example.mjs",

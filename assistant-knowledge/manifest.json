@@ -326,7 +326,7 @@
   "siteRepository": {
     "owner": "LucisZhang",
     "repo": "portfolio-site",
-    "commit": "b7a57776c9b9315ed328cbaa65e8be1e5c6d8a1d"
+    "commit": "36c9e06e505268790b801506d1af6ff2bca61a5d"
   },
   "siteSources": [
     {
@@ -666,7 +666,9 @@
         },
         "src/components/CrossoverProof.tsx",
         "src/components/crossover/CrossoverExhibit.tsx",
+        "src/components/crossover/CrossoverEngineeringEvidence.tsx",
         "public/case-studies/crossover-study/exhibits.json",
+        "public/case-studies/crossover-study/engineering-evidence.json",
         "public/case-studies/crossover-study/workbench/results/amazon-null-test.json",
         "public/case-studies/crossover-study/workbench/results/ml32m-counterexample.json",
         "public/case-studies/crossover-study/workbench/results/counterexample-caveat.json",

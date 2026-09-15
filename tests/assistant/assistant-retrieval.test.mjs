@@ -22,7 +22,7 @@ const finalRepositoryCommits = new Map([
   ["LucisZhang/triage-router", "b2734bbcbd75aef1f83b872f31de0212a7926b7f"],
   ["LucisZhang/crossover-study", "a18646d95ab4d32446b723303ab5c3d50e33e173"],
 ]);
-const siteCommit = "b7a57776c9b9315ed328cbaa65e8be1e5c6d8a1d";
+const siteCommit = "36c9e06e505268790b801506d1af6ff2bca61a5d";
 
 test("generated public knowledge is pinned to final releases and the R2 site revision", () => {
   const snapshot = JSON.parse(readFileSync("src/data/assistant-knowledge.generated.json", "utf8"));
@@ -154,7 +154,7 @@ test("offline assistant cache fails closed on identity and manifest tampering", 
     encoding: "utf8",
   });
   assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
-  assert.match(result.stdout, /assistant knowledge cache self-test passed: 75 files, 738 chunks/u);
+  assert.match(result.stdout, /assistant knowledge cache self-test passed: 79 files, 755 chunks/u);
 });
 
 test("generated public knowledge has globally unique chunk IDs", () => {
