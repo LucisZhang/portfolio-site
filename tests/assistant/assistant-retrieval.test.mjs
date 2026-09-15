@@ -22,7 +22,7 @@ const finalRepositoryCommits = new Map([
   ["LucisZhang/triage-router", "b2734bbcbd75aef1f83b872f31de0212a7926b7f"],
   ["LucisZhang/crossover-study", "a18646d95ab4d32446b723303ab5c3d50e33e173"],
 ]);
-const siteCommit = "da094b778e4a66254fa938dfc671cde5c36990d8";
+const siteCommit = "50670dbaaa89e9f34644727aadb9728e68c1073d";
 
 test("generated public knowledge is pinned to final releases and the R2 site revision", () => {
   const snapshot = JSON.parse(readFileSync("src/data/assistant-knowledge.generated.json", "utf8"));
