@@ -247,6 +247,11 @@
     "sha256": "f99a5827046edfee5b6bc7a4f2dc7fb5550eefdcfc6757361148c28b781f78aa",
     "href": "https://github.com/LucisZhang/portfolio-site/blob/acf05ae78859d95be2a3f68920f0bc08ea31f5d8/public/case-studies/crossover-study/exhibits.json"
   },
+  "public/case-studies/crossover-study/engineering-evidence.json": {
+    "status": "local",
+    "path": "public/case-studies/crossover-study/engineering-evidence.json",
+    "sha256": "63969d35bd7790951e1bca98bb5aed29a98c80b382ad523f630c90b7c434fb4b"
+  },
   "src/lib/assistant-retrieval.ts": {
     "status": "local",
     "path": "src/lib/assistant-retrieval.ts",

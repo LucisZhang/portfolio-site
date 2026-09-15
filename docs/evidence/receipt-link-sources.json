@@ -281,6 +281,12 @@
       "sha256": "f99a5827046edfee5b6bc7a4f2dc7fb5550eefdcfc6757361148c28b781f78aa"
     },
     {
+      "id": "public/case-studies/crossover-study/engineering-evidence.json",
+      "status": "local",
+      "localPath": "public/case-studies/crossover-study/engineering-evidence.json",
+      "sha256": "63969d35bd7790951e1bca98bb5aed29a98c80b382ad523f630c90b7c434fb4b"
+    },
+    {
       "id": "src/lib/assistant-retrieval.ts",
       "status": "local",
       "localPath": "src/lib/assistant-retrieval.ts",
