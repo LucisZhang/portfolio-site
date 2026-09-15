@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "source": {
+    "repository": "LucisZhang/frontier-forge",
+    "revision": "34e857b417bb9d2767340332ddc1580b7381f334",
+    "inputs": [
+      { "path": "results/phase7_3_summary.md", "bytes": 10528, "sha256": "f69c7fb851aec006403b24a55472cebefd076c6d5f19a34e2e27657aeea580d6" },
+      { "path": "results/phase7_3_tp_reviewed_report.md", "bytes": 6988, "sha256": "6a6789ab06a631ed842b30fc8abfe518e887a7e10172ecd09f79e78b18254e32" },
+      { "path": "results/phase8_distributed_report.md", "bytes": 3413, "sha256": "77bba83a8b7b39127463ec6c6e6a6c481c169b06f04d3a704bc403e18181c63c" },
+      { "path": "results/phase8/final-publication/supplement.md", "bytes": 6506, "sha256": "3d476d7604f39dd431e896cf3c770073b3e5e307229b547a98e01049235c4ce9" }
+    ]
+  },
+  "phase7_3_replicas": {
+    "run_id": "phase7_3_staged_20260910_50443518",
+    "audit_status": "PASS",
+    "composite_status": "staged_complete",
+    "single_continuous_run": false,
+    "gpu": "RTX 4090",
+    "gpu_count": 1,
+    "gpu_sharing": "time-slicing",
+    "model_artifact": "GPTQ-int4",
+    "seed": 731,
+    "cell_duration_s": 180,
+    "qps": [1, 2, 4, 8],
+    "two_vs_one": [
+      { "qps": 4, "planned_requests": 730, "successful_throughput_ratio": 1.748, "success_rate_delta_pp": 37.40, "ttft_p95_ratio": 0.408 },
+      { "qps": 8, "planned_requests": 1505, "successful_throughput_ratio": 1.795, "success_rate_delta_pp": 19.34, "ttft_p95_ratio": 0.420 }
+    ],
+    "isolation": {
+      "observer_qps": 1,
+      "attacker_qps": 8,
+      "observer_e2e_p95_baseline_s": 4.472,
+      "observer_e2e_p95_disturbed_s": 4.546,
+      "observer_e2e_p95_change_percent": 1.65,
+      "attacker_requests": 1505,
+      "attacker_timeouts_after_http_200": 1353,
+      "attacker_verified_successes": 151,
+      "hard_isolation": false
+    },
+    "scaling": {
+      "sequence": "0→1→2→1→0",
+      "cycles": 10,
+      "transitions": 40,
+      "one_to_two_ready_p50_s": 85.370,
+      "one_to_two_ready_p95_s": 91.802,
+      "cache_condition": "existing node, image, and model-volume caches"
+    }
+  },
+  "phase7_3_tp": {
+    "audit_status": "PASS",
+    "gpu": "RTX 4090",
+    "gpu_count": 2,
+    "qps": 2,
+    "duration_s": 180,
+    "seed": 731,
+    "requests_per_cell": 372,
+    "single_operating_point": true,
+    "tp2_vs_tp1": {
+      "successful_throughput_ratio": 0.830,
+      "ttft_p95_ratio": 7.268,
+      "cost_per_1k_successful_tasks_ratio": 1.205
+    }
+  },
+  "phase8_distributed": {
+    "status": "complete",
+    "gpu": "RTX 4090",
+    "gpu_count": 2,
+    "interconnect": "NODE",
+    "nvlink": false,
+    "communication_profiled": false,
+    "nccl": "2.29.7",
+    "model": "Qwen3.5-0.8B-Base",
+    "trainable_parameters": 752393024,
+    "optimizer_steps": 1250,
+    "train_rows": 20000,
+    "eval_rows": 2000,
+    "variants": [
+      { "id": "A", "config": "single_gpu_accumulation", "input_tokens_per_s": 1706.90, "scaling_efficiency_percent": null, "peak_allocated_bytes_per_gpu": [15313556480], "hard_and_percent": 98.45 },
+      { "id": "B", "config": "ddp", "input_tokens_per_s": 3366.58, "scaling_efficiency_percent": 98.6169, "peak_allocated_bytes_per_gpu": [18327219200, 18322114048], "hard_and_percent": 98.40 },
+      { "id": "C", "config": "fsdp_full_shard", "input_tokens_per_s": 2309.85, "scaling_efficiency_percent": 67.6622, "peak_allocated_bytes_per_gpu": [8123887104, 8135424512], "hard_and_percent": 98.55 }
+    ],
+    "paired_differences": [
+      { "comparison": "B-A", "split": "all", "delta_pp": -0.05, "ci95_pp": [-0.30, 0.20] },
+      { "comparison": "C-A", "split": "all", "delta_pp": 0.10, "ci95_pp": [-0.10, 0.30] }
+    ]
+  },
+  "boundaries": [
+    "Phase 7.3 replicas are time-sliced on one physical RTX 4090; this is neither hard isolation nor multi-GPU scaling.",
+    "The Phase 7.3 PASS is a staged audit that combines attempt02 measurements with an independent scaling re-run; it is not one continuous successful run.",
+    "The observer's small tail-latency change does not offset the attacker stream's timeouts; HTTP 200 marks received headers, not task success.",
+    "The tensor-parallel result is one QPS point on one two-GPU machine and does not establish scalability.",
+    "Phase 8 compares three configurations on one 2×RTX 4090 machine over a PCIe NODE link without NVLink; communication time was not profiled separately.",
+    "Neither result establishes multi-node or production-grade performance."
+  ]
+}

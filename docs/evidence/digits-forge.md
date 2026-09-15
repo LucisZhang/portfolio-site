@@ -183,7 +183,40 @@ status counts, fast-reject p95, queue high-watermark) and
 `manifest.json`'s recorded hash for `phase7_1_sustained_gateway_bench.json`,
 independently re-verified in `forge-receipts.json`.`overloadReceipt.sha256`.
 
-## Exhibit 06 — Model Boundary (`BoundaryMatrix.tsx`)
+## Exhibit 06 — GPU replicas and distributed training (`GpuScaling.tsx`)
+
+`GpuScaling.tsx` reads `public/case-studies/frontier-forge/gpu-scaling-evidence.json` (sha256 `18b6eacc26fb3033c51758f61044953f351c86f41bc7d432cf42639687748644`) directly. The projection is
+pinned to public source commit `34e857b417bb9d2767340332ddc1580b7381f334`; each input's bytes and SHA-256 are recorded in the
+projection's `.source.inputs` and registered as `frontier-forge:<path>` links in
+`docs/evidence/receipt-link-sources.json` (anonymously re-verified with
+`node scripts/generate-evidence-links.mjs --write --verify-remote`).
+
+| Rendered value | jsonPath | Source file:line at `34e857b` |
+| --- | --- | --- |
+| 1.748× / 1.795× success throughput, +37.40 / +19.34 pp success rate, 0.408× / 0.420× TTFT p95 (QPS 4 / 8) | `.phase7_3_replicas.two_vs_one[qps=4,8].{successful_throughput_ratio,success_rate_delta_pp,ttft_p95_ratio}` | `results/phase7_3_summary.md:41-42` |
+| seed 731, 180 s per cell, QPS 1/2/4/8, one RTX 4090, time-slicing, GPTQ-int4 | `.phase7_3_replicas.{seed,cell_duration_s,qps,gpu,gpu_sharing,model_artifact}` | `results/phase7_3_summary.md:7` |
+| Observer all-request E2E p95 4.472s → 4.546s (+1.65%) | `.phase7_3_replicas.isolation.{observer_e2e_p95_baseline_s,observer_e2e_p95_disturbed_s,observer_e2e_p95_change_percent}` | `results/phase7_3_summary.md:63-64,67` |
+| 1,353 of 1,505 attacker requests timed out after HTTP 200; 151 verified; attacker at 8 QPS | `.phase7_3_replicas.isolation.{attacker_timeouts_after_http_200,attacker_requests,attacker_verified_successes,attacker_qps}` | `results/phase7_3_summary.md:59,65,67` |
+| 10 cycles of 0→1→2→1→0, 40 transitions, staged PASS | `.phase7_3_replicas.scaling.{cycles,transitions,sequence}`, `.audit_status`, `.single_continuous_run` | `results/phase7_3_summary.md:3,101` |
+| 1→2 Ready p50 85.37s | `.phase7_3_replicas.scaling.one_to_two_ready_p50_s` | `results/phase7_3_summary.md:106` |
+| TP=2 / TP=1: 0.830× success throughput, 7.268× TTFT p95, 1.205× cost per 1K successful tasks | `.phase7_3_tp.tp2_vs_tp1.*` | `results/phase7_3_summary.md:97` (raw cells: `results/phase7_3_tp_reviewed_report.md:11-12`) |
+| 2×RTX 4090, QPS 2, 180 s, n=372 per TP setting | `.phase7_3_tp.{gpu_count,gpu,qps,duration_s,requests_per_cell}` | `results/phase7_3_tp_reviewed_report.md:6,11-12` |
+| Qwen3.5-0.8B-Base, 752,393,024 parameters, 1,250 steps, 20,000 training rows, 2,000 evaluation rows | `.phase8_distributed.{model,trainable_parameters,optimizer_steps,train_rows,eval_rows}` | `results/phase8_distributed_report.md:23`; model name `results/phase8/final-publication/supplement.md` receipts (README Phase 8 section) |
+| 1,706.90 / 3,366.58 / 2,309.85 input tok/s | `.phase8_distributed.variants[].input_tokens_per_s` | `results/phase8_distributed_report.md:7-9` |
+| Scaling efficiency 98.62% (DDP) / 67.66% (FSDP) | `.phase8_distributed.variants[].scaling_efficiency_percent` (98.6169 / 67.6622, rendered to 2 dp) | `results/phase8_distributed_report.md:11,13` |
+| Peak allocated per GPU 14.26 / 17.07 / 7.58 GiB | `max(.phase8_distributed.variants[].peak_allocated_bytes_per_gpu) / 2^30` | `results/phase8_distributed_report.md:7-9` (bytes) |
+| −55.61% FSDP vs DDP peak allocated per GPU | `1 − max(C bytes) / max(B bytes)`, computed in the component | `results/phase8_distributed_report.md:8-9` (derived) |
+| hard-AND 98.45% / 98.40% / 98.55%, n=2,000 | `.phase8_distributed.variants[].hard_and_percent`, `.eval_rows` | `results/phase8/final-publication/supplement.md:21,24,27` |
+| DDP − single −0.05 pp [−0.30, +0.20]; FSDP − single +0.10 pp [−0.10, +0.30] | `.phase8_distributed.paired_differences[]` | `results/phase8/final-publication/supplement.md:32,35` |
+| PCIe NODE topology, no NVLink, communication not profiled | `.phase8_distributed.{interconnect,nvlink,communication_profiled}` | `results/phase8_distributed_report.md:25` |
+
+The TP end-to-end p95 ratio is deliberately not rendered: the source states throughput, TTFT p95, and
+cost ratios (`results/phase7_3_summary.md:97`) but no E2E ratio. The page states the cutlines beside the
+numbers: time-sliced replicas share one card (no hard isolation, not multi-GPU scaling); the Phase 7.3
+PASS is staged; the TP result is one operating point; and both Phase 8 paired intervals include zero,
+which is read as "no detected quality difference", not proven equivalence.
+
+## Exhibit 07 — Model Boundary (`BoundaryMatrix.tsx`)
 
 Nine ✓/✗ items (4 yes, 5 no — satisfies spec's "✗ ≥ ✓"):
 
@@ -207,10 +240,10 @@ evidence set (see "Absent data" below). Snapshot line:
 `forge-receipts.json`.`snapshotId` (= `ff-qwen3.5-4b-` + `release.json`'s
 `$.training.headline.run_id`) and `forge-receipts.json`.`releaseJson.sha256`.
 
-## Exhibit 07 — Source & Receipts
+## Exhibit 08 — Source & Receipts
 
 `<dl>` reads `forge-receipts.json` (`releaseJson.sha256`,
-`overloadReceipt.sha256`, `generatedAt`) and `claim-commands.json`.`task-success`
+`overloadReceipt.sha256`, `gpuScalingEvidence.sha256`, `generatedAt`) and `claim-commands.json`.`task-success`
 for the `make reproduce-headline` line.
 
 ## Report layer (Architecture / Results & negatives / Limitations)
@@ -219,9 +252,10 @@ All content reused verbatim from `src/lib/frontier-project-detail.ts`
 (previously reviewed, unchanged by this task): `architecture[]` (5 steps),
 `outcome`, `fieldNotes[]` (2 negative findings — same numbers as exhibit 03's
 findings, restated once more in the report layer per spec §6.0's template),
-`boundaries[]` (3 limitations). No new numbers introduced; every figure
-inside these strings (14.2 pp, GRPO CI, 125s cold start, "1→3→1") is
-independently traceable to `release.json` paths registered above.
+`boundaries[]` (3 limitations). Every figure inside these strings (14.2 pp, GRPO CI, 125s cold
+start, "1→3→1") is independently traceable to `release.json` paths registered above; the Phase 7.2
+A10, Phase 7.3 "10 cycles of 0→1→2→1→0", and Phase 8 "2×RTX 4090" references in `boundaries[0-1]`
+and `role` trace to the exhibit 06 projection rows above.
 
 ## Absent data (honest `NOT RECORDED` treatment, not fabricated)
 

@@ -22,7 +22,8 @@ export function EvidenceScope({ project, children }: { project: keyof typeof pro
     if (project === "ask") return id.startsWith("src/") || id.startsWith("scripts/");
     return id.startsWith(`public/case-studies/${projects[project]}/`)
       || (project === "triage" && id.startsWith("public/models/triage-tier-b2/"))
-      || (project === "crossover" && id.startsWith("crossover:"));
+      || (project === "crossover" && id.startsWith("crossover:"))
+      || (project === "forge" && id.startsWith("frontier-forge:"));
   })) as EvidenceContextValue["files"];
   return <EvidenceProvider value={{ summary: summaries[`${project}Evidence`], files }}>{children}</EvidenceProvider>;
 }

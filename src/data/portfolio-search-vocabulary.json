@@ -2,10 +2,10 @@
   "frontier-forge": {
     "aliases": "Frontier Forge LLM serving lab post-training benchmark model gateway 大模型训练与推理 微调部署 模型网关",
     "domains": "LLM training inference serving systems model operations AI engineering distributed systems 大模型训练 推理服务 模型运维 AI 工程 分布式系统",
-    "capabilities": "Qwen SFT QLoRA GRPO distillation vLLM GPTQ native MTP C++20 token-aware gateway admission control overload HTTP 429 k3s KEDA autoscaling cold start confidence interval evidence receipt 微调 蒸馏 推理 量化 网关 准入控制 过载 快速拒绝 自动伸缩 冷启动 置信区间 证据收据",
-    "useCases": "post-train and serve a language model compare training runs protect inference under overload reproduce measured cost and latency 微调并部署大模型 比较训练实验 保护过载推理 复算实测成本与延迟",
+    "capabilities": "Qwen SFT QLoRA GRPO distillation vLLM GPTQ native MTP C++20 token-aware gateway admission control overload HTTP 429 k3s KEDA autoscaling cold start GPU time-slicing vLLM replicas tensor parallelism TP DDP FSDP FULL_SHARD distributed training full-parameter SFT confidence interval evidence receipt 微调 蒸馏 推理 量化 网关 准入控制 过载 快速拒绝 自动伸缩 冷启动 多副本 张量并行 分布式训练 全参微调 置信区间 证据收据",
+    "useCases": "post-train and serve a language model compare training runs protect inference under overload reproduce measured cost and latency compare DDP and FSDP training 微调并部署大模型 比较训练实验 保护过载推理 复算实测成本与延迟 对比 DDP 与 FSDP 训练",
     "roles": "LLM application engineer inference engineer applied AI engineer backend engineer platform engineer 大模型应用工程师 推理工程师 AI 应用工程师 后端工程师 平台工程师",
-    "regionalTerms": "大型語言模型訓練 推理服務 模型閘道 準入控制 過載 快速拒絕 自動擴縮 冷啟動 證據收據"
+    "regionalTerms": "大型語言模型訓練 推理服務 模型閘道 準入控制 過載 快速拒絕 自動擴縮 冷啟動 分散式訓練 張量平行 證據收據"
   },
   "release-guardian": {
     "aliases": "release gate AI release guard launch approval 发布门禁 上线门禁 发布审批 智能体守门",

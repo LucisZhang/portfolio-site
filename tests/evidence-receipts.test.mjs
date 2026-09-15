@@ -24,9 +24,16 @@ test("each site artifact matches its exact-byte receipt, including the committed
   assert.deepEqual(generated, receipts);
 });
 
+// Page-level field projections are committed with the site and registered as local receipts until a later site
+// revision is published; they stay listed explicitly so any other new local receipt still fails this exact list.
+const localProjectionFiles = [
+  "public/case-studies/frontier-forge/gpu-scaling-evidence.json",
+  "public/case-studies/crossover-study/engineering-evidence.json",
+];
+
 test("the three unpublished Ask files carry local hashes and no public link; the matching script stays public", () => {
-  assert.deepEqual(Object.keys(receipts).filter((id) => receipts[id].status === "local"), [...localAskFiles, ...localGroupConvFiles]);
-  for (const id of [...localAskFiles, ...localGroupConvFiles]) {
+  assert.deepEqual(Object.keys(receipts).filter((id) => receipts[id].status === "local"), [...localProjectionFiles, ...localAskFiles, ...localGroupConvFiles]);
+  for (const id of [...localProjectionFiles, ...localAskFiles, ...localGroupConvFiles]) {
     assert.deepEqual(receipts[id], { status: "local", path: id, sha256: sources.files.find((file) => file.id === id).sha256 });
   }
   const recorded = receipts["scripts/generate-ask-recorded-example.mjs"];

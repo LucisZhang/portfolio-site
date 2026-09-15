@@ -17,8 +17,8 @@ export const PROJECT_NAVIGATION = [
     pos: { en: "BUILD & RUN · 01 / 02", zh: "构建与运行 · 01 / 02" },
     group: { id: "build-run", anchor: "#index-build-run", label: { en: "BUILD & RUN", zh: "构建与运行" } },
     nav: {
-      en: ["Recorded serving", "Evidence explorer", "Training ladder", "Serving boundary", "Overload replay", "Model boundary", "Source & receipts"],
-      zh: ["历史推理评测", "证据浏览器", "训练阶梯", "服务边界", "过载回放", "模型边界", "源码与记录"],
+      en: ["Recorded serving", "Evidence explorer", "Training ladder", "Serving boundary", "Overload replay", "GPU replicas & DDP/FSDP", "Model boundary", "Source & receipts"],
+      zh: ["历史推理评测", "证据浏览器", "训练阶梯", "服务边界", "过载回放", "GPU 副本与分布式训练", "模型边界", "源码与记录"],
     },
   },
   {

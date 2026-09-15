@@ -7,7 +7,11 @@
     "sha256": "d132ebece698c98ab996b154067679ea1d74b52e9528834ed19a21a132137929",
     "bytes": 1526788
   },
+  "gpuScalingEvidence": {
+    "sha256": "18b6eacc26fb3033c51758f61044953f351c86f41bc7d432cf42639687748644",
+    "bytes": 4442
+  },
   "totalMeasuredSpendUsd": 35.68,
   "snapshotId": "ff-qwen3.5-4b-r1b_sft_rule_20k_s0",
-  "generatedAt": "2026-08-22"
+  "generatedAt": "2026-09-15"
 }
