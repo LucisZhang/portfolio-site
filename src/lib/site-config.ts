@@ -6,8 +6,8 @@ export const siteIdentity = {
     zh: "从 Agent 应用到微调、推理服务，这条链我自己跑通；跑砸的实验，原样公开。",
   },
   evidenceLine: {
-    en: "Qwen3.5-4B SFT 66.35% → 99.05% · end-to-end $35.68 · GPTQ-int4 p95 0.963 s",
-    zh: "Qwen3.5-4B SFT 66.35% → 99.05% · end-to-end $35.68 · GPTQ-int4 p95 0.963 s",
+    en: "Qwen3.5-4B SFT 66.35% → 99.05% · $35.68 through Phase 7.2 · GPTQ-int4 p95 0.963 s",
+    zh: "Qwen3.5-4B SFT 66.35% → 99.05% · $35.68 through Phase 7.2 · GPTQ-int4 p95 0.963 s",
   },
   directionLine: {
     en: "Open to: AI agent & LLM application engineering · backend & distributed systems · data engineering & analytics",
