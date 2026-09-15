@@ -12,7 +12,7 @@
             "en": "See the pinned source lines for Xiangguo Zhang portfolio",
             "zh": "查看章向国作品集：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/lib/site-config.ts#L1-L37"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/da094b778e4a66254fa938dfc671cde5c36990d8/src/lib/site-config.ts#L1-L37"
         },
         {
           "sourceId": "frontier-forge:README.md",
@@ -157,7 +157,7 @@
             "en": "See the recorded evidence file for Xiangguo Zhang portfolio",
             "zh": "查看章向国作品集：评测证据文件"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/package.json"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/da094b778e4a66254fa938dfc671cde5c36990d8/package.json"
         },
         {
           "sourceId": "frontier-forge:README.md",
@@ -184,7 +184,7 @@
             "en": "Triage Router · src/lib/projects.ts",
             "zh": "Triage Router · src/lib/projects.ts"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/lib/projects.ts",
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/da094b778e4a66254fa938dfc671cde5c36990d8/src/lib/projects.ts",
           "anchor": "exhibit-01"
         }
       ],
@@ -295,7 +295,7 @@
             "en": "See the pinned source lines for Xiangguo Zhang portfolio",
             "zh": "查看章向国作品集：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/lib/site-config.ts#L1-L37"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/da094b778e4a66254fa938dfc671cde5c36990d8/src/lib/site-config.ts#L1-L37"
         },
         {
           "sourceId": "frontier-forge:MODEL_CARD.md",
@@ -397,7 +397,7 @@
             "en": "See the pinned source lines for Release Guardian",
             "zh": "查看 Release Guardian：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/lib/projects.ts"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/da094b778e4a66254fa938dfc671cde5c36990d8/src/lib/projects.ts"
         },
         {
           "sourceId": "portfolio-evidence:projects-release-guardian:src/lib/projects.ts",
@@ -406,7 +406,7 @@
             "en": "See the pinned source lines for Release Guardian",
             "zh": "查看 Release Guardian：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/lib/projects.ts"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/da094b778e4a66254fa938dfc671cde5c36990d8/src/lib/projects.ts"
         },
         {
           "sourceId": "release-guardian:README.md",
@@ -461,7 +461,7 @@
             "en": "See the pinned source lines for Release Guardian",
             "zh": "查看 Release Guardian：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/lib/projects.ts"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/da094b778e4a66254fa938dfc671cde5c36990d8/src/lib/projects.ts"
         },
         {
           "sourceId": "release-guardian:docs/architecture.mmd",
@@ -517,7 +517,7 @@
             "en": "See the pinned source lines for Release Guardian",
             "zh": "查看 Release Guardian：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/public/case-studies/release-guardian/data/evaluation-live.csv"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/da094b778e4a66254fa938dfc671cde5c36990d8/public/case-studies/release-guardian/data/evaluation-live.csv"
         },
         {
           "sourceId": "release-guardian:README.md",
@@ -666,7 +666,7 @@
             "en": "See the recorded evidence file for RAG Quality Lab",
             "zh": "查看 RAG Quality Lab：评测证据文件"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/public/case-studies/rag-quality-lab/c3-timebox/dependency-preflight.json"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/da094b778e4a66254fa938dfc671cde5c36990d8/public/case-studies/rag-quality-lab/c3-timebox/dependency-preflight.json"
         },
         {
           "sourceId": "rag-quality-lab:scripts/run_s1_retrieval_ab.py",
@@ -956,7 +956,7 @@
             "en": "See the recorded evidence file for Privacy Preflight",
             "zh": "查看隐私预检：评测证据文件"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/public/case-studies/privacy-preflight/ocr-fixture-benchmark.json"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/da094b778e4a66254fa938dfc671cde5c36990d8/public/case-studies/privacy-preflight/ocr-fixture-benchmark.json"
         },
         {
           "sourceId": "privacy-preflight:README.md",
@@ -1499,7 +1499,7 @@
             "en": "See the pinned source lines for Credit Policy Desk",
             "zh": "查看 Credit Policy Desk：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/lib/projects.ts"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/da094b778e4a66254fa938dfc671cde5c36990d8/src/lib/projects.ts"
         },
         {
           "sourceId": "credit-policy-desk:README.md",
@@ -1601,7 +1601,7 @@
             "en": "See the pinned source lines for Analytics Tandem",
             "zh": "查看 Analytics Tandem：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/components/ProjectProof.tsx#L22-L33"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/da094b778e4a66254fa938dfc671cde5c36990d8/src/components/ProjectProof.tsx#L22-L33"
         },
         {
           "sourceId": "portfolio-site:projects-credit-policy-desk:src/lib/projects.ts",
@@ -1610,7 +1610,7 @@
             "en": "Credit Policy Desk · src/lib/projects.ts",
             "zh": "Credit Policy Desk · src/lib/projects.ts"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/lib/projects.ts"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/da094b778e4a66254fa938dfc671cde5c36990d8/src/lib/projects.ts"
         }
       ],
       "en": {
@@ -1648,7 +1648,7 @@
             "en": "See the pinned source lines for Analytics Tandem",
             "zh": "查看 Analytics Tandem：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/components/ProjectProof.tsx#L22-L33"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/da094b778e4a66254fa938dfc671cde5c36990d8/src/components/ProjectProof.tsx#L22-L33"
         },
         {
           "sourceId": "portfolio-site:projects-credit-policy-desk:src/lib/projects.ts",
@@ -1657,7 +1657,7 @@
             "en": "Credit Policy Desk · src/lib/projects.ts",
             "zh": "Credit Policy Desk · src/lib/projects.ts"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/lib/projects.ts"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/da094b778e4a66254fa938dfc671cde5c36990d8/src/lib/projects.ts"
         }
       ],
       "en": {
@@ -1695,7 +1695,7 @@
             "en": "See the pinned source lines for Analytics Tandem",
             "zh": "查看 Analytics Tandem：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/components/CaseStudyBlock.tsx#L6-L17"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/da094b778e4a66254fa938dfc671cde5c36990d8/src/components/CaseStudyBlock.tsx#L6-L17"
         },
         {
           "sourceId": "portfolio-evidence:projects-analytics-tandem:src/components/ProjectProof.tsx",
@@ -1704,7 +1704,7 @@
             "en": "See the pinned source lines for Analytics Tandem",
             "zh": "查看 Analytics Tandem：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/components/ProjectProof.tsx#L22-L33"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/da094b778e4a66254fa938dfc671cde5c36990d8/src/components/ProjectProof.tsx#L22-L33"
         }
       ],
       "en": {
@@ -1845,7 +1845,7 @@
             "en": "Xiangguo Zhang portfolio · src/lib/projects.ts",
             "zh": "章向国作品集 · src/lib/projects.ts"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/lib/projects.ts",
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/da094b778e4a66254fa938dfc671cde5c36990d8/src/lib/projects.ts",
           "anchor": "exhibit-01"
         }
       ],

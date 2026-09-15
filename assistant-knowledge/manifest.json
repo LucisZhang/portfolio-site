@@ -338,7 +338,7 @@
   "siteRepository": {
     "owner": "LucisZhang",
     "repo": "portfolio-site",
-    "commit": "19b9513559cae0b22e31747c0ef878e7b4c93443"
+    "commit": "da094b778e4a66254fa938dfc671cde5c36990d8"
   },
   "siteSources": [
     {
@@ -437,11 +437,13 @@
         "src/components/forge/TrainingLadder.tsx",
         "src/components/forge/ServingBoundary.tsx",
         "src/components/forge/OverloadReplay.tsx",
+        "src/components/forge/GpuScaling.tsx",
         "src/components/forge/BoundaryMatrix.tsx",
         "src/components/forge/forgeRail.ts",
         "docs/evidence/digits-forge.md",
         "public/case-studies/frontier-forge/release.json",
         "public/case-studies/frontier-forge/manifest.json",
+        "public/case-studies/frontier-forge/gpu-scaling-evidence.json",
         "public/case-studies/frontier-forge/claim-commands.json",
         "src/data/generated/forge-receipts.json"
       ]
