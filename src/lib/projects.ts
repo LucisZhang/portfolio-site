@@ -780,11 +780,11 @@ const projectCatalog: Project[] = [
       },
       {
         en: "A Hive Metastore backed by Postgres registered four existing Iceberg tables without rewriting data. Spark SQL then checked eight snapshots and three gold projections over 15,473,536 interactions; every bidirectional row difference was zero.",
-        zh: "用 Postgres 承载 Hive Metastore，把 4 张既有 Iceberg 表免重写注册进去。随后由 Spark SQL 核对 8 个快照，并在 15,473,536 条交互上验证 3 类 gold 指标；全量双向行差异均为零。",
+        zh: "用 Postgres 承载 Hive 元数据服务，把 4 张既有 Iceberg 表免重写注册进去。随后由 Spark 的 SQL 引擎核对 8 个快照，并在 15,473,536 条交互上验证 3 类金层指标；全量双向行差异均为零。",
       },
       {
         en: "On 43,365,424 interactions, AQE skew join lowered the join-stage task-time max/median from 2.22 to 1.30. The elapsed-time ranges still overlapped, so I keep the balance improvement and do not claim stable end-to-end acceleration.",
-        zh: "在 43,365,424 条交互上，AQE skew join 把 join 阶段 task 耗时 max/median 从 2.22 降到 1.30。各组端到端耗时区间仍有重叠，因此这里只保留均衡性改善，不声称稳定提速。",
+        zh: "在 43,365,424 条交互上，AQE 倾斜连接把连接阶段任务耗时的最大值/中位数从 2.22 降到 1.30。各组端到端耗时区间仍有重叠，因此这里只保留均衡性改善，不声称稳定提速。",
       },
     ],
     provenance: [
@@ -816,7 +816,7 @@ const projectCatalog: Project[] = [
       },
       {
         en: "Hive is the catalog service in this experiment; Spark SQL executes the computation. The skew experiment establishes task-balance and join-plan changes, not a stable end-to-end speedup, and its 7,663-byte shuffle count excludes broadcast traffic.",
-        zh: "本实验中的 Hive 只负责 catalog 服务，计算由 Spark SQL 执行。倾斜实验能证明 task 均衡性与 join plan 发生变化，但不能证明端到端稳定提速；7,663 B 的 shuffle 记录也不包含广播流量。",
+        zh: "本实验中的 Hive 只负责目录服务，计算由 Spark 的 SQL 引擎执行。倾斜实验能证明任务均衡性与连接执行计划发生变化，但不能证明端到端稳定提速；7,663 字节的混洗记录也不包含广播流量。",
       },
     ],
     repository: { status: "public", label: repositoryLabel, href: "https://github.com/LucisZhang/crossover-study" },
