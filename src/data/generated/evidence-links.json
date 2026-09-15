@@ -255,7 +255,7 @@
   "src/data/assistant-knowledge.generated.json": {
     "status": "local",
     "path": "src/data/assistant-knowledge.generated.json",
-    "sha256": "f56a746fa40331c2008d5d1dd52e05778a710c043ecec20ac009358a028d24e7"
+    "sha256": "52d7e03855bc499ff2ba37e7c8f97be49b5f05ef898f13d695815cd72de903a0"
   },
   "scripts/generate-ask-recorded-example.mjs": {
     "status": "public",
