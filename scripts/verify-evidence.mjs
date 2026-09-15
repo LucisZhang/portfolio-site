@@ -93,8 +93,9 @@ assert(!/\brx=/.test(frontierArchitecture), "Frontier Forge architecture SVG rei
 
 const crossoverManifest = await verifyManifest("public/case-studies/crossover-study/manifest.json");
 const crossover = await json("public/case-studies/crossover-study/exhibits.json");
+const crossoverEngineering = await json("public/case-studies/crossover-study/engineering-evidence.json");
 assert(crossoverManifest.package === "crossover-study-site-exhibits", "Crossover exhibit package identity drifted");
-assert(crossoverManifest.assets.length === 1 && crossoverManifest.assets[0].path === "exhibits.json", "Crossover package must remain a minimal single-data-asset projection");
+assert(JSON.stringify(crossoverManifest.assets.map((asset) => asset.path)) === JSON.stringify(["exhibits.json", "engineering-evidence.json"]), "Crossover package must retain both minimal data projections");
 assert(crossover.amazon_null.metric === "ndcg@10", "Crossover Amazon null metric drifted");
 assert(JSON.stringify(crossover.amazon_null.segments) === JSON.stringify(["0", "1-4", "5-9", "10-19", "20+"]), "Crossover Amazon history-depth axis drifted");
 assert(crossover.amazon_null.n_star === null && crossover.amazon_null.verdict === "null", "Crossover Amazon result must remain explicitly null");
@@ -106,6 +107,14 @@ assert(Math.abs(crossover.catalog_churn.amazon.churn_share - 0.4111295514585914)
 assert(Math.abs(crossover.catalog_churn.ml32m.churn_share - 0.06403017747252186) < 1e-15, "Crossover ML-32M catalog-churn contrast drifted");
 assert(crossover.receipts.length === 6, "Crossover receipt projection must retain all six source runs");
 assert(crossover.boundaries.some((value) => value.includes("No MiniLM weights")), "Crossover package no longer declares the MiniLM exclusion boundary");
+assert(crossoverEngineering.source.revision === "a18646d95ab4d32446b723303ab5c3d50e33e173", "Crossover engineering evidence is not pinned to the published source commit");
+assert(crossoverEngineering.hive_catalog.valid === true && crossoverEngineering.hive_catalog.registered_tables === 4 && crossoverEngineering.hive_catalog.snapshot_checks === 8, "Crossover Hive catalog verification drifted");
+assert(crossoverEngineering.hive_catalog.source_interactions === 15473536 && crossoverEngineering.hive_catalog.parity_outputs === 3 && crossoverEngineering.hive_catalog.difference_rows === 0, "Crossover Hive parity result drifted");
+assert(crossoverEngineering.spark_skew.all_28_trial_fingerprints_equal === true && crossoverEngineering.spark_skew.interactions === 43365424, "Crossover skew correctness evidence drifted");
+assert(Math.abs(crossoverEngineering.spark_skew.baseline.join_time_max_median - 2.222272727272727) < 1e-15, "Crossover skew baseline ratio drifted");
+assert(Math.abs(crossoverEngineering.spark_skew.skew_join.join_time_max_median - 1.2987078794020774) < 1e-15, "Crossover skew-join ratio drifted");
+assert(crossoverEngineering.spark_skew.broadcast.join_shuffle_present === false && crossoverEngineering.spark_skew.broadcast.query_shuffle_read_bytes === 7663, "Crossover broadcast boundary drifted");
+assert(crossoverEngineering.boundaries.some((value) => value.includes("do not establish stable end-to-end acceleration")), "Crossover timing boundary is missing");
 
 const p1 = await verifyManifest("public/case-studies/exactly-once-drills/results/u6-local-mac/manifest.json");
 assert(p1.result.failure_classes.length === 5, "p1 must retain all five induced failure classes");

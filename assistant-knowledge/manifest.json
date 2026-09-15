@@ -266,7 +266,7 @@
     {
       "owner": "LucisZhang",
       "repo": "crossover-study",
-      "commit": "bd8ddb12ccaa99adafa0679cda664fc1fca08caa",
+      "commit": "a18646d95ab4d32446b723303ab5c3d50e33e173",
       "label": {
         "en": "Crossover Study",
         "zh": "Crossover Study"
@@ -283,6 +283,10 @@
       "files": [
         "README.md",
         "docs/demo-data-schemas.md",
+        "docs/hive-gold/README.md",
+        "docs/spark-skew/RESULTS.md",
+        "docs/spark-skew/VALIDATION.json",
+        "docs/spark-skew/20260914T152659358562Z-audit.json",
         "results/lineage.md",
         "results/dq/waterfall.json",
         "scripts/export_workbench.py"

@@ -188,6 +188,8 @@ test("Crossover Study renders with no JavaScript: the cached query, table, and r
 
   await expect(page.locator(SEL.exhibit("02")).locator(".crossover-curve-table")).toHaveCount(2);
   await expect(page.getByTestId("crossover-receipts-list").locator(".crossover-receipt")).toHaveCount(6);
+  await expect(page.getByTestId("crossover-engineering-evidence")).toContainText("4 tables");
+  await expect(page.getByTestId("crossover-engineering-evidence")).toContainText("2.22 → 1.30");
 
   await context.close();
 });
@@ -234,8 +236,8 @@ test("zh Crossover Study carries independently-written zh copy with no long Engl
   // two-pane diff, not an untranslated sentence -- every other string in
   // this exhibit (title, intro, disclosure, query-index blurbs) is
   // independently translated.
-  const ceilings: Record<string, number> = { "01": 10, "02": 8, "03": 8 };
-  for (const num of ["01", "02", "03"]) {
+  const ceilings: Record<string, number> = { "01": 10, "02": 8, "03": 8, "04": 8 };
+  for (const num of ["01", "02", "03", "04"]) {
     const exhibitText = await page.locator(SEL.exhibit(num)).innerText();
     expect(containsCJK(exhibitText)).toBe(true);
     expect(longestLatinWordRun(exhibitText)).toBeLessThanOrEqual(ceilings[num]);
@@ -243,19 +245,19 @@ test("zh Crossover Study carries independently-written zh copy with no long Engl
 });
 
 test.describe("Crossover Study mobile layout", () => {
-  test("no horizontal overflow at 390 or 360, first screen and exhibit 03; the results table folds to label:value rows", async ({ page }, testInfo) => {
+  test("no horizontal overflow at 390 or 360, first screen and engineering evidence; the results table folds to label:value rows", async ({ page }, testInfo) => {
     test.skip(testInfo.project.name !== "mobile", "Overflow audit is meaningful only at narrow viewports.");
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(ROUTE, { waitUntil: "networkidle" });
     await assertNoHorizontalOverflow(page, `${ROUTE} at 390 (first screen)`);
     await expect(page.locator(SEL.exhibit("01")).getByTestId("crossover-results-table").locator("thead")).toBeHidden();
-    await page.locator(SEL.exhibit("03")).scrollIntoViewIfNeeded();
-    await assertNoHorizontalOverflow(page, `${ROUTE} at 390 (exhibit 03)`);
+    await page.locator(SEL.exhibit("04")).scrollIntoViewIfNeeded();
+    await assertNoHorizontalOverflow(page, `${ROUTE} at 390 (exhibit 04)`);
 
     await page.setViewportSize({ width: 360, height: 800 });
     await page.goto(ROUTE, { waitUntil: "networkidle" });
     await assertNoHorizontalOverflow(page, `${ROUTE} at 360 (first screen)`);
-    await page.locator(SEL.exhibit("03")).scrollIntoViewIfNeeded();
-    await assertNoHorizontalOverflow(page, `${ROUTE} at 360 (exhibit 03)`);
+    await page.locator(SEL.exhibit("04")).scrollIntoViewIfNeeded();
+    await assertNoHorizontalOverflow(page, `${ROUTE} at 360 (exhibit 04)`);
   });
 });

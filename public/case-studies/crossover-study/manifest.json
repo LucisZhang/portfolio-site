@@ -33,12 +33,20 @@
       "bytes": 14822,
       "sha256": "f99a5827046edfee5b6bc7a4f2dc7fb5550eefdcfc6757361148c28b781f78aa",
       "kind": "minimal_recorded_exhibit_projection"
+    },
+    {
+      "path": "engineering-evidence.json",
+      "bytes": 2476,
+      "sha256": "63969d35bd7790951e1bca98bb5aed29a98c80b382ad523f630c90b7c434fb4b",
+      "kind": "field_level_engineering_evidence_projection"
     }
   ],
   "boundaries": [
     "The Amazon null is scoped to this catalog, temporal split, five-core population, and observed history depths.",
     "The ML-32M n*=20 result is a regime contrast, not causal proof that catalog churn alone creates the crossover.",
     "Recall@20 did not confirm the three ML-32M deep-bucket wins; the page labels that robustness failure.",
-    "No MiniLM weights, semantic-search index, raw reviews, user identifiers, or per-user arrays are included."
+    "No MiniLM weights, semantic-search index, raw reviews, user identifiers, or per-user arrays are included.",
+    "Hive is a catalog service here; Spark SQL executes the projections.",
+    "The skew and broadcast experiment does not establish stable end-to-end acceleration."
   ]
 }

@@ -66,10 +66,10 @@
   "crossover-study": {
     "aliases": "crossover study batch recsys lab recommender lab lakehouse study 推荐实验 湖仓研究",
     "domains": "data engineering recommender systems lakehouse batch processing large scale evaluation 数据工程 推荐系统 数据湖仓 批处理 大规模评估",
-    "capabilities": "Spark Iceberg bronze silver gold data contracts reconciliation waterfall deduplication five-core filtering item-kNN ALS collaborative filtering MiniLM embeddings semantic retrieval popularity baseline full-catalog ranking NDCG recall MRR temporal split user bootstrap 数据契约 对账瀑布 去重 五核过滤 协同过滤 语义检索 热门基线 全目录排序 时间切分 用户自举",
-    "useCases": "evaluate recommenders on full catalog ranking build a governed lakehouse on a laptop measure when personalization beats popularity account for every dropped row 在全目录排序上评估推荐系统 在笔记本上搭建受治理湖仓 测量个性化何时赢过热门榜 对账每一条被剔除的记录",
+    "capabilities": "Spark Spark SQL Iceberg Hive Metastore Postgres catalog AQE adaptive query execution skew join broadcast join data skew bronze silver gold data contracts reconciliation waterfall deduplication five-core filtering item-kNN ALS collaborative filtering MiniLM embeddings semantic retrieval popularity baseline full-catalog ranking NDCG recall MRR temporal split user bootstrap 数据倾斜 倾斜连接 广播连接 元数据目录 数据契约 对账瀑布 去重 五核过滤 协同过滤 语义检索 热门基线 全目录排序 时间切分 用户自举",
+    "useCases": "evaluate recommenders on full catalog ranking build a governed lakehouse on a laptop register Iceberg tables in Hive Metastore compare AQE skew and broadcast joins measure when personalization beats popularity account for every dropped row 在全目录排序上评估推荐系统 在笔记本上搭建受治理湖仓 用 Hive Metastore 注册 Iceberg 表 对比 AQE 倾斜连接与广播连接 测量个性化何时赢过热门榜 对账每一条被剔除的记录",
     "roles": "data engineer recommender engineer ML engineer data platform engineer 数据工程师 推荐系统工程师 机器学习工程师 数据平台工程师",
-    "regionalTerms": "資料工程 推薦系統 資料湖倉 批次處理 排序評估"
+    "regionalTerms": "資料工程 推薦系統 資料湖倉 批次處理 排序評估 資料傾斜 中繼資料目錄"
   },
   "groupconv-atlas": {
     "aliases": "GroupConv Atlas grouped convolution depthwise 分组卷积 深度卷积 算子性能图谱",
