@@ -1,6 +1,5 @@
 "use client";
 
-import { EvidenceDisclosure } from "@/components/exhibition/EvidenceDisclosure";
 import { EvidenceFileLink } from "@/components/exhibition/EvidenceFileLink";
 import { useI18n } from "@/lib/i18n";
 import evidence from "../../../public/case-studies/crossover-study/engineering-evidence.json";
@@ -22,7 +21,7 @@ export function CrossoverEngineeringEvidence() {
         {locale === "en" ? <>Balance improved.<br /><em>Speed did not settle.</em></> : <>任务更均衡。<br /><em>耗时没有稳稳变快。</em></>}
       </h1>
 
-      <EvidenceDisclosure project="crossover">
+      <div className="crossover-engineering-body">
         <div className="crossover-engineering-list" data-testid="crossover-engineering-evidence">
           <article>
             <p className="crossover-eyebrow-small">HIVE METASTORE · GOLD SQL</p>
@@ -57,7 +56,7 @@ export function CrossoverEngineeringEvidence() {
             : `广播组记录的 ${skew.broadcast.query_shuffle_read_bytes.toLocaleString("en-US")} 字节来自后续指纹聚合，不含广播流量，也不是总网络传输量。Hive 在这里保存目录元数据，计算仍由 Spark 执行。`}
         </p>
         <p><EvidenceFileLink source="public/case-studies/crossover-study/engineering-evidence.json" /></p>
-      </EvidenceDisclosure>
+      </div>
     </section>
   );
 }
