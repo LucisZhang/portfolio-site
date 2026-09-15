@@ -752,6 +752,8 @@ const projectCatalog: Project[] = [
     stack: projectStack(
       "PySpark",
       "Apache Iceberg",
+      "Hive Metastore",
+      { en: "AQE / skew join", zh: "AQE / 倾斜连接" },
       { en: "Full-catalog ranking", zh: "全目录排序" },
       { en: "Paired bootstrap", zh: "配对自举" },
       { en: "Benjamini–Hochberg FDR", zh: "Benjamini–Hochberg FDR" },
@@ -776,6 +778,14 @@ const projectCatalog: Project[] = [
         en: "The same ML-32M arm loses −0.3844 at zero history, a bucket containing 43.9% of test users. Popularity still wins globally. The crossover changes the deep-history tail; it does not reverse the deployment default.",
         zh: "同一个 ML-32M 模型在零历史用户上输掉 −0.3844，而这个分段占测试用户的 43.9%。全局仍是热门榜赢。交叉点改变的是深历史尾部，不是默认部署选择。",
       },
+      {
+        en: "A Hive Metastore backed by Postgres registered four existing Iceberg tables without rewriting data. Spark SQL then checked eight snapshots and three gold projections over 15,473,536 interactions; every bidirectional row difference was zero.",
+        zh: "用 Postgres 承载 Hive 元数据服务，把 4 张既有 Iceberg 表免重写注册进去。随后由 Spark 的 SQL 引擎核对 8 个快照，并在 15,473,536 条交互上验证 3 类金层指标；全量双向行差异均为零。",
+      },
+      {
+        en: "On 43,365,424 interactions, AQE skew join lowered the join-stage task-time max/median from 2.22 to 1.30. The elapsed-time ranges still overlapped, so I keep the balance improvement and do not claim stable end-to-end acceleration.",
+        zh: "在 43,365,424 条交互上，AQE 倾斜连接把连接阶段任务耗时的最大值/中位数从 2.22 降到 1.30。各组端到端耗时区间仍有重叠，因此这里只保留均衡性改善，不声称稳定提速。",
+      },
     ],
     provenance: [
       {
@@ -785,6 +795,10 @@ const projectCatalog: Project[] = [
       {
         en: "The ML-32M curve resolves to runs 20260820T221055Z-20d8ff9 and 20260820T221701Z-20d8ff9. The page projection preserves config hashes, dataset hashes, snapshot IDs, seeds, hardware, and wall-clock time for all six source runs.",
         zh: "ML-32M 曲线对应运行 20260820T221055Z-20d8ff9 与 20260820T221701Z-20d8ff9。页面投影保留六次源运行的配置哈希、数据哈希、快照 ID、seed、硬件与耗时。",
+      },
+      {
+        en: "The Hive and skew evidence is pinned to crossover-study commit a18646d. The site publishes a small field-level projection plus source-file hashes, not the raw run log or local artifact paths.",
+        zh: "Hive 与倾斜实验的证据锁定到 crossover-study 提交 a18646d。本站只发布字段级小型投影与源文件哈希，不公开原始运行日志或本地 artifact 路径。",
       },
     ],
     boundaries: [
@@ -799,6 +813,10 @@ const projectCatalog: Project[] = [
       {
         en: "Single-machine batch evaluation only: no serving system, online metric, or A/B test. Raw reviews, per-user arrays, and MiniLM weights are not shipped with this page.",
         zh: "仅为单机批式评估：没有服务系统、在线指标或 A/B 测试。本页不分发原始评论、逐用户数组或 MiniLM 权重。",
+      },
+      {
+        en: "Hive is the catalog service in this experiment; Spark SQL executes the computation. The skew experiment establishes task-balance and join-plan changes, not a stable end-to-end speedup, and its 7,663-byte shuffle count excludes broadcast traffic.",
+        zh: "本实验中的 Hive 只负责目录服务，计算由 Spark 的 SQL 引擎执行。倾斜实验能证明任务均衡性与连接执行计划发生变化，但不能证明端到端稳定提速；7,663 字节的混洗记录也不包含广播流量。",
       },
     ],
     repository: { status: "public", label: repositoryLabel, href: "https://github.com/LucisZhang/crossover-study" },

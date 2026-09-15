@@ -266,7 +266,7 @@
     {
       "owner": "LucisZhang",
       "repo": "crossover-study",
-      "commit": "bd8ddb12ccaa99adafa0679cda664fc1fca08caa",
+      "commit": "a18646d95ab4d32446b723303ab5c3d50e33e173",
       "label": {
         "en": "Crossover Study",
         "zh": "Crossover Study"
@@ -283,6 +283,10 @@
       "files": [
         "README.md",
         "docs/demo-data-schemas.md",
+        "docs/hive-gold/README.md",
+        "docs/spark-skew/RESULTS.md",
+        "docs/spark-skew/VALIDATION.json",
+        "docs/spark-skew/20260914T152659358562Z-audit.json",
         "results/lineage.md",
         "results/dq/waterfall.json",
         "scripts/export_workbench.py"
@@ -322,7 +326,7 @@
   "siteRepository": {
     "owner": "LucisZhang",
     "repo": "portfolio-site",
-    "commit": "b7a57776c9b9315ed328cbaa65e8be1e5c6d8a1d"
+    "commit": "b874526094aba5ceb184ea4cdf055b38a1b12073"
   },
   "siteSources": [
     {
@@ -662,7 +666,9 @@
         },
         "src/components/CrossoverProof.tsx",
         "src/components/crossover/CrossoverExhibit.tsx",
+        "src/components/crossover/CrossoverEngineeringEvidence.tsx",
         "public/case-studies/crossover-study/exhibits.json",
+        "public/case-studies/crossover-study/engineering-evidence.json",
         "public/case-studies/crossover-study/workbench/results/amazon-null-test.json",
         "public/case-studies/crossover-study/workbench/results/ml32m-counterexample.json",
         "public/case-studies/crossover-study/workbench/results/counterexample-caveat.json",

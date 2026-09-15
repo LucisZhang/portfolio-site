@@ -11,6 +11,7 @@ export const artifactPaths = [
   "/case-studies/credit-policy-desk/synthetic-credit-data.csv",
   "/case-studies/credit-policy-desk/synthetic-credit-data.json",
   "/case-studies/credit-policy-desk/synthetic-credit-sample.csv",
+  "/case-studies/crossover-study/engineering-evidence.json",
   "/case-studies/crossover-study/exhibits.json",
   "/case-studies/crossover-study/manifest.json",
   "/case-studies/crossover-study/workbench/iceberg-plate.json",

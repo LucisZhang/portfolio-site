@@ -501,6 +501,52 @@
   align-items: center;
 }
 
+/* ---------- Exhibit 04: recorded engineering evidence ---------- */
+.crossover-engineering-list {
+  margin-top: 24px;
+  border-top: 1px solid var(--hairline);
+}
+
+.crossover-engineering-list article {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.7fr) minmax(220px, 1.2fr) minmax(280px, 1.8fr) auto;
+  gap: 18px 28px;
+  align-items: baseline;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.crossover-engineering-list h2,
+.crossover-engineering-list p {
+  margin: 0;
+}
+
+.crossover-engineering-list h2 {
+  font-family: var(--display-serif);
+  font-size: clamp(1.15rem, 2vw, 1.55rem);
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.crossover-engineering-list article > p:not(.crossover-eyebrow-small),
+.crossover-engineering-boundary {
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.crossover-engineering-list a {
+  min-height: 44px;
+  color: var(--accent);
+  font-size: 0.76rem;
+  text-underline-offset: 3px;
+}
+
+.crossover-engineering-boundary {
+  max-width: 84ch;
+  margin: 18px 0 0;
+}
+
 /* ---------- Mobile: two-column label:value fold for text-heavy result
    rows (spec: "mobile table grammar, two-column fold for text-heavy
    cells"). Horizontal scroll alone stays readable for narrow numeric
@@ -511,6 +557,11 @@
    six query shapes -- harmless on numeric-only queries, load-bearing on
    text-heavy ones. */
 @media (max-width: 700px) {
+  .crossover-engineering-list article {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
   .crossover-bench {
     grid-template-columns: 1fr;
   }

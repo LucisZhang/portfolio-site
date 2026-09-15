@@ -130,14 +130,14 @@ export const recruiterQuestionsByRoute: Record<string, { en: string[]; zh: strin
     en: [
       "Why did the Amazon personalization curve remain a null result across every depth segment, and what decision did that negative finding support?",
       "What does the ML-32M crossover at n*=20 establish, and why does the failed Recall@20 robustness check limit the claim?",
-      "How does 41.11% catalog churn constrain the attainable personalization ceiling, and why is that mechanism evidence not a causal estimate?",
-      "How can I trace the three exhibits back to the recorded run IDs and inspect the full demo without shipping the MiniLM browser model here?",
+      "How did you register existing Iceberg tables in Hive Metastore and prove the Spark SQL gold projections remained row-equivalent?",
+      "What changed under AQE skew join and broadcast join, and why do you stop short of claiming a stable end-to-end speedup?",
     ],
     zh: [
       "为什么 Amazon 个性化曲线在所有深度分段上仍是空结果？这个负结果支持了什么决策？",
       "ML-32M 在 n*=20 的交叉点能说明什么？Recall@20 稳健性检查失败又如何限制这一结论？",
-      "41.11% 的目录换血如何约束可达到的个性化上限？为什么这属于机制证据而不是因果估计？",
-      "如何把三件展品追溯到已记录的 run_id，并在本站不移植 MiniLM 浏览器模型的前提下查看完整 demo？",
+      "你如何把既有 Iceberg 表注册进 Hive Metastore，并证明 Spark SQL 的 gold 指标仍与原实现逐行一致？",
+      "AQE 倾斜连接与广播连接分别改变了什么？为什么这些结果还不足以声称端到端稳定提速？",
     ],
   },
   "/projects/margin-control-tower": {

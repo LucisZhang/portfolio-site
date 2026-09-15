@@ -281,6 +281,12 @@
       "sha256": "f99a5827046edfee5b6bc7a4f2dc7fb5550eefdcfc6757361148c28b781f78aa"
     },
     {
+      "id": "public/case-studies/crossover-study/engineering-evidence.json",
+      "status": "local",
+      "localPath": "public/case-studies/crossover-study/engineering-evidence.json",
+      "sha256": "63969d35bd7790951e1bca98bb5aed29a98c80b382ad523f630c90b7c434fb4b"
+    },
+    {
       "id": "src/lib/assistant-retrieval.ts",
       "status": "local",
       "localPath": "src/lib/assistant-retrieval.ts",
@@ -290,7 +296,7 @@
       "id": "src/data/assistant-knowledge.generated.json",
       "status": "local",
       "localPath": "src/data/assistant-knowledge.generated.json",
-      "sha256": "f56a746fa40331c2008d5d1dd52e05778a710c043ecec20ac009358a028d24e7"
+      "sha256": "52d7e03855bc499ff2ba37e7c8f97be49b5f05ef898f13d695815cd72de903a0"
     },
     {
       "id": "scripts/generate-ask-recorded-example.mjs",

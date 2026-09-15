@@ -6,6 +6,7 @@ import type { Project } from "@/lib/projects";
 import { siteIdentity } from "@/lib/site-config";
 import "./crossover.css";
 import { CrossoverCurves } from "./CrossoverCurves";
+import { CrossoverEngineeringEvidence } from "./CrossoverEngineeringEvidence";
 import { CrossoverSourceReceipts } from "./CrossoverSourceReceipts";
 import { SqlWorkbench } from "./SqlWorkbench";
 
@@ -31,6 +32,7 @@ export default function CrossoverPage({ project, icebergSnapshotId }: { project:
       <SqlWorkbench icebergSnapshotId={icebergSnapshotId} />
       <CrossoverCurves />
       <CrossoverSourceReceipts />
+      <CrossoverEngineeringEvidence />
 
       <ProjectReport project={project} sections={["results", "limitations"]} />
     </div>

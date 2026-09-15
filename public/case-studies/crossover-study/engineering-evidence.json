@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "source": {
+    "repository": "LucisZhang/crossover-study",
+    "revision": "a18646d95ab4d32446b723303ab5c3d50e33e173",
+    "inputs": [
+      { "path": "docs/hive-gold/README.md", "bytes": 8827, "sha256": "70d0ee90b10d1384dc330fc330f425fd38c9bc877e92ab82088a9218fc91d87d" },
+      { "path": "docs/spark-skew/RESULTS.md", "bytes": 8411, "sha256": "e069e6cb67a555f1048d17d787d70aba91ea9f5d4084235391d20999e4002a4c" },
+      { "path": "docs/spark-skew/VALIDATION.json", "bytes": 1850, "sha256": "d6dd4bd9c3fec9dadc4631fef642f1dffa1b1e4dc0dfb8c9430d20de52f3e311" },
+      { "path": "docs/spark-skew/20260914T152659358562Z-audit.json", "bytes": 9804, "sha256": "7da7d41e255c5ab65b4ff14520451ea1232e1f571a74a0f1f9e01ef682023784" }
+    ]
+  },
+  "hive_catalog": {
+    "run_id": "hive-gold-20260915T033046Z-337fe533",
+    "valid": true,
+    "execution_engine": "Spark SQL",
+    "catalog_backend": "Hive Metastore/Postgres",
+    "registered_tables": 4,
+    "snapshot_checks": 8,
+    "source_interactions": 15473536,
+    "parity_outputs": 3,
+    "difference_rows": 0
+  },
+  "spark_skew": {
+    "suite_id": "20260914T152659358562Z",
+    "valid": true,
+    "interactions": 43365424,
+    "items": 1610012,
+    "measured_repeats_per_arm": 3,
+    "all_28_trial_fingerprints_equal": true,
+    "baseline": { "run_id": "20260914T152659358562Z-A-200", "join_time_max_median": 2.222272727272727, "shuffle_read_bytes": 2432786998, "median_seconds": 54.77833170897793 },
+    "skew_join": { "run_id": "20260914T152659358562Z-C-200", "join_time_max_median": 1.2987078794020774, "median_seconds": 53.68724787503015, "median_change_vs_baseline_percent": -1.9918164717837805 },
+    "broadcast": { "run_id": "20260914T152659358562Z-D-200", "join_shuffle_present": false, "query_shuffle_read_bytes": 7663, "median_seconds": 54.607035125023685 },
+    "validation_tests_passed": 698
+  },
+  "boundaries": [
+    "Hive Metastore stores catalog metadata; Spark SQL, not Hive on Tez or MapReduce, executes the gold projections.",
+    "The Spark arms produced identical content fingerprints, but their elapsed-time ranges overlap and do not establish stable end-to-end acceleration.",
+    "The 7,663-byte broadcast-arm shuffle count comes from the later fingerprint aggregation and excludes broadcast traffic; it is not total network transfer.",
+    "A separate clean-baseline headline reproduction remained byte-exact mismatched, with the numerical sensitivity still unresolved."
+  ]
+}

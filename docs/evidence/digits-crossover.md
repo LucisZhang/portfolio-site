@@ -129,3 +129,23 @@ curated queries already narrate the Freeze → Rank → Route → Measure →
 Falsify pipeline as runnable queries, so a second prose restatement would
 be redundant rather than load-bearing) — `problem`/`audience` remain
 unrendered everywhere on the site, unchanged precedent.
+
+## 04 — Hive catalog and Spark skew evidence
+
+`CrossoverEngineeringEvidence.tsx` reads
+`public/case-studies/crossover-study/engineering-evidence.json` directly. The projection is
+pinned to public source commit `a18646d95ab4d32446b723303ab5c3d50e33e173` and carries the
+byte count and SHA-256 of each allowlisted source file.
+
+| Rendered value | Source | jsonPath |
+| --- | --- | --- |
+| 4 registered tables, 8 snapshot checks, 15,473,536 source interactions, 3 parity outputs, 0 differing rows | `engineering-evidence.json` | `.hive_catalog` |
+| 43,365,424 interactions and identical fingerprints across 28 outputs | `engineering-evidence.json` | `.spark_skew.interactions`, `.spark_skew.all_28_trial_fingerprints_equal` |
+| Join-stage task-time max/median 2.22 → 1.30 | `engineering-evidence.json` | `.spark_skew.baseline.join_time_max_median`, `.spark_skew.skew_join.join_time_max_median` |
+| Three-run median difference 1.99% and 7,663 B later fingerprint shuffle | `engineering-evidence.json` | `.spark_skew.skew_join.median_change_vs_baseline_percent`, `.spark_skew.broadcast.query_shuffle_read_bytes` |
+
+The page states the two necessary cutlines beside the numbers: Hive Metastore is the catalog
+service while Spark SQL executes the projections, and the skew/broadcast plans do not establish
+stable end-to-end acceleration. The 7,663-byte count excludes broadcast traffic and is not total
+network transfer. The old headline reproduction's unresolved byte-exact mismatch remains in the
+projection boundaries rather than being converted into a pass.
