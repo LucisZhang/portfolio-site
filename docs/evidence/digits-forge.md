@@ -52,7 +52,7 @@ loads only after an explicit click, in `OverloadReplay.tsx`).
 | Value | Label | Source file | JSON path |
 | --- | --- | --- | --- |
 | `99.05%` | task success | `release.json` | `$.training.headline.task_success` |
-| `$35.68` | total measured spend | `release.json` + `phase7_1_gpu_ledger.jsonl` + `phase7_2_gpu_ledger.jsonl` | `$.project_spend.total_usd` + Σ`$[*].usd` (phase7.1) + Σ`$[*].usd` (phase7.2), computed in `scripts/generate-forge-receipts.mjs` → `forge-receipts.json`.`totalMeasuredSpendUsd` |
+| `$35.68` | measured spend through Phase 7.2 | `release.json` + `phase7_1_gpu_ledger.jsonl` + `phase7_2_gpu_ledger.jsonl` | `$.project_spend.total_usd` + Σ`$[*].usd` (phase7.1) + Σ`$[*].usd` (phase7.2), computed in `scripts/generate-forge-receipts.mjs` → `forge-receipts.json`.`totalMeasuredSpendUsd` |
 | `0` (`@ 3× overload`) | upstream 5xx @ 3× overload | `release.json` | `$.phase7_1.gate.sustained_overload_cells[?(@.multiplier==3)].gateway_upstream_5xx_rate` |
 
 Hero paragraph: `project.summary` (`src/lib/projects.ts`, `frontier-forge`

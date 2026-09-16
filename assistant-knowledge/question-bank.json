@@ -26,7 +26,7 @@
               "ref": 1
             },
             {
-              "text": "The flagship, Frontier Forge, walks that whole chain on one task: SFT lifted Qwen3.5-4B from 66.35% to 99.05% task success on complaint triage (n=2000, paired 95% CI), served with vLLM behind a C++20 gateway, at $35.68 total measured spend.",
+              "text": "The flagship, Frontier Forge, walks that whole chain on one task: SFT lifted Qwen3.5-4B from 66.35% to 99.05% task success on complaint triage (n=2000, paired 95% CI), served with vLLM behind a C++20 gateway, at $35.68 measured spend through Phase 7.2.",
               "ref": 2
             },
             {
@@ -40,7 +40,7 @@
               "ref": 1
             },
             {
-              "text": "主打项目 Frontier Forge 在一个任务上走完整条链：SFT 把 Qwen3.5-4B 的投诉分诊任务成功率从 66.35% 提到 99.05%（n=2000，配对 95% CI），vLLM 部署，前面是自己写的 C++20 网关，全程实测花费 $35.68。",
+              "text": "主打项目 Frontier Forge 在一个任务上走完整条链：SFT 把 Qwen3.5-4B 的投诉分诊任务成功率从 66.35% 提到 99.05%（n=2000，配对 95% CI），vLLM 部署，前面是自己写的 C++20 网关，截至 Phase 7.2 实测花费 $35.68。",
               "ref": 2
             },
             {
@@ -63,6 +63,7 @@
                 "n=2000, paired 95% CI",
                 "Qwen3.5-4B",
                 "$35.68",
+                "Measured spend through Phase 7.2",
                 "C++20",
                 "13-node LangGraph",
                 "132 funded live runs",
@@ -268,7 +269,7 @@
               "ref": 1
             },
             {
-              "text": "The links are measured together, not separately: 66.35% to 99.05% task success out of training (n=2000, paired 95% CI), GPTQ-int4 p95 0.963 s from serving, zero upstream 5xx at 3× overload through the gateway — and one bill for the whole thing: $35.68, measured.",
+              "text": "The links are measured together, not separately: 66.35% to 99.05% task success out of training (n=2000, paired 95% CI), GPTQ-int4 p95 0.963 s from serving, zero upstream 5xx at 3× overload through the gateway — and one measured bill through Phase 7.2: $35.68.",
               "ref": 2
             }
           ],
@@ -278,7 +279,7 @@
               "ref": 1
             },
             {
-              "text": "各环节的数字连在一起看，不是各说各的：训练侧 66.35% 到 99.05% 任务成功率（n=2000，配对 95% CI），推理侧 GPTQ-int4 p95 0.963 s，网关侧 3× 过载下上游零 5xx——整条链一张账单：$35.68，实测。",
+              "text": "各环节的数字连在一起看，不是各说各的：训练侧 66.35% 到 99.05% 任务成功率（n=2000，配对 95% CI），推理侧 GPTQ-int4 p95 0.963 s，网关侧 3× 过载下上游零 5xx——截至 Phase 7.2 的实测账单：$35.68。",
               "ref": 2
             }
           ],
@@ -292,6 +293,7 @@
                 "66.35% to 99.05%",
                 "n=2000, paired 95% CI",
                 "$35.68",
+                "Measured spend through Phase 7.2",
                 "3× overload",
                 "zero upstream 5xx"
               ]
