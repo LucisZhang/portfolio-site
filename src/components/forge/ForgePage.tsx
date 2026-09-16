@@ -16,6 +16,7 @@ import "./forge.css";
 import { BoundaryMatrix } from "./BoundaryMatrix";
 import { EvidenceExplorer } from "./EvidenceExplorer";
 import { ForgeConsole } from "./ForgeConsole";
+import { GpuScaling } from "./GpuScaling";
 import { OverloadReplay } from "./OverloadReplay";
 import { ServingBoundary } from "./ServingBoundary";
 import { TrainingLadder } from "./TrainingLadder";
@@ -26,8 +27,9 @@ const headline = releaseJson.training.headline;
 
 // Frontier Forge — the standard-scroll reference implementation (spec §6.0
 // template, §6.1 exhibit script). Hero -> instrument full (01) -> analysis
-// exhibits (02-04) -> recorded overload replay (05) ->
-// SOURCE/RECEIPTS (07 — see BoundaryMatrix/06 for "MODEL BOUNDARY") ->
+// exhibits (02-04) -> recorded overload replay (05) -> GPU replicas and
+// distributed training (06) ->
+// SOURCE/RECEIPTS (08 — see BoundaryMatrix/07 for "MODEL BOUNDARY") ->
 // report layer (Architecture -> Results & negatives -> Limitations). Every
 // number below is read from public/case-studies/frontier-forge/* at import
 // time; nothing here is a typed-in benchmark figure.
@@ -109,6 +111,7 @@ export default function ForgePage({ project }: { project: Project }) {
       <TrainingLadder />
       <ServingBoundary />
       <OverloadReplay />
+      <GpuScaling />
       <BoundaryMatrix />
       <SourceReceipts />
 
@@ -148,12 +151,12 @@ function ForgeFullInstrument() {
 function SourceReceipts() {
   const { locale } = useI18n();
   return (
-    <section id="exhibit-07" className="exhibit" data-exhibit="07" data-bg="ink" aria-labelledby="exhibit-07-title">
+    <section id="exhibit-08" className="exhibit" data-exhibit="08" data-bg="ink" aria-labelledby="exhibit-08-title">
       <p className="exhibit-opening-row">
-        <span className="exhibit-number" aria-hidden="true">07</span>
+        <span className="exhibit-number" aria-hidden="true">08</span>
         <span className="exhibit-eyebrow">{locale === "en" ? "HOW THIS WAS VERIFIED" : zhWrapText("如何验证")}</span>
       </p>
-      <h2 id="exhibit-07-title" className="exhibit-title">
+      <h2 id="exhibit-08-title" className="exhibit-title">
         {locale === "en" ? (
           <>Every claim opens<br /><em>the same command.</em></>
         ) : (
@@ -167,6 +170,8 @@ function SourceReceipts() {
           <dd><code>sha256:{forgeReceipts.releaseJson.sha256}</code></dd>
           <dt><EvidenceFileLink source="public/case-studies/frontier-forge/phase7_1_sustained_gateway_bench.json">{locale === "en" ? "Overload replay receipt" : "过载回放收据"}</EvidenceFileLink></dt>
           <dd><code>sha256:{forgeReceipts.overloadReceipt.sha256}</code></dd>
+          <dt><EvidenceFileLink source="public/case-studies/frontier-forge/gpu-scaling-evidence.json">{locale === "en" ? "GPU replica and DDP/FSDP projection" : "GPU 副本与分布式训练证据"}</EvidenceFileLink></dt>
+          <dd><code>sha256:{forgeReceipts.gpuScalingEvidence.sha256}</code></dd>
           <dt>{locale === "en" ? "Reproduce the headline" : "复现头条结论"}</dt>
           <dd><code>{claimCommands["task-success"]}</code></dd>
           <dt>{locale === "en" ? "Generated" : "生成时间"}</dt>

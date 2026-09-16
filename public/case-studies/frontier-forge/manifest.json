@@ -40,12 +40,19 @@
       "bytes": 600,
       "sha256": "f0c970810eda90151947a2c8e2bb4e4da30366186077e8575fc186f37d408d6b",
       "kind": "recorded_gpu_spend_ledger"
+    },
+    {
+      "path": "gpu-scaling-evidence.json",
+      "bytes": 4442,
+      "sha256": "18b6eacc26fb3033c51758f61044953f351c86f41bc7d432cf42639687748644",
+      "kind": "field_level_gpu_scaling_evidence_projection"
     }
   ],
   "boundaries": [
     "All measured claims remain scoped to the hardware, workload, and run identities recorded in release.json.",
     "The Phase 7.1 replay is a recorded receipt, not a live inference service.",
     "The $35.681 total combines the release.json Phase 1-5 subtotal with the exact Phase 7.1 and Phase 7.2 GPU ledger dollars; RTX 4090 and A10 hours are not combined.",
-    "The architecture SVG is a hand-drawn presentation derivative of the repository README Mermaid flow."
+    "The architecture SVG is a hand-drawn presentation derivative of the repository README Mermaid flow.",
+    "gpu-scaling-evidence.json is a field-level projection of Phase 7.3 and Phase 8 reports pinned to frontier-forge 34e857b417bb9d2767340332ddc1580b7381f334; time-sliced replicas are not hard isolation or multi-GPU scaling, and the two-GPU results are single-machine."
   ]
 }

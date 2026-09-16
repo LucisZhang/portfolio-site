@@ -18,6 +18,7 @@ const outputPath = path.join(repositoryRoot, "src/data/generated/forge-receipts.
 const sources = {
   releaseJson: "public/case-studies/frontier-forge/release.json",
   overloadReceipt: "public/case-studies/frontier-forge/phase7_1_sustained_gateway_bench.json",
+  gpuScalingEvidence: "public/case-studies/frontier-forge/gpu-scaling-evidence.json",
   gpuLedgerPhase71: "public/case-studies/frontier-forge/phase7_1_gpu_ledger.jsonl",
   gpuLedgerPhase72: "public/case-studies/frontier-forge/phase7_2_gpu_ledger.jsonl",
 };
@@ -43,9 +44,10 @@ async function totalMeasuredSpendUsd() {
 }
 
 async function main() {
-  const [releaseJson, overloadReceipt] = await Promise.all([
+  const [releaseJson, overloadReceipt, gpuScalingEvidence] = await Promise.all([
     sha256(sources.releaseJson),
     sha256(sources.overloadReceipt),
+    sha256(sources.gpuScalingEvidence),
   ]);
   const totalMeasuredSpend = await totalMeasuredSpendUsd();
   const release = JSON.parse(await readFile(path.join(repositoryRoot, sources.releaseJson), "utf8"));
@@ -60,6 +62,7 @@ async function main() {
   const output = {
     releaseJson,
     overloadReceipt,
+    gpuScalingEvidence,
     totalMeasuredSpendUsd: Number(totalMeasuredSpend.toFixed(2)),
     snapshotId,
     generatedAt: new Date().toISOString().slice(0, 10),

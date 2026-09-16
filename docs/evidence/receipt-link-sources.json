@@ -16,6 +16,11 @@
       "revision": "06de6e5c1d026dfce8b59c39a83658289925a55e",
       "metadataUrl": "https://api.github.com/repos/LucisZhang/frontier-forge/git/trees/06de6e5c1d026dfce8b59c39a83658289925a55e"
     },
+    "frontier-forge-34e857b417bb9d2767340332ddc1580b7381f334": {
+      "name": "LucisZhang/frontier-forge",
+      "revision": "34e857b417bb9d2767340332ddc1580b7381f334",
+      "metadataUrl": "https://api.github.com/repos/LucisZhang/frontier-forge/git/trees/34e857b417bb9d2767340332ddc1580b7381f334"
+    },
     "margin-control-tower": {
       "name": "LucisZhang/margin-control-tower",
       "revision": "c84559f1f141bc86b728d5a8133b926ad8529273",
@@ -253,6 +258,36 @@
       "sha256": "d132ebece698c98ab996b154067679ea1d74b52e9528834ed19a21a132137929"
     },
     {
+      "id": "frontier-forge:results/phase7_3_summary.md",
+      "repository": "frontier-forge-34e857b417bb9d2767340332ddc1580b7381f334",
+      "path": "results/phase7_3_summary.md",
+      "sha256": "f69c7fb851aec006403b24a55472cebefd076c6d5f19a34e2e27657aeea580d6"
+    },
+    {
+      "id": "frontier-forge:results/phase7_3_tp_reviewed_report.md",
+      "repository": "frontier-forge-34e857b417bb9d2767340332ddc1580b7381f334",
+      "path": "results/phase7_3_tp_reviewed_report.md",
+      "sha256": "6a6789ab06a631ed842b30fc8abfe518e887a7e10172ecd09f79e78b18254e32"
+    },
+    {
+      "id": "frontier-forge:results/phase8_distributed_report.md",
+      "repository": "frontier-forge-34e857b417bb9d2767340332ddc1580b7381f334",
+      "path": "results/phase8_distributed_report.md",
+      "sha256": "77bba83a8b7b39127463ec6c6e6a6c481c169b06f04d3a704bc403e18181c63c"
+    },
+    {
+      "id": "frontier-forge:results/phase8/final-publication/supplement.md",
+      "repository": "frontier-forge-34e857b417bb9d2767340332ddc1580b7381f334",
+      "path": "results/phase8/final-publication/supplement.md",
+      "sha256": "3d476d7604f39dd431e896cf3c770073b3e5e307229b547a98e01049235c4ce9"
+    },
+    {
+      "id": "public/case-studies/frontier-forge/gpu-scaling-evidence.json",
+      "status": "local",
+      "localPath": "public/case-studies/frontier-forge/gpu-scaling-evidence.json",
+      "sha256": "18b6eacc26fb3033c51758f61044953f351c86f41bc7d432cf42639687748644"
+    },
+    {
       "id": "public/case-studies/exactly-once-drills/index.summary.json",
       "repository": "portfolio-site",
       "path": "public/case-studies/exactly-once-drills/index.summary.json",
@@ -296,7 +331,7 @@
       "id": "src/data/assistant-knowledge.generated.json",
       "status": "local",
       "localPath": "src/data/assistant-knowledge.generated.json",
-      "sha256": "52d7e03855bc499ff2ba37e7c8f97be49b5f05ef898f13d695815cd72de903a0"
+      "sha256": "05f40cdf45c6310eb50a68bf14585b7fcc2b0362879c4b7fd92bd7c6423e886f"
     },
     {
       "id": "scripts/generate-ask-recorded-example.mjs",

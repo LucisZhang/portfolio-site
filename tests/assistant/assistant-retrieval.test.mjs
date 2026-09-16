@@ -18,11 +18,11 @@ const finalRepositoryCommits = new Map([
   ["LucisZhang/margin-control-tower", "c84559f1f141bc86b728d5a8133b926ad8529273"],
   ["LucisZhang/credit-policy-desk", "bbad7e0dbf997d7fb64caad5ed3c8bf09e74658e"],
   ["LucisZhang/Voice-in-Security", "81a40142d0f79e8bd8f90db150cd4ffbd4c1a1d8"],
-  ["LucisZhang/frontier-forge", "06de6e5c1d026dfce8b59c39a83658289925a55e"],
+  ["LucisZhang/frontier-forge", "34e857b417bb9d2767340332ddc1580b7381f334"],
   ["LucisZhang/triage-router", "b2734bbcbd75aef1f83b872f31de0212a7926b7f"],
   ["LucisZhang/crossover-study", "a18646d95ab4d32446b723303ab5c3d50e33e173"],
 ]);
-const siteCommit = "19b9513559cae0b22e31747c0ef878e7b4c93443";
+const siteCommit = "19f90ad77f78378dff527a9bbe1ceed57c6c8f8d";
 
 test("generated public knowledge is pinned to final releases and the R2 site revision", () => {
   const snapshot = JSON.parse(readFileSync("src/data/assistant-knowledge.generated.json", "utf8"));
@@ -154,7 +154,7 @@ test("offline assistant cache fails closed on identity and manifest tampering", 
     encoding: "utf8",
   });
   assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
-  assert.match(result.stdout, /assistant knowledge cache self-test passed: 79 files, 755 chunks/u);
+  assert.match(result.stdout, /assistant knowledge cache self-test passed: 83 files, 774 chunks/u);
 });
 
 test("generated public knowledge has globally unique chunk IDs", () => {
@@ -239,6 +239,21 @@ test("retrieval handles English and Chinese project questions with pinned GitHub
       assert.match(chunk.citation.url, /^https:\/\/github\.com\/LucisZhang\/[A-Za-z0-9._-]+\/blob\/[a-f0-9]{40}\//u);
       assert.doesNotMatch(chunk.citation.url, /\/blob\/main\//u);
     }
+  }
+});
+
+test("Frontier Forge Phase 7.3 replica/TP and Phase 8 DDP/FSDP evidence is retrievable from pinned reports", () => {
+  const pinnedForge = /^https:\/\/github\.com\/LucisZhang\/frontier-forge\/blob\/34e857b417bb9d2767340332ddc1580b7381f334\//u;
+  for (const [question, evidence] of [
+    ["Frontier Forge 的 DDP 和 FSDP 吞吐与显存差多少？", /FSDP/u],
+    ["How did FSDP compare with DDP in Frontier Forge Phase 8?", /DDP/u],
+    ["Did time-slicing two vLLM replicas on one RTX 4090 give hard isolation?", /time-slic/iu],
+    ["Frontier Forge tensor parallel TP=2 result", /TP ?=? ?2|TP2/u],
+  ]) {
+    const result = retrieveAssistantKnowledge(question);
+    assert.ok(result, question);
+    assert.ok(result.chunks.some((chunk) => chunk.repository === "LucisZhang/frontier-forge"
+      && pinnedForge.test(chunk.citation.url) && evidence.test(chunk.content)), question);
   }
 });
 

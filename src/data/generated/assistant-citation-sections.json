@@ -65,10 +65,14 @@
       "zh": "过载回放"
     },
     "exhibit-06": {
+      "en": "GPU replicas & DDP/FSDP",
+      "zh": "GPU 副本与分布式训练"
+    },
+    "exhibit-07": {
       "en": "Model boundary",
       "zh": "模型边界"
     },
-    "exhibit-07": {
+    "exhibit-08": {
       "en": "Source & receipts",
       "zh": "源码与记录"
     }

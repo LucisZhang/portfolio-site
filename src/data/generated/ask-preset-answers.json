@@ -12,7 +12,7 @@
             "en": "See the pinned source lines for Xiangguo Zhang portfolio",
             "zh": "查看章向国作品集：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/lib/site-config.ts#L1-L37"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/19f90ad77f78378dff527a9bbe1ceed57c6c8f8d/src/lib/site-config.ts#L1-L37"
         },
         {
           "sourceId": "frontier-forge:README.md",
@@ -21,7 +21,7 @@
             "en": "See the README's verified claims in Frontier Forge",
             "zh": "查看 Frontier Forge：README 中的已验证结论"
           },
-          "url": "https://github.com/LucisZhang/frontier-forge/blob/06de6e5c1d026dfce8b59c39a83658289925a55e/README.md"
+          "url": "https://github.com/LucisZhang/frontier-forge/blob/34e857b417bb9d2767340332ddc1580b7381f334/README.md"
         },
         {
           "sourceId": "release-guardian:README.md",
@@ -40,7 +40,7 @@
             "ref": 1
           },
           {
-            "text": "The flagship, Frontier Forge, walks that whole chain on one task: SFT lifted Qwen3.5-4B from 66.35% to 99.05% task success on complaint triage (n=2000, paired 95% CI), served with vLLM behind a C++20 gateway, at $35.68 total measured spend.",
+            "text": "The flagship, Frontier Forge, walks that whole chain on one task: SFT lifted Qwen3.5-4B from 66.35% to 99.05% task success on complaint triage (n=2000, paired 95% CI), served with vLLM behind a C++20 gateway, at $35.68 measured spend through Phase 7.2.",
             "ref": 2
           },
           {
@@ -56,7 +56,7 @@
             "ref": 1
           },
           {
-            "text": "主打项目 Frontier Forge 在一个任务上走完整条链：SFT 把 Qwen3.5-4B 的投诉分诊任务成功率从 66.35% 提到 99.05%（n=2000，配对 95% CI），vLLM 部署，前面是自己写的 C++20 网关，全程实测花费 $35.68。",
+            "text": "主打项目 Frontier Forge 在一个任务上走完整条链：SFT 把 Qwen3.5-4B 的投诉分诊任务成功率从 66.35% 提到 99.05%（n=2000，配对 95% CI），vLLM 部署，前面是自己写的 C++20 网关，截至 Phase 7.2 实测花费 $35.68。",
             "ref": 2
           },
           {
@@ -76,7 +76,7 @@
             "en": "See the README's verified claims in Frontier Forge",
             "zh": "查看 Frontier Forge：README 中的已验证结论"
           },
-          "url": "https://github.com/LucisZhang/frontier-forge/blob/06de6e5c1d026dfce8b59c39a83658289925a55e/README.md"
+          "url": "https://github.com/LucisZhang/frontier-forge/blob/34e857b417bb9d2767340332ddc1580b7381f334/README.md"
         },
         {
           "sourceId": "release-guardian:README.md",
@@ -157,7 +157,7 @@
             "en": "See the recorded evidence file for Xiangguo Zhang portfolio",
             "zh": "查看章向国作品集：评测证据文件"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/package.json"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/19f90ad77f78378dff527a9bbe1ceed57c6c8f8d/package.json"
         },
         {
           "sourceId": "frontier-forge:README.md",
@@ -166,7 +166,7 @@
             "en": "See the README's verified claims in Frontier Forge",
             "zh": "查看 Frontier Forge：README 中的已验证结论"
           },
-          "url": "https://github.com/LucisZhang/frontier-forge/blob/06de6e5c1d026dfce8b59c39a83658289925a55e/README.md"
+          "url": "https://github.com/LucisZhang/frontier-forge/blob/34e857b417bb9d2767340332ddc1580b7381f334/README.md"
         },
         {
           "sourceId": "release-guardian:README.md",
@@ -184,7 +184,7 @@
             "en": "Triage Router · src/lib/projects.ts",
             "zh": "Triage Router · src/lib/projects.ts"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/lib/projects.ts",
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/19f90ad77f78378dff527a9bbe1ceed57c6c8f8d/src/lib/projects.ts",
           "anchor": "exhibit-01"
         }
       ],
@@ -239,7 +239,7 @@
             "en": "See the README's verified claims in Frontier Forge",
             "zh": "查看 Frontier Forge：README 中的已验证结论"
           },
-          "url": "https://github.com/LucisZhang/frontier-forge/blob/06de6e5c1d026dfce8b59c39a83658289925a55e/README.md"
+          "url": "https://github.com/LucisZhang/frontier-forge/blob/34e857b417bb9d2767340332ddc1580b7381f334/README.md"
         },
         {
           "sourceId": "frontier-forge:README.md",
@@ -248,7 +248,7 @@
             "en": "See the README's verified claims in Frontier Forge",
             "zh": "查看 Frontier Forge：README 中的已验证结论"
           },
-          "url": "https://github.com/LucisZhang/frontier-forge/blob/06de6e5c1d026dfce8b59c39a83658289925a55e/README.md"
+          "url": "https://github.com/LucisZhang/frontier-forge/blob/34e857b417bb9d2767340332ddc1580b7381f334/README.md"
         }
       ],
       "en": {
@@ -258,7 +258,7 @@
             "ref": 1
           },
           {
-            "text": "The links are measured together, not separately: 66.35% to 99.05% task success out of training (n=2000, paired 95% CI), GPTQ-int4 p95 0.963 s from serving, zero upstream 5xx at 3× overload through the gateway — and one bill for the whole thing: $35.68, measured.",
+            "text": "The links are measured together, not separately: 66.35% to 99.05% task success out of training (n=2000, paired 95% CI), GPTQ-int4 p95 0.963 s from serving, zero upstream 5xx at 3× overload through the gateway — and one measured bill through Phase 7.2: $35.68.",
             "ref": 2
           }
         ]
@@ -270,7 +270,7 @@
             "ref": 1
           },
           {
-            "text": "各环节的数字连在一起看，不是各说各的：训练侧 66.35% 到 99.05% 任务成功率（n=2000，配对 95% CI），推理侧 GPTQ-int4 p95 0.963 s，网关侧 3× 过载下上游零 5xx——整条链一张账单：$35.68，实测。",
+            "text": "各环节的数字连在一起看，不是各说各的：训练侧 66.35% 到 99.05% 任务成功率（n=2000，配对 95% CI），推理侧 GPTQ-int4 p95 0.963 s，网关侧 3× 过载下上游零 5xx——截至 Phase 7.2 的实测账单：$35.68。",
             "ref": 2
           }
         ]
@@ -286,7 +286,7 @@
             "en": "See the README's verified claims in Frontier Forge",
             "zh": "查看 Frontier Forge：README 中的已验证结论"
           },
-          "url": "https://github.com/LucisZhang/frontier-forge/blob/06de6e5c1d026dfce8b59c39a83658289925a55e/README.md"
+          "url": "https://github.com/LucisZhang/frontier-forge/blob/34e857b417bb9d2767340332ddc1580b7381f334/README.md"
         },
         {
           "sourceId": "portfolio-evidence:home:src/lib/site-config.ts",
@@ -295,7 +295,7 @@
             "en": "See the pinned source lines for Xiangguo Zhang portfolio",
             "zh": "查看章向国作品集：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/lib/site-config.ts#L1-L37"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/19f90ad77f78378dff527a9bbe1ceed57c6c8f8d/src/lib/site-config.ts#L1-L37"
         },
         {
           "sourceId": "frontier-forge:MODEL_CARD.md",
@@ -304,7 +304,7 @@
             "en": "See the pinned source lines in Frontier Forge",
             "zh": "查看 Frontier Forge：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/frontier-forge/blob/06de6e5c1d026dfce8b59c39a83658289925a55e/MODEL_CARD.md"
+          "url": "https://github.com/LucisZhang/frontier-forge/blob/34e857b417bb9d2767340332ddc1580b7381f334/MODEL_CARD.md"
         }
       ],
       "en": {
@@ -350,7 +350,7 @@
             "en": "See the README's verified claims in Frontier Forge",
             "zh": "查看 Frontier Forge：README 中的已验证结论"
           },
-          "url": "https://github.com/LucisZhang/frontier-forge/blob/06de6e5c1d026dfce8b59c39a83658289925a55e/README.md"
+          "url": "https://github.com/LucisZhang/frontier-forge/blob/34e857b417bb9d2767340332ddc1580b7381f334/README.md"
         },
         {
           "sourceId": "frontier-forge:README.md",
@@ -359,7 +359,7 @@
             "en": "See the README's verified claims in Frontier Forge",
             "zh": "查看 Frontier Forge：README 中的已验证结论"
           },
-          "url": "https://github.com/LucisZhang/frontier-forge/blob/06de6e5c1d026dfce8b59c39a83658289925a55e/README.md"
+          "url": "https://github.com/LucisZhang/frontier-forge/blob/34e857b417bb9d2767340332ddc1580b7381f334/README.md"
         }
       ],
       "en": {
@@ -397,7 +397,7 @@
             "en": "See the pinned source lines for Release Guardian",
             "zh": "查看 Release Guardian：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/lib/projects.ts"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/19f90ad77f78378dff527a9bbe1ceed57c6c8f8d/src/lib/projects.ts"
         },
         {
           "sourceId": "portfolio-evidence:projects-release-guardian:src/lib/projects.ts",
@@ -406,7 +406,7 @@
             "en": "See the pinned source lines for Release Guardian",
             "zh": "查看 Release Guardian：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/lib/projects.ts"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/19f90ad77f78378dff527a9bbe1ceed57c6c8f8d/src/lib/projects.ts"
         },
         {
           "sourceId": "release-guardian:README.md",
@@ -461,7 +461,7 @@
             "en": "See the pinned source lines for Release Guardian",
             "zh": "查看 Release Guardian：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/lib/projects.ts"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/19f90ad77f78378dff527a9bbe1ceed57c6c8f8d/src/lib/projects.ts"
         },
         {
           "sourceId": "release-guardian:docs/architecture.mmd",
@@ -517,7 +517,7 @@
             "en": "See the pinned source lines for Release Guardian",
             "zh": "查看 Release Guardian：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/public/case-studies/release-guardian/data/evaluation-live.csv"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/19f90ad77f78378dff527a9bbe1ceed57c6c8f8d/public/case-studies/release-guardian/data/evaluation-live.csv"
         },
         {
           "sourceId": "release-guardian:README.md",
@@ -666,7 +666,7 @@
             "en": "See the recorded evidence file for RAG Quality Lab",
             "zh": "查看 RAG Quality Lab：评测证据文件"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/public/case-studies/rag-quality-lab/c3-timebox/dependency-preflight.json"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/19f90ad77f78378dff527a9bbe1ceed57c6c8f8d/public/case-studies/rag-quality-lab/c3-timebox/dependency-preflight.json"
         },
         {
           "sourceId": "rag-quality-lab:scripts/run_s1_retrieval_ab.py",
@@ -956,7 +956,7 @@
             "en": "See the recorded evidence file for Privacy Preflight",
             "zh": "查看隐私预检：评测证据文件"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/public/case-studies/privacy-preflight/ocr-fixture-benchmark.json"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/19f90ad77f78378dff527a9bbe1ceed57c6c8f8d/public/case-studies/privacy-preflight/ocr-fixture-benchmark.json"
         },
         {
           "sourceId": "privacy-preflight:README.md",
@@ -1499,7 +1499,7 @@
             "en": "See the pinned source lines for Credit Policy Desk",
             "zh": "查看 Credit Policy Desk：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/lib/projects.ts"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/19f90ad77f78378dff527a9bbe1ceed57c6c8f8d/src/lib/projects.ts"
         },
         {
           "sourceId": "credit-policy-desk:README.md",
@@ -1601,7 +1601,7 @@
             "en": "See the pinned source lines for Analytics Tandem",
             "zh": "查看 Analytics Tandem：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/components/ProjectProof.tsx#L22-L33"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/19f90ad77f78378dff527a9bbe1ceed57c6c8f8d/src/components/ProjectProof.tsx#L22-L33"
         },
         {
           "sourceId": "portfolio-site:projects-credit-policy-desk:src/lib/projects.ts",
@@ -1610,7 +1610,7 @@
             "en": "Credit Policy Desk · src/lib/projects.ts",
             "zh": "Credit Policy Desk · src/lib/projects.ts"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/lib/projects.ts"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/19f90ad77f78378dff527a9bbe1ceed57c6c8f8d/src/lib/projects.ts"
         }
       ],
       "en": {
@@ -1648,7 +1648,7 @@
             "en": "See the pinned source lines for Analytics Tandem",
             "zh": "查看 Analytics Tandem：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/components/ProjectProof.tsx#L22-L33"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/19f90ad77f78378dff527a9bbe1ceed57c6c8f8d/src/components/ProjectProof.tsx#L22-L33"
         },
         {
           "sourceId": "portfolio-site:projects-credit-policy-desk:src/lib/projects.ts",
@@ -1657,7 +1657,7 @@
             "en": "Credit Policy Desk · src/lib/projects.ts",
             "zh": "Credit Policy Desk · src/lib/projects.ts"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/lib/projects.ts"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/19f90ad77f78378dff527a9bbe1ceed57c6c8f8d/src/lib/projects.ts"
         }
       ],
       "en": {
@@ -1695,7 +1695,7 @@
             "en": "See the pinned source lines for Analytics Tandem",
             "zh": "查看 Analytics Tandem：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/components/CaseStudyBlock.tsx#L6-L17"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/19f90ad77f78378dff527a9bbe1ceed57c6c8f8d/src/components/CaseStudyBlock.tsx#L6-L17"
         },
         {
           "sourceId": "portfolio-evidence:projects-analytics-tandem:src/components/ProjectProof.tsx",
@@ -1704,7 +1704,7 @@
             "en": "See the pinned source lines for Analytics Tandem",
             "zh": "查看 Analytics Tandem：锁定的源码行"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/components/ProjectProof.tsx#L22-L33"
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/19f90ad77f78378dff527a9bbe1ceed57c6c8f8d/src/components/ProjectProof.tsx#L22-L33"
         }
       ],
       "en": {
@@ -1845,7 +1845,7 @@
             "en": "Xiangguo Zhang portfolio · src/lib/projects.ts",
             "zh": "章向国作品集 · src/lib/projects.ts"
           },
-          "url": "https://github.com/LucisZhang/portfolio-site/blob/19b9513559cae0b22e31747c0ef878e7b4c93443/src/lib/projects.ts",
+          "url": "https://github.com/LucisZhang/portfolio-site/blob/19f90ad77f78378dff527a9bbe1ceed57c6c8f8d/src/lib/projects.ts",
           "anchor": "exhibit-01"
         }
       ],

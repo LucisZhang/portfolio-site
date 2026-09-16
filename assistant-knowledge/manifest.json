@@ -213,7 +213,7 @@
     {
       "owner": "LucisZhang",
       "repo": "frontier-forge",
-      "commit": "06de6e5c1d026dfce8b59c39a83658289925a55e",
+      "commit": "34e857b417bb9d2767340332ddc1580b7381f334",
       "label": {
         "en": "Frontier Forge",
         "zh": "Frontier Forge"
@@ -227,14 +227,26 @@
         "蒸馏",
         "GRPO",
         "gateway",
-        "网关"
+        "网关",
+        "time-slicing",
+        "tensor parallel",
+        "张量并行",
+        "DDP",
+        "FSDP",
+        "distributed training",
+        "分布式训练",
+        "多副本"
       ],
       "files": [
         "README.md",
         "MODEL_CARD.md",
         "docs/runbooks/phase7_2.md",
         "results/phase5_gateway_report.md",
-        "gateway/bench/phase7_1_report.py"
+        "gateway/bench/phase7_1_report.py",
+        "results/phase7_3_summary.md",
+        "results/phase7_3_tp_reviewed_report.md",
+        "results/phase8_distributed_report.md",
+        "results/phase8/final-publication/supplement.md"
       ]
     },
     {
@@ -326,7 +338,7 @@
   "siteRepository": {
     "owner": "LucisZhang",
     "repo": "portfolio-site",
-    "commit": "19b9513559cae0b22e31747c0ef878e7b4c93443"
+    "commit": "19f90ad77f78378dff527a9bbe1ceed57c6c8f8d"
   },
   "siteSources": [
     {
@@ -425,11 +437,13 @@
         "src/components/forge/TrainingLadder.tsx",
         "src/components/forge/ServingBoundary.tsx",
         "src/components/forge/OverloadReplay.tsx",
+        "src/components/forge/GpuScaling.tsx",
         "src/components/forge/BoundaryMatrix.tsx",
         "src/components/forge/forgeRail.ts",
         "docs/evidence/digits-forge.md",
         "public/case-studies/frontier-forge/release.json",
         "public/case-studies/frontier-forge/manifest.json",
+        "public/case-studies/frontier-forge/gpu-scaling-evidence.json",
         "public/case-studies/frontier-forge/claim-commands.json",
         "src/data/generated/forge-receipts.json"
       ]

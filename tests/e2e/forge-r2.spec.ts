@@ -143,7 +143,7 @@ test("Frontier Forge run and request tabs are compact, 44px, and keyboard naviga
   await expect(instrument.locator(".forge-console-request-panel")).toHaveAttribute("aria-labelledby", await requestButtons.last().getAttribute("id") ?? "");
 });
 
-test("Frontier Forge renders with no JavaScript: exhibits 01-05 have static server-rendered content", async ({ browser }) => {
+test("Frontier Forge renders with no JavaScript: exhibits 01-06 have static server-rendered content", async ({ browser }) => {
   // (c) with JS disabled, exhibits 01-05 must show real static tables/values,
   // not an empty shell — this is what proves the content is server-rendered
   // rather than assembled client-side after hydration.
@@ -163,6 +163,13 @@ test("Frontier Forge renders with no JavaScript: exhibits 01-05 have static serv
   // 05: overload summary table (the no-JS-safe part) has the three cells.
   await expect(page.locator(SEL.exhibit("05")).locator("[data-multiplier]")).toHaveCount(3);
   await expect(page.locator(SEL.exhibit("05")).locator("[data-forge-load-replay]")).toBeVisible();
+  // 06: GPU replicas, TP point, and DDP/FSDP variants are static values.
+  const gpu = page.locator(SEL.exhibit("06")).getByTestId("forge-gpu-scaling");
+  await expect(gpu.locator("[data-forge-gpu-block]")).toHaveCount(3);
+  await expect(gpu.locator("[data-training-variant]")).toHaveCount(3);
+  await expect(gpu).toContainText("1.748× / 1.795×");
+  await expect(gpu).toContainText("0.830×");
+  await expect(gpu).toContainText("3,366.58 tok/s");
 
   await context.close();
 });
@@ -244,15 +251,15 @@ for (const locale of ["en", "zh"] as const) {
     expect(await explorer.locator(SEL.tbodyTr).evaluateAll((rows) => rows.map((row) => row.getAttribute("data-dimension")))).toEqual(["training", "training", "training", "training"]);
 
     // Model boundary matrix: negative count >= positive count.
-    const matrix = page.locator(SEL.exhibit("06")).locator("[data-capability]");
+    const matrix = page.locator(SEL.exhibit("07")).locator("[data-capability]");
     const yesCount = await matrix.locator('[data-capability="yes"]').count();
     const noCount = await matrix.locator('[data-capability="no"]').count();
     expect(noCount).toBeGreaterThanOrEqual(yesCount);
-    await expect(page.locator(SEL.exhibit("06")).locator(".forge-not-recorded")).toContainText(locale === "en" ? "NOT RECORDED" : "未记录");
-    // Task D-02: exhibit 06 stays on model suitability — its former
+    await expect(page.locator(SEL.exhibit("07")).locator(".forge-not-recorded")).toContainText(locale === "en" ? "NOT RECORDED" : "未记录");
+    // Task D-02: exhibit 07 (formerly 06) stays on model suitability — its former
     // LIMITATION block (a verbatim copy of boundaries[0]) now lives only in
     // the Limitations section, which lists every boundary exactly once.
-    await expect(page.locator(SEL.exhibit("06")).locator('[data-finding="limitation"]')).toHaveCount(0);
+    await expect(page.locator(SEL.exhibit("07")).locator('[data-finding="limitation"]')).toHaveCount(0);
     const limitationItems = page.locator('[data-project-section="limitations"] [data-limitations] li');
     await expect(limitationItems).toHaveCount(frontierProjectDetail.boundaries.length);
     for (const [index, boundary] of frontierProjectDetail.boundaries.entries()) {
@@ -276,6 +283,60 @@ for (const locale of ["en", "zh"] as const) {
     await expect(page.locator(SEL.linkListAHrefGithubComNotHref).or(page.locator('a[href="https://github.com/LucisZhang/frontier-forge"]'))).toBeVisible();
 
     expect(browserErrors).toEqual([]);
+  });
+}
+
+for (const locale of ["en", "zh"] as const) {
+  test(`${locale} Frontier Forge exhibit 06 keeps replica, TP, and DDP/FSDP results beside their cutlines and pinned sources`, async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop", "The exhibit content contract only needs one browser size.");
+    await page.addInitScript((selectedLocale) => {
+      window.localStorage.setItem("portfolio-locale", selectedLocale);
+    }, locale);
+    await page.goto(ROUTE, { waitUntil: "networkidle" });
+
+    const exhibit = page.locator(SEL.exhibit("06"));
+    await expect(exhibit.locator(".exhibit-eyebrow")).toHaveText("RTX 4090 · TIME-SLICING · TP · DDP / FSDP");
+    const replicas = exhibit.locator('[data-forge-gpu-block="replicas"]');
+    const tensorParallel = exhibit.locator('[data-forge-gpu-block="tensor-parallel"]');
+    const training = exhibit.locator('[data-forge-gpu-block="distributed-training"]');
+
+    // Replicas: both sides of isolation and the staged gate stay visible.
+    await expect(replicas.locator(".exhibit-stat-value")).toHaveText(["1.748× / 1.795×", "+37.40 pp / +19.34 pp", "0.408× / 0.420×", "85.37s"]);
+    const isolation = replicas.locator('[data-finding="limitation"]');
+    await expect(isolation).toContainText("1.65%");
+    await expect(isolation).toContainText("1,353");
+    await expect(isolation).toContainText("1,505");
+    await expect(isolation).toContainText(locale === "en" ? "Time-slicing gives no hard isolation." : "time-slicing 不提供硬隔离。");
+    await expect(replicas.locator('[data-finding="pass"]')).toContainText(locale === "en" ? "passed in stages" : "分阶段通过");
+
+    // TP: a negative single operating point, never a scalability claim.
+    await expect(tensorParallel.locator(".exhibit-stat-value")).toHaveText(["0.830×", "7.268×", "1.205×", "n=372"]);
+    await expect(tensorParallel.locator('[data-finding="negative"]')).toContainText(locale === "en" ? "not a scalability result" : "构不成扩展性结论");
+
+    // DDP/FSDP: three matched variants, memory tradeoff, and zero-including CIs.
+    const variants = training.locator("[data-training-variant]");
+    await expect(variants).toHaveCount(3);
+    await expect(variants.locator(".forge-ladder-value")).toHaveText(["1,706.90 tok/s", "3,366.58 tok/s", "2,309.85 tok/s"]);
+    await expect(variants.nth(1)).toContainText("98.62%");
+    await expect(variants.nth(1)).toContainText("17.07 GiB");
+    await expect(variants.nth(2)).toContainText("67.66%");
+    await expect(variants.nth(2)).toContainText("7.58 GiB");
+    await expect(training.locator(".exhibit-stat-value")).toHaveText(["−55.61%", "−0.05 pp [−0.30, +0.20]", "+0.10 pp [−0.10, +0.30]"]);
+    await expect(training.locator('[data-finding="note"]')).toContainText("NVLink");
+
+    // Every result group links to its report at the pinned frontier-forge revision.
+    const pinned = "https://github.com/LucisZhang/frontier-forge/blob/34e857b417bb9d2767340332ddc1580b7381f334/";
+    await expect(replicas.locator('a[data-evidence-file="frontier-forge:results/phase7_3_summary.md"]')).toHaveAttribute("href", `${pinned}results/phase7_3_summary.md`);
+    await expect(tensorParallel.locator('a[data-evidence-file="frontier-forge:results/phase7_3_tp_reviewed_report.md"]')).toHaveAttribute("href", `${pinned}results/phase7_3_tp_reviewed_report.md`);
+    await expect(training.locator('a[data-evidence-file="frontier-forge:results/phase8_distributed_report.md"]')).toHaveAttribute("href", `${pinned}results/phase8_distributed_report.md`);
+    await expect(training.locator('a[data-evidence-file="frontier-forge:results/phase8/final-publication/supplement.md"]')).toHaveAttribute("href", `${pinned}results/phase8/final-publication/supplement.md`);
+    await expect(page.locator(SEL.exhibit("08")).locator('[data-evidence-file="public/case-studies/frontier-forge/gpu-scaling-evidence.json"]')).toHaveCount(1);
+
+    if (locale === "zh") {
+      const text = await exhibit.innerText();
+      expect(containsCJK(text)).toBe(true);
+      expect(longestLatinWordRun(text)).toBeLessThanOrEqual(8);
+    }
   });
 }
 
@@ -331,7 +392,7 @@ test("zh Frontier Forge translates the audit3 hero stat label and verified eyebr
   expect(heroStatLabels).toContain("实测训练成本");
   expect(heroStatLabels.join(" ")).not.toContain("MEASURED TRAINING COST");
 
-  await expect(page.locator(SEL.exhibit("07")).locator(".exhibit-eyebrow")).toHaveText("如何验证");
+  await expect(page.locator(SEL.exhibit("08")).locator(".exhibit-eyebrow")).toHaveText("如何验证");
 });
 
 test("Frontier Forge rail is a single project-state rail with exhibit directory and back link", async ({ page }, testInfo) => {
@@ -348,11 +409,11 @@ test("Frontier Forge rail is a single project-state rail with exhibit directory 
   await expect(page.locator(".exhibit-shell")).toHaveAttribute("data-rail-mode", "auto");
   await expect(page.locator(".exhibit-shell")).not.toHaveClass(/rail-collapsed/);
   expect(await page.locator(SEL.rail).locator(".exhibit-rail-fixed .exhibit-rail-nav a .exhibit-rail-num").allTextContents()).toEqual(
-    ["01", "02", "03", "04", "05", "06", "07"],
+    ["01", "02", "03", "04", "05", "06", "07", "08"],
   );
   await expect(page.locator(SEL.rail).locator(".exhibit-rail-fixed").getByText("← ALL WORK")).toBeVisible();
   expect(await page.locator("main [data-exhibit]").evaluateAll((sections) => sections.map((section) => section.getAttribute("data-exhibit")))).toEqual([
-    "01", "02", "03", "04", "05", "06", "07",
+    "01", "02", "03", "04", "05", "06", "07", "08",
   ]);
 
   // Page-scoped rail exceptions (task W3): boxed FF mark + RECORDED
@@ -378,12 +439,16 @@ test.describe("F1 mobile pass — Frontier Forge", () => {
     await assertNoHorizontalOverflow(page, `${ROUTE} at 390 (first screen)`);
     await page.mouse.wheel(0, 3000);
     await assertNoHorizontalOverflow(page, `${ROUTE} at 390 (mid-page)`);
+    await page.locator(SEL.exhibit("06")).scrollIntoViewIfNeeded();
+    await assertNoHorizontalOverflow(page, `${ROUTE} at 390 (exhibit 06)`);
 
     await page.setViewportSize({ width: 360, height: 780 });
     await page.goto(ROUTE, { waitUntil: "networkidle" });
     await assertNoHorizontalOverflow(page, `${ROUTE} at 360 (first screen)`);
     await page.mouse.wheel(0, 3000);
     await assertNoHorizontalOverflow(page, `${ROUTE} at 360 (mid-page)`);
+    await page.locator(SEL.exhibit("06")).scrollIntoViewIfNeeded();
+    await assertNoHorizontalOverflow(page, `${ROUTE} at 360 (exhibit 06)`);
   });
 
   test("chips, tabs, filter bar, and the overload CTA meet the 44px touch-target floor", async ({ page }, testInfo) => {

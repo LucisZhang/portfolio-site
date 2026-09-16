@@ -79,8 +79,8 @@ export function BoundaryMatrix() {
 
   return (
     <Exhibit
-      id="exhibit-06"
-      num="06"
+      id="exhibit-07"
+      num="07"
       eyebrow="MODEL BOUNDARY"
       bg="paper"
       title={locale === "en" ? <>{localizedTitle.en.split(". ")[0]}.<br /><em>{localizedTitle.en.split(". ")[1]}</em></> : <>模型有它的边界，<em>边界画在这里。</em></>}

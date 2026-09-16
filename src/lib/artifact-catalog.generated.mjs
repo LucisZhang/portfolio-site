@@ -50,6 +50,7 @@ export const artifactPaths = [
   "/case-studies/exactly-once-drills/workstation-reproduction-guide.md",
   "/case-studies/frontier-forge/architecture.svg",
   "/case-studies/frontier-forge/claim-commands.json",
+  "/case-studies/frontier-forge/gpu-scaling-evidence.json",
   "/case-studies/frontier-forge/manifest.json",
   "/case-studies/frontier-forge/phase7_1_sustained_gateway_bench.json",
   "/case-studies/frontier-forge/release.json",

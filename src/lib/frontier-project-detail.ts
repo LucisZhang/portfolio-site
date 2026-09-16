@@ -4,8 +4,8 @@ type FrontierProjectDetail = Pick<Project, "role" | "outcome" | "architecture" |
 
 export const frontierProjectDetail: FrontierProjectDetail = {
   role: {
-    en: "I trained and evaluated the ladder, exported the selected checkpoint, served it with vLLM, wrote the C++20 gateway, and exercised the k3s runtime.",
-    zh: "训练与评测阶梯、入选 checkpoint 导出、vLLM 服务、C++20 网关和 k3s 运行环境，整条链都由我搭建并实测。",
+    en: "I trained and evaluated the ladder, exported the selected checkpoint, served it with vLLM, wrote the C++20 gateway, exercised the k3s runtime, and ran the two-GPU single-GPU/DDP/FSDP training comparison.",
+    zh: "训练与评测阶梯、入选 checkpoint 导出、vLLM 服务、C++20 网关、k3s 运行环境，以及双卡机器上的单卡、DDP 与 FSDP 训练对照，整条链都由我搭建并实测。",
   },
   outcome: {
     en: "Under 3× overload the gateway sheds load with 429s and zero upstream 5xx; bare vLLM crashed at 5×. Distillation lost 14.2 pp to free rule labels and GRPO's CI includes zero — both runs are kept on the page.",
@@ -33,8 +33,8 @@ export const frontierProjectDetail: FrontierProjectDetail = {
     { en: "The overload replay fetches the preserved Phase 7.1 sustained A10 receipt and does not call a model.", zh: "过载回放读取保留的 Phase 7.1 A10 持续压测收据，不调用模型。" },
   ],
   boundaries: [
-    { en: "The lifted production block applies only to the measured single-node gateway overload contract; it does not establish cloud production or multi-GPU scaling.", zh: "解除的 production block 只适用于实测的单节点网关过载契约，不代表云生产或多 GPU 扩缩容已经成立。" },
-    { en: "Only CPU gateway replicas scaled 1→3→1. The GPU deployment moved only between zero and one replica on one physical A10.", zh: "只有 CPU 网关副本完成了 1→3→1；GPU deployment 只在一张物理 A10 上做了 0 与 1 副本切换。" },
+    { en: "The lifted production block applies only to the measured single-node gateway overload contract; it does not establish multi-node or production-grade serving. Two-GPU evidence is limited to Phase 8's single-machine 2×RTX 4090 training comparison and one Phase 7.3 tensor-parallel measurement point.", zh: "解除的 production block 只适用于实测的单节点网关过载契约，不能证明多节点或生产级服务。双卡证据仅限 Phase 8 在单机 2×RTX 4090 上的训练对照，以及 Phase 7.3 的单个张量并行测点。" },
+    { en: "Only CPU gateway replicas scaled 1→3→1. In Phase 7.2 the GPU deployment moved only between zero and one replica on one physical A10. Phase 7.3 later completed 10 cycles of 0→1→2→1→0 on one RTX 4090 through time-slicing; both replicas share one card, so this is neither hard isolation nor multi-GPU scaling.", zh: "只有 CPU 网关副本完成了 1→3→1；Phase 7.2 的 GPU deployment 只在一张物理 A10 上做了 0 与 1 副本切换。Phase 7.3 之后在一张 RTX 4090 上通过 time-slicing 完成了 10 轮 0→1→2→1→0：两个副本共用同一张卡，既不是硬隔离，也不是多卡扩展。" },
     { en: "The roughly 125-second GPU cold start is suited to batch and development workloads, not an interactive serving SLO.", zh: "约 125 秒的 GPU 冷启动适合批任务与开发负载，不是交互式服务 SLO。" },
   ],
 };

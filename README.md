@@ -51,7 +51,7 @@ flowchart LR
 | Route | One line |
 | --- | --- |
 | `/` | The gallery floor: four stat tiles, a flagship claim chain, and a negative-run table — every digit wired to the receipts register. |
-| `/ai/frontier-forge` | The flagship ledger: free rule labels scaled 1,450 → 20,000 lift a 4B model from **66.35% to 99.05%** task success (n=2,000, paired 95% CI); total measured spend **$35.68**; the runs that lost stay on the wall. |
+| `/ai/frontier-forge` | The flagship ledger: free rule labels scaled 1,450 → 20,000 lift a 4B model from **66.35% to 99.05%** task success (n=2,000, paired 95% CI); measured spend through Phase 7.2 **$35.68**; the runs that lost stay on the wall. |
 | `/ai/release-guardian` | A control room replaying a 13-node agent gate: 132 funded live runs, 8/8 aggregate gates, the 30/44 strict residual stated beside them. |
 | `/ai/rag-quality-lab` | Lab notes on a harmless-looking knowledge-base update that degraded 4 of 12 controlled questions — and the regression suite that caught it, now run against an 11,309-document corpus. |
 | `/ai/triage-router` | The case against the expensive default: Claude Sonnet 5 ties Haiku 4.5 at 2.8× the cost, so a confidence cascade routes each complaint to the cheapest capable tier; the int8 deployment model runs in your tab. |

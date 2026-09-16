@@ -244,12 +244,12 @@ const projectCatalog: Project[] = [
     glossZh: "SFT 微调到 vLLM 上线跑通",
     eyebrow: { en: "Frontier Forge", zh: "Frontier Forge" },
     summary: {
-      en: "Scaling free rule labels from 1,450 to 20,000 lifted a 4B model from 66.35% to 99.05% task success on complaint triage (n=2000, paired 95% CI), served with vLLM behind a C++20 token-aware gateway, scaled 1→3→1 on k3s. Total measured spend: $35.68. Under 3× overload the gateway sheds load with HTTP 429 and zero upstream 5xx; bare vLLM crashed at 5×. Distillation lost 14.2 pp to free rule labels and GRPO's CI includes zero — both runs are kept on the page.",
-      zh: "投诉分诊任务上，免费规则标签从 1,450 条加到 20,000 条，把 Qwen3.5-4B 的任务成功率从 66.35% 提到 99.05%（SFT，n=2000，配对 95% CI）。vLLM 部署，前面挡一层自己写的 C++20 网关：按 token 预算限流，k3s 上 1→3→1 自动伸缩。全程花了 $35.68，账单实测。压到 3 倍过载，网关用 429 把多余请求挡在门外，上游零 5xx；裸 vLLM 顶到 5 倍直接崩。蒸馏比免费的规则标签还低 14.2 个点，GRPO 置信区间含零——这两次没做成的实验，原样留在页面上。",
+      en: "Scaling free rule labels from 1,450 to 20,000 lifted a 4B model from 66.35% to 99.05% task success on complaint triage (n=2000, paired 95% CI), served with vLLM behind a C++20 token-aware gateway, scaled 1→3→1 on k3s. Measured spend through Phase 7.2: $35.68. A separate 2×RTX 4090 run compared single-GPU, DDP, and FSDP full-parameter SFT. Under 3× overload the gateway sheds load with HTTP 429 and zero upstream 5xx; bare vLLM crashed at 5×. Distillation lost 14.2 pp to free rule labels and GRPO's CI includes zero — both runs are kept on the page.",
+      zh: "投诉分诊任务上，免费规则标签从 1,450 条加到 20,000 条，把 Qwen3.5-4B 的任务成功率从 66.35% 提到 99.05%（SFT，n=2000，配对 95% CI）。vLLM 部署，前面挡一层自己写的 C++20 网关：按 token 预算限流，k3s 上 1→3→1 自动伸缩。截至 Phase 7.2 花了 $35.68，账单实测。另外在 2×RTX 4090 上做了单卡、DDP、FSDP 三组全参 SFT 对照。压到 3 倍过载，网关用 429 把多余请求挡在门外，上游零 5xx；裸 vLLM 顶到 5 倍直接崩。蒸馏比免费的规则标签还低 14.2 个点，GRPO 置信区间含零——这两次没做成的实验，原样留在页面上。",
     },
     metrics: {
-      en: "99.05% TASK SUCCESS · +32.7 pp PAIRED GAIN · $35.68 TOTAL MEASURED SPEND · 0 UPSTREAM 5XX @ 3× OVERLOAD",
-      zh: "99.05% TASK SUCCESS · +32.7 pp PAIRED GAIN · $35.68 TOTAL MEASURED SPEND · 0 UPSTREAM 5XX @ 3× OVERLOAD",
+      en: "99.05% TASK SUCCESS · +32.7 pp PAIRED GAIN · $35.68 MEASURED SPEND THROUGH PHASE 7.2 · 0 UPSTREAM 5XX @ 3× OVERLOAD",
+      zh: "99.05% TASK SUCCESS · +32.7 pp PAIRED GAIN · $35.68 MEASURED SPEND THROUGH PHASE 7.2 · 0 UPSTREAM 5XX @ 3× OVERLOAD",
     },
     problem: { en: "", zh: "" },
     audience: { en: "", zh: "" },

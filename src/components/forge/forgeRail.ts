@@ -4,7 +4,7 @@ import { getProject } from "@/lib/projects";
 // Frontier Forge project-page rail (spec §2.1 "项目页" state, §6.0 template):
 // serif vertical project name, an independent zh gloss line (project.glossZh
 // — 17 characters, within spec §2.1's <=20-character rail-gloss budget),
-// the page's own exhibit directory 01-07 (spec §6.1's table — the hero
+// the page's own exhibit directory 01-08 (spec §6.1's table — the hero
 // itself is not a numbered exhibit for project pages, unlike the
 // homepage's "00 Hero" rail entry), and a single "<- ALL WORK" footer
 // link. Points at "/" rather than the soon-to-be-killed "/ai" track index
@@ -36,8 +36,9 @@ export const forgeRail: RailSpec = {
     { id: "exhibit-03", num: "03", label: { en: "Training ladder", zh: "训练阶梯" } },
     { id: "exhibit-04", num: "04", label: { en: "Serving boundary", zh: "服务边界" } },
     { id: "exhibit-05", num: "05", label: { en: "Overload replay", zh: "过载回放" } },
-    { id: "exhibit-06", num: "06", label: { en: "Model boundary", zh: "模型边界" } },
-    { id: "exhibit-07", num: "07", label: navigationCopy.sourceReceipts },
+    { id: "exhibit-06", num: "06", label: { en: "GPU replicas & DDP/FSDP", zh: "GPU 副本与分布式训练" } },
+    { id: "exhibit-07", num: "07", label: { en: "Model boundary", zh: "模型边界" } },
+    { id: "exhibit-08", num: "08", label: navigationCopy.sourceReceipts },
   ],
   footer: projectRailFooter,
   // The page presents archived evaluations and offline replay.

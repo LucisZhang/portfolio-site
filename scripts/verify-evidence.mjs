@@ -75,6 +75,38 @@ assert(frontierRelease.phase7_1?.gate?.status === "pass", "Frontier Forge Phase 
 assert(frontierRelease.phase7_1?.gate?.sustained_overload_cells?.length === 3, "Frontier Forge sustained overload matrix is incomplete");
 assert(frontierRelease.phase7_2?.gateway_scaling?.status === "complete", "Frontier Forge gateway scaling receipt is incomplete");
 assert(frontierRelease.phase7_2?.gpu_cold_start?.iterations_completed === 10, "Frontier Forge cold-start receipt is incomplete");
+const frontierGpu = await json("public/case-studies/frontier-forge/gpu-scaling-evidence.json");
+assert(JSON.stringify(frontier.assets.map((asset) => asset.path)) === JSON.stringify(["release.json", "phase7_1_sustained_gateway_bench.json", "architecture.svg", "phase7_1_gpu_ledger.jsonl", "phase7_2_gpu_ledger.jsonl", "gpu-scaling-evidence.json"]), "Frontier Forge package assets drifted");
+assert(frontierGpu.source.repository === "LucisZhang/frontier-forge" && frontierGpu.source.revision === "34e857b417bb9d2767340332ddc1580b7381f334", "Frontier Forge GPU scaling evidence is not pinned to the published source commit");
+assert(JSON.stringify(frontierGpu.source.inputs.map((input) => input.path)) === JSON.stringify(["results/phase7_3_summary.md", "results/phase7_3_tp_reviewed_report.md", "results/phase8_distributed_report.md", "results/phase8/final-publication/supplement.md"]), "Frontier Forge GPU scaling inputs drifted");
+{
+  const receiptSources = await json("docs/evidence/receipt-link-sources.json");
+  for (const input of frontierGpu.source.inputs) {
+    const registered = receiptSources.files.find((file) => file.id === `frontier-forge:${input.path}`);
+    assert(registered && registered.path === input.path && registered.sha256 === input.sha256, `Frontier Forge GPU scaling input is not registered at the same hash: ${input.path}`);
+    assert(receiptSources.repositories[registered.repository]?.revision === frontierGpu.source.revision, `Frontier Forge GPU scaling input link is not pinned to the projection revision: ${input.path}`);
+  }
+}
+const frontierReplicas = frontierGpu.phase7_3_replicas;
+assert(frontierReplicas.audit_status === "PASS" && frontierReplicas.composite_status === "staged_complete" && frontierReplicas.single_continuous_run === false, "Frontier Forge Phase 7.3 must remain a staged PASS, not one continuous run");
+assert(frontierReplicas.gpu_count === 1 && frontierReplicas.gpu_sharing === "time-slicing" && frontierReplicas.seed === 731 && frontierReplicas.cell_duration_s === 180, "Frontier Forge Phase 7.3 protocol drifted");
+assert(JSON.stringify(frontierReplicas.two_vs_one.map((cell) => [cell.qps, cell.successful_throughput_ratio, cell.success_rate_delta_pp, cell.ttft_p95_ratio])) === JSON.stringify([[4, 1.748, 37.4, 0.408], [8, 1.795, 19.34, 0.42]]), "Frontier Forge replica ratios drifted");
+assert(frontierReplicas.isolation.attacker_requests === 1505 && frontierReplicas.isolation.attacker_timeouts_after_http_200 === 1353 && frontierReplicas.isolation.attacker_verified_successes === 151, "Frontier Forge isolation attacker outcome drifted");
+assert(frontierReplicas.isolation.observer_e2e_p95_change_percent === 1.65 && frontierReplicas.isolation.hard_isolation === false, "Frontier Forge isolation boundary drifted");
+assert(frontierReplicas.scaling.cycles === 10 && frontierReplicas.scaling.transitions === 40 && frontierReplicas.scaling.one_to_two_ready_p50_s === 85.37, "Frontier Forge replica scaling receipt drifted");
+const frontierTp = frontierGpu.phase7_3_tp;
+assert(frontierTp.single_operating_point === true && frontierTp.gpu_count === 2 && frontierTp.qps === 2 && frontierTp.requests_per_cell === 372, "Frontier Forge TP result must remain one two-GPU operating point");
+assert(frontierTp.tp2_vs_tp1.successful_throughput_ratio === 0.83 && frontierTp.tp2_vs_tp1.ttft_p95_ratio === 7.268 && frontierTp.tp2_vs_tp1.cost_per_1k_successful_tasks_ratio === 1.205, "Frontier Forge TP ratios drifted");
+const frontierTraining = frontierGpu.phase8_distributed;
+assert(frontierTraining.trainable_parameters === 752393024 && frontierTraining.optimizer_steps === 1250 && frontierTraining.train_rows === 20000 && frontierTraining.eval_rows === 2000, "Frontier Forge Phase 8 protocol drifted");
+assert(frontierTraining.gpu_count === 2 && frontierTraining.interconnect === "NODE" && frontierTraining.nvlink === false && frontierTraining.communication_profiled === false, "Frontier Forge Phase 8 topology boundary drifted");
+assert(JSON.stringify(frontierTraining.variants.map((variant) => [variant.config, variant.input_tokens_per_s, variant.scaling_efficiency_percent, variant.hard_and_percent])) === JSON.stringify([["single_gpu_accumulation", 1706.9, null, 98.45], ["ddp", 3366.58, 98.6169, 98.4], ["fsdp_full_shard", 2309.85, 67.6622, 98.55]]), "Frontier Forge Phase 8 variants drifted");
+assert(Math.max(...frontierTraining.variants[1].peak_allocated_bytes_per_gpu) === 18327219200 && Math.max(...frontierTraining.variants[2].peak_allocated_bytes_per_gpu) === 8135424512, "Frontier Forge Phase 8 peak memory drifted");
+assert(JSON.stringify(frontierTraining.paired_differences.map((row) => [row.comparison, row.delta_pp, row.ci95_pp])) === JSON.stringify([["B-A", -0.05, [-0.3, 0.2]], ["C-A", 0.1, [-0.1, 0.3]]]), "Frontier Forge Phase 8 paired differences drifted");
+assert(frontierTraining.paired_differences.every((row) => row.ci95_pp[0] <= 0 && row.ci95_pp[1] >= 0), "Frontier Forge Phase 8 quality-equivalence wording requires both paired intervals to include zero");
+for (const cutline of ["neither hard isolation nor multi-GPU scaling", "not one continuous successful run", "does not establish scalability", "without NVLink", "multi-node or production-grade"]) {
+  assert(frontierGpu.boundaries.some((value) => value.includes(cutline)), `Frontier Forge GPU scaling boundary is missing: ${cutline}`);
+}
 const frontierOverload = await json("public/case-studies/frontier-forge/phase7_1_sustained_gateway_bench.json");
 assert(frontierOverload.run_id === frontierRelease.phase7_1.run_id, "Frontier Forge release and overload run identities disagree");
 assert(frontierOverload.gate?.status === "pass" && frontierOverload.production_blocked === false, "Frontier Forge overload receipt remains production-blocked");
